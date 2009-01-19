@@ -1,0 +1,287 @@
+EQUAL               : '='
+PIPE                : '|'
+POUND               : '#'
+DASH                : '-'
+STAR                : '*'
+fragment SPACE      : ' '
+fragment TABULATOR  : '\t'
+fragment CR         : '\r'
+fragment LF         : '\n'
+INSIGNIFICANT_CHAR  : .
+SLASH               : '/'
+
+ITAL                : '//'
+FORCED_LINEBREAK    : '\\\\'
+NOWIKI_OPEN         : '{{{'
+NOWIKI_CLOSE        : '}}}'
+LINK_OPEN           : '[['
+LINK_CLOSE          : ']]'
+IMAGE_OPEN          : '{{'
+IMAGE_CLOSE         : '}}'
+COLON_SLASH         : ':' '/'
+
+ESCAPE              : '~'
+NEWLINE             : ( CR )? LF | CR
+BLANKS              : ( SPACE | TABULATOR )+
+NOWIKI_BLOCK_CLOSE  : NEWLINE '}}}'
+
+blanks              : BLANKS
+newline             : NEWLINE
+escaped             : ESCAPE STAR STAR 
+                    | ESCAPE . // in parser rule . means arbitrary TOKEN, not character
+
+bold_markup         : STAR STAR
+ital_markup         : ITAL
+heading_markup      : EQUAL
+list_ordelem_markup : POUND
+list_unordelem_markup   : STAR
+table_cell_markup  : PIPE
+table_headercell_markup : PIPE EQUAL
+nowiki_open_markup  : NOWIKI_OPEN
+nowiki_close_markup : NOWIKI_CLOSE
+horizontalrule_markup   : DASH DASH DASH DASH
+link_open_markup    : LINK_OPEN
+link_close_markup   : LINK_CLOSE
+link_description_markup : PIPE
+image_open_markup   : IMAGE_OPEN
+image_close_markup  : IMAGE_CLOSE
+image_alternative_markup: PIPE
+forced_linebreak    : FORCED_LINEBREAK
+
+-------------------------------------------------------------------------------
+
+onestar                 : ( {input.LA(2)!=STAR}? STAR? ) 
+                        | emtpy
+
+paragraph_separator     : ( newline )+
+                        | EOF
+
+whitespaces             : ( blanks | newline )+
+
+text_lineseparator      : newline ( blanks )?
+                        | EOF
+
+list_elemseparator      : newline ( blanks )?
+                        | EOF
+
+end_of_list             : newline
+                        | EOF
+
+table_rowseparator      : newline
+                        | EOF
+-------------------------------------------------------------------------------
+
+horizontalrule          : horizontalrule_markup ( blanks )? paragraph_separator
+
+-------------------------------------------------------------------------------
+
+heading                 : heading_markup heading_content ( heading_markup )? ( blanks )?
+                          paragraph_separator
+
+heading_content         : heading_markup heading_content ( heading_markup )?
+                        | ( ~( EQUAL | ESCAPE | NEWLINE | EOF ) | escaped )+
+
+-------------------------------------------------------------------------------
+
+nowiki_block            : nowikiblock_open_markup ( ~( NOWIKI_BLOCK_CLOSE | EOF ) )*
+                          nowikiblock_close_markup paragraph_separator
+
+nowikiblock_open_markup : nowiki_open_markup newline
+
+nowikiblock_close_markup: NOWIKI_BLOCK_CLOSE
+
+nowiki_inline           : nowiki_open_markup ( ~( NOWIKI_CLOSE | NEWLINE | EOF ) )*
+                          nowiki_close_markup
+
+-------------------------------------------------------------------------------
+
+list_ord                : ( list_ordelem )+ ( end_of_list )?
+
+list_ordelem            : list_ordelem_markup list_elem
+
+list_unord              : ( list_unordelem )+ ( end_of_list )?
+
+list_unordelem          : list_unordelem_markup list_elem
+
+list_elem               : ( list_elem_markup )* list_elemcontent list_elemseparator
+
+list_elem_markup        : list_ordelem_markup
+                        | list_unordelem_markup
+
+list_elemcontent        : onestar ( list_elemcontentpart onestar )*
+
+list_elemcontentpart    : text_unformattedelement
+                        | list_formatted_elem
+
+list_formatted_elem     : bold_markup onestar ( list_boldcontentpart onestar )* ( bold_markup )?
+                        | ital_markup onestar ( list_italcontentpart onestar )* ( ital_markup )?
+
+list_boldcontentpart    : ital_markup list_bolditalcontent ( ital_markup )?
+                        | ( text_unformattedelement )+
+
+list_italcontentpart    : bold_markup list_bolditalcontent ( bold_markup )?
+                        | ( text_unformattedelement )+
+
+list_bolditalcontent    : ( text_unformattedelement )+
+
+-------------------------------------------------------------------------------
+
+table                   : ( table_row )+
+
+table_row               : ( table_cell )+ table_rowseparator
+
+table_cell              : { input.LA(2)==EQUAL }? table_headercell
+                        | table_normalcell
+
+table_headercell        : table_headercell_markup table_cellcontent
+
+table_normalcell        : table_cell_markup table_cellcontent
+
+table_cellcontent       : onestar ( table_cellcontentpart onestar )*
+
+table_cellcontentpart   : table_formattedelement
+                        | table_unformattedelement
+
+table_formattedelement  : ital_markup ( table_italcontent )? ( ital_markup )?
+                        | bold_markup ( table_boldcontent )? ( bold_markup )?
+
+table_boldcontent       : onestar ( table_boldcontentpart onestar )+
+                        | EOF
+
+table_italcontent       : onestar ( table_italcontentpart onestar )+
+                        | EOF
+
+table_boldcontentpart   : table_formattedcontent
+                        | ital_markup table_bolditalcontent ( ital_markup )?
+
+table_italcontentpart   : bold_markup table_bolditalcontent ( bold_markup )?
+                        | table_formattedcontent
+
+table_bolditalcontent   : onestar ( table_formattedcontent onestar )?
+                        | EOF
+
+table_formattedcontent  : ( table_unformattedelement )+
+
+table_inlineelement     : link
+                        | image
+                        | extension
+                        | nowiki_inline
+
+table_unformattedelement: table_unformatted
+                        | table_inlineelement
+
+table_unformatted       : ( ~( PIPE
+                        | ITAL
+                        | STAR
+                        | LINK_OPEN
+                        | IMAGE_OPEN
+                        | NOWIKI_OPEN
+                        | EXTENSION
+                        | FORCED_LINEBREAK
+                        | ESCAPE
+                        | NEWLINE
+                        | EOF )
+                        | forced_linebreak
+                        | escaped )+
+
+-------------------------------------------------------------------------------
+
+text_paragraph          : ( text_line
+                          | ( NOWIKI_OPEN ~( NEWLINE ) ) =>
+                              nowiki_inline ( text_element )* text_lineseparator
+                          )+
+
+text_line               : text_firstelement ( text_element )* text_lineseparator
+
+text_firstelement       : {input.LA(1)!=STAR || (input.LA(1)==STAR && input.LA(2)==STAR)}?
+                          text_formattedelement
+                        | text_first_unformattedelement
+
+text_formattedelement   : ital_markup text_italcontent ( ( NEWLINE )? ital_markup )?
+                        | bold_markup text_boldcontent ( ( NEWLINE )? bold_markup )?
+
+text_boldcontent        : ( NEWLINE )? ( text_boldcontentpart )*
+                        | EOF
+
+text_element            : onestar text_unformattedelement
+                        | text_unformattedelement onestar
+                        | text_formattedelement
+
+text_italcontent        : ( NEWLINE )? ( text_italcontentpart )*
+                        | EOF
+
+text_boldcontentpart    : ital_markup text_bolditalcontent ( ital_markup )?
+                        | text_formattedcontent
+
+text_italcontentpart    : bold_markup text_bolditalcontent ( bold_markup )?
+                        | text_formattedcontent
+
+text_bolditalcontent    : ( NEWLINE )? ( text_formattedcontent )?
+                        | EOF
+
+text_formattedcontent   : onestar ( text_unformattedelement onestar ( text_linebreak )? )+
+
+text_linebreak          : {input.LA(2)!=DASH && input.LA(2)!=POUND &&
+                          input.LA(2)!=EQUAL && input.LA(2)!=NEWLINE}?
+                          text_lineseparator
+
+text_inlineelement      : text_first_inlineelement
+                        | nowiki_inline
+
+text_first_inlineelement: link
+                        | image
+                        | extension
+
+text_first_unformattedelement : text_first_unformatted
+                              | text_first_inlineelement
+
+text_first_unformatted  : ( ~( POUND
+                            | STAR
+                            | EQUAL
+                            | PIPE
+                            | ITAL
+                            | LINK_OPEN
+                            | IMAGE_OPEN
+                            | NOWIKI_OPEN
+                            | EXTENSION
+                            | FORCED_LINEBREAK
+                            | ESCAPE
+                            | NEWLINE
+                            | EOF )
+                        | forced_linebreak
+                        | escaped )+
+
+text_unformattedelement : text_unformatted
+                        | text_inlineelement
+
+text_unformatted    : ( ~( ITAL
+                        | STAR
+                        | LINK_OPEN
+                        | IMAGE_OPEN
+                        | NOWIKI_OPEN
+                        | EXTENSION
+                        | FORCED_LINEBREAK
+                        | ESCAPE
+                        | NEWLINE
+                        | EOF )
+                    | forced_linebreak
+                    | escaped )+
+
+-------------------------------------------------------------------------------
+
+wikipage            : ( whitespaces )? paragraphs EOF
+
+paragraphs          : ( paragraph )*
+
+paragraph           : nowiki_block
+                    | blanks paragraph_separator
+                    | ( blanks )?
+                        ( heading
+                        | {input.LA(1)==DASH && input.LA(2)==DASH &&
+                          input.LA(3)==DASH && input.LA(4)==DASH}?
+                          horizontalrule
+                        | list_unord
+                        | list_ord
+                        | table
+                        | text_paragraph
+                        ) ( paragraph_separator )?
