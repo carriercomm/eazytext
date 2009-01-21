@@ -1,0 +1,5 @@
+README
+setup.cfg
+setup.py
+test/testlex.py
+test/testparse.py

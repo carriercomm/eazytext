@@ -126,7 +126,7 @@ class ZWParser( object ):
     # ---------- Precedence and associativity of operators --------------------
 
     precedence = (
-        ( 'left', 'PREC_FORMATTED_TEXT', 'PREC_LINK', 'PREC_MACRO', ),
+        ( 'left', 'PREC_LINK', 'PREC_MACRO', ),
     )
     
     def p_wikipage( self, p ):                          # WikiPage
@@ -234,7 +234,7 @@ class ZWParser( object ):
             p[0] = p[1]
         elif len(p) == 5 and isinstance( p[1], TableRows ) \
                          and isinstance( p[2], TableCells ) :
-            p[1].appendrow( p[2], p[3], p[5] )
+            p[1].appendrow( p[2], p[3], p[4] )
             p[0] = p[1]
         else :
             raise ParseError( "unexpected rule-match for table_rows_1")
@@ -252,9 +252,16 @@ class ZWParser( object ):
 
     def p_table_cells( self, p ):                       # TableCells
         """table_cells          : TABLE_CELLSTART text_content
+                                | TABLE_CELLSTART empty
+                                | table_cells TABLE_CELLSTART empty
                                 | table_cells TABLE_CELLSTART text_content""" 
-        if len(p) == 3 :
+        if len(p) == 3 and isinstance( p[2], Empty ) :
+            p[0] = TableCells( p[1], [ p[2] ] )
+        elif len(p) == 3 :
             p[0] = TableCells( p[1], p[2] )
+        elif len(p) == 4 and isinstance( p[3], Empty ) :
+            p[1].appendcell( p[2], [ p[3] ] )
+            p[0] = p[1]
         elif len(p) == 4 :
             p[1].appendcell( p[2], p[3] )
             p[0] = p[1]
@@ -275,7 +282,7 @@ class ZWParser( object ):
 
     def p_orderedlist( self, p ):                       # List
         """orderedlist : ORDLIST_START text_content NEWLINE"""
-        p[0] = List( 'ordered', p[1], p[2], p[3] )
+        p[0] = List( LIST_ORDERED, p[1], p[2], p[3] )
 
     def p_unorderedlists( self, p ):                    # Lists
         """unorderedlists       : unorderedlist
@@ -291,108 +298,22 @@ class ZWParser( object ):
 
     def p_unorderedlist( self, p ):                     # List
         """unorderedlist        : UNORDLIST_START text_content NEWLINE"""
-        p[0] = List( 'unordered', p[1], p[2], p[3] )
+        p[0] = List( LIST_UNORDERED, p[1], p[2], p[3] )
 
-    def p_text_content( self, p ) :                  # List of FormattedText
-        """text_content         : texts_link_macro
-                                | text_content texts_link_macro"""
-        if len(p) == 2 and isinstance( p[1], FormattedText ):
+    def p_text_content( self, p ) :                  # List of Link / Macro / BasicText
+        """text_content         : basictext
+                                | link
+                                | macro
+                                | text_content basictext
+                                | text_content link
+                                | text_content macro"""
+        if len(p) == 2 and isinstance( p[1], (Link,Macro,BasicText) ):
             p[0] = [ p[1] ]
-        elif len(p) == 2 and isinstance( p[1], list ):
-            p[0] = p[1]
         elif len(p) == 3 and isinstance( p[1], list ) \
-                         and isinstance( p[2], FormattedText ) :
+                         and isinstance( p[2], (Link,Macro,BasicText) ) :
             p[0] = p[1] + [ p[2] ]
-        elif len(p) == 3 and isinstance( p[1], list ) \
-                         and isinstance( p[2], list ) :
-            p[0] = p[1] + p[2]
         else :
             raise ParseError( "unexpected rule-match for text_content")
-
-    def p_formatted_text_1( self, p ):
-        """formatted_text       : BOLD texts_link_macro BOLD %prec PREC_FORMATTED_TEXT
-                                | BOLD BOLD %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_BOLD, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_2( self, p ):
-        """formatted_text       : ITALIC texts_link_macro ITALIC %prec PREC_FORMATTED_TEXT
-                                | ITALIC ITALIC %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_ITALIC, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_3( self, p ):
-        """formatted_text       : UNDERLINE texts_link_macro UNDERLINE %prec PREC_FORMATTED_TEXT
-                                | UNDERLINE UNDERLINE %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_UNDERLINE, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_4( self, p ):
-        """formatted_text       : SUPERSCRIPT texts_link_macro SUPERSCRIPT %prec PREC_FORMATTED_TEXT
-                                | SUPERSCRIPT SUPERSCRIPT %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_SUPERSCRIPT, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_5( self, p ):
-        """formatted_text       : SUBSCRIPT texts_link_macro SUBSCRIPT %prec PREC_FORMATTED_TEXT
-                                | SUBSCRIPT SUBSCRIPT %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_SUBSCRIPT, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_6( self, p ):
-        """formatted_text       : BOLDITALIC texts_link_macro BOLDITALIC %prec PREC_FORMATTED_TEXT
-                                | BOLDITALIC BOLDITALIC %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_BOLDITALIC, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_formatted_text_7( self, p ):
-        """formatted_text       : BOLDITALICUNDERLINE texts_link_macro BOLDITALICUNDERLINE %prec PREC_FORMATTED_TEXT
-                                | BOLDITALICUNDERLINE BOLDITALICUNDERLINE %prec PREC_FORMATTED_TEXT"""
-        if len(p) == 4 and isinstance( p[2], list ) :
-            p[0] = FormattedText( FORMAT_BOLDITALICUNDERLINE, p[2] )
-        elif len(p) == 3 :
-            p[0] = FormattedText( FORMAT_EMPTY, [ Empty() ] )
-
-    def p_texts_link_macro( self, p ):                  # List of BasicText / FormattedText
-        """texts_link_macro     : text
-                                | link_macro_fbreak
-                                | formatted_text
-                                | texts_link_macro text
-                                | texts_link_macro formatted_text
-                                | texts_link_macro link_macro_fbreak"""
-        if len(p) == 2 and isinstance( p[1], list ):
-            p[0] = p[1]
-        elif len(p) == 2 and isinstance( p[1], FormattedText ):
-            p[0] = [ p[1] ]
-        elif len(p) == 3 and isinstance( p[1], list ) \
-                         and isinstance( p[2], list ):
-            p[0] = p[1] + p[2]
-        elif len(p) == 3 and isinstance( p[1], list ) \
-                         and isinstance( p[2], FormattedText ):
-            p[0] = p[1] + [ p[2] ]
-        else :
-            raise ParseError( "unexpected rule-match for texts_link_macro")
-
-    def p_link_macro_fbreak_1( self, p ):               # List of Link / Macro
-        """link_macro_fbreak    : link
-                                | macro"""
-        p[0] = [ p[1] ]
-
-    def p_link_macro_fbreak_2( self, p ):               # or List of BasicText
-        """link_macro_fbreak    : LINEBREAK"""
-        p[0] = [ BasicText( TEXT_ZWCHARLINEBREAK, p[1] ) ]
 
     def p_link( self, p ):                              # Link
         """link                 : LINK %prec PREC_LINK"""
@@ -402,57 +323,34 @@ class ZWParser( object ):
         """macro                : MACRO %prec PREC_MACRO"""
         p[0] = Macro( p[1] )
 
-    def p_text( self, p ):                              # list of BasicText
-        """text                 : basictext
-                                | squarebrackets
-                                | paranthesis"""
-        p[0] = [ p[1] ]
-
     def p_basictext_1( self, p ):
-        """basictext            : STAR
-                                | POUND
-                                | SINGLEQUOTE
-                                | FORWARDSLASH
-                                | BACKSLASH
-                                | UNDERSCORE
-                                | XOR
-                                | COMMA"""
-        p[0] = BasicText( TEXT_ZWCHAR, p[1] )
-
-    def p_basictext_2( self, p ):
         """basictext            : PIPE"""
         p[0] = BasicText( TEXT_ZWCHARPIPE, p[1] )
 
-    def p_basictext_3( self, p ):
+    def p_basictext_2( self, p ):
         """basictext            : ALPHANUM"""
         p[0] = BasicText( TEXT_ALPHANUM, p[1] )
 
-    def p_basictext_4( self, p ):
-        """basictext            : SPECIALCHAR"""
+    def p_basictext_3( self, p ):
+        """basictext            : SPECIALCHAR
+                                | SQR_OPEN
+                                | SQR_CLOSE
+                                | PARAN_OPEN
+                                | PARAN_CLOSE"""
         p[0] = BasicText( TEXT_SPECIALCHAR, p[1] )
 
-    def p_basictext_5( self, p ):
+    def p_basictext_4( self, p ):
         """basictext            : HTTP_URI"""
         p[0] = BasicText( TEXT_HTTPURI, p[1] )
 
-    def p_basictext_6( self, p ):
+    def p_basictext_5( self, p ):
         """basictext            : WWW_URI"""
         p[0] = BasicText( TEXT_WWWURI, p[1] )
 
-    def p_basictext_7( self, p ):
+    def p_basictext_6( self, p ):
         """basictext            : ESCAPED"""
         p[0] = BasicText( TEXT_ESCAPED, p[1] )
 
-    def p_squarebrackets( self, p ):
-        """squarebrackets       : SQR_OPEN
-                                | SQR_CLOSE"""
-        p[0] = BasicText( TEXT_SQRBRACKET, p[1] )
-
-    def p_paranthesis( self, p ):
-        """paranthesis          : PARAN_OPEN
-                                | PARAN_CLOSE"""
-        p[0] = BasicText( TEXT_PARAN, p[1] )
-        
     def p_paragraph_seperator( self, p ):                   # ParagraphSeparator
         """paragraph_separator  : NEWLINE
                                 | paragraph_separator NEWLINE

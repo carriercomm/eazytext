@@ -1,17 +1,15 @@
 import sys
+import re
+
+import zwiki.textformat as textformat
 
 # text type for BasicText
-TEXT_ZWCHAR          = 'zwchar'
+TEXT_ZWCHARPIPE      = 'zwcharpipe'
 TEXT_ALPHANUM        = 'alphanum'
 TEXT_SPECIALCHAR     = 'specialchar'
 TEXT_HTTPURI         = 'httpuri'
 TEXT_WWWURI          = 'wwwuri'
 TEXT_ESCAPED         = 'escaped'
-TEXT_PARAN           = 'paranthesis'
-TEXT_SQRBRACKET      = 'squarebracket'
-TEXT_ZWCHARPIPE      = 'zwcharpipe'
-TEXT_ZWCHARLINEBREAK = 'zwcharlinebreak'
-TEXT_EMPTY           = 'empty'
 
 # Format type for FormattedText
 FORMAT_BOLD          = 'fmt_bold'
@@ -23,6 +21,10 @@ FORMAT_BOLDITALIC    = 'fmt_bolditalic'
 FORMAT_BOLDITALICUNDERLINE = 'fmt_bolditalicunderline'
 FORMAT_NON           = 'fmt_non'
 FORMAT_EMPTY         = 'fmt_empty'
+
+# List Type
+LIST_ORDERED         = 'ordered'
+LIST_UNORDERED       = 'unordered'
 
 # Markup
 M_PIPE               = '|'
@@ -46,6 +48,14 @@ class Node( object ):
     def children( self ):
         """A sequence of all children that are Nodes"""
         pass
+
+    def tohtml( self ):
+        """Translate the node and all the children nodes to html markup and
+        return the content"""
+
+    def dump( self ):
+        """Simply dump the contents of this node and its children node and
+        return the same."""
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
@@ -71,8 +81,10 @@ class Wikipage( Node ):
     """Wiki class to handle `wikipage` grammar."""
 
     def __init__( self, *args  ) :
-        if len( args ) == 1 :
+        if len( args ) == 1 and isinstance( args[0], Pragmas ) :
             self.pragmas    = args[0]
+        elif len( args ) == 1 and isinstance( args[0], Paragraphs ) :
+            self.paragraphs = args[0]
         elif len( args ) == 2 :
             self.pragmas    = args[0]
             self.paragraphs = args[1]
@@ -84,6 +96,9 @@ class Wikipage( Node ):
                         [ getattr( self, attr, None ) for attr in childnames ]
                      )
         return tuple(nodes)
+
+    def tohtml( self ):
+        return ''.join([ c.tohtml() for c in self.children() ])
 
     def dump( self ) :
         return ''.join([ c.dump() for c in self.children() ])
@@ -123,6 +138,9 @@ class Paragraphs( Node ) :
                      )
         return tuple(nodes)
 
+    def tohtml( self ):
+        return ''.join([ c.tohtml() for c in self.children() ])
+
     def dump( self ) :
         return ''.join([ c.dump() for c in self.children() ])
 
@@ -147,6 +165,9 @@ class Paragraph( Node ) :
 
     def children( self ) :
         return ( self.paragraph, )
+
+    def tohtml( self ):
+        return '<p>' + self.paragraph.tohtml() + '</p>'
 
     def dump( self ) :
         return self.paragraph.dump()
@@ -174,6 +195,9 @@ class Pragmas( Node ) :
     def children( self ) :
         return ( self.pragma, self.newline )
 
+    def tohtml( self ) :
+        return ''
+
     def dump( self ) :
         return self.pragma + self.newline.dump()
 
@@ -197,6 +221,9 @@ class NoWiki( Node ) :
 
     def children( self ) :
         return (self.nowikilines,)
+
+    def tohtml( self ):
+        return ''
 
     def dump( self ) :
         txt  = M_NOWIKI_OPEN + self.opennewline.dump()
@@ -224,6 +251,13 @@ class Heading( Node ) :
     def children( self ) :
         return ( self.fulltext, self.newline )
 
+    def tohtml( self ):
+        l    = len(re.search( r'^={1,5}', self.fulltext ).group())
+        html = '<h'+str(l)+'> ' + self.fulltext.strip('=') + \
+               ' </h'+str(l)+'>' + \
+               self.newline.tohtml()
+        return html
+
     def dump( self ) :
         return self.fulltext + self.newline.dump()
 
@@ -248,6 +282,9 @@ class HorizontalRule( Node ) :
     def children( self ) :
         return (self.hrule, self.newline)
 
+    def tohtml( self ):
+        return '<hr />'
+
     def dump( self ) :
         return self.hrule + self.newline.dump()
 
@@ -266,19 +303,26 @@ class HorizontalRule( Node ) :
 class TextLines( Node ) :
     """Wiki class to handle `textlines` grammar."""
 
-    def __init__( self, formatted_texts, newline  ) :
-        self.formattedtextlines = [ (formatted_texts, Newline(newline)) ]
+    def __init__( self, text_content, newline  ) :
+        self.textlines = [ (text_content, Newline(newline)) ]
 
-    def appendline( self, formatted_texts, newline ) :
-        self.formattedtextlines.append( (formatted_texts, Newline(newline)) )
+    def appendline( self, text_content, newline ) :
+        self.textlines.append( (text_content, Newline(newline)) )
 
     def children( self ) :
-        return (self.formattedtextlines,)
+        return (self.textlines,)
+
+    def tohtml( self ) :
+        html   = ''
+        for text_content, newline in self.textlines :
+            html += ''.join(textformat.process_text( text_content ))
+            html += newline.tohtml()
+        return html
 
     def dump( self ) :
-        txt = ''.join([ ''.join([ fmttxt.dump()
-                                 for fmttxt in formatted_texts ]) + newline.dump()
-                       for formatted_texts, newline in self.formattedtextlines ])
+        txt = ''.join([ ''.join([ text.dump()
+                                 for text in text_content ]) + newline.dump()
+                       for text_content, newline in self.textlines ])
         return txt
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -291,11 +335,11 @@ class TextLines( Node ) :
         buf.write('\n')
 
         linecount = 1
-        for formatted_texts, newline in self.formattedtextlines :
+        for text_content, newline in self.textlines :
             buf.write( lead + '(line %s)\n' % linecount )
             linecount += 1
-            for fmttxt in formatted_texts :
-                fmttxt.show( buf, offset + 2, attrnames, showcoord )
+            for text in text_content :
+                text.show( buf, offset + 2, attrnames, showcoord )
             newline.show( buf, offset + 2, attrnames, showcoord )
 
 
@@ -307,6 +351,18 @@ class TableRows( Node ) :
 
     def appendrow( self, row, pipe=None, newline=None ) :
         self.rows.append( (row, pipe, Newline(newline)) )
+
+    def tohtml( self ) :
+        html    = '<table border=1>'
+        maxcols = max([ row.totalcells() for row, pipe, newline in self.rows ])
+        for row, pipe, newline in self.rows :
+            html += '<tr>'
+            html += row.tohtml( maxcols=maxcols )
+            if newline :
+                html += newline.tohtml()
+            html += '</tr>'
+        html   += '</table>'
+        return html
 
     def children( self ) :
         return ( self.rows, )
@@ -340,7 +396,7 @@ class TableCells( Node ) :
     """Wiki class to handle `table_cells` grammar."""
 
     def __init__( self, pipe, cell  ) :
-        self.cells = [ (pipe, cell) ]
+        self.cells     = [ (pipe, cell) ]
 
     def appendcell( self, pipe, cell ) :
         self.cells.append( ( pipe, cell ) )
@@ -348,9 +404,26 @@ class TableCells( Node ) :
     def children( self ) :
         return ( self.cells, )
 
+    def totalcells( self ) :
+        count = 0
+        for pipe, cell in self.cells :
+            for l in cell :
+                if isinstance( cell, (Link,Macro,BasicText) ) :
+                    count += 1
+                    break
+        return count
+
+    def tohtml( self, maxcols ) :
+        html = ''
+        for pipe, cell in self.cells :
+            html += '<td>'
+            html += ''.join(textformat.process_text( cell ))
+            html += '</td>'
+        return html
+
     def dump( self ) :
-        txt = ''.join([ pipe + ''.join([ t.dump() for t in fmttxts ])
-                        for fmttxts, pipe in self.cells ])
+        txt = ''.join([ pipe + ''.join([ t.dump() for t in txts ])
+                        for pipe, txts in self.cells ])
         return txt
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -363,27 +436,49 @@ class TableCells( Node ) :
         buf.write('\n')
 
         cellcount = 1
-        for fmttxts, pipe in self.cells :
+        for txts, pipe in self.cells :
             buf.write( lead + '(cell %s)\n' % cellcount )
             cellcount += 1
-            for item in fmttxts :
+            for item in txts :
                 item.show( buf, offset + 2, attrnames, showcoord )
 
 
 class Lists( Node ) :
     """Wiki class to handle `orderedlists` and `unorderedlists` grammar."""
 
-    def __init__( self, list ) :
-        self.list = [ list ]
+    def __init__( self, l ) :
+        self.lists = [ l ]
 
-    def appendlist( self, list ) :
-        self.list.append( list )
+    def appendlist( self, l ) :
+        self.lists.append( l )
 
     def children( self ) :
-        return tuple(self.list)
+        return (self.lists, )
+
+    def tohtml( self ) :
+        html         = ''
+        closemarkups = []
+        markups      = { '#' : ('<ol>', '</ol>'),
+                         '*' : ('<ul>', '</ul>') }
+        pm   = ''
+        cm   = ''
+        for l in self.lists :
+            cm       = re.search( r'[\*\#]{1,5}$', l.listmarkup ).group()
+            cmpmark  = cmp( len(pm), len(cm) )
+            diffmark = abs(len(cm) - len(pm))
+            if cmpmark > 0 :
+                html += ''.join([ closemarkups.pop() for i in range(diffmark) ])
+            elif cmpmark < 0 :
+                for i in range(diffmark) :
+                    html += markups[cm[0]][0]
+                    closemarkups.append( markups[cm[0]][1] )
+            html += l.tohtml()
+            pm = cm
+        html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
+        return html
 
     def dump( self ) :
-        return ''.join([ c.dump() for c in self.list ])
+        return ''.join([ c.dump() for c in self.lists ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -391,26 +486,32 @@ class Lists( Node ) :
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
-        for c in self.children() :
+        for c in self.lists :
             c.show( buf, offset + 2, attrnames, showcoord )
 
 
 class List( Node ) :
     """Wiki class to handle `orderedlist` and `unorderedlist` grammar."""
 
-    def __init__( self, listtype, listmarkup, formatted_texts, newline ) :
-        self.listtype        = listtype
-        self.formatted_texts = formatted_texts
-        self.listmarkup      = listmarkup
-        self.newline         = Newline( newline )
+    def __init__( self, listtype, listmarkup, text_content, newline ) :
+        self.listtype     = listtype
+        self.listmarkup   = listmarkup
+        self.text_content = text_content
+        self.newline      = Newline( newline )
 
     def children( self ) :
-        return ( self.listtype, self.formatted_texts, self.listmarkup,
+        return ( self.listtype, self.listmarkup, self.text_content,
                  self.newline )
+
+    def tohtml( self ) :
+        html = '<li>'
+        html += ''.join(textformat.process_text( self.text_content ))
+        html += '</li>'
+        return html
 
     def dump( self ) :
         txt     =  self.listmarkup
-        txt     += ''.join([ c.dump() for c in self.formatted_texts ])
+        txt     += ''.join([ c.dump() for c in self.text_content ])
         txt     += self.newline.dump()
         return txt
 
@@ -426,47 +527,8 @@ class List( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        for fmttxt in self.formatted_texts :
-            fmttxt.show( buf, offset + 2, attrnames, showcoord )
-
-
-class FormattedText( Node ) :
-    """Wiki class to handle `formatted_text` grammar."""
-
-    def __init__( self, type, contlist  ) :
-        self.type     = type
-        self.contlist = contlist
-
-    def children( self ) :
-        return (self.type, self.contlist)
-
-    def dump( self ) :
-        types   = {
-                    FORMAT_BOLD          : M_BOLD,
-                    FORMAT_ITALIC        : M_ITALIC,
-                    FORMAT_UNDERLINE     : M_UNDERLINE,
-                    FORMAT_SUPERSCRIPT   : M_SUPERSCRIPT,
-                    FORMAT_SUBSCRIPT     : M_SUBSCRIPT,
-                    FORMAT_BOLDITALIC    : M_BOLDITALIC,
-                    FORMAT_BOLDITALICUNDERLINE : M_BOLDITALICUNDERLINE,
-                    FORMAT_NON           : '',
-                    FORMAT_EMPTY         : '',
-                  }
-        txt     = types[self.type] + ''.join([ c.dump() for c in self.contlist ]) 
-        txt    += types[self.type]
-        return txt
-
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
-              showcoord=False ) :
-        lead = ' ' * offset
-        buf.write( lead + 'formatted_text: %s ' % self.type )
-
-        if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
-
-        for item in self.contlist :
-            item.show( buf, offset + 2, attrnames, showcoord )
+        for t in self.text_content :
+            t.show( buf, offset + 2, attrnames, showcoord )
 
 
 class Link( Node ) :
@@ -477,6 +539,13 @@ class Link( Node ) :
 
     def children( self ) :
         return ( self.link, )
+
+    def tohtml( self ) :
+        tup  = self.link[2:-2].split( '|', 1 )
+        text = (len(tup) == 2 and  tup[1]) or tup[0]
+        href = tup[0]
+        html = '<a href=' + href + '>' + text + '</a>'
+        return html
 
     def dump( self ) :
         return self.link
@@ -499,6 +568,9 @@ class Macro( Node ) :
 
     def children( self ) :
         return ( self.macro, )
+
+    def tohtml( self ) :
+        return ''
 
     def dump( self ) :
         return self.macro
@@ -523,8 +595,23 @@ class BasicText( Node ) :
     def children( self ) :
         return ( self.type, self.text )
 
+    def tohtml( self ):
+        self.text = self.text.replace( '\\\\', '<br/>' )
+        res = self.text
+        if self.type == TEXT_SPECIALCHAR :
+            markups = textformat.parse_text( self.text )
+            if markups :
+                res =  (self.text, markups)
+        elif self.type == TEXT_HTTPURI :
+            res = '<a href=' + self.text + '>' + self.text + '</a>'
+        elif self.type == TEXT_WWWURI :
+            res = '<a href=' + self.text + '>' + self.text + '</a>'
+        elif self.type == TEXT_ESCAPED :
+            res = self.text[1]
+        return res
+
     def dump( self ) :
-        return (self.type == TEXT_ESCAPED and ('~'+self.text)) or self.text
+        return self.text
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -560,6 +647,12 @@ class ParagraphSeparator( Node ) :
                      )
         return tuple(nodes)
 
+    def tohtml( self ) :
+        html = ''
+        for c in self.children() :
+            html += c.tohtml()
+        return html
+
     def dump( self ) :
         return ''.join([ c.dump() for c in self.children() ])
 
@@ -585,6 +678,9 @@ class Empty( Node ) :
     def children( self ) :
         return ()
 
+    def tohtml( self ):
+        return ''
+
     def dump( self ) :
         return ''
 
@@ -603,6 +699,9 @@ class Newline( Node ) :
 
     def children( self ) :
         return ( self.newline, )
+
+    def tohtml( self ):
+        return self.newline
 
     def dump( self ) :
         return self.newline

@@ -17,9 +17,12 @@ The ending equal signs should not be displayed:
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
 
 Character formatting extends across line breaks: ''bold,
-this is still bold. This line deliberately does not end in star-star.
+this is still bold. This line deliberately does not end in double
+single-quotes.
 
 Not bold. Character formatting does not cross paragraph boundaries.
+
+This line is single line \\ but uses line break markup to split the line.
 
 You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
 give the link a [[internal links|different]] name.
@@ -34,7 +37,7 @@ Be careful that italic links are rendered properly:  //[[http://my.book.example/
 Free links without braces should be rendered as well, like http://www.wikicreole.org/ and http://www.wikicreole.org/users/~example. 
 
 Creole1.0 specifies that http://bar and ftp://bar should not render italic,
-something like foo://bar should render as italic.
+something like foo://bar// should render as italic.
 
 You can use this to draw a line to separate the page:
 ----
@@ -66,10 +69,29 @@ up to five levels
 **** 4
 ***** 5
 
-* You can have
-multiline list items
-* this is a second multiline
-list item
+All possible list combination,
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+** level 2 item 1 unordered
+** level 2 item 2 unordered
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+*** level 3 item 1 unordered
+*** level 3 item 2 unordered
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+# level 1 item 1 ordered
+# level 1 item 1 ordered
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+
+You cannot have
+* multiline list,
+items
 
 You can use nowiki syntax if you would like do stuff like this:
 
@@ -85,23 +107,23 @@ Guitar Chord C:
 }}}
 
 Zwiki does not support {{{ inline no-wiki }}} instead use
-{{ Macroscalls( with, args ) }}
+{{ Macro-calls( with, args ) }}
 
 = Escapes =
 Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 
 
 Normal asterisks: ~''not bold~''
 
-a tilde alone: ~
+a tilde alone: ~ 
 
 a tilde escapes itself: ~~xxx
 
 Tables are done like this:
 
 |=header col1|=header col2| 
-|col1|col2| 
-|you         |can         | 
-|also        |align\\ it. | 
+|col1|col2| col3
+|you         |can         | |
+|also      ||align\\ it. | col4 |
 
 You can format an address by simply forcing linebreaks:
 
@@ -111,7 +133,7 @@ Fax: +45\\
 Mobile: abc
 
 |= Header title               |= Another header title     |
-| {{{ //not italic text// }}} | {{{ **not bold text** }}} |
-| //italic text//             | **  bold text **          |
+| [[ //not italic text// ]]   | {{{ **not bold text** }}} |
+| //italic text//             | ''  bold text ''          |
 
 If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: [[WikiCreole:Creole1.0TestCases]].

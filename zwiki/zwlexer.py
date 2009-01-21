@@ -67,28 +67,21 @@ class ZWLexer( object ):
     ## All the tokens recognized by the lexer
     tokens = (
         # RegEx tokens.
-        'PIPE',  'STAR', 'POUND', 'SINGLEQUOTE',  'FORWARDSLASH', 'BACKSLASH', 'UNDERSCORE',
-        'XOR', 'COMMA', 'SQR_OPEN', 'SQR_CLOSE', 'PARAN_OPEN',
-        'PARAN_CLOSE', 'ALPHANUM',  'SPECIALCHAR', 'HTTP_URI', 'WWW_URI',
+        'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
+        'PARAN_OPEN', 'PARAN_CLOSE', 'HTTP_URI', 'WWW_URI',
 
         # Pragmas
         'OPTIONS', 'TAGS',
 
         # Line markups
         'HORIZONTALRULE', 'HEADING',   'ORDLIST_START', 'UNORDLIST_START',
+        'TABLE_CELLSTART',
 
         # Block markups
         'NOWIKI_OPEN', 'NOWIKI_CLOSE', 'NOWIKI_CHARS', 'NOWIKI_SPECIALCHAR',
 
-        # Text markups
-        'LINEBREAK',  'BOLD', 'ITALIC', 'UNDERLINE', 'SUPERSCRIPT', 'SUBSCRIPT',
-        'BOLDITALIC', 'BOLDITALICUNDERLINE',
-
         # Special tokens
-        'TABLE_ROWSTART', 'TABLE_ROWEND', 'TABLE_CELLSTART',
-
         'LINK', 'MACRO',
-
         'NEWLINE', 'ESCAPED',
     )
 
@@ -99,11 +92,6 @@ class ZWLexer( object ):
 
     def t_TAGS( self, t ):
         r'^@tags.*$'
-        return t
-
-    def t_ESCAPED( self, t ):
-        r'~.'
-        t.value = t.value[1]
         return t
 
     def t_HORIZONTALRULE( self, t ):
@@ -127,6 +115,10 @@ class ZWLexer( object ):
         r'[^{}\r\n]+'
         return t
 
+    def t_nowiki_NEWLINE( self, t ):
+        r'(\r?\n)|\r'
+        return t
+
     def t_nowiki_NOWIKI_CLOSE( self, t ):
         r'^}}}$'
         t.lexer.pop_state()
@@ -136,7 +128,7 @@ class ZWLexer( object ):
         r'[{}]'
         return t
 
-    def t_TABLE_ROWSTART( self, t ):
+    def t_TABLE_CELLSTART( self, t ):
         r'^[ \t]*\|'
         t.lexer.push_state('table')
         return t
@@ -145,9 +137,13 @@ class ZWLexer( object ):
         r'[ \t]*\|'
         return t
 
-    def t_table_TABLE_ROWEND( self, t ):
-        r'$'
+    def t_table_NEWLINE( self, t ):
+        r'(\r?\n)|\r'
         t.lexer.pop_state()
+        return t
+
+    def t_table_ESCAPED( self, t ):
+        r'~.'
         return t
 
     def t_table_LINK( self, t ):
@@ -155,47 +151,15 @@ class ZWLexer( object ):
         return t
 
     def t_table_MACRO( self, t ):
-        r'\{\}[^\{\}\r\n]+\}\}'
-        return t
-
-    def t_table_LINEBREAK( self, t ):
-        r"\\\\"
-        return t
-
-    def t_table_BOLD( self, t ):
-        r"''"
-        return t
-
-    def t_table_ITALIC( self, t ):
-        r"//"
-        return t
-
-    def t_table_UNDERLINE( self, t ):
-        r"__"
-        return t
-
-    def t_table_SUPERSCRIPT( self, t ):
-        r"\^\^"
-        return t
-
-    def t_table_SUBSCRIPT( self, t ):
-        r",,"
-        return t
-
-    def t_table_BOLDITALIC( self, t ):
-        r"'/"
-        return t
-
-    def t_table_BOLDITALICUNDERLINE( self, t ):
-        r"'/_"
+        r'\{\{[^\{\}\r\n]+\}\}'
         return t
 
     def t_ORDLIST_START( self, t ):
-        r'^[ \t]*\*{1,5}'
+        r'^[ \t]*\#{1,5}'
         return t
 
     def t_UNORDLIST_START( self, t ):
-        r'^[ \t]*\#{1,5}'
+        r'^[ \t]*\*{1,5}'
         return t
 
     def t_LINK( self, t ):
@@ -206,79 +170,19 @@ class ZWLexer( object ):
         r'\{\}[^\{\}\r\n]+\}\}'
         return t
 
-    def t_LINEBREAK( self, t ):
-        r"\\\\"
+    def t_ESCAPED( self, t ):
+        r'~.'
         return t
 
-    def t_BOLD( self, t ):
-        r"''"
-        return t
-
-    def t_ITALIC( self, t ):
-        r"//"
-        return t
-
-    def t_UNDERLINE( self, t ):
-        r"__"
-        return t
-
-    def t_SUPERSCRIPT( self, t ):
-        r"\^\^"
-        return t
-
-    def t_SUBSCRIPT( self, t ):
-        r",,"
-        return t
-
-    def t_BOLDITALIC( self, t ):
-        r"'/"
-        return t
-
-    def t_BOLDITALICUNDERLINE( self, t ):
-        r"'/_"
-        return t
-
-    def t_ANY_NEWLINE( self, t ):
+    def t_NEWLINE( self, t ):
         r'(\r?\n)|\r'
         return t
-
-    # Tokens
-    t_PIPE         = r'\|'
-    t_STAR         = r'\*'
-    t_POUND        = r'\#'
-    t_SINGLEQUOTE  = r"'"
-    t_FORWARDSLASH = r'/'
-    t_BACKSLASH    = r'\\'
-    t_UNDERSCORE   = r'_'
-    t_XOR          = r'\^'
-    t_COMMA        = r','
-    t_SQR_OPEN     = r'\['
-    t_SQR_CLOSE    = r'\]'
-    t_PARAN_OPEN   = r'\{'
-    t_PARAN_CLOSE  = r'\}'
-    t_ALPHANUM     = r'[a-zA-Z0-9]+'
-    t_SPECIALCHAR  = r'[ ~`!@%&:;="<> \.\?\+\\\(\)\$\-\t]+'
-    
-    t_table_STAR         = r'\*'
-    t_table_POUND        = r'\#'
-    t_table_SINGLEQUOTE  = r"'"
-    t_table_FORWARDSLASH = r'/'
-    t_table_BACKSLASH    = r'\\'
-    t_table_UNDERSCORE   = r'_'
-    t_table_XOR          = r'\^'
-    t_table_COMMA        = r','
-    t_table_SQR_OPEN     = r'\['
-    t_table_SQR_CLOSE    = r'\]'
-    t_table_PARAN_OPEN   = r'\{'
-    t_table_PARAN_CLOSE  = r'\}'
-    t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
-    t_table_SPECIALCHAR  = r'[ ~`!@%&:;="<> \.\?\+\\\(\)\$\-\t]+'
 
     # Complex regex
     http_schema    = r'http://'
     www_domain     = r'www\.'
     uri_reserved   = r':;/@&=,\?\#\+\$'
-    uri_mark       = r"_!~'\(\)\*\.\-"
+    uri_mark       = r"_!'\(\)\*\.\-"
     uri_escape     = r'%'
     http_uri       = http_schema + r'[a-zA-Z0-9' + uri_escape + uri_reserved + uri_mark + r']+'
     www_uri        = www_domain + r'[a-zA-Z0-9' + uri_escape + uri_reserved + uri_mark + r']+'
@@ -298,6 +202,22 @@ class ZWLexer( object ):
     @TOKEN(www_uri)
     def t_table_WWW_URI( self, t ):
         return t
+
+    # Tokens
+    t_PIPE               = r'\|'
+    t_ALPHANUM           = r'[a-zA-Z0-9]+'
+    t_SQR_OPEN           = r'\['
+    t_SQR_CLOSE          = r'\]'
+    t_PARAN_OPEN         = r'\{'
+    t_PARAN_CLOSE        = r'\}'
+    t_SPECIALCHAR        = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+    
+    t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
+    t_table_SQR_OPEN     = r'\['
+    t_table_SQR_CLOSE    = r'\]'
+    t_table_PARAN_OPEN   = r'\{'
+    t_table_PARAN_CLOSE  = r'\}'
+    t_table_SPECIALCHAR  = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
 
     def t_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])
