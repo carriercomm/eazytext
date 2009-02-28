@@ -7,41 +7,15 @@ import ply.lex
 from   ply.lex import TOKEN
 
 class ZWLexer( object ):
-    """A lexer for the ZWiki markup. After building it, set the input text with
-    input(), and call token() to get new tokens.
-        
+    """A lexer for the ZWiki markup.
+        build() To build   
+        input() Set the input text
+        token() To get new tokens.
     The public attribute filename can be set to an initial filaneme, but the
     lexer will update it upon #line directives."""
 
-    def __init__( self, error_func=None ):
-        """ Create a new Lexer.
-        
-        error_func:
-            An error function. Will be called with an error message, line
-            and column as arguments, in case of an error during lexing."""
-        self.error_func = error_func
-        self.filename = ''
+    ## -------------- Internal auxiliary methods ---------------------
 
-    def build( self, **kwargs ):
-        """ Builds the lexer from the specification. Must be called after the
-        lexer object is created. 
-            
-        This method exists separately, because the PLY manual warns against
-        calling lex.lex inside __init__"""
-        self.lexer = ply.lex.lex(object=self, reflags=re.MULTILINE, **kwargs)
-
-    def reset_lineno( self ):
-        """ Resets the internal line number counter of the lexer."""
-        self.lexer.lineno = 1
-
-    def input( self, text ):
-        self.lexer.input(text)
-    
-    def token( self ):
-        g = self.lexer.token()
-        return g
-
-    ## Internal auxiliary methods
     def _error( self, msg, token ):
         location = self._make_tok_location( token )
         self.error_func and self.error_func( msg, location[0], location[1] )
@@ -58,13 +32,46 @@ class ZWLexer( object ):
     def _make_tok_location( self, token ):
         return ( token.lineno, self._find_tok_column(token) )
     
+    ## --------------- Interface methods ------------------------------
+
+    def __init__( self, error_func=None ):
+        """ Create a new Lexer.
+        error_func:
+            An error function. Will be called with an error message, line
+            and column as arguments, in case of an error during lexing."""
+        self.error_func = error_func
+        self.filename = ''
+
+    def build( self, **kwargs ):
+        """ Builds the lexer from the specification. Must be called after the
+        lexer object is created. 
+            
+        This method exists separately, because the PLY manual warns against
+        calling lex.lex inside __init__"""
+        self.lexer = ply.lex.lex( module=self, reflags=re.MULTILINE, **kwargs )
+
+    def reset_lineno( self ):
+        """ Resets the internal line number counter of the lexer."""
+        self.lexer.lineno = 1
+
+    def input( self, text ):
+        """`text` to tokenise"""
+        self.lexer.input( text )
+    
+    def token( self ):
+        """Get the next token"""
+        tok = self.lexer.token()
+        return tok 
+
     # States
+
     states = (
                ( 'nowiki', 'exclusive' ),
                ( 'table',  'exclusive' ),
              )
 
-    ## All the tokens recognized by the lexer
+    ## Tokens recognized by the ZWLexer
+
     tokens = (
         # RegEx tokens.
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
@@ -86,6 +93,7 @@ class ZWLexer( object ):
     )
 
     ## Rules for the lexer.
+
     def t_OPTIONS( self, t ):
         r'^@options.*$'
         return t
@@ -111,17 +119,17 @@ class ZWLexer( object ):
         r'^{{{$'
         return t
 
+    def t_nowiki_NOWIKI_CLOSE( self, t ):
+        r'^}}}$'
+        t.lexer.pop_state()
+        return t
+
     def t_nowiki_NOWIKI_CHARS( self, t ):  
         r'[^{}\r\n]+'
         return t
 
     def t_nowiki_NEWLINE( self, t ):
         r'(\r?\n)|\r'
-        return t
-
-    def t_nowiki_NOWIKI_CLOSE( self, t ):
-        r'^}}}$'
-        t.lexer.pop_state()
         return t
 
     def t_nowiki_NOWIKI_SPECIALCHAR( self, t ):  
@@ -144,6 +152,7 @@ class ZWLexer( object ):
 
     def t_table_ESCAPED( self, t ):
         r'~.'
+        t.value = t.value[1]
         return t
 
     def t_table_LINK( self, t ):
@@ -167,11 +176,12 @@ class ZWLexer( object ):
         return t
 
     def t_MACRO( self, t ):
-        r'\{\}[^\{\}\r\n]+\}\}'
+        r'\{\{[^\{\}\r\n]+\}\}'
         return t
 
     def t_ESCAPED( self, t ):
         r'~.'
+        t.value = t.value[1]
         return t
 
     def t_NEWLINE( self, t ):

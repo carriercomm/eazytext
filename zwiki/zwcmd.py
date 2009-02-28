@@ -39,3 +39,6 @@ def main() :
             tu       = zwparser.parse( wikitext, debuglevel=0 )
             html     = tu.tohtml()
             open( os.path.splitext( f )[0] + '.html', 'w' ).write( html )
+
+if __name__ == '__main__' :
+    main()

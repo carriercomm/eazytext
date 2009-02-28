@@ -17,7 +17,9 @@ The ending equal signs should not be displayed:
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
 
 Character formatting extends across line breaks: ''bold,
-this is still bold. This line deliberately does not end in double
+this is still bold''.
+
+This line deliberately ''does not end in double
 single-quotes.
 
 Not bold. Character formatting does not cross paragraph boundaries.

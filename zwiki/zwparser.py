@@ -38,6 +38,7 @@ class ZWParser( object ):
     def __init__(   self, 
                     lex_optimize=False,
                     lextab='zwiki.lextab',
+                    lex_debug=False,
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
                     yacc_debug=True
@@ -79,7 +80,8 @@ class ZWParser( object ):
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex.build( optimize=lex_optimize, lextab=lextab )
+        self.zwlex.build(
+            optimize=lex_optimize, lextab=lextab, debug=lex_debug )
         self.tokens   = self.zwlex.tokens
         self.zwparser = ply.yacc.yacc( module=self, 
                                        debug=yacc_debug,
@@ -87,6 +89,16 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
     
+    def preprocess( self, text ) :
+        """The text to be parsed is pre-parsed to remove the fix unwanted
+        side effects in the parser.
+        Return the preprossed text"""
+        # Replace escaped new lines.
+        text = re.sub( r'~+\n', '\n', text )
+        if text and text[-1] == '~' : 
+            text = text[:-1]
+        return text
+
     def parse( self, text, filename='', debuglevel=0 ):
         """Parses C code and returns an AST.
         
@@ -101,6 +113,8 @@ class ZWParser( object ):
         self.zwlex.filename = filename
         self.zwlex.reset_lineno()
         text += '\n'
+        # Pre-process the text.
+        text = self.preprocess( text )
         return self.zwparser.parse( text, lexer=self.zwlex, debug=debuglevel )
     
     # ------------------------- Private functions -----------------------------
@@ -208,9 +222,9 @@ class ZWParser( object ):
         """horizontalrule       : HORIZONTALRULE NEWLINE"""
         p[0] = HorizontalRule( p[1], p[2] )
 
-    def p_textlines( self, p ):                         # Textlines
-        """textlines            : text_content NEWLINE
-                                | textlines text_content NEWLINE"""
+    def p_textlines( self, p ) :                        # Textlines
+        """textlines            : text_contents NEWLINE
+                                | textlines text_contents NEWLINE"""
         if len(p) == 3 :
             p[0] = TextLines( p[1], p[2] )
         elif len(p) == 4 and isinstance( p[1], TextLines ) :
@@ -243,24 +257,24 @@ class ZWParser( object ):
         """table_rows           : TABLE_CELLSTART NEWLINE
                                 | table_rows TABLE_CELLSTART NEWLINE"""
         if len(p) == 3 :
-            p[0] = TableRows( TableCells( p[1], [] ), newline=p[2] )
+            p[0] = TableRows( TableCells( p[1], Empty() ), newline=p[2] )
         elif len(p) == 4 :
-            p[1].appendrow( TableCells( p[2], [] ), newline=p[3] )
+            p[1].appendrow( TableCells( p[2], Empty() ), newline=p[3] )
             p[0] = p[1]
         else :
             raise ParseError( "unexpected rule-match for table_rows_2")
 
     def p_table_cells( self, p ):                       # TableCells
-        """table_cells          : TABLE_CELLSTART text_content
+        """table_cells          : TABLE_CELLSTART text_contents
                                 | TABLE_CELLSTART empty
                                 | table_cells TABLE_CELLSTART empty
-                                | table_cells TABLE_CELLSTART text_content""" 
+                                | table_cells TABLE_CELLSTART text_contents"""
         if len(p) == 3 and isinstance( p[2], Empty ) :
-            p[0] = TableCells( p[1], [ p[2] ] )
+            p[0] = TableCells( p[1], p[2] )
         elif len(p) == 3 :
             p[0] = TableCells( p[1], p[2] )
         elif len(p) == 4 and isinstance( p[3], Empty ) :
-            p[1].appendcell( p[2], [ p[3] ] )
+            p[1].appendcell( p[2], p[3] )
             p[0] = p[1]
         elif len(p) == 4 :
             p[1].appendcell( p[2], p[3] )
@@ -281,7 +295,8 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for orderedlists")
 
     def p_orderedlist( self, p ):                       # List
-        """orderedlist : ORDLIST_START text_content NEWLINE"""
+        """orderedlist : ORDLIST_START text_contents NEWLINE
+                       | ORDLIST_START empty NEWLINE"""
         p[0] = List( LIST_ORDERED, p[1], p[2], p[3] )
 
     def p_unorderedlists( self, p ):                    # Lists
@@ -297,23 +312,25 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for unorderedlists")
 
     def p_unorderedlist( self, p ):                     # List
-        """unorderedlist        : UNORDLIST_START text_content NEWLINE"""
+        """unorderedlist        : UNORDLIST_START text_contents NEWLINE
+                                | UNORDLIST_START empty NEWLINE"""
         p[0] = List( LIST_UNORDERED, p[1], p[2], p[3] )
 
-    def p_text_content( self, p ) :                  # List of Link / Macro / BasicText
-        """text_content         : basictext
+    def p_text_contents( self, p ) :                    # TextContents
+        """text_contents        : basictext
                                 | link
                                 | macro
-                                | text_content basictext
-                                | text_content link
-                                | text_content macro"""
+                                | text_contents basictext
+                                | text_contents link
+                                | text_contents macro"""
         if len(p) == 2 and isinstance( p[1], (Link,Macro,BasicText) ):
-            p[0] = [ p[1] ]
-        elif len(p) == 3 and isinstance( p[1], list ) \
+            p[0] = TextContents( p[1] ) 
+        elif len(p) == 3 and isinstance( p[1], TextContents ) \
                          and isinstance( p[2], (Link,Macro,BasicText) ) :
-            p[0] = p[1] + [ p[2] ]
+            p[1].appendcontent( p[2] )
+            p[0] = p[1]
         else :
-            raise ParseError( "unexpected rule-match for text_content")
+            raise ParseError( "unexpected rule-match for text_contents")
 
     def p_link( self, p ):                              # Link
         """link                 : LINK %prec PREC_LINK"""
