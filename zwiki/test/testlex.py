@@ -15,6 +15,7 @@ stdfiles        = [ 'creole1.0test.txt' ]
 _formatlines    = lambda ptext : [ '    ' + ptext[i:120]
                                         for i in range( 0, len(ptext), 120 ) ]
 
+
 def setUpModule() :
     global zwlex
     zwlex = ZWLexer()
