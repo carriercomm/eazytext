@@ -12,7 +12,7 @@ description='Zwiki Parser and HTML translator'
 
 setup(
     name='zwiki',
-    version='0.1',
+    version='0.2dev1',
     py_modules=[],
     package_dir={},
     packages=find_packages(),
@@ -29,7 +29,7 @@ setup(
         ],
     },
     install_requires=[                      # setuptools
-        'ply >= 2.5',
+        'ply >= 3.0',
     ],
     extras_require={},                      # setuptools
     setup_requires={},                      # setuptools
