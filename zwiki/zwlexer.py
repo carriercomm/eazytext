@@ -6,6 +6,9 @@ import sys
 import ply.lex
 from   ply.lex import TOKEN
 
+# Bug in PLY ???
+#   Enabling optimize screws up the order of regex match (while lexing)
+
 class ZWLexer( object ):
     """A lexer for the ZWiki markup.
         build() To build   
