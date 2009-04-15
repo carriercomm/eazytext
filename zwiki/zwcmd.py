@@ -7,12 +7,10 @@ from   random         import choice, randint, shuffle
 import re
 from   optparse       import OptionParser
 
-from   nose.tools     import assert_equal
-
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwparser import ZWParser
 
-basedir      = os.path.split(os.path.split( os.path.abspath(__file__) )[0])[0]
+basedir      = os.path.split( os.path.abspath(__file__) )[0]
 testdir      = os.path.join( basedir, 'test' )
 stdfiles     = os.path.join( testdir, 'stdfiles' )
 get_stdfiles = lambda : [ os.path.join( stdfiles, f )
@@ -29,8 +27,10 @@ def _option_parse() :
 
 def main() :
     options, args = _option_parse()
+    # Bug in PLY ???
+    #   Enabling optimize screws up the order of regex match (while lexing)
+    zwparser = ZWParser( lex_optimize=False, yacc_debug=True, yacc_optimize=False )
     if args[0] == 'teststd' :
-        zwparser = ZWParser( lex_optimize=True, yacc_debug=True, yacc_optimize=False )
         stdfiles = get_stdfiles()
         for f in stdfiles :
             if os.path.splitext(f)[1] not in [ '.txt', '.wiki' ] :
@@ -39,6 +39,12 @@ def main() :
             tu       = zwparser.parse( wikitext, debuglevel=0 )
             html     = tu.tohtml()
             open( os.path.splitext( f )[0] + '.html', 'w' ).write( html )
+    else :
+        file     = args[0]
+        wikitext = open( file ).read()
+        tu       = zwparser.parse( wikitext, debuglevel=0 )
+        html     = tu.tohtml()
+        open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
 
 if __name__ == '__main__' :
     main()
