@@ -1,6 +1,12 @@
 import sys
 import re
 
+# Todo :
+#   1. Add unicode support
+#   2. Fix the heading bug
+#   3. Add support for bold_underline, italic_underline, bold_italic_underline
+#      and update the document.
+
 # text type for BasicText
 TEXT_ZWCHARPIPE      = 'zwcharpipe'
 TEXT_ALPHANUM        = 'alphanum'
