@@ -1,19 +1,19 @@
 import unittest
 import os
-import difflib        as diff
-from   random         import choice, randint, shuffle
+import difflib            as diff
+from   random             import choice, randint, shuffle
 
-from   nose.tools     import assert_equal
+from   nose.tools         import assert_equal
 
-from   zwiki.zwlexer  import ZWLexer
-from   zwiki.zwparser import ZWParser
-from   testlib        import ZWMARKUP, ZWMARKUP_RE, \
-                             gen_psep, gen_ordmark, gen_unordmark, \
-                             gen_headtext, gen_texts, gen_row, \
-                             gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                             gen_macrowords, gen_macros, \
-                             random_textformat, random_listformat, \
-                             random_tableformat, random_wikitext, random_wiki
+from   zwiki.zwlexer      import ZWLexer
+from   zwiki.zwparser     import ZWParser
+from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
+                                 gen_psep, gen_ordmark, gen_unordmark, \
+                                 gen_headtext, gen_texts, gen_row, \
+                                 gen_wordlist, gen_words, gen_linkwords, gen_links,\
+                                 gen_macrowords, gen_macros, \
+                                 random_textformat, random_listformat, \
+                                 random_tableformat, random_wikitext, random_wiki
 
 
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
