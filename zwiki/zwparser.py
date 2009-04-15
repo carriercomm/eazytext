@@ -4,7 +4,6 @@ from   types    import StringType
 
 import ply.yacc
 
-#import zwast
 from   zwlexer  import ZWLexer
 from   zwast    import *
 

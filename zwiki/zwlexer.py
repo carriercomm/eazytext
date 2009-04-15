@@ -214,13 +214,34 @@ class ZWLexer( object ):
         return t
 
     # Tokens
-    t_PIPE               = r'\|'
-    t_ALPHANUM           = r'[a-zA-Z0-9]+'
-    t_SQR_OPEN           = r'\['
-    t_SQR_CLOSE          = r'\]'
-    t_PARAN_OPEN         = r'\{'
-    t_PARAN_CLOSE        = r'\}'
-    t_SPECIALCHAR        = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+
+    def t_PIPE( self, t ) :
+        r'\|'
+        return t
+
+    def t_ALPHANUM( self, t ) :
+        r'[a-zA-Z0-9]+'
+        return t
+
+    def t_SQR_OPEN( self, t ) :
+        r'\['
+        return t
+
+    def t_SQR_CLOSE( self, t ) :
+        r'\]'
+        return t
+
+    def t_PARAN_OPEN( self, t ) :
+        r'\{'
+        return t
+
+    def t_PARAN_CLOSE (self, t ) :
+        r'\}'
+        return t
+
+    def t_SPECIALCHAR( self, t ) :
+        r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+        return t
     
     t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
     t_table_SQR_OPEN     = r'\['

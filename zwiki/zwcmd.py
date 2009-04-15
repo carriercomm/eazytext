@@ -7,12 +7,10 @@ from   random         import choice, randint, shuffle
 import re
 from   optparse       import OptionParser
 
-from   nose.tools     import assert_equal
-
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwparser import ZWParser
 
-basedir      = os.path.split(os.path.split( os.path.abspath(__file__) )[0])[0]
+basedir      = os.path.split( os.path.abspath(__file__) )[0]
 testdir      = os.path.join( basedir, 'test' )
 stdfiles     = os.path.join( testdir, 'stdfiles' )
 get_stdfiles = lambda : [ os.path.join( stdfiles, f )
