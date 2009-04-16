@@ -6,8 +6,9 @@ import sys
 import ply.lex
 from   ply.lex import TOKEN
 
-# Bug in PLY ???
-#   Enabling optimize screws up the order of regex match (while lexing)
+# Gotcha :
+#   1. Enabling optimize screws up the order of regex match (while lexing)
+#      Bug in PLY ???
 
 class ZWLexer( object ):
     """A lexer for the ZWiki markup.
@@ -218,6 +219,8 @@ class ZWLexer( object ):
 
     # Tokens
 
+    # TODO : Due to ordering issues the following functions are created from
+    # simple regex variables.
     def t_PIPE( self, t ) :
         r'\|'
         return t

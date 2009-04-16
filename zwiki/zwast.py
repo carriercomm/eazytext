@@ -3,8 +3,7 @@ import re
 
 # Todo :
 #   1. Add unicode support
-#   2. Fix the heading bug
-#   3. Add support for bold_underline, italic_underline, bold_italic_underline
+#   2. Add support for bold_underline, italic_underline, bold_italic_underline
 #      and update the document.
 
 # text type for BasicText
@@ -109,12 +108,14 @@ def parse_text( text ) :
     while i < len(text) :
         ch2 = text[i:i+2]
         ch3 = text[i:i+3]
-        if ch2 in ref2markups :
-            contents.append( Content( ch2, markup2type[ch2] ))
-            i += 2
-        elif ch3 in ref3markups :
+        if ch3 in ref3markups :
             contents.append( Content( ch3, markup2type[ch3] ))
             i += 3
+            print '..', ch3
+        elif ch2 in ref2markups :
+            contents.append( Content( ch2, markup2type[ch2] ))
+            i += 2
+            print '..', ch2
         else :
             contents.append( Content( text[i], TEXT_SPECIALCHAR, text[i] ))
             i += 1
