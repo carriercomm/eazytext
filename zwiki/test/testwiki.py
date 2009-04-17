@@ -49,10 +49,10 @@ class TestWikiDumpsRandom( object ) :
         testcontent = zwparser.preprocess( testcontent )
         try :
             tu      = zwparser.parse( testcontent, debuglevel=0 )
-            result  = tu.dump()[:-1]
+            result  = tu.dump( zwparser )[:-1]
         except :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
-            result = tu.dump()[:-1]
+            result = tu.dump( zwparser )[:-1]
         if result != testcontent :
             print ''.join(diff.ndiff( result.splitlines(1), testcontent.splitlines(1) ))
         assert result == testcontent, type+'... testcount %s'%count

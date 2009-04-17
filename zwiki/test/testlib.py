@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from   random         import choice, randint, shuffle
 import re
 
@@ -6,14 +7,15 @@ ALPHANUM     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 SPECIALCHAR  = ' ~`!@%&:;"<>_,^\'.?+\\()$-\t'
 ZWCHARS      = '*#=-|'
 PIPECHAR     = '|'
+HPIPECHAR    = '|='
 ESCCHAR      = '~'
 LINKCHARS    = '[]'
 MACROCHARS   = '{}'
 NEWLINE      = '\n'
 
-ZWMARKUP     = [ "''", '//', '__', '^^', ',,', "'/", "'/_", '\\\\', '[[', ']]',
+ZWMARKUP     = [ "''", '//', '__', '^^', ',,', "'/", "'_", "/_'","'/_", '\\\\', '[[', ']]',
                  '{{', '}}' ]
-ZWMARKUP_RE  = [ r"''", r'//', r'__', r'\^\^', r',,', r"'/", r"'/_", r'\\\\',
+ZWMARKUP_RE  = [ r"''", r'//', r'__', r'\^\^', r',,', r"'/", "'_", "/_'", r"'/_", r'\\\\',
                  r'\[\[', r'\]\]', r'{{', r'}}' ]
 ORDMARKUP    = [ '*', '**', '***', '****', '*****' ]
 UNORDMARKUP  = [ '#', '##', '###', '####', '#####' ]
@@ -132,7 +134,7 @@ def gen_texts( words, links, macros, tc=1, pc=1, ec=1, lc=1, mc=1, fc=0,
     return texts
 
 # generate - table cell seperator
-_gen_cellstart = lambda : ' ' * randint(0,3) + '|' + ' ' * randint(0,3)
+_gen_cellstart = lambda : ' ' * randint(0,3) + choice([ PIPECHAR, HPIPECHAR ]) + ' ' * randint(0,3)
 # generate - table cells
 def _gen_cell( words, links, macros ):
     """Generate a table cell."""
@@ -147,7 +149,7 @@ def _gen_cell( words, links, macros ):
                   ) for i in range(randint(0,2)) ]
     # Aggregate, shuffle, join contents
     #   Make ~ as ~~ if found at the end.
-    cellwords = [ w.replace('|', '')
+    cellwords = [ w.replace(PIPECHAR, '')
                   for w in wordlist + ewordlist + fwordlist ] +\
                 linklist + macrolist
     shuffle( cellwords )
@@ -187,9 +189,9 @@ def random_tableformat( words, links, macros, newline, count ) :
     lines = count /10
     row   = ''
     for i in range( lines ) :
-        row += PIPECHAR
+        row += choice([ PIPECHAR, HPIPECHAR ])
         for j in range(randint( 0, count )) :
-            row   += choice( words + links + macros + ZWMARKUP + [ PIPECHAR ] )
+            row   += choice( words + links + macros + ZWMARKUP + [ PIPECHAR, HPIPECHAR ] )
             count -= 1
         row += newline
         if count < 0 :
@@ -203,3 +205,6 @@ random_wikitext = lambda words, links, macros, count : \
                               for i in range( count ) ])
 random_wiki     = lambda count : \
                     ''.join([ choice( wikilist ) for i in range( count ) ])
+
+# literal - unicode
+UNICODE = u''

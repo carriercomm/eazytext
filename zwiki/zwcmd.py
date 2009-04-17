@@ -37,13 +37,13 @@ def main() :
                 continue
             wikitext = open( f ).read()
             tu       = zwparser.parse( wikitext, debuglevel=0 )
-            html     = tu.tohtml()
+            html     = tu.tohtml( zwparser )
             open( os.path.splitext( f )[0] + '.html', 'w' ).write( html )
     else :
         file     = args[0]
         wikitext = open( file ).read()
         tu       = zwparser.parse( wikitext, debuglevel=0 )
-        html     = tu.tohtml()
+        html     = tu.tohtml( zwparser )
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
 
 if __name__ == '__main__' :

@@ -1,10 +1,16 @@
-import sys
-import re
+"""Module containing the Nodes for all non-teminals"""
 
-# Todo :
+# -*- coding: utf-8 -*-
+
+# Gotcha : None
+# Notes  : None
+# Todo   :
 #   1. Add unicode support
 #   2. Add support for bold_underline, italic_underline, bold_italic_underline
 #      and update the document.
+
+import sys
+import re
 
 # text type for BasicText
 TEXT_ZWCHARPIPE      = 'zwcharpipe'
@@ -24,6 +30,8 @@ FORMAT_UNDERLINE     = 'fmt_underline'
 FORMAT_SUPERSCRIPT   = 'fmt_superscript'
 FORMAT_SUBSCRIPT     = 'fmt_subscript'
 FORMAT_BOLDITALIC    = 'fmt_bolditalic'
+FORMAT_BOLDUNDERLINE = 'fmt_boldunderline'
+FORMAT_ITALICUNDERLINE = 'fmt_italicunderline'
 FORMAT_BOLDITALICUNDERLINE = 'fmt_bolditalicunderline'
 FORMAT_NON           = 'fmt_non'
 FORMAT_EMPTY         = 'fmt_empty'
@@ -34,6 +42,7 @@ LIST_UNORDERED       = 'unordered'
 
 # Markup
 M_PIPE               = '|'
+M_PIPEHEAD           = '|='
 M_NOWIKI_OPEN        = '{{{'
 M_NOWIKI_CLOSE       = '}}}'
 M_MACROOPEN          = '{{'
@@ -46,10 +55,12 @@ M_UNDERLINE          = "__"
 M_SUPERSCRIPT        = "^^"
 M_SUBSCRIPT          = ",,"
 M_BOLDITALIC         = "'/"
+M_BOLDUNDERLINE      = "'_"
+M_ITALICUNDERLINE    = "/_"
 M_BOLDITALICUNDERLINE = "'/_"
 
 ref2markups  = [ M_BOLD, M_ITALIC, M_UNDERLINE, M_SUPERSCRIPT, M_SUBSCRIPT,
-                 M_BOLDITALIC ]
+                 M_BOLDITALIC, M_BOLDUNDERLINE, M_ITALICUNDERLINE ]
 ref3markups  = [ M_BOLDITALICUNDERLINE ]
 markup2type  = {
                  M_BOLD                : FORMAT_BOLD,
@@ -58,6 +69,8 @@ markup2type  = {
                  M_SUPERSCRIPT         : FORMAT_SUPERSCRIPT,
                  M_SUBSCRIPT           : FORMAT_SUBSCRIPT,
                  M_BOLDITALIC          : FORMAT_BOLDITALIC,
+                 M_BOLDUNDERLINE       : FORMAT_BOLDUNDERLINE,
+                 M_ITALICUNDERLINE     : FORMAT_ITALICUNDERLINE,
                  M_BOLDITALICUNDERLINE : FORMAT_BOLDITALICUNDERLINE,
                }
 markup2html   = { 
@@ -67,6 +80,8 @@ markup2html   = {
         '^^'  : ('<sup>','</sup>' ),
         ',,'  : ('<sub>','</sub>' ),
         "'/"  : ('<strong><em>','</em></strong>' ),
+        "'_"  : ('<strong><u>','</u></strong>' ),
+        "/_"  : ('<em><u>','</u></em>' ),
         "'/_" : ('<strong><em><u>','</u></em></strong>' ),
 }
 
@@ -111,11 +126,9 @@ def parse_text( text ) :
         if ch3 in ref3markups :
             contents.append( Content( ch3, markup2type[ch3] ))
             i += 3
-            print '..', ch3
         elif ch2 in ref2markups :
             contents.append( Content( ch2, markup2type[ch2] ))
             i += 2
-            print '..', ch2
         else :
             contents.append( Content( text[i], TEXT_SPECIALCHAR, text[i] ))
             i += 1
@@ -136,15 +149,15 @@ class Node( object ):
         """A sequence of all children that are Nodes"""
         pass
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         """Translate the node and all the children nodes to html markup and
         return the content"""
 
-    def dump( self ):
+    def dump( self, parser ):
         """Simply dump the contents of this node and its children node and
         return the same."""
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
         """ Pretty print the Node and all its attributes and children
         (recursively) to a buffer.
@@ -176,7 +189,7 @@ class Wikipage( Node ):
             self.pragmas    = args[0]
             self.paragraphs = args[1]
 
-    def children( self ) :
+    def children( self, parser ) :
         childnames = [ 'pragmas', 'paragraphs' ]
         nodes      = filter(
                         None,
@@ -184,13 +197,13 @@ class Wikipage( Node ):
                      )
         return tuple(nodes)
 
-    def tohtml( self ):
-        return ''.join([ c.tohtml() for c in self.children() ])
+    def tohtml( self, parser ):
+        return ''.join([ c.tohtml( parser ) for c in self.children( parser ) ])
 
-    def dump( self ) :
-        return ''.join([ c.dump() for c in self.children() ])
+    def dump( self, parser ) :
+        return ''.join([ c.dump( parser ) for c in self.children( parser ) ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'wikipage: ' )
@@ -199,8 +212,8 @@ class Wikipage( Node ):
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        for c in self.children():
-            c.show( buf, offset + 2, attrnames, showcoord )
+        for c in self.children( parser ):
+            c.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Paragraphs( Node ) :
@@ -217,7 +230,7 @@ class Paragraphs( Node ) :
             self.paragraph           = args[1]
             self.paragraph_separator = args[2]
 
-    def children( self ) :
+    def children( self, parser ) :
         childnames = [ 'paragraphs', 'paragraph', 'paragraph_separator' ]
         nodes      = filter(
                         None,
@@ -225,13 +238,13 @@ class Paragraphs( Node ) :
                      )
         return tuple(nodes)
 
-    def tohtml( self ):
-        return ''.join([ c.tohtml() for c in self.children() ])
+    def tohtml( self, parser ):
+        return ''.join([ c.tohtml( parser ) for c in self.children( parser ) ])
 
-    def dump( self ) :
-        return ''.join([ c.dump() for c in self.children() ])
+    def dump( self, parser ) :
+        return ''.join([ c.dump( parser ) for c in self.children( parser ) ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'paragraphs: ' )
@@ -240,8 +253,8 @@ class Paragraphs( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        for c in self.children():
-            c.show( buf, offset + 2, attrnames, showcoord )
+        for c in self.children( parser ):
+            c.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Paragraph( Node ) :
@@ -250,16 +263,16 @@ class Paragraph( Node ) :
     def __init__( self, paragraph ) :
         self.paragraph = paragraph
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.paragraph, )
 
-    def tohtml( self ):
-        return '<p>' + self.paragraph.tohtml() + '</p>'
+    def tohtml( self, parser ):
+        return '<p>' + self.paragraph.tohtml( parser ) + '</p>'
 
-    def dump( self ) :
-        return self.paragraph.dump()
+    def dump( self, parser ) :
+        return self.paragraph.dump( parser )
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write(lead + 'paragraph: ')
@@ -268,8 +281,8 @@ class Paragraph( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        for c in self.children() :
-            c.show( buf, offset + 2, attrnames, showcoord )
+        for c in self.children( parser ) :
+            c.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Pragmas( Node ) :
@@ -279,19 +292,19 @@ class Pragmas( Node ) :
         self.pragma  = pragma
         self.newline = Newline( newline )
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.pragma, self.newline )
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         return ''
 
-    def dump( self ) :
-        return self.pragma + self.newline.dump()
+    def dump( self, parser ) :
+        return self.pragma + self.newline.dump( parser )
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'pragmas: `%s` ' % self.children()[:-1] )
+        buf.write( lead + 'pragmas: `%s` ' % self.children( parser )[:-1] )
 
         if showcoord:
             buf.write( ' (at %s)' % self.coord )
@@ -306,19 +319,19 @@ class NoWiki( Node ) :
         self.nowikilines  = nowikilines
         self.closenewline = Newline( closenl )
 
-    def children( self ) :
+    def children( self, parser ) :
         return (self.nowikilines,)
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         return ''
 
-    def dump( self ) :
-        txt  = M_NOWIKI_OPEN + self.opennewline.dump()
+    def dump( self, parser ) :
+        txt  = M_NOWIKI_OPEN + self.opennewline.dump( parser )
         txt += self.nowikilines
-        txt += M_NOWIKI_CLOSE + self.closenewline.dump()
+        txt += M_NOWIKI_CLOSE + self.closenewline.dump( parser )
         return txt
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'nowikiblock: `%s` ' % self.nowikilines.split('\n')[0] )
@@ -335,28 +348,28 @@ class Heading( Node ) :
         self.fulltext = fulltext
         self.newline  = Newline( newline )
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.fulltext, self.newline )
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         l    = len(re.search( r'^={1,5}', self.fulltext ).group())
         html = '<h'+str(l)+'> ' + self.fulltext.strip('=') + \
                ' </h'+str(l)+'>' + \
-               self.newline.tohtml()
+               self.newline.tohtml( parser )
         return html
 
-    def dump( self ) :
-        return self.fulltext + self.newline.dump()
+    def dump( self, parser ) :
+        return self.fulltext + self.newline.dump( parser )
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'heading: `%s` ' % self.children()[:-1] )
+        buf.write( lead + 'heading: `%s` ' % self.children( parser )[:-1] )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
-        self.newline.show( buf, offset + 2, attrnames, showcoord )
+        self.newline.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class HorizontalRule( Node ) :
@@ -366,16 +379,16 @@ class HorizontalRule( Node ) :
         self.hrule   = hrule
         self.newline = Newline(newline)
 
-    def children( self ) :
+    def children( self, parser ) :
         return (self.hrule, self.newline)
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         return '<hr />'
 
-    def dump( self ) :
-        return self.hrule + self.newline.dump()
+    def dump( self, parser ) :
+        return self.hrule + self.newline.dump( parser )
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'horizontalrule:' )
@@ -384,7 +397,7 @@ class HorizontalRule( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        self.newline.show( buf, offset + 2, attrnames, showcoord )
+        self.newline.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class TextLines( Node ) :
@@ -396,10 +409,10 @@ class TextLines( Node ) :
     def appendline( self, textcontents, newline ) :
         self.textlines.append( (textcontents, Newline(newline)) )
 
-    def children( self ) :
+    def children( self, parser ) :
         return (self.textlines,)
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         # Process the text contents and convert them into html
         contents = []
         [ contents.extend( item.contents )
@@ -408,18 +421,18 @@ class TextLines( Node ) :
         process_textcontent( contents )
         html   = ''
         for textcontents, newline in self.textlines :
-            html += textcontents.tohtml()
-            html += newline.tohtml()
+            html += textcontents.tohtml( parser )
+            html += newline.tohtml( parser )
         return html
 
-    def dump( self ) :
-        txt = ''.join([ ''.join([ item.dump()
+    def dump( self, parser ) :
+        txt = ''.join([ ''.join([ item.dump( parser )
                                   for item in textcontents.textcontents ]) +\
-                        newline.dump()
+                        newline.dump( parser )
                         for textcontents, newline in self.textlines ])
         return txt
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'textlines: ' )
@@ -432,8 +445,8 @@ class TextLines( Node ) :
         for textcontent, newline in self.textlines :
             buf.write( lead + '(line %s)\n' % linecount )
             linecount += 1
-            textcontent.show( buf, offset + 2, attrnames, showcoord )
-            newline.show( buf, offset + 2, attrnames, showcoord )
+            textcontent.show( parser, buf, offset + 2, attrnames, showcoord )
+            newline.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class TableRows( Node ) :
@@ -446,25 +459,25 @@ class TableRows( Node ) :
     def appendrow( self, row, pipe=None, newline=None ) :
         self.rows.append( (row, pipe, Newline(newline)) )
 
-    def tohtml( self ) :
-        html    = '<table border=1>'
+    def tohtml( self, parser ) :
+        html    = '<table border=1 cellspacing=0 cellpadding=0 >'
         for row, pipe, newline in self.rows :
-            html += '<tr>' + row.tohtml() + \
-                    ( newline and newline.tohtml() ) or '' + \
+            html += '<tr>' + row.tohtml( parser ) + \
+                    ( newline and newline.tohtml( parser ) ) or '' + \
                     '</tr>'
         html   += '</table>'
         return html
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.rows
 
-    def dump( self ) :
+    def dump( self, parser ) :
         return ''.join(
-            [ row.dump() + (pipe or '') + (nl and nl.dump()) or ''
+            [ row.dump( parser ) + (pipe or '') + (nl and nl.dump( parser )) or ''
               for row, pipe, nl in self.rows ]
         )
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'table_rows: ' )
@@ -477,8 +490,8 @@ class TableRows( Node ) :
         for row, pipe, nl in self.rows :
             buf.write( lead + '(row %s)\n' % rowcount )
             rowcount += 1
-            row.show( buf, offset + 2, attrnames, showcoord )
-            nl and nl.show( buf, offset + 2, attrnames, showcoord )
+            row.show( parser, buf, offset + 2, attrnames, showcoord )
+            nl and nl.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class TableCells( Node ) :
@@ -491,7 +504,7 @@ class TableCells( Node ) :
     def appendcell( self, pipe, cell ) :
         self.cells.append( ( pipe, cell ) )
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.cells, )
 
     def totalcells( self ) :
@@ -499,23 +512,27 @@ class TableCells( Node ) :
                 for pipe, cell in self.cells if isinstance( cell, TextContents )
                ])
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         # Process the text contents and convert them into html
         contents = []
         [ contents.extend( item.contents )
           for pipe, cell in self.cells if isinstance( cell, TextContents )
                                        for item in cell.textcontents ]
         process_textcontent( contents )
+        begintag  = { M_PIPEHEAD : '<th>',  M_PIPE : '<td>' }
+        endtag    = { M_PIPEHEAD : '</th>', M_PIPE : '</td>' }
+        htmlcells = []
+        for pipe, cell in self.cells :
+            pipe = pipe.strip()
+            htmlcells.append( begintag[pipe] + cell.tohtml(parser) + endtag[pipe] )
+        return ''.join( htmlcells )
+
+    def dump( self, parser ) :
         return ''.join(
-            [ '<td>' + cell.tohtml() + '</td>' for pipe, cell in self.cells ]
+            [ pipe + cell.dump( parser ) for pipe, cell in self.cells ]
         )
 
-    def dump( self ) :
-        return ''.join(
-            [ pipe + cell.dump() for pipe, cell in self.cells ]
-        )
-
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'table_cells: ' )
@@ -529,7 +546,7 @@ class TableCells( Node ) :
             buf.write( lead + '(cell %s)\n' % cellcount )
             cellcount += 1
             for item in txts :
-                item.show( buf, offset + 2, attrnames, showcoord )
+                item.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Lists( Node ) :
@@ -541,10 +558,10 @@ class Lists( Node ) :
     def appendlist( self, l ) :
         self.listitems.append( l )
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.listitems
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         html         = ''
         closemarkups = []   # Stack to manage nested list.
         markups      = { '#' : ('<ol>', '</ol>'),
@@ -563,22 +580,22 @@ class Lists( Node ) :
                 for i in range(diffmark) :
                     html += markups[cm[0]][0]
                     closemarkups.append( markups[cm[0]][1] )
-            html += l.tohtml()
+            html += l.tohtml( parser )
             pm = cm
         html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
         return html
 
-    def dump( self ) :
-        return ''.join([ c.dump() for c in self.listitems ])
+    def dump( self, parser ) :
+        return ''.join([ c.dump( parser ) for c in self.listitems ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
         for c in self.listitems :
-            c.show( buf, offset + 2, attrnames, showcoord )
+            c.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class List( Node ) :
@@ -597,35 +614,36 @@ class List( Node ) :
             raise ZWASTError( "Unknown `listitem` for List() node" )
         self.newline      = Newline( newline )
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.listtype, self.listmarkup, self.textcontents,
                  self.newline )
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         # Process the text contents and convert them into html
         if self.textcontents :
             contents = []
             [ contents.extend( item.contents )
               for item in self.textcontents.textcontents ]
             process_textcontent( contents )
-            html = '<li>' + self.textcontents.tohtml() + '</li>'
+            html = '<li>' + self.textcontents.tohtml( parser ) + '</li>'
         elif self.empty :
-            html = '<li>' + self.empty.tohtml() + '</li>'
+            html = '<li>' + self.empty.tohtml( parser ) + '</li>'
         else :
             raise ZWASTError( "tohtml() : No listitem available for List() node" )
         return html
 
-    def dump( self ) :
+    def dump( self, parser ) :
         if self.textcontents :
-            dump = self.listmarkup + self.textcontents.dump()  + \
-                   self.newline.dump()
+            text = self.listmarkup + self.textcontents.dump( parser )  + \
+                   self.newline.dump( parser )
         elif self.empty :
-            dump = self.listmarkup + self.empty.dump()  + self.newline.dump()
+            text = self.listmarkup + self.empty.dump( parser )  +\
+                   self.newline.dump( parser )
         else :
             raise ZWASTError( "dump() : No listitem available for List() node" )
-        return dump
+        return text
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         if self.listtype == 'ordered' :
@@ -638,9 +656,9 @@ class List( Node ) :
         buf.write('\n')
 
         if self.textcontents :
-            self.textcontents.show()
+            self.textcontents.show( parser )
         elif self.empty :
-            self.empty.show()
+            self.empty.show( parser )
         else :
             raise ZWASTError( "show() : No listitem available for List() node" )
 
@@ -655,16 +673,16 @@ class TextContents( Node ) :
         # item is Link or Macro or BasicText
         self.textcontents.append( item )
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.textcontents
 
-    def tohtml( self ) :
-        return ''.join([ item.tohtml() for item in self.textcontents ])
+    def tohtml( self, parser ) :
+        return ''.join([ item.tohtml( parser ) for item in self.textcontents ])
 
-    def dump( self ) :
-        return ''.join([ item.dump() for item in self.textcontents ])
+    def dump( self, parser ) :
+        return ''.join([ item.dump( parser ) for item in self.textcontents ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'textcontent: ' )
@@ -672,7 +690,7 @@ class TextContents( Node ) :
             buf.write( ' (at %s)' % self.coord )
 
         for textcontent in self.textcontents :
-            textcontent.show( buf, offset + 2, attrnames, showcoord )
+            textcontent.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Link( Node ) :
@@ -687,16 +705,16 @@ class Link( Node ) :
         html = '<a href=' + href + '>' + text + '</a>'
         self.contents = [ Content( link, TEXT_LINK, html ) ]
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.contents
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         return ''.join([ c.html for c in self.contents ])
 
-    def dump( self ) :
+    def dump( self, parser ) :
         return ''.join([ c.text for c in self.contents ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'link: ' )
@@ -714,16 +732,16 @@ class Macro( Node ) :
         html = macro
         self.contents = [ Content( macro, TEXT_MACRO, html ) ]
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.contents
 
-    def tohtml( self ) :
+    def tohtml( self, parser ) :
         return ''.join([ c.html for c in self.contents ])
 
-    def dump( self ) :
+    def dump( self, parser ) :
         return ''.join([ c.html for c in self.contents ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write( lead + 'macro: `%s`' % self.macro )
@@ -761,19 +779,19 @@ class BasicText( Node ) :
         else : # TEXT_ZWCHARPIPE, TEXT_ALPHANUM, TEXT_ESCAPED
             self.contents = [ Content( text, type, text ) ]
 
-    def children( self ) :
+    def children( self, parser ) :
         return self.contents
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         return ''.join([ c.html for c in self.contents ])
 
-    def dump( self ) :
+    def dump( self, parser ) :
         text = ''
         for c in self.contents :
             text += [ c.text, '~' + c.text ][ c.type == TEXT_ESCAPED ]
         return text
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write(lead + 'basictext :' )
@@ -799,7 +817,7 @@ class ParagraphSeparator( Node ) :
             self.paragraph_separator = args[0]
             self.newline             = Newline( args[1] )
 
-    def children( self ) :
+    def children( self, parser ) :
         childnames = [ 'newline', 'empty', 'paragraph_separator' ]
         nodes      = filter(
                         None,
@@ -807,13 +825,13 @@ class ParagraphSeparator( Node ) :
                      )
         return tuple(nodes)
 
-    def tohtml( self ) :
-        return ''.join([ c.tohtml() for c in self.children() ])
+    def tohtml( self, parser ) :
+        return ''.join([ c.tohtml( parser ) for c in self.children( parser ) ])
 
-    def dump( self ) :
-        return ''.join([ c.dump() for c in self.children() ])
+    def dump( self, parser ) :
+        return ''.join([ c.dump( parser ) for c in self.children( parser ) ])
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write(lead + 'paragraph_separator: ')
@@ -822,8 +840,8 @@ class ParagraphSeparator( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        for c in self.children() :
-            c.show( buf, offset + 2, attrnames, showcoord )
+        for c in self.children( parser ) :
+            c.show( parser, buf, offset + 2, attrnames, showcoord )
 
 
 class Empty( Node ) :
@@ -832,16 +850,16 @@ class Empty( Node ) :
     def __init__( self ) :
         pass
 
-    def children( self ) :
+    def children( self, parser ) :
         return ()
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         return ''
 
-    def dump( self ) :
+    def dump( self, parser ) :
         return ''
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write(lead + 'empty: ')
@@ -854,16 +872,16 @@ class Newline( Node ) :
     def __init__( self, newline ) :
         self.newline = newline
 
-    def children( self ) :
+    def children( self, parser ) :
         return ( self.newline, )
 
-    def tohtml( self ):
+    def tohtml( self, parser ):
         return self.newline
 
-    def dump( self ) :
+    def dump( self, parser ) :
         return self.newline
 
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+    def show( self, parser, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
         buf.write(lead + 'newline: ')

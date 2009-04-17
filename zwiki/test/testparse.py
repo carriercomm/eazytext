@@ -1,17 +1,17 @@
 import unittest
 import os
-import difflib                   as diff
-from   random                    import choice, randint, shuffle
+import difflib              as diff
+from   random               import choice, randint, shuffle
 
-from   nose.tools                import assert_equal
+from   nose.tools           import assert_equal
 
-from   zwiki.zwlexer             import ZWLexer
-from   zwiki.zwparser            import ZWParser
-from   zwiki.test.testlib        import ZWMARKUP, ZWMARKUP_RE, \
-                                        gen_psep, gen_ordmark, gen_unordmark, \
-                                        gen_headtext, gen_texts, gen_row, \
-                                        gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                        gen_macrowords, gen_macros
+from   zwiki.zwlexer        import ZWLexer
+from   zwiki.zwparser       import ZWParser
+from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
+                                   gen_psep, gen_ordmark, gen_unordmark, \
+                                   gen_headtext, gen_texts, gen_row, \
+                                   gen_wordlist, gen_words, gen_linkwords, gen_links,\
+                                   gen_macrowords, gen_macros
 
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
@@ -20,6 +20,7 @@ zwparser        = None
 words           = None
 links           = None
 macros          = None
+
 
 def setUpModule() :
     global zwparser, words, links, macros
@@ -46,10 +47,10 @@ class TestDumpsValid( object ) :
         testcontent = zwparser.preprocess( testcontent )
         try :
             tu      = zwparser.parse( testcontent, debuglevel=0 )
-            result  = tu.dump()[:-1]
+            result  = tu.dump( zwparser )[:-1]
         except :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
-            result = tu.dump()[:-1]
+            result = tu.dump( zwparser )[:-1]
         if result != testcontent :
             print ''.join(diff.ndiff( result.splitlines(1), testcontent.splitlines(1) ))
         assert result == testcontent, type+'... testcount %s'%count
@@ -197,6 +198,15 @@ class TestDumpsValid( object ) :
                                   )
                                   for j in range(randint(0,10)) ]) +
                       gen_psep(randint(0,3)) for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'unordlists', t, testcount
+            testcount += 1
+
+    def test_C_unicode( self ) :
+        """Testing unicoded test"""
+        print "\nTesting unicoded text"
+        testlist = [ '' ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'unordlists', t, testcount

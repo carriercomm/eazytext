@@ -1,14 +1,23 @@
 #! /usr/bin/env python
 
+"""Module containing the Lexer for ZWiki"""
+
+# -*- coding: utf-8 -*-
+
+# Gotcha :
+#   1. Enabling optimize screws up the order of regex match (while lexing)
+#      Bug in PLY ???
+# Notes  : None
+# Todo   :
+#   1. Due to ordering issues the following functions are created from
+#      simple regex variables.
+
+
 import re
 import sys
 
 import ply.lex
 from   ply.lex import TOKEN
-
-# Gotcha :
-#   1. Enabling optimize screws up the order of regex match (while lexing)
-#      Bug in PLY ???
 
 class ZWLexer( object ):
     """A lexer for the ZWiki markup.
@@ -52,7 +61,10 @@ class ZWLexer( object ):
             
         This method exists separately, because the PLY manual warns against
         calling lex.lex inside __init__"""
-        self.lexer = ply.lex.lex( module=self, reflags=re.MULTILINE, **kwargs )
+        self.lexer = ply.lex.lex( module=self,
+                                  reflags=re.MULTILINE | re.UNICODE,
+                                  **kwargs
+                                )
 
     def reset_lineno( self ):
         """ Resets the internal line number counter of the lexer."""
@@ -141,12 +153,12 @@ class ZWLexer( object ):
         return t
 
     def t_TABLE_CELLSTART( self, t ):
-        r'^[ \t]*\|'
+        r'^[ \t]*\|=?'
         t.lexer.push_state('table')
         return t
 
     def t_table_TABLE_CELLSTART( self, t ):
-        r'[ \t]*\|'
+        r'[ \t]*\|=?'
         return t
 
     def t_table_NEWLINE( self, t ):
@@ -219,35 +231,13 @@ class ZWLexer( object ):
 
     # Tokens
 
-    # TODO : Due to ordering issues the following functions are created from
-    # simple regex variables.
-    def t_PIPE( self, t ) :
-        r'\|'
-        return t
-
-    def t_ALPHANUM( self, t ) :
-        r'[a-zA-Z0-9]+'
-        return t
-
-    def t_SQR_OPEN( self, t ) :
-        r'\['
-        return t
-
-    def t_SQR_CLOSE( self, t ) :
-        r'\]'
-        return t
-
-    def t_PARAN_OPEN( self, t ) :
-        r'\{'
-        return t
-
-    def t_PARAN_CLOSE (self, t ) :
-        r'\}'
-        return t
-
-    def t_SPECIALCHAR( self, t ) :
-        r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
-        return t
+    t_PIPE              = r'\|'
+    t_ALPHANUM          = r'[a-zA-Z0-9]+'
+    t_SQR_OPEN          = r'\['
+    t_SQR_CLOSE         = r'\]'
+    t_PARAN_OPEN        = r'\{'
+    t_PARAN_CLOSE       = r'\}'
+    t_SPECIALCHAR       = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
     
     t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
     t_table_SQR_OPEN     = r'\['
@@ -284,5 +274,3 @@ if __name__ == "__main__":
         tok = zwlex.token()
         if not tok: break
         print "-", tok.value, tok.type, tok.lineno, zwlex.filename, tok.lexpos
-        
-

@@ -1,15 +1,23 @@
+"""Module containing the parser for ZWiki"""
+
+# -*- coding: utf-8 -*-
+
+# Gotcha : None
+# Notes  : None
+# Todo   :
+#   1. There are several if-elif statements which needs to have a default else
+#      block (atleast to raise exception).
+
+
 import re
 import sys
 from   types    import StringType
 
 import ply.yacc
 
-from   zwlexer  import ZWLexer
-from   zwast    import *
+from   zwiki.zwlexer  import ZWLexer
+from   zwiki.zwast    import *
 
-# TODO :
-#   1. There are several if-elif statements which needs to have a default else
-#      block (atleast to raise exception).
 
 class Coord( object ):
     """ Coordinates of a syntactic element. Consists of:
@@ -32,6 +40,12 @@ class Coord( object ):
 class ParseError( Exception ):
     pass
 
+
+#class ZWEnviron( ComponentManager ) :
+#    """ZWiki environment ( component ) manager"""
+#    def __init__( self ) :
+#        ComponentManager.__init__( self )
+#
 
 class ZWParser( object ):
     def __init__(   self, 
@@ -79,14 +93,17 @@ class ZWParser( object ):
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex.build(
-            optimize=lex_optimize, lextab=lextab, debug=lex_debug )
+        self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug)
         self.tokens   = self.zwlex.tokens
         self.zwparser = ply.yacc.yacc( module=self, 
                                        debug=yacc_debug,
                                        optimize=yacc_optimize,
                                        tabmodule=yacctab
                         )
+        self.onmacro_L = []
+        self.onmacro_R = []
+        self.onzwext_L = []
+        self.onzwext_R = []
     
     def preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove the fix unwanted
@@ -115,6 +132,23 @@ class ZWParser( object ):
         # Pre-process the text.
         text = self.preprocess( text )
         return self.zwparser.parse( text, lexer=self.zwlex, debug=debuglevel )
+
+    # ---------------------- Interfacing with Macro Core ----------------------
+
+    def register_onmacro_L( self, obj ) :
+        pass
+
+    def register_onmacro_R( self, obj ) :
+        pass
+
+    # ---------------------- Interfacing with extension Core ------------------
+
+    def register_onzwext_L( self, obj ) :
+        pass
+
+    def register_onzwext_R( self, obj ) :
+        pass
+
     
     # ------------------------- Private functions -----------------------------
 

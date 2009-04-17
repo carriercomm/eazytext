@@ -25,6 +25,8 @@ superscripting, x^^2^^
 subscripting, log,,2,,7
 '/_ bold italic underline '/_
 
+Also possible to, have '_ underlined bold '_ and /_italic underline/_
+
 Character formatting extends across line breaks: ''bold,
 this is still bold''.
 
