@@ -1,5 +1,14 @@
 #! /usr/bin/env python
 
+"""Module to execute the zwiki from command line"""
+
+# -*- coding: utf-8 -*-
+
+# Gotcha : None
+# Notes  : None
+# Todo   : None
+
+
 import unittest
 import os
 import difflib        as diff
@@ -37,13 +46,13 @@ def main() :
                 continue
             wikitext = open( f ).read()
             tu       = zwparser.parse( wikitext, debuglevel=0 )
-            html     = tu.tohtml( zwparser )
+            html     = tu.tohtml()
             open( os.path.splitext( f )[0] + '.html', 'w' ).write( html )
     else :
         file     = args[0]
         wikitext = open( file ).read()
         tu       = zwparser.parse( wikitext, debuglevel=0 )
-        html     = tu.tohtml( zwparser )
+        html     = tu.tohtml()
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
 
 if __name__ == '__main__' :

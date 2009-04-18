@@ -11,7 +11,7 @@ from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
                                    gen_psep, gen_ordmark, gen_unordmark, \
                                    gen_headtext, gen_texts, gen_row, \
                                    gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                   gen_macrowords, gen_macros
+                                   gen_macrowords, gen_macros, gen_xwikinames
 
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
@@ -20,10 +20,11 @@ zwparser        = None
 words           = None
 links           = None
 macros          = None
+xwikinames      = None
 
 
 def setUpModule() :
-    global zwparser, words, links, macros
+    global zwparser, words, links, macros, xwikinames
     print "Initialising the parser ..."
     zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
                            yacc_optimize=False )
@@ -36,6 +37,8 @@ def setUpModule() :
     print "Initialising macros ..."
     macrowords   = gen_macrowords( maxlen=50, count=200 )
     macros       = gen_macros( macrowords, 100 )
+    print "Initialising wiki extension names ..."
+    xwikinames   = gen_xwikinames( 100 )
     
 def tearDownModule() :
     pass
@@ -47,10 +50,10 @@ class TestDumpsValid( object ) :
         testcontent = zwparser.preprocess( testcontent )
         try :
             tu      = zwparser.parse( testcontent, debuglevel=0 )
-            result  = tu.dump( zwparser )[:-1]
+            result  = tu.dump()[:-1]
         except :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
-            result = tu.dump( zwparser )[:-1]
+            result = tu.dump()[:-1]
         if result != testcontent :
             print ''.join(diff.ndiff( result.splitlines(1), testcontent.splitlines(1) ))
         assert result == testcontent, type+'... testcount %s'%count
@@ -99,7 +102,8 @@ class TestDumpsValid( object ) :
         """Testing wiki extension markup""" 
         print "\nTesting wiki extension markup"
         wikix_cont = '\n'.join([ choice(words) for i in range(randint(1,20)) ])
-        testlist   = [ '{{{\n' + wikix_cont + '\n}}}\n' + gen_psep(randint(0,3))
+        testlist   = [ '{{{' + choice(xwikinames) + '\n' + wikix_cont + \
+                       '\n}}}\n' + gen_psep(randint(0,3))
                        for i in range(1000) ]
         testcount  = 1
         for t in testlist :

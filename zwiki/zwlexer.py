@@ -61,10 +61,7 @@ class ZWLexer( object ):
             
         This method exists separately, because the PLY manual warns against
         calling lex.lex inside __init__"""
-        self.lexer = ply.lex.lex( module=self,
-                                  reflags=re.MULTILINE | re.UNICODE,
-                                  **kwargs
-                                )
+        self.lexer = ply.lex.lex( module=self, reflags=re.MULTILINE, **kwargs )
 
     def reset_lineno( self ):
         """ Resets the internal line number counter of the lexer."""
@@ -127,12 +124,12 @@ class ZWLexer( object ):
         return t
 
     def t_NOWIKI_OPEN( self, t ) :
-        r'^{{{$'
+        r'^{{{[ \t]*[a-zA-Z0-9_\-\.]*[ \t]*$'
         t.lexer.push_state('nowiki')
         return t
 
     def t_nowiki_NOWIKI_OPEN( self, t ):
-        r'^{{{$'
+        r'^{{{[ \t]*[a-zA-Z0-9_\-\.]*[ \t]*$'
         return t
 
     def t_nowiki_NOWIKI_CLOSE( self, t ):

@@ -4,6 +4,7 @@ import re
 
 # literals - common
 ALPHANUM     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+XWIKINAME_CH = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.'
 SPECIALCHAR  = ' ~`!@%&:;"<>_,^\'.?+\\()$-\t'
 ZWCHARS      = '*#=-|'
 PIPECHAR     = '|'
@@ -69,6 +70,11 @@ _gen_macro    = lambda macrowords : '{{' + choice( macrowords ) + '}}' + ' '
 # generate - list of macros
 gen_macros    = lambda macrowords, count :\
                         [ _gen_macro( macrowords ) for i in range( count ) ]
+
+# generate - list of wikinames
+_gen_xwikiname = lambda maxlen : ''.join([ choice(XWIKINAME_CH)
+                                           for i in range(randint(0,maxlen)) ])
+gen_xwikinames = lambda count  : [ _gen_xwikiname( 25 ) for i in range(count) ]
 
 # generate - wiki word
 def _gen_word( wordlist ) :

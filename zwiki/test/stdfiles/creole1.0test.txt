@@ -1,7 +1,22 @@
+{{ Toc( pos='left' ) }}
+
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
 
-== This a test for creole 0.1
+== Some text markup
+
+You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
+More formatting, __ underline __
+superscripting, x^^2^^
+subscripting, log,,2,,7
+'/_ bold italic underline '/_
+Also possible to, have '_ underlined bold '_ and /_italic underline/_
+Character formatting extends across line breaks: ''bold,
+this is still bold''.
+This line deliberately ''does not end in double
+single-quotes.
+Not bold. Character formatting does not cross paragraph boundaries.
+This line is single line \\ but uses line break markup to split the line.
 
 === This is a Subheading
 
@@ -17,25 +32,6 @@ The ending equal signs should not be displayed:
 ==== Subsub (4) ====
 ===== Subsubsub (5) =====
 
-
-You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
-
-More formatting, __ underline __
-superscripting, x^^2^^
-subscripting, log,,2,,7
-'/_ bold italic underline '/_
-
-Also possible to, have '_ underlined bold '_ and /_italic underline/_
-
-Character formatting extends across line breaks: ''bold,
-this is still bold''.
-
-This line deliberately ''does not end in double
-single-quotes.
-
-Not bold. Character formatting does not cross paragraph boundaries.
-
-This line is single line \\ but uses line break markup to split the line.
 
 You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
 give the link a [[internal links|different]] name.
@@ -55,6 +51,20 @@ something like foo://bar// should render as italic.
 You can use this to draw a line to separate the page:
 ----
 
+And even mix html code in between <div>This text was inside html tag `div`</div> in the same line
+
+== wiki extension ==
+
+You can use nowiki syntax if you would like do stuff like this:
+
+{{{ Box
+# { 'color' : 'blue',
+#   'style' : "width : 20em; position : relative; float : right;", }
+This is a sample box written using wiki extensions. Note that the width is
+adjustable and you can even position it.
+}}}
+
+== list ==
 You can use lists, start it at the first column for now, please...
 
 unnumbered lists are like
@@ -106,21 +116,28 @@ You cannot have
 * multiline list,
 items
 
-You can use nowiki syntax if you would like do stuff like this:
+== Macros ==
 
-{{{
-Guitar Chord C:
+This line demonstrates the {{Box( 'Box Macro', color='blue', style="padding : 10px 10px 10px 10px", border='thin solid gray' )}}
 
-||---|---|---|
-||-0-|---|---|
-||---|---|---|
-||---|-0-|---|
-||---|---|-0-|
-||---|---|---|
+
+{{{ Box
+# { 'color' : 'blue',
+#   'style' : "width : 10em; position : relative; float : right;", }
+This is a sample box written using wiki extensions.
+larger width ...
+}}}
+
+Regular content ...
+
+{{{ Box
+# { 'color' : 'blue',
+#    'style' : "width : 10em; position : relative; float : left;", }
+This is a sample box written using wiki extensions.
+larger width ... and positioned right
 }}}
 
 Zwiki does not support {{{ inline no-wiki }}} instead use
-{{ Macro-calls( with, args ) }}
 
 = Escapes =
 Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 
