@@ -35,6 +35,17 @@ class ZWExtension( object ) :
         """Will be called afater calling tohtml() method"""
         pass
 
+styles = {
+    'color'        : 'color : ',
+    'bg'           : 'background : ',
+    'bordercolor'  : 'border : thin solid ' ,
+    'border'       : 'border : ',
+    'padding'      : 'padding : ',
+    'margin'       : 'margin : ',
+    'width'        : 'width : ',
+    'pos'          : 'position : ',
+    'float'        : 'float : ',
+}
 
 from zwiki.zwext.box import Box
 
@@ -52,7 +63,7 @@ def build_zwext( zwextnode, nowiki ) :
     props = []
     nowikilines = nowiki.split('\n')
     for i in range(len(nowikilines)) :
-        if nowikilines[i][0] == '#' :
+        if len(nowikilines[i]) and nowikilines[i][0] == '#' :
             props.append( nowikilines[i][1:] )
             continue
         break;

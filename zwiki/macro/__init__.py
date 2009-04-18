@@ -2,9 +2,9 @@
 
 # -*- coding: utf-8 -*-
 
-# gotcha : none
-# notes  : none
-# todo   : none
+# Gotcha : none
+# Notes  : none
+# Todo   : none
 
 
 class ZWMacro( object ) :
@@ -33,6 +33,15 @@ class ZWMacro( object ) :
     def on_posthtml( self,  ) :
         """Will be called afater calling tohtml() method"""
         pass
+
+styles = {
+    'color'        : 'color : ',
+    'bg'           : 'background : ',
+    'bordercolor'  : 'border : thin solid ' ,
+    'border'       : 'border : ',
+    'margin'       : 'margin : ',
+    'padding'      : 'padding : ',
+}
 
 from zwiki.macro.box import Box
 from zwiki.macro.toc import Toc

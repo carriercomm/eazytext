@@ -58,8 +58,7 @@ And even mix html code in between <div>This text was inside html tag `div`</div>
 You can use nowiki syntax if you would like do stuff like this:
 
 {{{ Box
-# { 'color' : 'blue',
-#   'style' : "width : 20em; position : relative; float : right;", }
+# { 'color' : 'blue', 'width' : '100%' }
 This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 }}}
@@ -118,26 +117,63 @@ items
 
 == Macros ==
 
-This line demonstrates the {{Box( 'Box Macro', color='blue', style="padding : 10px 10px 10px 10px", border='thin solid gray' )}}
+This line demonstrates the {{Box( 'Box Macro', color='blue', bordercolor='red' )}}
 
 
-{{{ Box
-# { 'color' : 'blue',
-#   'style' : "width : 10em; position : relative; float : right;", }
-This is a sample box written using wiki extensions.
-larger width ...
-}}}
-
-Regular content ...
+== Box Wiki extensions ===
 
 {{{ Box
-# { 'color' : 'blue',
-#    'style' : "width : 10em; position : relative; float : left;", }
-This is a sample box written using wiki extensions.
-larger width ... and positioned right
+# { 'width' : '48%',
+#   'title' : 'Priestley Avenue side of the Joseph Priestley House in 2007',
+#   'style' : 'margin : 10px 2px 10px 5px;'
+# }
+
+The Joseph Priestley House was the American home of 18th-century British
+theologian, dissenting clergyman, natural philosopher, educator, and
+political theorist Joseph Priestley from 1798 until his death in 1804.
+Located in Northumberland, Pennsylvania, the house, which was designed by
+Priestley's wife Mary, is Georgian with Federalist accents. The
+Pennsylvania Historical and Museum Commission has operated it as a museum
+dedicated to Joseph Priestley since 1970, but may close it by July 2009
+due to low visitation and budget cuts. Fleeing religious persecution and
+political turmoil in Britain, the Priestleys emigrated to the United
+States in 1794 seeking a peaceful life. Hoping to avoid the political
+troubles that had plagued them in Britain and the problems of urban life
+they saw in the United States, the Priestleys built a house in rural
+Pennsylvania; nevertheless, political disputes and family troubles dogged
+Priestley during the last ten years of his life. In the 1960s, the house
+was carefully restored by the Pennsylvania Historical and Museum
+Commission and designated a National Historic Landmark. A second
+renovation was undertaken in the 1990s to return the home to the way it
+looked during Priestley's time. (more...)
+
+Recently featured: Retiarius – Niobium – Emma Watson
 }}}
 
-Zwiki does not support {{{ inline no-wiki }}} instead use
+{{{ Box
+# { 'width' : '48%',
+#   'title' : 'In the News',
+#   'style' : 'margin : 10px 5px 10px 2px;'
+# }
+
+Four people associated with the torrent tracking website The Pirate Bay,
+including co-founder Peter Sunde (pictured), are found guilty of promoting
+copyright infringements.
+The birth of Injaz, the world's first cloned camel, is announced in Dubai,
+United Arab Emirates.
+A fire at a homeless hostel in Kamień Pomorski, Poland, kills at least 21
+people and injures at least 20 others in the country's deadliest fire
+disaster since 1980.
+In golf, Ángel Cabrera of Argentina wins the 2009 Masters Tournament, after
+a sudden-death playoff.
+Thai Prime Minister Abhisit Vejjajiva declares a state of emergency in
+Bangkok and surrounding areas after anti-government protests forced the
+cancellation of the Fourth East Asia Summit.
+}}}
+
+<div style="clear : both">
+    Zwiki does not support {{{ inline no-wiki }}} instead use
+</div>
 
 = Escapes =
 Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 
