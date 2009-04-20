@@ -4,50 +4,54 @@
 # notes  : none
 # todo   : none
 
-import xml.etree.ElementTree as et
+import cElementTree as et
 
-from   zwiki.zwext           import ZWExtension, styles
+from   zwiki.zwext  import ZWExtension, css_props
 
-title_styles = {
-    'titlecolor'   : 'color : ',
-    'titlebg'      : 'background : ',
-    'titlemb'      : 'margin-bottom : ',
-    'titlefontw'   : 'font-weight : ',
-    'titlepadding' : 'padding : ',
+style_props = {}
+style_props.update( css_props )
+
+titlestyle_props = {
+        'titlecolor'   : 'color : ',
+        'titlebg'      : 'background : ',
+        'titlemb'      : 'margin-bottom : ',
+        'titlefontw'   : 'font-weight : ',
+        'titlepadding' : 'padding : ',
 }
 
 class Box( ZWExtension ) :
     """Implements Box() wikix"""
 
     def __init__( self, props, nowiki ) :
-        self.nowiki      = nowiki
-        self.color       = props.get( 'color', 'gray' )
-        self.bg          = props.get( 'bg', '' )
-        self.bordercolor = props.get( 'bordercolor', '#CEF2E0' )
-        self.border      = props.get( 'border', '' )
-        self.margin      = props.get( 'margin', '' )
-        self.padding     = props.get( 'padding', '' )
-        self.width       = props.get( 'width', '' )
-        self.pos         = props.get( 'pos', 'relative' )
-        self.float       = props.get( 'float', 'left' )
-        self.style       = props.get( 'style', '' )
+        self.nowiki     = nowiki
+        self.title      = props.pop( 'title', '' )
+        self.titlestyle = props.pop( 'titlestyle', '' )
 
-        self.titlecolor  = props.get( 'titlecolor', '' )
-        self.titlebg     = props.get( 'titlebg', '#CEF2E0' )
-        self.titlemb     = props.get( 'titlemb', '5px' )
-        self.titlefontw  = props.get( 'titlefontw', 'bold' )
-        self.titlepadding= props.get( 'titlepadding', '3px' )
-        self.title       = props.get( 'title', '' )
+        self.prop_values = {
+                'color'        : 'gray',
+                'bordercolor'  : '#CEF2E0',
+                'pos'          : 'relative',
+                'float'        : 'left',
+        }
+        self.prop_values.update( props )
+
+        self.titleprop_values = {
+                'titlecolor'   : '',
+                'titlebg'      : '#CEF2E0',
+                'titlemb'      : '5px',
+                'titlefontw'   : 'bold',
+                'titlepadding' : '3px',
+        }
+        self.titleprop_values.update( self.titlestyle )
 
     def tohtml( self ) :
-        box_style   = ';'.join([ styles[prop] + getattr( self, prop )
-                                 for prop in styles if getattr( self, prop ) ])
-        box_style   = box_style + '; ' + self.style
+        box_style   = ';'.join([ style_props[k] + self.prop_values[k]
+                                 for k in style_props if k in self.prop_values])
         box_div     = et.Element( 'div', { 'style' : box_style } )
+
+        title_style = ';'.join([ titlestyle_props[k] + self.titleprop_values[k]
+                                 for k in titlestyle_props ])
         if self.title :
-            title_style = ';'.join([ title_styles[prop] + getattr( self, prop )
-                                     for prop in title_styles
-                                     if getattr( self, prop ) ])
             title_div        = et.Element( 'div', { 'style' : title_style } )
             title_div.text   = self.title
             box_div.insert( 0, title_div )

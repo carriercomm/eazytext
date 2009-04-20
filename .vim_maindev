@@ -24,8 +24,8 @@ nmap g :cs find g =expand("<cword>")
 nmap s :cs find s =expand("<cword>")	
 map Q gq
 map Y y$
-nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
+nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 vmap \ev <Plug>Spchkev
 nmap \ec <Plug>LoadSpchk
 map \rwp <Plug>RestoreWinPosn
@@ -173,16 +173,17 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +8 zwiki/zwast.py
-badd +5 zwiki/zwlexer.py
-badd +1 zwiki/zwparser.py
+badd +399 zwiki/zwast.py
+badd +65 zwiki/zwlexer.py
+badd +104 zwiki/zwparser.py
 badd +2 zwiki/zwcore.py
-badd +3 zwiki/zwcmd.py
+badd +49 zwiki/zwcmd.py
 badd +51 zwiki/macro/__init__.py
-badd +1 zwiki/zwext/__init__.py
-badd +16 zwiki/macro/box.py
+badd +43 zwiki/zwext/__init__.py
 badd +50 zwiki/macro/toc.py
-badd +30 zwiki/zwext/box.py
+badd +43 zwiki/zwext/box.py
+badd +22 zwiki/macro/clear.py
+badd +30 zwiki/macro/span.py
 args zwiki/zwast.py
 edit zwiki/zwcmd.py
 set splitbelow splitright
@@ -287,7 +288,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 55 - ((37 * winheight(0) + 21) / 42)
+let s:l = 55 - ((10 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -396,12 +397,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 75 - ((31 * winheight(0) + 21) / 42)
+let s:l = 104 - ((20 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-75
-normal! 026l
+104
+normal! 029l
 tabedit zwiki/zwast.py
 set splitbelow splitright
 set nosplitbelow
@@ -505,13 +506,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 211 - ((14 * winheight(0) + 21) / 42)
+let s:l = 399 - ((20 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-211
-normal! 022l
-tabedit zwiki/macro/toc.py
+399
+normal! 047l
+tabedit zwiki/macro/clear.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -614,12 +615,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 66 - ((25 * winheight(0) + 21) / 42)
+let s:l = 22 - ((21 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-66
-normal! 065l
+22
+normal! 09l
 tabedit zwiki/zwext/__init__.py
 set splitbelow splitright
 set nosplitbelow
@@ -723,12 +724,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 66 - ((40 * winheight(0) + 21) / 42)
+let s:l = 52 - ((29 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-66
-normal! 029l
+52
+normal! 04l
 tabnext 4
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

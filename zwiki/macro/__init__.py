@@ -34,17 +34,27 @@ class ZWMacro( object ) :
         """Will be called afater calling tohtml() method"""
         pass
 
-styles = {
+css_props = {
     'color'        : 'color : ',
     'bg'           : 'background : ',
     'bordercolor'  : 'border : thin solid ' ,
     'border'       : 'border : ',
-    'margin'       : 'margin : ',
+    'borderTop'    : 'border-top : ',
+    'borderRight'  : 'border-right : ',
+    'borderBottom' : 'border-bottom : ',
+    'borderLeft'   : 'border-left : ',
     'padding'      : 'padding : ',
+    'margin'       : 'margin : ',
+    'width'        : 'width : ',
+    'pos'          : 'position : ',
+    'float'        : 'float : ',
+    'clear'        : 'clear :',
+    'style'        : '',
 }
 
-from zwiki.macro.box import Box
-from zwiki.macro.toc import Toc
+from zwiki.macro.span  import Span
+from zwiki.macro.toc   import Toc
+from zwiki.macro.clear import Clear
 
 
 def build_macro( macronode, macro ) :

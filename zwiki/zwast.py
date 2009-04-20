@@ -88,6 +88,12 @@ markup2html   = {
         "'/_" : ('<strong><em><u>','</u></em></strong>' ),
 }
 
+wikicss = """
+<style type="text/css">
+    .secanchor { visibility : hidden }
+</style>
+"""
+
 # ---------------------- Helper Class objects --------------
 
 class Content( object ) :
@@ -203,19 +209,21 @@ class Wikipage( Node ):
         return tuple(nodes)
 
     def tohtml( self ):
+        zwparser = self.parser.zwparser
         # Call the registered prehtml methods.
-        self.parser.zwparser.onprehtml_macro()
-        self.parser.zwparser.onprehtml_zwext()
+        zwparser.onprehtml_macro()
+        zwparser.onprehtml_zwext()
         
         # HTML translation
         html = ''.join([ c.tohtml() for c in self.children() ])
         # Since this is the Root node for all the other nodes, the converted
         # HTML string is stored in the parser object.
-        self.parser.zwparser.html = '<div>' + html + '</div>'
+        zwparser.html = '<div>' + html + '</div>'
 
         # Call the registered posthtml method.
-        self.parser.zwparser.onposthtml_macro()
-        self.parser.zwparser.onposthtml_zwext()
+        zwparser.onposthtml_macro()
+        zwparser.onposthtml_zwext()
+        zwparser.html = wikicss + zwparser.html
 
         return self.parser.zwparser.html
 
@@ -288,7 +296,14 @@ class Paragraph( Node ) :
         return ( self.paragraph, )
 
     def tohtml( self ):
-        return '<p>' + self.paragraph.tohtml() + '</p>'
+        html = self.paragraph.tohtml()
+        try :
+            et.fromstring( html )
+        except :
+            pass
+        else :
+            html = '<p>' + html + '</p>'
+        return html
 
     def dump( self ) :
         return self.paragraph.dump()
@@ -381,8 +396,8 @@ class Heading( Node ) :
         text = self.fulltext.strip( '= \t' )
         l    = len(re.search( r'^={1,5}', self.fulltext ).group())
         html = '<h'+str(l)+'> ' + text + \
-                        '<a class="secanchor" name="' + text + '" ></a>' + \
-               ' </h'+str(l)+'>' + \
+                    '<a class="secanchor" name="' + text + '">&#167;</a>' + \
+               '</h'+str(l)+'>' + \
                self.newline.tohtml()
         return html
 

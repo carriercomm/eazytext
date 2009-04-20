@@ -35,16 +35,22 @@ class ZWExtension( object ) :
         """Will be called afater calling tohtml() method"""
         pass
 
-styles = {
+css_props = {
     'color'        : 'color : ',
     'bg'           : 'background : ',
     'bordercolor'  : 'border : thin solid ' ,
     'border'       : 'border : ',
+    'borderTop'    : 'border-top : ',
+    'borderRight'  : 'border-right : ',
+    'borderBottom' : 'border-bottom : ',
+    'borderLeft'   : 'border-left : ',
     'padding'      : 'padding : ',
     'margin'       : 'margin : ',
     'width'        : 'width : ',
     'pos'          : 'position : ',
     'float'        : 'float : ',
+    'clear'        : 'clear :',
+    'style'        : '',
 }
 
 from zwiki.zwext.box import Box

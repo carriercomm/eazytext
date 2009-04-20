@@ -61,7 +61,10 @@ class ZWLexer( object ):
             
         This method exists separately, because the PLY manual warns against
         calling lex.lex inside __init__"""
-        self.lexer = ply.lex.lex( module=self, reflags=re.MULTILINE, **kwargs )
+        self.lexer = ply.lex.lex( module=self,
+                                  reflags=re.MULTILINE | re.UNICODE,
+                                  **kwargs
+                                )
 
     def reset_lineno( self ):
         """ Resets the internal line number counter of the lexer."""

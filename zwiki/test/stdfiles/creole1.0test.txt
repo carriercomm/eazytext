@@ -1,4 +1,4 @@
-{{ Toc( pos='left' ) }}
+{{ Toc( indent=2 ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
@@ -117,11 +117,10 @@ items
 
 == Macros ==
 
-This line demonstrates the {{Box( 'Box Macro', color='blue', bordercolor='red' )}}
+This line demonstrates the {{Span( 'Span Macro', color='green', bordercolor='red' )}}
 
 
 == Box Wiki extensions ===
-
 {{{ Box
 # { 'width' : '48%',
 #   'title' : 'Priestley Avenue side of the Joseph Priestley House in 2007',
@@ -171,9 +170,9 @@ Bangkok and surrounding areas after anti-government protests forced the
 cancellation of the Fourth East Asia Summit.
 }}}
 
-<div style="clear : both">
-    Zwiki does not support {{{ inline no-wiki }}} instead use
-</div>
+{{Clear()}}
+
+Zwiki does not support {{{ inline no-wiki }}} instead use
 
 = Escapes =
 Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 
