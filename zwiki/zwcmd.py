@@ -1,5 +1,14 @@
 #! /usr/bin/env python
 
+"""Module to execute the zwiki from command line"""
+
+# -*- coding: utf-8 -*-
+
+# Gotcha : None
+# Notes  : None
+# Todo   : None
+
+
 import unittest
 import os
 import difflib        as diff

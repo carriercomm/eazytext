@@ -1,17 +1,17 @@
 import unittest
 import os
-import difflib                   as diff
-from   random                    import choice, randint, shuffle
+import difflib              as diff
+from   random               import choice, randint, shuffle
 
-from   nose.tools                import assert_equal
+from   nose.tools           import assert_equal
 
-from   zwiki.zwlexer             import ZWLexer
-from   zwiki.zwparser            import ZWParser
-from   zwiki.test.testlib        import ZWMARKUP, ZWMARKUP_RE, \
-                                        gen_psep, gen_ordmark, gen_unordmark, \
-                                        gen_headtext, gen_texts, gen_row, \
-                                        gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                        gen_macrowords, gen_macros
+from   zwiki.zwlexer        import ZWLexer
+from   zwiki.zwparser       import ZWParser
+from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
+                                   gen_psep, gen_ordmark, gen_unordmark, \
+                                   gen_headtext, gen_texts, gen_row, \
+                                   gen_wordlist, gen_words, gen_linkwords, gen_links,\
+                                   gen_macrowords, gen_macros, gen_xwikinames
 
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
@@ -20,9 +20,11 @@ zwparser        = None
 words           = None
 links           = None
 macros          = None
+xwikinames      = None
+
 
 def setUpModule() :
-    global zwparser, words, links, macros
+    global zwparser, words, links, macros, xwikinames
     print "Initialising the parser ..."
     zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
                            yacc_optimize=False )
@@ -35,6 +37,8 @@ def setUpModule() :
     print "Initialising macros ..."
     macrowords   = gen_macrowords( maxlen=50, count=200 )
     macros       = gen_macros( macrowords, 100 )
+    print "Initialising wiki extension names ..."
+    xwikinames   = gen_xwikinames( 100 )
     
 def tearDownModule() :
     pass
@@ -98,7 +102,8 @@ class TestDumpsValid( object ) :
         """Testing wiki extension markup""" 
         print "\nTesting wiki extension markup"
         wikix_cont = '\n'.join([ choice(words) for i in range(randint(1,20)) ])
-        testlist   = [ '{{{\n' + wikix_cont + '\n}}}\n' + gen_psep(randint(0,3))
+        testlist   = [ '{{{' + choice(xwikinames) + '\n' + wikix_cont + \
+                       '\n}}}\n' + gen_psep(randint(0,3))
                        for i in range(1000) ]
         testcount  = 1
         for t in testlist :
@@ -197,6 +202,15 @@ class TestDumpsValid( object ) :
                                   )
                                   for j in range(randint(0,10)) ]) +
                       gen_psep(randint(0,3)) for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'unordlists', t, testcount
+            testcount += 1
+
+    def test_C_unicode( self ) :
+        """Testing unicoded test"""
+        print "\nTesting unicoded text"
+        testlist = [ '' ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'unordlists', t, testcount
