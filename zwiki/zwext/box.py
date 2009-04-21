@@ -59,4 +59,6 @@ class Box( ZWExtension ) :
             content_div      = et.Element( 'div', { 'style' : 'padding : 3px;' } )
             content_div.text = self.nowiki
             box_div.insert( 1, content_div )
-        return et.tostring( box_div )
+
+        html = ( (self.title or self.nowiki) and et.tostring( box_div ) ) or ''
+        return html

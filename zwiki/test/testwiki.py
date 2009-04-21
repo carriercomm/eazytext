@@ -45,17 +45,43 @@ def tearDownModule() :
 class TestWikiDumpsRandom( object ) :
     """Test cases to validate ZWiki random"""
 
-    def _test_execute( self, type, testcontent, count ) :
-        testcontent = zwparser.preprocess( testcontent )
+    def _test_execute( self, type, testcontent, count, ref=''  ) :
+        # The first character is forced to be a `A` to avoid having `@` as the
+        # first character
+        testcontent = 'A' + testcontent
+        # Prepare the reference.
+        ref        = ref or testcontent
+        ref        = zwparser.wiki_preprocess( ref )
+        ref        = zwparser._escape_htmlchars( ref )
+        props, ref = zwparser._wiki_properties( ref )
+
+        # Characterize the generated testcontent set the wikiproperties
+        texttype    = choice([ 'wiki,html', 'wiki' ])
+        wikiprops   = { 'texttype' : texttype }
+        if 'html' in texttype :
+            testcontent = zwparser._escape_htmlchars( testcontent )
+        testcontent = ( "@ %s " % wikiprops ) + '\n' + testcontent
+        
+        # Test by comparing the dumps
         try :
             tu      = zwparser.parse( testcontent, debuglevel=0 )
             result  = tu.dump()[:-1]
         except :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
-        if result != testcontent :
-            print ''.join(diff.ndiff( result.splitlines(1), testcontent.splitlines(1) ))
-        assert result == testcontent, type+'... testcount %s'%count
+        if result != ref :
+            print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
+        assert result == ref, type+'... testcount %s'%count
+
+    def test_0_file( self ) :
+        """If file `ref` is available pick it and test it"""
+        testlist  = []
+        ref       = os.path.isfile( 'ref' ) and open( 'ref' ).read()
+        ref and testlist.append( ref )
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'ref', t, testcount
+            testcount += 1
 
     def test_1_textformatting( self ) :
         """Testing by randomly injecting wiki text formatting markup"""

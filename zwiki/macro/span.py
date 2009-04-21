@@ -30,4 +30,5 @@ class Span( ZWMacro ) :
                                for k in style_props if k in self.prop_values ])
         span      = et.Element( 'span', { 'style' : style } )
         span.text = self.text
-        return et.tostring( span )
+        html      = ( self.text and et.tostring( span ) ) or ''
+        return html

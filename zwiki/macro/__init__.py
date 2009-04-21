@@ -66,6 +66,8 @@ def build_macro( macronode, macro ) :
         o = eval( macro[2:-2] )
     except :
         o = ZWMacro()
+    if not isinstance( o, ZWMacro ) :
+        o = ZWMacro()
     o.macronode = macronode
     macronode.parser.zwparser.regmacro( o )
     return o
