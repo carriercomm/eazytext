@@ -18,6 +18,12 @@ import ply.yacc
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwast    import *
 
+html_chars = [ '"', "'", '&', '<', '>' ]
+
+# Wiki page properties
+wikiprops = {
+    'texttype' : 'wiki',    # Can contain values, `wiki`, `html`, `js`
+}
 
 class Coord( object ):
     """ Coordinates of a syntactic element. Consists of:
@@ -40,12 +46,6 @@ class Coord( object ):
 class ParseError( Exception ):
     pass
 
-
-#class ZWEnviron( ComponentManager ) :
-#    """ZWiki environment ( component ) manager"""
-#    def __init__( self ) :
-#        ComponentManager.__init__( self )
-#
 
 class ZWParser( object ):
     def __init__(   self, 
@@ -110,10 +110,26 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
         self.parser.zwparser = self
-        self.macroobjects = []
-        self.zwextobjects = []
     
-    def preprocess( self, text ) :
+    def is_matchinghtml( self, text ) :
+        """Check whether html special characters are present in the document."""
+        return [ ch for ch in html_chars if ch in text ]
+
+    def _escape_htmlchars( self, text ) :
+        """If the text is not supposed to have html characters, escape them"""
+        text = re.sub( r'&', '&amp;', text )
+        text = re.sub( r'"', '&quot;', text )
+        text = re.sub( r'<', '&lt;', text )
+        text = re.sub( r'>', '&gt;', text )
+        return text
+
+    def escape_htmlchars( self, text ) :
+        # Replace html syntax with html entities
+        if 'html' not in self.wikiprops[ 'texttype' ] :
+            text = self._escape_htmlchars( text )
+        return text
+
+    def wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove the fix unwanted
         side effects in the parser.
         Return the preprossed text"""
@@ -122,6 +138,22 @@ class ZWParser( object ):
         if text and text[-1] == '~' : 
             text = text[:-1]
         return text
+
+    def _wiki_properties( self, text ) :
+        """Parse the wiki properties"""
+        props = []
+        textlines = text.split('\n')
+        for i in range(len( textlines )) :
+            if len( textlines[i] ) and textlines[i][0] == '@' :
+                props.append( textlines[i][1:] )
+                continue
+            break;
+        text = '\n'.join( textlines[i:] )
+        try :
+            props = eval( ''.join( props ) )
+        except :
+            props = {}
+        return props, text
 
     def parse( self, text, filename='', debuglevel=0 ):
         """Parses C code and returns an AST.
@@ -134,15 +166,31 @@ class ZWParser( object ):
         
         debuglevel:
             Debug level to yacc"""
+
+        # Initialize
         self.zwlex.filename = filename
         self.zwlex.reset_lineno()
-        self.text = text
+        self.text         = text
+        self.wikiprops    = {}
+        self.macroobjects = []
+        self.zwextobjects = []
+
+        # Parse Page properties
+        self.wikiprops.update( wikiprops )
+        props, text = self._wiki_properties( text )
+        self.wikiprops.update( props )
+
         # Pre-process the text.
         text        += '\n'
-        text         = self.preprocess( text )
-        self.pptext  = text
+        # if self.is_matchinghtml( text ) and \
+        #    'html' not in self.wikiprops[ 'texttype' ] :
+        #     print "Warning : The text seems to have html"
+        self.pptext = self.wiki_preprocess( text )
+        self.pptext = self.escape_htmlchars( self.pptext )
+
         # parse and get the Translation Unit
-        self.tu = self.parser.parse( text, lexer=self.zwlex, debug=debuglevel )
+        self.tu = self.parser.parse( self.pptext,
+                                     lexer=self.zwlex, debug=debuglevel )
         return self.tu
 
     # ---------------------- Interfacing with Core ----------------------

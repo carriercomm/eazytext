@@ -61,13 +61,18 @@ class Toc( ZWMacro ) :
         toc_style = ';'.join([ style_props[k] + self.prop_values[k]
                                  for k in style_props if k in self.prop_values])
         zwparser  = self.macronode.parser.zwparser
-        htmltree  = et.fromstring( zwparser.html )
-        toc_div   = htmltree.makeelement(
-                         'div', 
-                         { 'name' : 'TOC', 'style' : toc_style, }
-                    )
-        _maketoc( htmltree, toc_div )
-        wiki_div = htmltree.makeelement( 'div', { 'name' : 'wikipage', })
-        wiki_div.append( toc_div )
-        wiki_div.append( htmltree )
-        zwparser.html = et.tostring( wiki_div )
+        try :
+            htmltree  = et.fromstring( zwparser.html )
+            toc_div   = htmltree.makeelement(
+                             'div', 
+                             { 'name' : 'TOC', 'style' : toc_style, }
+                        )
+            _maketoc( htmltree, toc_div )
+            wiki_div = htmltree.makeelement( 'div', { 'name' : 'wikipage', })
+            wiki_div.append( toc_div )
+            wiki_div.append( htmltree )
+            html = et.tostring( wiki_div )
+        except :
+            html = 'Unable to generate the TOC, Wiki page not properly formed !'
+            html += zwparser.html
+        zwparser.html = html

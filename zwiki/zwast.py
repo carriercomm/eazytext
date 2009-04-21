@@ -11,6 +11,7 @@
 
 import sys
 import re
+import cElementTree as et
 
 from   zwiki.macro  import build_macro
 from   zwiki.zwext  import build_zwext
@@ -111,15 +112,17 @@ class Content( object ) :
 def process_textcontent( contents ) :
     for i in range(len(contents)) :
         beginmarkup_cont = contents[i]
-        if beginmarkup_cont.html or \
-           beginmarkup_cont.type == TEXT_SPECIALCHAR:
+        if beginmarkup_cont.html or beginmarkup_cont.type == TEXT_SPECIALCHAR :
             continue
         for j in range( i+1, len(contents) ) :
             endmarkup_cont = contents[j]
-            if endmarkup_cont.type == beginmarkup_cont.type :
-                # Found the markup pair.
+            if endmarkup_cont.type == beginmarkup_cont.type and j != i+1  :
+                # Found the markup pair, with some text in between
                 beginmarkup_cont.html = markup2html[ beginmarkup_cont.text ][0]
                 endmarkup_cont.html   = markup2html[ endmarkup_cont.text ][1]
+                # All the markups in between will be neutralised.
+                for k in range( i+1, j ) :
+                    contents[k].html = contents[k].text
                 break;
         else :
             beginmarkup_cont.html = beginmarkup_cont.text
@@ -159,7 +162,7 @@ class Node( object ):
         """A sequence of all children that are Nodes"""
         pass
 
-    def tohtml( self, parser ):
+    def tohtml( self ):
         """Translate the node and all the children nodes to html markup and
         return the content"""
 
@@ -214,7 +217,6 @@ class Wikipage( Node ):
         zwparser.onprehtml_macro()
         zwparser.onprehtml_zwext()
         
-        # HTML translation
         html = ''.join([ c.tohtml() for c in self.children() ])
         # Since this is the Root node for all the other nodes, the converted
         # HTML string is stored in the parser object.
@@ -223,9 +225,9 @@ class Wikipage( Node ):
         # Call the registered posthtml method.
         zwparser.onposthtml_macro()
         zwparser.onposthtml_zwext()
-        zwparser.html = wikicss + zwparser.html
+        zwparser.html = '<div>' + wikicss + zwparser.html + '</div>'
 
-        return self.parser.zwparser.html
+        return zwparser.html
 
     def dump( self ) :
         return ''.join([ c.dump() for c in self.children() ])
@@ -296,9 +298,10 @@ class Paragraph( Node ) :
         return ( self.paragraph, )
 
     def tohtml( self ):
-        html = self.paragraph.tohtml()
+        zwparser = self.parser.zwparser
+        html     = self.paragraph.tohtml()
         try :
-            et.fromstring( html )
+            et.fromstring( '<p>' + html + '</p>' )
         except :
             pass
         else :
@@ -394,6 +397,7 @@ class Heading( Node ) :
 
     def tohtml( self ):
         text = self.fulltext.strip( '= \t' )
+        # Replace html syntax with html entities
         l    = len(re.search( r'^={1,5}', self.fulltext ).group())
         html = '<h'+str(l)+'> ' + text + \
                     '<a class="secanchor" name="' + text + '">&#167;</a>' + \
@@ -427,7 +431,7 @@ class HorizontalRule( Node ) :
         return (self.hrule, self.newline)
 
     def tohtml( self ):
-        return '<hr />'
+        return '<hr></hr>'
 
     def dump( self ) :
         return self.hrule + self.newline.dump()
@@ -561,15 +565,14 @@ class TableCells( Node ) :
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
-        contents = []
-        [ contents.extend( item.contents )
-          for pipe, cell in self.cells if isinstance( cell, TextContents )
-                                       for item in cell.textcontents ]
-        process_textcontent( contents )
         begintag  = { M_PIPEHEAD : '<th>',  M_PIPE : '<td>' }
         endtag    = { M_PIPEHEAD : '</th>', M_PIPE : '</td>' }
         htmlcells = []
         for pipe, cell in self.cells :
+            contents = []
+            if isinstance( cell, TextContents ) :
+                [ contents.extend( item.contents ) for item in cell.textcontents ]
+            process_textcontent( contents )
             pipe = pipe.strip()
             htmlcells.append( begintag[pipe] + cell.tohtml() + endtag[pipe] )
         return ''.join( htmlcells )
@@ -817,7 +820,7 @@ class BasicText( Node ) :
                 self.contents.extend( parse_text( parser, linebreaks[0] ))
             for text in linebreaks[1:] :
                 self.contents.append(
-                    Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br/>' )
+                    Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br></br>' )
                 )
                 self.contents.extend( parse_text( parser, text ))
         elif type == TEXT_HTTPURI :

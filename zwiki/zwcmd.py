@@ -25,6 +25,11 @@ stdfiles     = os.path.join( testdir, 'stdfiles' )
 get_stdfiles = lambda : [ os.path.join( stdfiles, f )
                             for f in os.listdir( stdfiles ) ]
 
+DTD = """
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"""
+
 def _option_parse() :
     '''Parse the options and check whether the semantics are correct.'''
     parser  = OptionParser(usage="usage: %prog [options] cmd")
@@ -52,7 +57,7 @@ def main() :
         file     = args[0]
         wikitext = open( file ).read()
         tu       = zwparser.parse( wikitext, debuglevel=0 )
-        html     = tu.tohtml()
+        html     = DTD + '<html><body>' + tu.tohtml() + '</body></html>'
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
 
 if __name__ == '__main__' :

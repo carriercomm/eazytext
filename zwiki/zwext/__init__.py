@@ -75,9 +75,11 @@ def build_zwext( zwextnode, nowiki ) :
         break;
     nowiki = '\n'.join( nowikilines[i:] )
     try :
-        props  = eval( '\n'.join( props ) )
+        props  = eval( ''.join( props ) )
         o = globals()[zwextnode.xwikiname]( props, nowiki )
     except :
+        o = ZWExtension( {}, nowiki )
+    if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
     o.zwextnode = zwextnode
     zwextnode.parser.zwparser.regzwext( o )

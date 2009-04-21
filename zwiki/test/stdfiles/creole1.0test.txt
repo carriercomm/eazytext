@@ -1,4 +1,4 @@
-{{ Toc( indent=2 ) }}
+{{ Toc() }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
