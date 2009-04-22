@@ -1,4 +1,6 @@
-{{ Toc() }}
+@ { 'width' : '70%', 'float' : 'left', 'position' : 'relative' }
+
+{{ Toc( index='1', width='20%' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
@@ -17,6 +19,10 @@ This line deliberately ''does not end in double
 single-quotes.
 Not bold. Character formatting does not cross paragraph boundaries.
 This line is single line \\ but uses line break markup to split the line.
+
+Empty markups are '''' //// are ignored.
+
+And, complex markups like '' hello // world // \\ is treated like this ''
 
 === This is a Subheading
 
@@ -117,14 +123,14 @@ items
 
 == Macros ==
 
-This line demonstrates the {{Span( 'Span Macro', color='green', bordercolor='red' )}}
+This line demonstrates the {{Span( 'Span Macro', color='green', border='thin solid red' )}}
 
 
 == Box Wiki extensions ===
 {{{ Box
-# { 'width' : '48%',
-#   'title' : 'Priestley Avenue side of the Joseph Priestley House in 2007',
-#   'style' : 'margin : 10px 2px 10px 5px;'
+# { 'width'  : '48%',
+#   'margin' : '10px 2px 10px 5px;',
+#   'title'  : 'Priestley Avenue side of the Joseph Priestley House in 2007',
 # }
 
 The Joseph Priestley House was the American home of 18th-century British
@@ -134,25 +140,20 @@ Located in Northumberland, Pennsylvania, the house, which was designed by
 Priestley's wife Mary, is Georgian with Federalist accents. The
 Pennsylvania Historical and Museum Commission has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
-due to low visitation and budget cuts. Fleeing religious persecution and
-political turmoil in Britain, the Priestleys emigrated to the United
-States in 1794 seeking a peaceful life. Hoping to avoid the political
-troubles that had plagued them in Britain and the problems of urban life
-they saw in the United States, the Priestleys built a house in rural
-Pennsylvania; nevertheless, political disputes and family troubles dogged
-Priestley during the last ten years of his life. In the 1960s, the house
-was carefully restored by the Pennsylvania Historical and Museum
-Commission and designated a National Historic Landmark. A second
-renovation was undertaken in the 1990s to return the home to the way it
-looked during Priestley's time. (more...)
+due to low visitation and budget cuts. 
+* Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.
+* Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.
+*In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.
+* A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.
+(more...)
 
-Recently featured: Retiarius – Niobium – Emma Watson
+Recently featured: Retiarius - Niobium - Emma Watson
 }}}
 
 {{{ Box
-# { 'width' : '48%',
-#   'title' : 'In the News',
-#   'style' : 'margin : 10px 5px 10px 2px;'
+# { 'width'  : '48%',
+#   'margin' : '10px 5px 10px 2px;',
+#   'title'  : 'In the News',
 # }
 
 Four people associated with the torrent tracking website The Pirate Bay,
@@ -160,10 +161,10 @@ including co-founder Peter Sunde (pictured), are found guilty of promoting
 copyright infringements.
 The birth of Injaz, the world's first cloned camel, is announced in Dubai,
 United Arab Emirates.
-A fire at a homeless hostel in Kamień Pomorski, Poland, kills at least 21
+A fire at a homeless hostel in Kamien Pomorski, Poland, kills at least 21
 people and injures at least 20 others in the country's deadliest fire
 disaster since 1980.
-In golf, Ángel Cabrera of Argentina wins the 2009 Masters Tournament, after
+In golf, Angel Cabrera of Argentina wins the 2009 Masters Tournament, after
 a sudden-death playoff.
 Thai Prime Minister Abhisit Vejjajiva declares a state of emergency in
 Bangkok and surrounding areas after anti-government protests forced the
