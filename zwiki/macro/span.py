@@ -9,25 +9,24 @@
 
 import cElementTree as et
 
-from   zwiki.macro  import ZWMacro, css_props
+from   zwiki.macro  import ZWMacro
 
-style_props = {}
-style_props.update( css_props )
+css = {
+    'color'     : 'gray',
+    'padding'   : '2px',
+}
 
 class Span( ZWMacro ) :
     """Implements Span() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        self.text = len(args) > 0 and args[0] or ''
-        self.prop_values = {
-            'color'     : 'gray',
-            'padding'   : '2px',
-        }
-        self.prop_values.update( kwargs )
+        self.text       = len(args) > 0 and args[0] or ''
+        self.css = {}
+        self.css.update( css )
+        self.css.update( kwargs )
 
     def tohtml( self ) :
-        style     = ';'.join([ style_props[k] + self.prop_values[k]
-                               for k in style_props if k in self.prop_values ])
+        style     = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         span      = et.Element( 'span', { 'style' : style } )
         span.text = self.text
         html      = ( self.text and et.tostring( span ) ) or ''

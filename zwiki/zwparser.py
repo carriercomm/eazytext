@@ -20,9 +20,18 @@ from   zwiki.zwast    import *
 
 html_chars = [ '"', "'", '&', '<', '>' ]
 
+def escape_htmlchars( text ) :
+    """If the text is not supposed to have html characters, escape them"""
+    text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( '&amp;', text )
+    text = re.compile( r'"', re.MULTILINE | re.UNICODE ).sub( '&quot;', text )
+    text = re.compile( r'<', re.MULTILINE | re.UNICODE ).sub( '&lt;', text )
+    text = re.compile( r'>', re.MULTILINE | re.UNICODE ).sub( '&gt;', text )
+    return text
+
+
 # Wiki page properties
-wikiprops = {
-    'texttype' : 'wiki',    # Can contain values, `wiki`, `html`, `js`
+wiki_css = {
+    'white-space' : 'normal'
 }
 
 class Coord( object ):
@@ -101,7 +110,8 @@ class ZWParser( object ):
         yacc_debug:
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
-        self.zwlex    = ZWLexer( error_func=self._lex_error_func )
+        # self.zwlex    = ZWLexer( error_func=self._lex_error_func )
+        self.zwlex    = ZWLexer()
         self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug)
         self.tokens   = self.zwlex.tokens
         self.parser   = ply.yacc.yacc( module=self, 
@@ -115,26 +125,13 @@ class ZWParser( object ):
         """Check whether html special characters are present in the document."""
         return [ ch for ch in html_chars if ch in text ]
 
-    def _escape_htmlchars( self, text ) :
-        """If the text is not supposed to have html characters, escape them"""
-        text = re.sub( r'&', '&amp;', text )
-        text = re.sub( r'"', '&quot;', text )
-        text = re.sub( r'<', '&lt;', text )
-        text = re.sub( r'>', '&gt;', text )
-        return text
-
-    def escape_htmlchars( self, text ) :
-        # Replace html syntax with html entities
-        if 'html' not in self.wikiprops[ 'texttype' ] :
-            text = self._escape_htmlchars( text )
-        return text
-
     def wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove the fix unwanted
         side effects in the parser.
         Return the preprossed text"""
         # Replace escaped new lines.
-        text = re.sub( r'~+\n', '\n', text )
+        text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub(
+                                                                '\n', text )
         if text and text[-1] == '~' : 
             text = text[:-1]
         return text
@@ -171,22 +168,21 @@ class ZWParser( object ):
         self.zwlex.filename = filename
         self.zwlex.reset_lineno()
         self.text         = text
-        self.wikiprops    = {}
-        self.macroobjects = []
-        self.zwextobjects = []
+        self.wiki_css     = {}
+        self.macroobjects = []  # ZWMacro objects detected while parsing
+        self.zwextobjects = []  # ZWExtension objects detected while parsing
+        self.predivs      = []  # <div> elements prepend before wikipage
+        self.postdivs     = []  # <div> elements append after wikipage
 
         # Parse Page properties
-        self.wikiprops.update( wikiprops )
+        self.wiki_css.update( wiki_css )
         props, text = self._wiki_properties( text )
-        self.wikiprops.update( props )
+        self.wiki_css.update( props )
 
         # Pre-process the text.
         text        += '\n'
-        # if self.is_matchinghtml( text ) and \
-        #    'html' not in self.wikiprops[ 'texttype' ] :
-        #     print "Warning : The text seems to have html"
         self.pptext = self.wiki_preprocess( text )
-        self.pptext = self.escape_htmlchars( self.pptext )
+        # self.pptext = escape_htmlchars( self.pptext )
 
         # parse and get the Translation Unit
         self.tu = self.parser.parse( self.pptext,

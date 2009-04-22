@@ -51,14 +51,10 @@ class TestDumpsValid( object ) :
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
-        ref        = zwparser._escape_htmlchars( ref )
         props, ref = zwparser._wiki_properties( ref )
 
         # Characterize the generated testcontent set the wikiproperties
-        texttype    = choice([ 'wiki,html', 'wiki' ])
-        wikiprops   = { 'texttype' : texttype }
-        if 'html' in texttype :
-            testcontent = zwparser._escape_htmlchars( testcontent )
+        wikiprops   = {}
         testcontent = ( "@ %s " % wikiprops ) + '\n' + testcontent
 
         # Test by comparing the dumps
@@ -73,9 +69,9 @@ class TestDumpsValid( object ) :
         assert result == ref, type+'... testcount %s'%count
 
         # Test by translating to html
-        tu   = zwparser.parse( testcontent, debuglevel=0 )
-        html = tu.tohtml()
-        et.fromstring( html ) 
+        #tu   = zwparser.parse( testcontent, debuglevel=0 )
+        #html = tu.tohtml()
+        #et.fromstring( html ) 
 
     def test_0_file( self ) :
         """If file `ref` is available pick it and test it"""
@@ -103,31 +99,6 @@ class TestDumpsValid( object ) :
         """Testing horizontal rule markup"""
         print "\nTesting horizontal rule markup"
         self._test_execute( 'horizontalrule', '----', 1 )
-
-    # TODO : Remove this test case
-    #def test_3_option( self ) :
-    #    """Testing pragmas - options"""
-    #    print "\nTesting pragmas - options"
-    #    options  = ''.join([ choice(words) + '=' + choice(words) + ' '
-    #                         for i in range(10) ])
-    #    testlist = [ '@options' + options + gen_psep(randint(0,3))
-    #                 for i in range(100) ]
-    #    testcount = 1
-    #    for t in testlist :
-    #        yield self._test_execute, 'pragma-options', t, testcount
-    #        testcount += 1
-
-    # TODO : Remove this test case
-    #def test_3_tag( self ) :
-    #    """Testing pragmas - tags"""
-    #    print "\nTesting pragmas - tags"
-    #    tags      = ''.join([ choice(words) +', ' for i in range(10) ])
-    #    testlist  = [ '@tags' + tags + gen_psep(randint(0,3))
-    #                  for i in range(100) ]
-    #    testcount = 1
-    #    for t in testlist :
-    #        yield self._test_execute, 'pragma-tags', t, testcount
-    #        testcount += 1
 
     def test_3_wikix( self ) :
         """Testing wiki extension markup""" 

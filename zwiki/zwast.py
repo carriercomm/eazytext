@@ -13,8 +13,9 @@ import sys
 import re
 import cElementTree as et
 
-from   zwiki.macro  import build_macro
-from   zwiki.zwext  import build_zwext
+from   zwiki.macro    import build_macro
+from   zwiki.zwext    import build_zwext
+import zwiki.zwparser
 
 # text type for BasicText
 TEXT_ZWCHARPIPE      = 'zwcharpipe'
@@ -89,7 +90,7 @@ markup2html   = {
         "'/_" : ('<strong><em><u>','</u></em></strong>' ),
 }
 
-wikicss = """
+wikistyle = """
 <style type="text/css">
     .secanchor { visibility : hidden }
 </style>
@@ -120,9 +121,9 @@ def process_textcontent( contents ) :
                 # Found the markup pair, with some text in between
                 beginmarkup_cont.html = markup2html[ beginmarkup_cont.text ][0]
                 endmarkup_cont.html   = markup2html[ endmarkup_cont.text ][1]
-                # All the markups in between will be neutralised.
-                for k in range( i+1, j ) :
-                    contents[k].html = contents[k].text
+                # All the markups in between should be self contained between
+                # i and j
+                process_textcontent( contents[i+1:j] )
                 break;
         else :
             beginmarkup_cont.html = beginmarkup_cont.text
@@ -220,12 +221,28 @@ class Wikipage( Node ):
         html = ''.join([ c.tohtml() for c in self.children() ])
         # Since this is the Root node for all the other nodes, the converted
         # HTML string is stored in the parser object.
-        zwparser.html = '<div>' + html + '</div>'
+        style = '; '.join([ k + ' : ' + zwparser.wiki_css[k]
+                            for k in zwparser.wiki_css ])
+        zwparser.html = '<div style="' + style + ';">' + html + '</div>'
 
         # Call the registered posthtml method.
         zwparser.onposthtml_macro()
         zwparser.onposthtml_zwext()
-        zwparser.html = '<div>' + wikicss + zwparser.html + '</div>'
+        # Collect, prepend and append `posthtml`s from macros and extensions
+        objs = [ o for o in zwparser.macroobjects + zwparser.zwextobjects
+                   if getattr( o, 'posthtml', None ) and
+                   getattr( o, 'postindex', None ) ]
+        peerhtml_neg = ''
+        peerhtml_pos = ''
+        for o in sorted( objs, key=lambda x : x.postindex ) :
+            if o.postindex < 0 :
+                peerhtml_neg += o.posthtml
+            elif o.postindex > 0 :
+                peerhtml_pos += o.posthtml
+
+        # Final html
+        zwparser.html = '<div id="wikipage">' + wikistyle + \
+                        peerhtml_neg + zwparser.html + peerhtml_pos + '</div>'
 
         return zwparser.html
 
@@ -298,14 +315,7 @@ class Paragraph( Node ) :
         return ( self.paragraph, )
 
     def tohtml( self ):
-        zwparser = self.parser.zwparser
-        html     = self.paragraph.tohtml()
-        try :
-            et.fromstring( '<p>' + html + '</p>' )
-        except :
-            pass
-        else :
-            html = '<p>' + html + '</p>'
+        html     = '<p>' + self.paragraph.tohtml() + '</p>'
         return html
 
     def dump( self ) :
@@ -388,17 +398,19 @@ class Heading( Node ) :
     """class to handle `heading` grammar."""
 
     def __init__( self, parser, fulltext, newline ) :
-        self.parser = parser
-        self.fulltext = fulltext
-        self.newline  = Newline( parser, newline )
+        self.parser     = parser
+        self.fulltext   = fulltext
+        self.fulltext_e = zwiki.zwparser.escape_htmlchars( fulltext )
+        self.newline    = Newline( parser, newline )
 
     def children( self ) :
         return ( self.fulltext, self.newline )
 
     def tohtml( self ):
-        text = self.fulltext.strip( '= \t' )
+        text = self.fulltext_e.strip( '= \t' )
         # Replace html syntax with html entities
-        l    = len(re.search( r'^={1,5}', self.fulltext ).group())
+        patt = re.compile( r'^={1,5}', re.MULTILINE | re.UNICODE )
+        l    = len(re.search( patt, self.fulltext ).group())
         html = '<h'+str(l)+'> ' + text + \
                     '<a class="secanchor" name="' + text + '">&#167;</a>' + \
                '</h'+str(l)+'>' + \
@@ -620,7 +632,8 @@ class Lists( Node ) :
         pm   = ''
         cm   = ''
         for l in self.listitems :
-            cm       = re.search( r'[\*\#]{1,5}$', l.listmarkup ).group()
+            patt     = re.compile( r'[\*\#]{1,5}$', re.MULTILINE | re.UNICODE )
+            cm       = re.search( patt, l.listmarkup ).group()
             cmpmark  = cmp( len(pm), len(cm) )  # -1 or 0 or 1
             diffmark = abs( len(cm) - len(pm))  # 0 or 1
             if cmpmark > 0 :
@@ -717,13 +730,11 @@ class List( Node ) :
 
 class TextContents( Node ) :
     """class to handle `textcontents` grammar."""
-    def __init__( self, parser, item  ) :
+    def __init__( self, parser, item  ) : # item is Link or Macro or BasicText
         self.parser = parser
-        # item is Link or Macro or BasicText
         self.textcontents = [ item ]
 
-    def appendcontent( self, item ) :
-        # item is Link or Macro or BasicText
+    def appendcontent( self, item ) :     # item is Link or Macro or BasicText
         self.textcontents.append( item )
 
     def children( self ) :
@@ -754,7 +765,10 @@ class Link( Node ) :
         # TODO: Later implement a fullfledged link processor
         self.parser = parser
         tup  = link[2:-2].split( '|', 1 )
-        text = (len(tup) == 2 and  tup[1]) or tup[0]
+        if len(tup) == 2 :
+            text = zwiki.zwparser.escape_htmlchars( tup[1] )
+        else :
+            text = tup[0]
         href = tup[0]
         html = '<a href="' + href + '">' + text + '</a>'
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
@@ -795,7 +809,7 @@ class Macro( Node ) :
         return self.macroobject.tohtml()
 
     def dump( self ) :
-        return ''.join([ c.html for c in self.contents ])
+        return ''.join([ c.text for c in self.contents ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -813,6 +827,12 @@ class BasicText( Node ) :
     def __init__( self, parser, type, text  ) :
         self.parser = parser
         # self.contents as list of Content object
+
+        # Notes : 
+        #   escape_htmlchars() had to be done on text that contain HTML
+        #   special characters and convert them into HTML `entities`. For now,
+        #   the TEXT_SPECIALCHAR type of BasicText is marked with this notes.
+        #   Later we can do escape_htmlchars() on the text.
         if type == TEXT_SPECIALCHAR :
             self.contents = []
             linebreaks    = text.split( '\\\\' )

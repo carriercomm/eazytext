@@ -9,22 +9,21 @@
 
 import cElementTree as et
 
-from   zwiki.macro  import ZWMacro, css_props
+from   zwiki.macro  import ZWMacro
 
-style_props = {}
-style_props.update( css_props )
+css = {
+    'clear' : 'both'
+}
 
 class Clear( ZWMacro ) :
     """Implements Clear() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        self.prop_values = {
-                'clear' : 'both'
-        }
-        self.prop_values.update( kwargs )
+        self.css = {}
+        self.css.update( css )
+        self.css.update( kwargs )
 
     def tohtml( self ) :
-        style = ';'.join([ style_props[k] + self.prop_values[k]
-                           for k in style_props if k in self.prop_values ])
+        style     = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         html  = '<div style="' + style + '"></div>'
         return html
