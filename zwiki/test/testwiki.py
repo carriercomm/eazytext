@@ -52,14 +52,10 @@ class TestWikiDumpsRandom( object ) :
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
-        ref        = zwparser._escape_htmlchars( ref )
         props, ref = zwparser._wiki_properties( ref )
 
         # Characterize the generated testcontent set the wikiproperties
-        texttype    = choice([ 'wiki,html', 'wiki' ])
-        wikiprops   = { 'texttype' : texttype }
-        if 'html' in texttype :
-            testcontent = zwparser._escape_htmlchars( testcontent )
+        wikiprops   = {}
         testcontent = ( "@ %s " % wikiprops ) + '\n' + testcontent
         
         # Test by comparing the dumps

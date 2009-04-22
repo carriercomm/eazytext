@@ -8,13 +8,18 @@
 
 import cElementTree as et
 
-from   zwiki.macro  import ZWMacro, css_props
+from   zwiki.macro  import ZWMacro
 
 alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
 
-style_props = {}
-style_props.update( css_props )
+css = {
+    'background' : '#f8f7bc',
+    'position'   : 'relative',
+    'float'      : 'left',
+    'margin'     : '10px',
+    'padding'    : '3px',
+}
 
 htags = {
     'h1' : 'margin-left : 2px; ',
@@ -40,39 +45,29 @@ class Toc( ZWMacro ) :
     """Implements Toc() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        ind = int(kwargs.pop( 'indent', '1' ))
+        ind        = int(kwargs.pop( 'indent', '1' ))
+        index      = int(kwargs.pop( 'index', '-1' ))
+        self.postindex = index == 0 and -1 or index
         htags.update(
             [ ( h, htags[h] + str(ind * n) + 'em;' )
               for h, n in [ ('h2', 1), ('h3', 2), ('h4', 3), ('h5', 4) ]]
         )
-        self.prop_values = {
-                'bg'           : '#f8f7bc',
-                'pos'          : 'relative',
-                'float'        : 'left',
-                'margin'       : '10px',
-                'padding'      : '3px',
-        }
-        self.prop_values.update( kwargs )
+        self.css = {}
+        self.css.update( css )
+        self.css.update( kwargs )
 
     def tohtml( self ) :
         return ''
 
     def on_posthtml( self ) :
-        toc_style = ';'.join([ style_props[k] + self.prop_values[k]
-                                 for k in style_props if k in self.prop_values])
+        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         zwparser  = self.macronode.parser.zwparser
         try :
             htmltree  = et.fromstring( zwparser.html )
-            toc_div   = htmltree.makeelement(
-                             'div', 
-                             { 'name' : 'TOC', 'style' : toc_style, }
-                        )
+            toc_div   = et.Element( 'div', { 'name' : 'TOC', 'style' : style, })
             _maketoc( htmltree, toc_div )
-            wiki_div = htmltree.makeelement( 'div', { 'name' : 'wikipage', })
-            wiki_div.append( toc_div )
-            wiki_div.append( htmltree )
-            html = et.tostring( wiki_div )
+            self.posthtml = et.tostring( toc_div )
         except :
-            html = 'Unable to generate the TOC, Wiki page not properly formed !'
-            html += zwparser.html
-        zwparser.html = html
+            self.posthtml = 'Unable to generate the TOC, ' +\
+                            'Wiki page not properly formed ! <br></br>'
+        return
