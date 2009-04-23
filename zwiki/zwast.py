@@ -90,12 +90,6 @@ markup2html   = {
         "'/_" : ('<strong><em><u>','</u></em></strong>' ),
 }
 
-wikistyle = """
-<style type="text/css">
-    .secanchor { visibility : hidden }
-</style>
-"""
-
 # ---------------------- Helper Class objects --------------
 
 class Content( object ) :
@@ -132,20 +126,36 @@ def process_textcontent( contents ) :
 def parse_text( parser, text ) :
     """Parse the text for wiki text markup and valid text content and return a
     list of content object"""
-    contents = []
     i = 0
+    contents = []
+    spchars  = ''
     while i < len(text) :
         ch2 = text[i:i+2]
         ch3 = text[i:i+3]
         if ch3 in ref3markups :
+            if spchars :
+                spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+                contents.append( Content( parser, spchars,
+                                          TEXT_SPECIALCHAR, spchars_e ))
+                spchars = ''
             contents.append( Content( parser, ch3, markup2type[ch3] ))
             i += 3
         elif ch2 in ref2markups :
+            if spchars :
+                spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+                contents.append( Content( parser, spchars,
+                                          TEXT_SPECIALCHAR, spchars_e ))
+                spchars = ''
             contents.append( Content( parser, ch2, markup2type[ch2] ))
             i += 2
         else :
-            contents.append( Content( parser, text[i], TEXT_SPECIALCHAR, text[i] ))
+            spchars = spchars + text[i]
             i += 1
+
+    if spchars :
+        spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+        contents.append( Content( parser, spchars, TEXT_SPECIALCHAR, spchars_e))
+
     return contents
 
 # ---------------------- Exception classes ----------------
@@ -241,7 +251,7 @@ class Wikipage( Node ):
                 peerhtml_pos += o.posthtml
 
         # Final html
-        zwparser.html = '<div id="wikipage">' + wikistyle + \
+        zwparser.html = '<div class="wikiblk">' + \
                         peerhtml_neg + zwparser.html + peerhtml_pos + '</div>'
 
         return zwparser.html
@@ -315,7 +325,13 @@ class Paragraph( Node ) :
         return ( self.paragraph, )
 
     def tohtml( self ):
-        html     = '<p>' + self.paragraph.tohtml() + '</p>'
+        html = self.paragraph.tohtml()
+        try : 
+            et.fromstring( '<div>' + html + '</div>' )
+        except :
+            pass
+        else :
+            html = '<p>' + self.paragraph.tohtml() + '</p>'
         return html
 
     def dump( self ) :
@@ -412,7 +428,7 @@ class Heading( Node ) :
         patt = re.compile( r'^={1,5}', re.MULTILINE | re.UNICODE )
         l    = len(re.search( patt, self.fulltext ).group())
         html = '<h'+str(l)+'> ' + text + \
-                    '<a class="secanchor" name="' + text + '">&#167;</a>' + \
+                '<a style="visibility : hidden;" name="' + text + '">&#167;</a>' + \
                '</h'+str(l)+'>' + \
                self.newline.tohtml()
         return html
@@ -522,7 +538,7 @@ class TableRows( Node ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
 
     def tohtml( self ) :
-        html    = '<table border="1" cellspacing="0" cellpadding="0" >'
+        html    = '<table border="1" cellspacing="0" cellpadding="3px" >'
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \
@@ -832,13 +848,11 @@ class BasicText( Node ) :
             self.contents = []
             linebreaks    = text.split( '\\\\' )
             if len(linebreaks) >= 1 :
-                lb_e = zwiki.zwparser.escape_htmlchars( linebreaks[0] )
-                self.contents.extend( parse_text( parser, lb_e ))
+                self.contents.extend( parse_text( parser, linebreaks[0] ))
             for text in linebreaks[1:] :
                 self.contents.append(
                     Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br></br>' )
                 )
-                text = zwiki.zwparser.escape_htmlchars( text )
                 self.contents.extend( parse_text( parser, text ))
         elif type == TEXT_HTTPURI :
             self.contents = [ Content( parser, 

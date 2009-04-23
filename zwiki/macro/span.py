@@ -23,10 +23,12 @@ class Span( ZWMacro ) :
     """Implements Span() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        self.text       = len(args) > 0 and args[0] or ''
-        self.css = {}
+        style    = kwargs.pop( 'style', {} )
+        self.text = len(args) > 0 and args[0] or ''
+        self.css  = {}
         self.css.update( css )
         self.css.update( kwargs )
+        self.css.update( style )
 
     def tohtml( self ) :
         style     = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])

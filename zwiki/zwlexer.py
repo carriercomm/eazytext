@@ -176,7 +176,7 @@ class ZWLexer( object ):
         return t
 
     def t_table_MACRO( self, t ):
-        r'\{\{[^\{\}\r\n]+\}\}'
+        r'\{\{[^\r\n]+\}\}'
         return t
 
     def t_ORDLIST_START( self, t ):
@@ -192,7 +192,7 @@ class ZWLexer( object ):
         return t
 
     def t_MACRO( self, t ):
-        r'\{\{[^\{\}\r\n]+\}\}'
+        r'\{\{[^\r\n]+\}\}'
         return t
 
     def t_ESCAPED( self, t ):

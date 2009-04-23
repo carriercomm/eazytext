@@ -62,18 +62,16 @@ class Box( ZWExtension ) :
 
         title_style   = '; '.join([ k + ' : ' + self.title_css[k]
                                     for k in self.title_css ])
-        content_style = '; '.join([ k + ' : ' + self.cont_css[k]
-                                    for k in self.cont_css ])
         if self.title :
             title_div        = et.Element( 'div', { 'style' : title_style } )
             title_div.text   = self.title
             box_div.insert( 0, title_div )
         if self.nowiki :
-            zwparser        = ZWParser(lex_optimize=False, yacc_optimize=False)
+            zwparser        = ZWParser( lex_optimize=False,
+                                        yacc_optimize=False,
+                                        style=cont_css )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()
-            content_div     = et.Element( 'div', { 'style' : content_style } )
-            content_div.insert( 0, et.fromstring( self.nowiki_h ))
-            box_div.insert( 1, content_div )
+            box_div.insert( 1, et.fromstring( self.nowiki_h ))
         html = ( (self.title or self.nowiki) and et.tostring( box_div ) ) or ''
         return html

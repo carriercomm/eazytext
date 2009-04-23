@@ -59,12 +59,13 @@ class ParseError( Exception ):
 class ZWParser( object ):
     def __init__(   self, 
                     app=None,
+                    style=None,
                     lex_optimize=False,
                     lextab='zwiki.lextab',
                     lex_debug=False,
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
-                    yacc_debug=True
+                    yacc_debug=True,
                 ):
         """Create a new ZWParser.
         
@@ -83,6 +84,10 @@ class ZWParser( object ):
                         applications are,
                             'zeta'
             For more information refer to the ZWiki documentation.
+
+        style:
+            A dictionary containing CSS styling properties. When available,
+            it will be used instead of the default `wiki_css` property.
             
         lex_optimize:
             Set to False when you're modifying the lexer. Otherwise, changes
@@ -120,6 +125,12 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
         self.parser.zwparser = self
+        # Styling
+        self._wiki_css = {}
+        if isinstance( style, dict ) :
+            self._wiki_css.update( style )
+        else :
+            self._wiki_css.update( wiki_css )
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
@@ -174,8 +185,7 @@ class ZWParser( object ):
         self.predivs      = []  # <div> elements prepend before wikipage
         self.postdivs     = []  # <div> elements append after wikipage
 
-        # Parse Page properties
-        self.wiki_css.update( wiki_css )
+        self.wiki_css.update( self._wiki_css )
         props, text = self._wiki_properties( text )
         self.wiki_css.update( props )
 

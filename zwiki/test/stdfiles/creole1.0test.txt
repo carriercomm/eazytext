@@ -1,11 +1,14 @@
 @ { 'width' : '70%', 'float' : 'left', 'position' : 'relative' }
 
-{{ Toc( index='1', width='20%' ) }}
+
+
+{{ Toc( index='1', width='20%', background='yellow' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
 
-    Goto [[ #Subsub | other heading markups ]] for more ...
+    Goto [[ #Subsub | other heading markups ]] for more ... \\
+    Goto [[ #anchor in list | anchor created using anchor macro ]]
 
 == Some text markup
 
@@ -60,7 +63,7 @@ You can use nowiki syntax if you would like do stuff like this:
 
 {{{ Box
 # { 'color' : 'blue', 'width' : '100%', 'border-top' : 'thin solid green',
-# 'border-bottom' : 'thin solid green', 'background' : 'Aquamarine' }
+# 'border-bottom' : 'thin solid green', 'background' : 'Aquamarine', }
 This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 }}}
@@ -93,10 +96,11 @@ up to five levels
 **** level 4
 ***** level 5
 
-All possible list combination,
+=== All possible list combination
+
 * level 1 item 1 unordered
 * level 1 item 2 unordered
-** level 2 item 1 unordered
+** level 2 item 1 unordered {{ Anchor( 'anchor in list', 'Anchored here', style={ 'font-weight' : 'bold' } ) }}
 ** level 2 item 2 unordered
 * level 1 item 1 unordered
 * level 1 item 2 unordered
@@ -112,6 +116,47 @@ All possible list combination,
 ## level 2 item 2 ordered
 * level 1 item 1 unordered
 * level 1 item 2 unordered
+
+=== All possible list combinarions in a table
+
+{{ Html( '<table border="1" >' ) }}
+{{ Html( '<tr>' ) }}
+{{ Html( '<td>' ) }}
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+** level 2 item 1 unordered {{ Anchor( 'anchor in list', 'Anchored here', style={ 'font-weight' : 'bold' } ) }}
+** level 2 item 2 unordered
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+{{ Html( '</td>' ) }}
+{{ Html( '<td>' ) }}
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+{{ Html( '</td>' ) }}
+{{ Html( '</tr>' ) }}
+{{ Html( '<tr>' ) }}
+{{ Html( '<td>' ) }}
+*** level 3 item 1 unordered
+{{ Html( '</td>' ) }}
+{{ Html( '<td>' ) }}
+*** level 3 item 2 unordered
+{{ Html( '</td>' ) }}
+{{ Html( '</tr>' ) }}
+{{ Html( '<tr>' ) }}
+{{ Html( '<td>' ) }}
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+# level 1 item 1 ordered
+# level 1 item 1 ordered
+## level 2 item 1 ordered
+## level 2 item 2 ordered
+{{ Html( '</td>' ) }}
+{{ Html( '<td>' ) }}
+* level 1 item 1 unordered
+* level 1 item 2 unordered
+{{ Html( '</td>' ) }}
+{{ Html( '</tr>' ) }}
+{{ Html( '</table>' ) }}
 
 You cannot have
 * multiline list,
@@ -169,6 +214,13 @@ cancellation of the Fourth East Asia Summit.
 {{Clear()}}
 
 Zwiki does not support {{{ inline no-wiki }}} instead use
+
+== HTML wiki extension 
+
+{{{ Html
+# { 'border' : 'thin solid green' }
+<div> Hello world </div>
+}}}
 
 = Escapes =
 Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 

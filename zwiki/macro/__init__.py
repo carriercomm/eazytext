@@ -35,9 +35,11 @@ class ZWMacro( object ) :
         pass
 
 
-from zwiki.macro.span  import Span
-from zwiki.macro.toc   import Toc
-from zwiki.macro.clear import Clear
+from zwiki.macro.span    import Span
+from zwiki.macro.toc     import Toc
+from zwiki.macro.clear   import Clear
+from zwiki.macro.anchor  import Anchor
+from zwiki.macro.html    import Html  
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,

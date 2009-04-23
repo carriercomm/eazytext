@@ -36,7 +36,8 @@ class ZWExtension( object ) :
         pass
 
 
-from zwiki.zwext.box import Box
+from zwiki.zwext.box  import Box
+from zwiki.zwext.html import Html
 
 
 def build_zwext( zwextnode, nowiki ) :
