@@ -9,20 +9,29 @@ import cElementTree as et
 from   zwiki.zwext    import ZWExtension
 
 box_css = {
-    'color'    : 'gray',
-    'border'   : 'thin solid #CEF2E0',
-    'position' : 'relative',
-    'float'    : 'left',
+    'color'         : 'gray',
+    'border-top'    : 'thin solid #CEF2E0',
+    'border-right'  : 'thin solid #CEF2E0',
+    'border-bottom' : 'thin solid #CEF2E0',
+    'border-left'   : 'thin solid #CEF2E0',
+    'position'      : 'relative',
+    'float'         : 'left',
 }
 title_css = {
-    'color'         : '',
-    'background'    : '#CEF2E0',
-    'margin-bottom' : '5px',
-    'font-weight'   : 'bold',
-    'padding'       : '3px',
+    'color'          : '',
+    'background'     : '#CEF2E0',
+    'margin-bottom'  : '5px',
+    'font-weight'    : 'bold',
+    'padding-top'    : '3px',
+    'padding-right'  : '3px',
+    'padding-bottom' : '3px',
+    'padding-left'   : '3px'
 }
 cont_css = {
-    'padding'       : '3px',
+    'padding-top'    : '3px',
+    'padding-right'  : '3px',
+    'padding-bottom' : '3px',
+    'padding-left'   : '3px',
 }
 
 class Box( ZWExtension ) :

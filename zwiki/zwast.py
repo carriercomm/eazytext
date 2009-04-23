@@ -770,7 +770,7 @@ class Link( Node ) :
         else :
             text = tup[0]
         href = tup[0]
-        html = '<a href="' + href + '">' + text + '</a>'
+        html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
     def children( self ) :
@@ -828,20 +828,17 @@ class BasicText( Node ) :
         self.parser = parser
         # self.contents as list of Content object
 
-        # Notes : 
-        #   escape_htmlchars() had to be done on text that contain HTML
-        #   special characters and convert them into HTML `entities`. For now,
-        #   the TEXT_SPECIALCHAR type of BasicText is marked with this notes.
-        #   Later we can do escape_htmlchars() on the text.
         if type == TEXT_SPECIALCHAR :
             self.contents = []
             linebreaks    = text.split( '\\\\' )
             if len(linebreaks) >= 1 :
-                self.contents.extend( parse_text( parser, linebreaks[0] ))
+                lb_e = zwiki.zwparser.escape_htmlchars( linebreaks[0] )
+                self.contents.extend( parse_text( parser, lb_e ))
             for text in linebreaks[1:] :
                 self.contents.append(
                     Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br></br>' )
                 )
+                text = zwiki.zwparser.escape_htmlchars( text )
                 self.contents.extend( parse_text( parser, text ))
         elif type == TEXT_HTTPURI :
             self.contents = [ Content( parser, 

@@ -12,8 +12,11 @@ import cElementTree as et
 from   zwiki.macro  import ZWMacro
 
 css = {
-    'color'     : 'gray',
-    'padding'   : '2px',
+    'color'          : 'gray',
+    'padding-top'    : '2px',
+    'padding-right'  : '2px',
+    'padding-bottom' : '2px',
+    'padding-left'   : '2px',
 }
 
 class Span( ZWMacro ) :

@@ -5,6 +5,8 @@
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
 
+    Goto [[ #Subsub | other heading markups ]] for more ...
+
 == Some text markup
 
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
@@ -24,20 +26,13 @@ Empty markups are '''' //// are ignored.
 
 And, complex markups like '' hello // world // \\ is treated like this ''
 
-=== This is a Subheading
+=== Text with html special chars ===
 
-==== Subsub
+>>> it = [ 1, 2, 3, ]   \\
+>>> print type(it)      \\
+    < List  type ... >
 
-===== Subsubsub
-
-The ending equal signs should not be displayed:
-
-= Top-level heading (1) =
-== This a test for creole 0.1 (2) ==
-=== This is a Subheading (3) ===
-==== Subsub (4) ====
-===== Subsubsub (5) =====
-
+== Links ==
 
 You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
 give the link a [[internal links|different]] name.
@@ -64,7 +59,8 @@ And even mix html code in between <div>This text was inside html tag `div`</div>
 You can use nowiki syntax if you would like do stuff like this:
 
 {{{ Box
-# { 'color' : 'blue', 'width' : '100%' }
+# { 'color' : 'blue', 'width' : '100%', 'border-top' : 'thin solid green',
+# 'border-bottom' : 'thin solid green', 'background' : 'Aquamarine' }
 This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 }}}
@@ -125,7 +121,6 @@ items
 
 This line demonstrates the {{Span( 'Span Macro', color='green', border='thin solid red' )}}
 
-
 == Box Wiki extensions ===
 {{{ Box
 # { 'width'  : '48%',
@@ -138,7 +133,7 @@ theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
 Located in Northumberland, Pennsylvania, the house, which was designed by
 Priestley's wife Mary, is Georgian with Federalist accents. The
-Pennsylvania Historical and Museum Commission has operated it as a museum
+''Pennsylvania Historical'' and ''Museum Commission'' has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
 * Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.
@@ -203,3 +198,15 @@ Mobile: abc
 | //italic text//             | ''  bold text ''          |
 
 If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: [[WikiCreole:Creole1.0TestCases]].
+
+==== Subsub
+
+===== Subsubsub
+
+= Top-level heading (1) =
+== This a test for creole 0.1 (2) ==
+=== This is a Subheading (3) ===
+==== Subsub (4) ====
+===== Subsubsub (5) =====
+
+

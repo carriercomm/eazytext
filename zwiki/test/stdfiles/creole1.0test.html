@@ -11,6 +11,8 @@
 <p><h1> Top-level heading<a class="secanchor" name="Top-level heading">&#167;</a></h1>
 </p><p>    This sample markup is taken from creole and modified to zwiki markup.
 </p>
+<p>    Goto <a href=" #Subsub ">other heading markups</a> for more ...
+</p>
 <p><h2> Some text markup<a class="secanchor" name="Some text markup">&#167;</a></h2>
 </p>
 <p>You can make things <strong>bold</strong> or <em>italic</em> or <strong><em>both</em></strong> but /'not this one'/.
@@ -30,21 +32,14 @@ This line is single line <br></br> but uses line break markup to split the line.
 </p>
 <p>And, complex markups like <strong> hello <em> world </em> <br></br> is treated like this </strong>
 </p>
-<p><h3> This is a Subheading<a class="secanchor" name="This is a Subheading">&#167;</a></h3>
+<p><h3> Text with html special chars<a class="secanchor" name="Text with html special chars">&#167;</a></h3>
 </p>
-<p><h4> Subsub<a class="secanchor" name="Subsub">&#167;</a></h4>
+<p>&gt;&gt;&gt; it = [ 1, 2, 3, ]   <br></br>
+&gt;&gt;&gt; print type(it)      <br></br>
+    &lt; List  type ... &gt;
 </p>
-<p><h5> Subsubsub<a class="secanchor" name="Subsubsub">&#167;</a></h5>
+<p><h2> Links<a class="secanchor" name="Links">&#167;</a></h2>
 </p>
-<p>The ending equal signs should not be displayed:
-</p>
-<p><h1> Top-level heading (1)<a class="secanchor" name="Top-level heading (1)">&#167;</a></h1>
-</p><p><h2> This a test for creole 0.1 (2)<a class="secanchor" name="This a test for creole 0.1 (2)">&#167;</a></h2>
-</p><p><h3> This is a Subheading (3)<a class="secanchor" name="This is a Subheading (3)">&#167;</a></h3>
-</p><p><h4> Subsub (4)<a class="secanchor" name="Subsub (4)">&#167;</a></h4>
-</p><p><h5> Subsubsub (5)<a class="secanchor" name="Subsubsub (5)">&#167;</a></h5>
-</p>
-
 <p>You can use <a href="internal links">internal links</a> or <a href="http://www.wikicreole.org">external links</a>,
 give the link a <a href="internal links">different</a> name.
 </p>
@@ -62,13 +57,13 @@ something like foo:</em>bar// should render as italic.
 </p>
 <p>You can use this to draw a line to separate the page:
 </p><p><hr></hr></p>
-<p>And even mix html code in between <div>This text was inside html tag `div`</div> in the same line
+<p>And even mix html code in between &lt;div&gt;This text was inside html tag `div`&lt;/div&gt; in the same line
 </p>
 <p><h2> wiki extension<a class="secanchor" name="wiki extension">&#167;</a></h2>
 </p>
 <p>You can use nowiki syntax if you would like do stuff like this:
 </p>
-<p><div style="width : 100%; color : blue; position : relative; float : left; border : thin solid #CEF2E0"><div style="padding : 3px"><div id="wikipage">
+<p><div style="float : left; color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0; position : relative"><div style="padding-top : 3px; padding-right : 3px; padding-bottom : 3px; padding-left : 3px"><div id="wikipage">
 <style type="text/css">
     .secanchor { visibility : hidden }
 </style>
@@ -94,11 +89,10 @@ adjustable and you can even position it.
 </p>
 <p><h2> Macros<a class="secanchor" name="Macros">&#167;</a></h2>
 </p>
-<p>This line demonstrates the <span style="color : green; padding : 2px; border : thin solid red">Span Macro</span>
+<p>This line demonstrates the <span style="padding-right : 2px; padding-bottom : 2px; color : green; padding-top : 2px; border : thin solid red; padding-left : 2px">Span Macro</span>
 </p>
-
 <p><h2> Box Wiki extensions<a class="secanchor" name="Box Wiki extensions">&#167;</a></h2>
-</p><p><div style="width : 48%; color : gray; position : relative; float : left; border : thin solid #CEF2E0; margin : 10px 2px 10px 5px;"><div style="color : ; padding : 3px; font-weight : bold; background : #CEF2E0; margin-bottom : 5px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div style="padding : 3px"><div id="wikipage">
+</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; position : relative; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; float : left; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div style="padding-top : 3px; padding-right : 3px; padding-bottom : 3px; padding-left : 3px"><div id="wikipage">
 <style type="text/css">
     .secanchor { visibility : hidden }
 </style>
@@ -108,7 +102,7 @@ theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
 Located in Northumberland, Pennsylvania, the house, which was designed by
 Priestley's wife Mary, is Georgian with Federalist accents. The
-Pennsylvania Historical and Museum Commission has operated it as a museum
+<strong>Pennsylvania Historical</strong> and <strong>Museum Commission</strong> has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
 </p><p><ul><li> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li>In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.</li></ul></p><p>(more...)
@@ -116,7 +110,7 @@ due to low visitation and budget cuts.
 <p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
 </div></div></div></div></p>
-<p><div style="width : 48%; color : gray; position : relative; float : left; border : thin solid #CEF2E0; margin : 10px 5px 10px 2px;"><div style="color : ; padding : 3px; font-weight : bold; background : #CEF2E0; margin-bottom : 5px">In the News</div><div style="padding : 3px"><div id="wikipage">
+<p><div style="width : 48%; border-top : thin solid #CEF2E0; position : relative; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; float : left; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div style="padding-top : 3px; padding-right : 3px; padding-bottom : 3px; padding-left : 3px"><div id="wikipage">
 <style type="text/css">
     .secanchor { visibility : hidden }
 </style>
@@ -164,9 +158,21 @@ Fax: +45<br></br>
 Mobile: abc
 </p>
 <p><table border="1" cellspacing="0" cellpadding="0" ><tr><th> Header title</th><th> Another header title</th>
-</tr><tr><td> <a href=" //not italic text// "> //not italic text// </a></td><td> {}</td>
+</tr><tr><td> <a href=" //not italic text// ">//not italic text//</a></td><td> {}</td>
 </tr><tr><td> <em>italic text</em>             </td><td> <strong>  bold text </strong>          </td>
 </tr></table></p>
 <p>If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: <a href="WikiCreole:Creole1.0TestCases">WikiCreole:Creole1.0TestCases</a>.
 </p>
-</div><div name="TOC" style="padding : 3px; width : 20%; background : #f8f7bc; position : relative; float : left; margin : 10px"><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading">This is a Subheading</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1)">Top-level heading (1)</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div></div></div></body></html>
+<p><h4> Subsub<a class="secanchor" name="Subsub">&#167;</a></h4>
+</p>
+<p><h5> Subsubsub<a class="secanchor" name="Subsubsub">&#167;</a></h5>
+</p>
+<p><h1> Top-level heading (1)<a class="secanchor" name="Top-level heading (1)">&#167;</a></h1>
+</p><p><h2> This a test for creole 0.1 (2)<a class="secanchor" name="This a test for creole 0.1 (2)">&#167;</a></h2>
+</p><p><h3> This is a Subheading (3)<a class="secanchor" name="This is a Subheading (3)">&#167;</a></h3>
+</p><p><h4> Subsub (4)<a class="secanchor" name="Subsub (4)">&#167;</a></h4>
+</p><p><h5> Subsubsub (5)<a class="secanchor" name="Subsubsub (5)">&#167;</a></h5>
+</p>
+
+
+</div><div name="TOC" style="float : left; padding-bottom : 3px; margin-bottom : 10px; width : 20%; margin-top : 10px; padding-right : 3px; margin-left : 10px; background : #f8f7bc; margin-right : 10px; position : relative; padding-top : 3px; padding-left : 3px"><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1)">Top-level heading (1)</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div></div></div></body></html>

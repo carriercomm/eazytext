@@ -14,11 +14,17 @@ alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
 
 css = {
-    'background' : '#f8f7bc',
-    'position'   : 'relative',
-    'float'      : 'left',
-    'margin'     : '10px',
-    'padding'    : '3px',
+    'background'     : '#f8f7bc',
+    'position'       : 'relative',
+    'float'          : 'left',
+    'margin-top'     : '10px',
+    'margin-left'    : '10px',
+    'margin-bottom'  : '10px',
+    'margin-right'   : '10px',
+    'padding-top'    : '3px',
+    'padding-left'   : '3px',
+    'padding-bottom' : '3px',
+    'padding-right'  : '3px',
 }
 
 htags = {
@@ -45,8 +51,8 @@ class Toc( ZWMacro ) :
     """Implements Toc() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        ind        = int(kwargs.pop( 'indent', '1' ))
-        index      = int(kwargs.pop( 'index', '-1' ))
+        ind            = int( kwargs.pop( 'indent', '1' ))
+        index          = int( kwargs.pop( 'index', '-1' ))
         self.postindex = index == 0 and -1 or index
         htags.update(
             [ ( h, htags[h] + str(ind * n) + 'em;' )
