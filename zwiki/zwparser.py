@@ -5,8 +5,14 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
-#   1. There are several if-elif statements which needs to have a default else
-#      block (atleast to raise exception).
+#   1. Add HTML interspercing feature as,
+#           '< .....
+#   2. Add test cases for macros and extensions.
+#   3. Explore the possible addition of `indentation` feature, like,
+#       :some text          < one level indentation >
+#       ::some text         < two level indentation >
+#      while the indentation offset is configurable in the wiki style.
+#   4. Make Macros to span multiple lines.
 
 
 import re
@@ -143,8 +149,9 @@ class ZWParser( object ):
         # Replace escaped new lines.
         text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub(
                                                                 '\n', text )
-        if text and text[-1] == '~' : 
-            text = text[:-1]
+        text = text.rstrip( '~' )
+        #if text and text[-1] == '~' : 
+        #    text = text[:-1]
         return text
 
     def _wiki_properties( self, text ) :

@@ -1,8 +1,8 @@
-@ { 'width' : '70%', 'float' : 'left', 'position' : 'relative' }
+@ { 'width' : '70%', 'float' : 'left', 'position' : 'relative',
+@   'font-family' : 'arial,sans-serif' }
 
 
-
-{{ Toc( index='1', width='20%', background='yellow' ) }}
+{{ Toc( index='1', width='20%' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
@@ -28,6 +28,10 @@ This line is single line \\ but uses line break markup to split the line.
 Empty markups are '''' //// are ignored.
 
 And, complex markups like '' hello // world // \\ is treated like this ''
+
+An example for indentation, \\
+{{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\
+{{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\
 
 === Text with html special chars ===
 
@@ -117,7 +121,7 @@ up to five levels
 * level 1 item 1 unordered
 * level 1 item 2 unordered
 
-=== All possible list combinarions in a table
+=== All possible list combinations in a table
 
 {{ Html( '<table border="1" >' ) }}
 {{ Html( '<tr>' ) }}
