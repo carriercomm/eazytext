@@ -16,7 +16,6 @@ from   random         import choice, randint, shuffle
 import re
 from   optparse       import OptionParser
 
-from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwparser import ZWParser
 
 basedir      = os.path.split( os.path.abspath(__file__) )[0]
@@ -43,7 +42,7 @@ def main() :
     options, args = _option_parse()
     # Bug in PLY ???
     #   Enabling optimize screws up the order of regex match (while lexing)
-    zwparser = ZWParser( lex_optimize=False, yacc_debug=True, yacc_optimize=False )
+    zwparser = ZWParser( yacc_debug=True )
     if args[0] == 'teststd' :
         stdfiles = get_stdfiles()
         for f in stdfiles :

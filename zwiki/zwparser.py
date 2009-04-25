@@ -71,7 +71,7 @@ class ZWParser( object ):
                     lex_debug=False,
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
-                    yacc_debug=True,
+                    yacc_debug=False,
                 ):
         """Create a new ZWParser.
         
@@ -121,8 +121,8 @@ class ZWParser( object ):
         yacc_debug:
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
-        # self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex    = ZWLexer()
+        self.app      = app
+        self.zwlex    = ZWLexer( error_func=self._lex_error_func )
         self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug)
         self.tokens   = self.zwlex.tokens
         self.parser   = ply.yacc.yacc( module=self, 

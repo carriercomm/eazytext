@@ -27,7 +27,7 @@ def setUpModule() :
     global zwparser, words
     print "Initialising the parser ..."
     zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
-                           yacc_optimize=False )
+                             yacc_optimize=False )
     print "Initialising wiki ..."
     alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     words    = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
