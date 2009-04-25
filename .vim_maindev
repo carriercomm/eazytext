@@ -24,8 +24,8 @@ nmap g :cs find g =expand("<cword>")
 nmap s :cs find s =expand("<cword>")	
 map Q gq
 map Y y$
-nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
+nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 vmap \ev <Plug>Spchkev
 nmap \ec <Plug>LoadSpchk
 map \rwp <Plug>RestoreWinPosn
@@ -173,17 +173,19 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +399 zwiki/zwast.py
+badd +198 zwiki/zwast.py
 badd +210 zwiki/zwlexer.py
-badd +468 zwiki/zwparser.py
+badd +174 zwiki/zwparser.py
 badd +2 zwiki/zwcore.py
-badd +55 zwiki/zwcmd.py
-badd +38 zwiki/macro/__init__.py
+badd +41 zwiki/zwcmd.py
+badd +43 zwiki/macro/__init__.py
 badd +22 zwiki/zwext/__init__.py
-badd +11 zwiki/macro/toc.py
+badd +72 zwiki/macro/toc.py
 badd +10 zwiki/zwext/box.py
 badd +12 zwiki/macro/clear.py
-badd +29 zwiki/macro/span.py
+badd +26 zwiki/macro/span.py
+badd +12 zwiki/macro/redirect.py
+badd +0 zwiki/macro/html.py
 args zwiki/zwast.py
 edit zwiki/zwcmd.py
 set splitbelow splitright
@@ -288,7 +290,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 41 - ((21 * winheight(0) + 22) / 45)
+let s:l = 41 - ((20 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -397,12 +399,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 174 - ((19 * winheight(0) + 22) / 45)
+let s:l = 188 - ((27 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-174
-normal! 044l
+188
+normal! 031l
 tabedit zwiki/zwast.py
 set splitbelow splitright
 set nosplitbelow
@@ -506,13 +508,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 198 - ((30 * winheight(0) + 22) / 45)
+let s:l = 198 - ((28 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 198
-normal! 018l
-tabedit zwiki/macro/toc.py
+normal! 07l
+tabedit zwiki/macro/html.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -615,12 +617,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 49 - ((16 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
-normal! 016l
+1
+normal! 0
 tabedit zwiki/zwext/box.py
 set splitbelow splitright
 set nosplitbelow
@@ -724,7 +726,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 65 - ((38 * winheight(0) + 22) / 45)
+let s:l = 65 - ((35 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt

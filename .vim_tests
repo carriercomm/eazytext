@@ -24,6 +24,8 @@ nmap g :cs find g =expand("<cword>")
 nmap s :cs find s =expand("<cword>")	
 map Q gq
 map Y y$
+nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
+nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 vmap \ev <Plug>Spchkev
 nmap \ec <Plug>LoadSpchk
 map \rwp <Plug>RestoreWinPosn
@@ -68,9 +70,7 @@ vmap <silent> \T, :<BS><BS><BS>ma'>\T,
 vmap <silent> \T| :<BS><BS><BS>ma'>\T|
 map <silent> \tdW@ :AlignCtrl v ^\s*/[/*]:AlignCtrl mWp1P1=l @:'a,.Align
 map <silent> \tW@ :AlignCtrl mWp1P1=l @:'a,.Align
-nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 omap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
-nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 omap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
 nmap \rfco :!grep Obsoletes.* /import/tech/rfc/* 
 nmap \rfc :tabnew /import/tech/rfc/rfc.txt 
@@ -173,11 +173,12 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +168 zwiki/test/stdfiles/creole1.0test.txt
-badd +1 zwiki/test/testparse.py
-badd +55 zwiki/test/testwiki.py
-badd +0 zwiki/test/testlex.py
-badd +0 zwiki/test/testlib.py
+badd +1 zwiki/test/stdfiles/creole1.0test.txt
+badd +54 zwiki/test/testparse.py
+badd +131 zwiki/test/testwiki.py
+badd +1 zwiki/test/testlex.py
+badd +1 zwiki/test/testlib.py
+badd +0 zwiki/test/testmacros.py
 args zwiki/test/stdfiles/creole1.0test.txt
 edit zwiki/test/stdfiles/creole1.0test.txt
 set splitbelow splitright
@@ -282,12 +283,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 2 - ((1 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 053l
+2
+normal! 038l
 tabedit zwiki/test/testparse.py
 set splitbelow splitright
 set nosplitbelow
@@ -391,13 +392,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 54 - ((27 * winheight(0) + 22) / 45)
+let s:l = 51 - ((22 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-54
+51
 normal! 023l
-tabedit zwiki/test/testwiki.py
+tabedit zwiki/test/testmacros.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -500,12 +501,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 58 - ((29 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-58
-normal! 023l
+1
+normal! 0
 tabedit zwiki/test/testlib.py
 set splitbelow splitright
 set nosplitbelow
@@ -609,13 +610,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
-tabnext 1
+tabnext 3
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif

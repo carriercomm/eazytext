@@ -185,6 +185,7 @@ class ZWParser( object ):
         # Initialize
         self.zwlex.filename = filename
         self.zwlex.reset_lineno()
+        self.redirect     = None
         self.text         = text
         self.wiki_css     = {}
         self.macroobjects = []  # ZWMacro objects detected while parsing
