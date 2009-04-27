@@ -24,8 +24,8 @@ nmap g :cs find g =expand("<cword>")
 nmap s :cs find s =expand("<cword>")	
 map Q gq
 map Y y$
-nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
+nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 vmap \ev <Plug>Spchkev
 nmap \ec <Plug>LoadSpchk
 map \rwp <Plug>RestoreWinPosn
@@ -175,17 +175,18 @@ endif
 set shortmess=aoO
 badd +198 zwiki/zwast.py
 badd +210 zwiki/zwlexer.py
-badd +174 zwiki/zwparser.py
+badd +188 zwiki/zwparser.py
 badd +2 zwiki/zwcore.py
 badd +41 zwiki/zwcmd.py
 badd +43 zwiki/macro/__init__.py
 badd +22 zwiki/zwext/__init__.py
 badd +72 zwiki/macro/toc.py
-badd +10 zwiki/zwext/box.py
+badd +6 zwiki/zwext/box.py
 badd +12 zwiki/macro/clear.py
 badd +26 zwiki/macro/span.py
 badd +12 zwiki/macro/redirect.py
-badd +0 zwiki/macro/html.py
+badd +1 zwiki/macro/html.py
+badd +0 zwiki/zwext/html.py
 args zwiki/zwast.py
 edit zwiki/zwcmd.py
 set splitbelow splitright
@@ -623,7 +624,7 @@ exe s:l
 normal! zt
 1
 normal! 0
-tabedit zwiki/zwext/box.py
+tabedit zwiki/zwext/html.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -726,13 +727,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 65 - ((35 * winheight(0) + 21) / 42)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-65
-normal! 08l
-tabnext 4
+1
+normal! 0
+tabnext 5
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif

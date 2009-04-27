@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# gotcha : none
-# notes  : none
-# todo   : none
+# Gotcha : none
+# Notes  : none
+# Todo   : none
+#   1. Unit test case for this extension.
 
 import cElementTree as et
 
