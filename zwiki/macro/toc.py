@@ -53,7 +53,7 @@ class Toc( ZWMacro ) :
     def __init__( self, *args, **kwargs ) :
         ind            = int( kwargs.pop( 'indent', '1' ))
         index          = int( kwargs.pop( 'index', '-1' ))
-        style          = kwargs.pop( 'style', {} )
+        styles         = kwargs.pop( 'styles', {} )
         self.postindex = index == 0 and -1 or index
         htags.update(
             [ ( h, htags[h] + str(ind * n) + 'em;' )
@@ -62,7 +62,7 @@ class Toc( ZWMacro ) :
         self.css = {}
         self.css.update( css )
         self.css.update( kwargs )
-        self.css.update( style )
+        self.css.update( styles )
 
     def tohtml( self ) :
         return ''

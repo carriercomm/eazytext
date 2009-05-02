@@ -538,7 +538,7 @@ class TableRows( Node ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
 
     def tohtml( self ) :
-        html    = '<table border="1" cellspacing="0" cellpadding="3px" >'
+        html    = '<table border="1px" cellspacing="0" cellpadding="3px" >'
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \

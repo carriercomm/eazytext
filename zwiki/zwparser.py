@@ -5,14 +5,72 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
-#   1. Add HTML interspercing feature as,
-#           '< .....
-#   2. Add test cases for macros and extensions.
-#   3. Explore the possible addition of `indentation` feature, like,
+#   * Add HTML interspercing feature as,
+#       <<>> ..... <<>>
+#     This markup should might define its own Grammer rules to simplify and
+#     yet support intercepersing HTML with wiki page.
+#   * Add test cases for macros and extensions.
+#   * Explore the possible addition of `indentation` feature, like,
 #       :some text          < one level indentation >
 #       ::some text         < two level indentation >
 #      while the indentation offset is configurable in the wiki style.
-#   4. Make Macros to span multiple lines.
+#   * Definitions and Definition lists as,
+#       : definition-name1
+#       ; definition for definition-name1
+#       : definition-name2
+#       ; definition for definition-name2
+#   *  Block quotes. like,
+#       >
+#       >>
+#       >>>
+#   * Multiline Macros.
+#   * Provide support for media wiki like table markup.
+#       {| styles
+#       | cell-content
+#       |+ caption
+#       |-
+#       | styles | cell-content
+#   * Support merging table cells like (refer wiki-dot).
+#   * Provision for creating templates using properties. These templates can
+#     be pulled.
+#   * User addable title for Toc macro. And make it closable.
+#   * Backlinks, Pingbacks (Linkbacks )
+#   * Meta tagging support.
+#   * Zeta tagging support.
+#   * Zeta Attachment support.
+#   * Hide email-address feature.
+#   * Collapsible page contents, using zwextensions.
+#   * Links,
+#       * Provision to generate links that can open in a new window,
+#           [[ *http://.... | text ]]
+#       * Shortcuts for Anchor macro.
+#       * Shortcuts for image links (that would otherwise require the image
+#         macro )
+#       * Shortcuts for image macro
+#   * Image Macro. Supporting integration with external links / sites.
+#   * Image Gallery (refer wiki-dot for more info).
+#   * Notes Macro
+#   * Code zwextensions.
+#   * Math Macro.
+#   * Math zwextensions.
+#   * Footnote macro.
+#   * Bibliography macro.
+#   * How long ago Macro.
+#
+#   * All macros and extensions should accept css properties as keyword
+#     arguments. To define a standard styling template for a wiki page.
+#     add a property name `[macro|extension]style` in the wikipage property.
+#     This is called style templating.
+#
+#   * Include macro to include pages from another wiki page.
+#   * Printable pages.
+#
+# Other features,
+#   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
+#   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
+#   * Social bookmarking.
+#   * Flash support.
+#   * Tab viewing wiki contents.
 
 
 import re
