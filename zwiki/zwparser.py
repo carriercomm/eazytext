@@ -5,6 +5,13 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
+#   ( Implement it right away )
+#   * All the macros should take `styles` as a parameter, which can be CSS
+#     property string or dictionary of CSS properties.
+#   * All extensions should have a `styles` property, which can be CSS
+#     property string or dictionary of CSS properties.
+#
+#   ( future )
 #   * Add HTML interspercing feature as,
 #       <<>> ..... <<>>
 #     This markup should might define its own Grammer rules to simplify and
