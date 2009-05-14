@@ -2,7 +2,8 @@
 @   'font-family' : 'arial,sans-serif' }
 
 
-{{ Toc( index='1', width='20%' ) }}
+{{ Toc( index='1', \
+        width='20%' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.

@@ -42,7 +42,8 @@ def main() :
     options, args = _option_parse()
     # Bug in PLY ???
     #   Enabling optimize screws up the order of regex match (while lexing)
-    zwparser = ZWParser( yacc_debug=True )
+    # zwparser = ZWParser( yacc_debug=True )
+    zwparser = ZWParser()
     if args[0] == 'teststd' :
         stdfiles = get_stdfiles()
         for f in stdfiles :

@@ -5,20 +5,18 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
-#   ( Implement it right away )
-#   * All the macros should take `styles` as a parameter, which can be CSS
-#     property string or dictionary of CSS properties.
-#   * All extensions should have a `styles` property, which can be CSS
-#     property string or dictionary of CSS properties.
-#   * Links,
-#       * Zetalinks
+#   ( Testing )
 #   * Unit test case for the following function,
 #       split_style()
 #   * All the macros, zwext and ZWParser should be tested for style.
 #
+#   ( Implement it right away )
+#   * Links,
+#       * Zetalinks
+#
 #   ( future )
 #   * Add HTML interspercing feature as,
-#       <<>> ..... <<>>
+#       <> ..... <>
 #     This markup should might define its own Grammer rules to simplify and
 #     yet support intercepersing HTML with wiki page.
 #   * Add test cases for macros and extensions.
@@ -35,7 +33,6 @@
 #       >
 #       >>
 #       >>>
-#   * Multiline Macros.
 #   * Provide support for media wiki like table markup.
 #       {| styles
 #       | cell-content
@@ -206,9 +203,11 @@ class ZWParser( object ):
         """The text to be parsed is pre-parsed to remove the fix unwanted
         side effects in the parser.
         Return the preprossed text"""
-        # Replace `ESCAPEd new lines`.
+        # Replace `~ ESCAPEd new lines`.
         text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub('\n', text)
         text = text.rstrip( '~' )   # Remove trailing ESCAPE char
+        # Replace `\ ESCAPEd new lines'.
+        text = text.replace( '\\\n', '' )
         return text
 
     def _wiki_properties( self, text ) :
