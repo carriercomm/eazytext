@@ -8,6 +8,7 @@
 import cElementTree as et
 
 from   zwiki.zwext    import ZWExtension
+from   zwiki          import split_style
 
 box_css = {
     'color'         : 'gray',
@@ -39,38 +40,53 @@ class Box( ZWExtension ) :
     """Implements Box() wikix"""
 
     def __init__( self, props, nowiki ) :
-        self.nowiki       = nowiki
-        self.title        = props.pop( 'title', '' )
-        self.titlestyle   = props.pop( 'titlestyle', '' )
-        self.contentstyle = props.pop( 'contentstyle', '' )
+        self.nowiki  = nowiki
+        self.title   = props.pop( 'title', '' )
+        boxstyle     = props.pop( 'style', {} )
+        titlestyle   = props.pop( 'titlestyle', {} )
+        contentstyle = props.pop( 'contentstyle', '' )
 
-        self.box_css = {}
+        d_style, s_style = split_style( boxstyle )
+        self.boxstyle  = s_style
+        self.box_css   = {}
         self.box_css.update( box_css )
         self.box_css.update( props )
-        self.title_css = {}
+        self.box_css.update( d_style )
+
+        d_style, s_style = split_style( titlestyle )
+        self.titlestyle  = s_style
+        self.title_css   = {}
         self.title_css.update( title_css )
-        self.title_css.update( self.titlestyle )
-        self.cont_css = {}
+        self.title_css.update( d_style )
+
+        d_style, s_style  = split_style( contentstyle )
+        self.contentstyle = s_style
+        self.cont_css     = {}
         self.cont_css.update( cont_css )
-        self.cont_css.update( self.contentstyle )
+        self.cont_css.update( d_style )
 
     def tohtml( self ) :
         from   zwiki.zwparser import ZWParser
 
-        box_style     = '; '.join([ k + ' : ' + self.box_css[k]
-                                    for k in self.box_css ])
-        box_div       = et.Element( 'div', { 'style' : box_style } )
+        boxstyle = '; '.join([k + ' : ' + self.box_css[k] for k in self.box_css])
+        if self.boxstyle :
+            boxstyle += '; ' + self.boxstyle + '; '
+        box_div       = et.Element( 'div', { 'style' : boxstyle } )
 
-        title_style   = '; '.join([ k + ' : ' + self.title_css[k]
-                                    for k in self.title_css ])
+        titlestyle = '; '.join([ k + ' : ' + self.title_css[k] for k in self.title_css ])
+        if self.titlestyle  :
+            titlestyle += '; ' + self.titlestyle + '; '
         if self.title :
-            title_div        = et.Element( 'div', { 'style' : title_style } )
+            title_div        = et.Element( 'div', { 'style' : titlestyle } )
             title_div.text   = self.title
             box_div.insert( 0, title_div )
+
         if self.nowiki :
+            self.contentstyle \
+                and self.cont_css.setdefault( 'style', self.contentstyle )
             zwparser        = ZWParser( lex_optimize=False,
                                         yacc_optimize=False,
-                                        style=cont_css )
+                                        style=self.cont_css )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()
             box_div.insert( 1, et.fromstring( self.nowiki_h ))

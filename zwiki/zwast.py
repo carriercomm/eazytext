@@ -15,7 +15,7 @@ import cElementTree as et
 
 from   zwiki.macro    import build_macro
 from   zwiki.zwext    import build_zwext
-import zwiki.zwparser
+from   zwiki          import escape_htmlchars
 
 # text type for BasicText
 TEXT_ZWCHARPIPE      = 'zwcharpipe'
@@ -134,7 +134,7 @@ def parse_text( parser, text ) :
         ch3 = text[i:i+3]
         if ch3 in ref3markups :
             if spchars :
-                spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+                spchars_e = escape_htmlchars( spchars )
                 contents.append( Content( parser, spchars,
                                           TEXT_SPECIALCHAR, spchars_e ))
                 spchars = ''
@@ -142,7 +142,7 @@ def parse_text( parser, text ) :
             i += 3
         elif ch2 in ref2markups :
             if spchars :
-                spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+                spchars_e = escape_htmlchars( spchars )
                 contents.append( Content( parser, spchars,
                                           TEXT_SPECIALCHAR, spchars_e ))
                 spchars = ''
@@ -153,7 +153,7 @@ def parse_text( parser, text ) :
             i += 1
 
     if spchars :
-        spchars_e = zwiki.zwparser.escape_htmlchars( spchars )
+        spchars_e = escape_htmlchars( spchars )
         contents.append( Content( parser, spchars, TEXT_SPECIALCHAR, spchars_e))
 
     return contents
@@ -228,16 +228,18 @@ class Wikipage( Node ):
         zwparser.onprehtml_macro()
         zwparser.onprehtml_zwext()
         
-        html = ''.join([ c.tohtml() for c in self.children() ])
+        html  = ''.join([ c.tohtml() for c in self.children() ])
         # Since this is the Root node for all the other nodes, the converted
         # HTML string is stored in the parser object.
         style = '; '.join([ k + ' : ' + zwparser.wiki_css[k]
                             for k in zwparser.wiki_css ])
-        zwparser.html = '<div style="' + style + ';">' + html + '</div>'
+        style += '; ' + zwparser.style + '; '
+        zwparser.html = '<div style="' + style + '">' + html + '</div>'
 
         # Call the registered posthtml method.
         zwparser.onposthtml_macro()
         zwparser.onposthtml_zwext()
+
         # Collect, prepend and append `posthtml`s from macros and extensions
         objs = [ o for o in zwparser.macroobjects + zwparser.zwextobjects
                    if getattr( o, 'posthtml', None ) and
@@ -329,9 +331,10 @@ class Paragraph( Node ) :
         try : 
             et.fromstring( '<div>' + html + '</div>' )
         except :
-            pass
+            if self.parser.zwparser.debug :
+                raise
         else :
-            html = '<p>' + self.paragraph.tohtml() + '</p>'
+            html = '<p>' + html + '</p>'
         return html
 
     def dump( self ) :
@@ -416,7 +419,7 @@ class Heading( Node ) :
     def __init__( self, parser, fulltext, newline ) :
         self.parser     = parser
         self.fulltext   = fulltext
-        self.fulltext_e = zwiki.zwparser.escape_htmlchars( fulltext )
+        self.fulltext_e = escape_htmlchars( fulltext )
         self.newline    = Newline( parser, newline )
 
     def children( self ) :
@@ -620,11 +623,10 @@ class TableCells( Node ) :
         buf.write('\n')
 
         cellcount = 1
-        for txts, pipe in self.cells :
+        for pipe, cell in self.cells :
             buf.write( lead + '(cell %s)\n' % cellcount )
             cellcount += 1
-            for item in txts :
-                item.show( buf, offset + 2, attrnames, showcoord )
+            cell.show( buf, offset + 2, attrnames, showcoord )
 
 
 class Lists( Node ) :
@@ -782,7 +784,7 @@ class Link( Node ) :
         self.parser = parser
         tup  = link[2:-2].split( '|', 1 )
         if len(tup) == 2 :
-            text = zwiki.zwparser.escape_htmlchars( tup[1] )
+            text = escape_htmlchars( tup[1] )
         else :
             text = tup[0]
         href = tup[0]

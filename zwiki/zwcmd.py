@@ -58,6 +58,7 @@ def main() :
         tu       = zwparser.parse( wikitext, debuglevel=0 )
         html     = DTD + '<html><body>' + tu.tohtml() + '</body></html>'
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
+        # print tu.dump()
 
 if __name__ == '__main__' :
     main()

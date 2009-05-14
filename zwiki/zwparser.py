@@ -10,6 +10,11 @@
 #     property string or dictionary of CSS properties.
 #   * All extensions should have a `styles` property, which can be CSS
 #     property string or dictionary of CSS properties.
+#   * Links,
+#       * Zetalinks
+#   * Unit test case for the following function,
+#       split_style()
+#   * All the macros, zwext and ZWParser should be tested for style.
 #
 #   ( future )
 #   * Add HTML interspercing feature as,
@@ -48,6 +53,7 @@
 #   * Hide email-address feature.
 #   * Collapsible page contents, using zwextensions.
 #   * Links,
+#       * Zetalinks
 #       * Provision to generate links that can open in a new window,
 #           [[ *http://.... | text ]]
 #       * Shortcuts for Anchor macro.
@@ -63,6 +69,7 @@
 #   * Footnote macro.
 #   * Bibliography macro.
 #   * How long ago Macro.
+#   * For Toc() macro add numbering feature.
 #
 #   * All macros and extensions should accept css properties as keyword
 #     arguments. To define a standard styling template for a wiki page.
@@ -88,19 +95,11 @@ import ply.yacc
 
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwast    import *
+from   zwiki          import escape_htmlchars, split_style
 
 html_chars = [ '"', "'", '&', '<', '>' ]
 
-def escape_htmlchars( text ) :
-    """If the text is not supposed to have html characters, escape them"""
-    text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( '&amp;', text )
-    text = re.compile( r'"', re.MULTILINE | re.UNICODE ).sub( '&quot;', text )
-    text = re.compile( r'<', re.MULTILINE | re.UNICODE ).sub( '&lt;', text )
-    text = re.compile( r'>', re.MULTILINE | re.UNICODE ).sub( '&gt;', text )
-    return text
-
-
-# Wiki page properties
+# Default Wiki page properties
 wiki_css = {
     'white-space' : 'normal'
 }
@@ -196,12 +195,8 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
         self.parser.zwparser = self
-        # Styling
-        self._wiki_css = {}
-        if isinstance( style, dict ) :
-            self._wiki_css.update( style )
-        else :
-            self._wiki_css.update( wiki_css )
+        self.style    = style
+        self.debug    = lex_debug or yacc_debug
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
@@ -211,12 +206,9 @@ class ZWParser( object ):
         """The text to be parsed is pre-parsed to remove the fix unwanted
         side effects in the parser.
         Return the preprossed text"""
-        # Replace escaped new lines.
-        text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub(
-                                                                '\n', text )
-        text = text.rstrip( '~' )
-        #if text and text[-1] == '~' : 
-        #    text = text[:-1]
+        # Replace `ESCAPEd new lines`.
+        text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub('\n', text)
+        text = text.rstrip( '~' )   # Remove trailing ESCAPE char
         return text
 
     def _wiki_properties( self, text ) :
@@ -258,9 +250,17 @@ class ZWParser( object ):
         self.predivs      = []  # <div> elements prepend before wikipage
         self.postdivs     = []  # <div> elements append after wikipage
 
-        self.wiki_css.update( self._wiki_css )
-        props, text = self._wiki_properties( text )
-        self.wiki_css.update( props )
+        d_style, s_style = split_style( self.style )
+        d_style and self.wiki_css.update( d_style )
+        self.style       = s_style or ''
+        if not d_style and not s_style :
+            self.wiki_css.update( wiki_css )
+
+        props, text      = self._wiki_properties( text )
+        d_style, s_style = split_style( props )
+        d_style and self.wiki_css.update( d_style )
+        if s_style :
+            self.style += '; ' + s_style + '; '
 
         # Pre-process the text.
         text        += '\n'

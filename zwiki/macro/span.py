@@ -10,6 +10,7 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
+from   zwiki        import split_style
 
 css = {
     'color'          : 'gray',
@@ -23,15 +24,19 @@ class Span( ZWMacro ) :
     """Implements Span() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        style     = kwargs.pop( 'style', {} )
         self.text = len(args) > 0 and args[0] or ''
-        self.css  = {}
+
+        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
+        self.style  = s_style
+        self.css    = {}
         self.css.update( css )
+        self.css.update( d_style )
         self.css.update( kwargs )
-        self.css.update( style )
 
     def tohtml( self ) :
         style     = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
+        if self.style :
+            style     += '; ' + self.style + '; '
         span      = et.Element( 'span', { 'style' : style } )
         span.text = self.text
         html      = ( self.text and et.tostring( span ) ) or ''

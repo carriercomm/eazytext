@@ -9,6 +9,7 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
+from   zwiki        import split_style
 
 alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
@@ -35,47 +36,56 @@ htags = {
     'h5' : 'margin-left : ',
 }
 
-def _maketoc( node, toc_div ) :
+def _maketoc( node, toc_div, numbered=False, level='' ) :
+    count     = 1
+    level     = level[:-1]
     for n in node.getchildren() :
         if n.tag in htags :
             item      = n.makeelement( 'div', { 'style' : htags[n.tag] } )
-            text      = n.getchildren()[0].get( 'name' ) 
+            text      = n.getchildren()[0].get( 'name' ) # The anchor child
             link      = item.makeelement( 'a', { 'href' : '#' + text } )
             link.text = text
             item.append( link )
             toc_div.append( item )
-        _maketoc( n, toc_div )
+            count     += 1
+        _maketoc( n, toc_div, numbered )
     return
 
 class Toc( ZWMacro ) :
     """Implements Toc() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        ind            = int( kwargs.pop( 'indent', '1' ))
+        indent         = int( kwargs.pop( 'indent', '1' ))
         index          = int( kwargs.pop( 'index', '-1' ))
-        styles         = kwargs.pop( 'styles', {} )
+        self.numbered  = kwargs.pop( 'numbered', False )
         self.postindex = index == 0 and -1 or index
         htags.update(
-            [ ( h, htags[h] + str(ind * n) + 'em;' )
+            [ ( h, htags[h] + str(indent * n) + 'em;' )
               for h, n in [ ('h2', 1), ('h3', 2), ('h4', 3), ('h5', 4) ]]
         )
-        self.css = {}
+
+        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
+        self.style  = s_style
+        self.css    = {}
         self.css.update( css )
+        self.css.update( d_style )
         self.css.update( kwargs )
-        self.css.update( styles )
 
     def tohtml( self ) :
         return ''
 
     def on_posthtml( self ) :
         style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
+        if self.style :
+            style += '; ' + self.style + '; '
         zwparser  = self.macronode.parser.zwparser
         try :
             htmltree  = et.fromstring( zwparser.html )
             toc_div   = et.Element( 'div', { 'name' : 'TOC', 'style' : style, })
-            _maketoc( htmltree, toc_div )
+            _maketoc( htmltree, toc_div, self.numbered )
             self.posthtml = et.tostring( toc_div )
         except :
             self.posthtml = 'Unable to generate the TOC, ' +\
                             'Wiki page not properly formed ! <br></br>'
+            raise 
         return

@@ -3,6 +3,8 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : none
+#   1. While testing ZWiki, make sure that the exception is not re-raised
+#      for `eval()` call.
 # Notes  : none
 # Todo   : none
 
@@ -51,6 +53,8 @@ def build_macro( macronode, macro ) :
         o = eval( macro[2:-2] )
     except :
         o = ZWMacro()
+        # if macronode.parser.zwparser.debug :
+        #     raise
     if not isinstance( o, ZWMacro ) :
         o = ZWMacro()
     o.macronode = macronode

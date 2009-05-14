@@ -28,7 +28,7 @@ def setUpModule() :
     global zwparser, words, links, macros, xwikinames
     print "Initialising the parser ..."
     zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
-                           yacc_optimize=False )
+                             yacc_optimize=False )
     print "Initialising wiki ..."
     wordlist     = gen_wordlist( maxlen=20, count=200 )
     words        = gen_words( wordlist, count=200, huri_c=10, wuri_c=10 )
@@ -65,6 +65,8 @@ class TestDumpsValid( object ) :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
         if result != ref :
+            # open( 'result', 'w' ).write( result )
+            # open( 'ref', 'w' ).write( ref )
             print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
         assert result == ref, type+'... testcount %s'%count
 
