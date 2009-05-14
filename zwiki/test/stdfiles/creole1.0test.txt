@@ -124,9 +124,10 @@ up to five levels
 
 === All possible list combinations in a table
 
-{{ Html( '<table border="1" >' ) }}
-{{ Html( '<tr>' ) }}
-{{ Html( '<td>' ) }}
+[< <table border="1" > \
+   <tr> \
+   <td> \
+ >] 
 * level 1 item 1 unordered
 * level 1 item 2 unordered
 ** level 2 item 1 unordered {{ Anchor( 'anchor in list', 'Anchored here', style={ 'font-weight' : 'bold' } ) }}
@@ -145,10 +146,10 @@ up to five levels
 {{ Html( '</td>' ) }}
 {{ Html( '<td>' ) }}
 *** level 3 item 2 unordered
-{{ Html( '</td>' ) }}
-{{ Html( '</tr>' ) }}
-{{ Html( '<tr>' ) }}
-{{ Html( '<td>' ) }}
+[<</td>>]
+[<</tr>>]
+[<<tr>>]
+[<<td>>]
 ## level 2 item 1 ordered
 ## level 2 item 2 ordered
 # level 1 item 1 ordered
@@ -159,9 +160,11 @@ up to five levels
 {{ Html( '<td>' ) }}
 * level 1 item 1 unordered
 * level 1 item 2 unordered
-{{ Html( '</td>' ) }}
-{{ Html( '</tr>' ) }}
-{{ Html( '</table>' ) }}
+[<              \
+    </td>       \
+    </tr>       \
+    </table>    \
+>]
 
 You cannot have
 * multiline list,

@@ -13,13 +13,16 @@ Formats :
   '^        - superscript
   '.        - subscript
   '/        - bold and italic
-  <>        - Raw HTML
+  '_        - bold and underline
+  /_        - italic and underline
   '/_       - bold, italic and underline
 
   [[        - open link, open image         'link'
   ]]        - close link, close image
   {{        - open macro                    'macro'
   }}        - close macro
+  [>        - open raw html                 'html'
+  >]        - close raw html
   {{{       - open no wiki                  'nowiki'
   }}}       - close no wiki
 
@@ -99,6 +102,21 @@ List :
 
   * List can immediately succeed or preceed text in the same paragraph.
 
+Raw Html : 
+
+  Advanced users can write raw htmls using,
+  macro,
+    {{ Html( ... ) }}
+  or extension,
+    {{{ Html
+        ....
+    }}}
+  or by simply doing,
+    [< ... html \
+       content .... \
+    >]
+    note that new lines can be escaped and used between [< >]
+
 Macros : 
   Macros are python functions that are directly callable in the wiki-markup.
   Each macro have their own parameter specification as well as accepting the
@@ -120,6 +138,13 @@ Properties and Styles :
   All macros and extensions along with the main wiki page can have accept
   CSS style as properties and / or string.
 
+Link : 
+  General syntax for links. No new line is allowed between [[  ]]
+
+        [[ link | linkname ]]
+
+        link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
+        
 Zetalinks : 
 
   Zeta links is a hyper link notation and generation syntax in the context
@@ -128,7 +153,7 @@ Zetalinks :
   General syntax for zetalinks. (Nothing else is allowed)
 
         [[ link | linkname ]]
-        
+
         link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
         zetalink    := [@interzeta]#<userbyid | userbyname>
                      | [@interzeta]#<attbyid  | attbyname>

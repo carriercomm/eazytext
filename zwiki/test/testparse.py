@@ -12,7 +12,8 @@ from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
                                    gen_psep, gen_ordmark, gen_unordmark, \
                                    gen_headtext, gen_texts, gen_row, \
                                    gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                   gen_macrowords, gen_macros, gen_xwikinames
+                                   gen_macrowords, gen_macros, \
+                                   gen_htmlwords, gen_htmls, gen_xwikinames
 
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
@@ -21,14 +22,14 @@ zwparser        = None
 words           = None
 links           = None
 macros          = None
+htmls           = None
 xwikinames      = None
 
 
 def setUpModule() :
-    global zwparser, words, links, macros, xwikinames
+    global zwparser, words, links, macros, htmls, xwikinames
     print "Initialising the parser ..."
-    zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
-                             yacc_optimize=False )
+    zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
     print "Initialising wiki ..."
     wordlist     = gen_wordlist( maxlen=20, count=200 )
     words        = gen_words( wordlist, count=200, huri_c=10, wuri_c=10 )
@@ -38,6 +39,9 @@ def setUpModule() :
     print "Initialising macros ..."
     macrowords   = gen_macrowords( maxlen=50, count=200 )
     macros       = gen_macros( macrowords, 100 )
+    print "Initialising htmls ..."
+    htmlwords    = gen_htmlwords( maxlen=50, count=200 )
+    htmls        = gen_htmls( htmlwords, 100 )
     print "Initialising wiki extension names ..."
     xwikinames   = gen_xwikinames( 100 )
     
@@ -136,29 +140,29 @@ class TestDumpsValid( object ) :
         """Testing textlines"""
         print "\nTesting textlines"
         testlist  = [ '\n'.join([ gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=1,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=1,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ]) +
                       gen_psep(randint(0,3)) for i in range(100) ]  +\
                     [ '\n'.join([ gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=0,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=0,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ]) +
                       choice(ZWMARKUP) + ' ' +
                       '\n'.join([ gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=0,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=0,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ]) +
                       choice(ZWMARKUP) + ' ' 
                       '\n'.join([ gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=0,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=0,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ])
@@ -171,7 +175,7 @@ class TestDumpsValid( object ) :
     def test_7_table( self ) :
         """Testing tables"""
         print "\nTesting tables"
-        testlist  = [ '\n'.join([ gen_row( words, links, macros )
+        testlist  = [ '\n'.join([ gen_row( words, links, macros, htmls )
                                   for j in range(randint(0,10)) ]) +
                       gen_psep(randint(0,3)) for i in range(100) ] 
         testcount = 1
@@ -184,8 +188,8 @@ class TestDumpsValid( object ) :
         print "\nTesting ordered list"
         testlist  = [ '\n'.join([ gen_ordmark() + \
                                   gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=1,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=1,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ]) +
@@ -200,8 +204,8 @@ class TestDumpsValid( object ) :
         print "\nTesting unordered list"
         testlist  = [ '\n'.join([ gen_unordmark() + \
                                   gen_texts(
-                                    words, links, macros,
-                                    tc=5, pc=1, ec=2, lc=1, mc=1, fc=1,
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=1,
                                     nopipe=True
                                   )
                                   for j in range(randint(0,10)) ]) +

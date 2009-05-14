@@ -262,11 +262,10 @@ class ZWParser( object ):
             self.style += '; ' + s_style + '; '
 
         # Pre-process the text.
-        text        += '\n'
         self.pptext = self.wiki_preprocess( text )
-        # self.pptext = escape_htmlchars( self.pptext )
 
         # parse and get the Translation Unit
+        self.pptext += '\n'
         self.tu = self.parser.parse( self.pptext,
                                      lexer=self.zwlex, debug=debuglevel )
         return self.tu
@@ -328,7 +327,7 @@ class ZWParser( object ):
     # ---------- Precedence and associativity of operators --------------------
 
     precedence = (
-        ( 'left', 'PREC_LINK', 'PREC_MACRO', ),
+        ( 'left', 'PREC_LINK', 'PREC_MACRO', 'PREC_HTML' ),
     )
     
     def p_wikipage( self, p ):                          # WikiPage
@@ -512,13 +511,15 @@ class ZWParser( object ):
         """text_contents        : basictext
                                 | link
                                 | macro
+                                | html
                                 | text_contents basictext
                                 | text_contents link
-                                | text_contents macro"""
-        if len(p) == 2 and isinstance( p[1], (Link,Macro,BasicText) ):
+                                | text_contents macro
+                                | text_contents html"""
+        if len(p) == 2 and isinstance( p[1], (Link,Macro,Html,BasicText) ):
             p[0] = TextContents( p.parser, p[1] ) 
         elif len(p) == 3 and isinstance( p[1], TextContents ) \
-                         and isinstance( p[2], (Link,Macro,BasicText) ) :
+                         and isinstance( p[2], (Link,Macro,Html,BasicText) ) :
             p[1].appendcontent( p[2] )
             p[0] = p[1]
         else :
@@ -531,6 +532,10 @@ class ZWParser( object ):
     def p_macro( self, p ):                             # Macro
         """macro                : MACRO %prec PREC_MACRO"""
         p[0] = Macro( p.parser, p[1] )
+
+    def p_html( self, p ):                             # Html
+        """html                 : HTML %prec PREC_HTML"""
+        p[0] = Html( p.parser, p[1] )
 
     def p_basictext_1( self, p ):
         """basictext            : PIPE"""
@@ -545,7 +550,9 @@ class ZWParser( object ):
                                 | SQR_OPEN
                                 | SQR_CLOSE
                                 | PARAN_OPEN
-                                | PARAN_CLOSE"""
+                                | PARAN_CLOSE
+                                | ANGLE_OPEN
+                                | ANGLE_CLOSE"""
         p[0] = BasicText( p.parser, TEXT_SPECIALCHAR, p[1] )
 
     def p_basictext_4( self, p ):

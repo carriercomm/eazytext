@@ -79,8 +79,8 @@ class TestMacroDumpsRandom( object ) :
     def test_1_clear( self ) :
         """Testing the Clear() macro"""
         print "\nTesting the Clear() macro"
-        testlist = [ '\n'.join([ gen_texts( words, [] , [],
-                                            tc=5, pc=0, ec=0, lc=0, mc=0, fc=0,
+        testlist = [ '\n'.join([ gen_texts( words, [] , [], [],
+                                            tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
                                           )
                                  for j in range(randint(0,10)) ])
@@ -105,8 +105,8 @@ class TestMacroDumpsRandom( object ) :
     def test_2_span( self ) :
         """Testing the Span() macro"""
         print "\nTesting the Span() macro"
-        testlist = [ '\n'.join([ gen_texts( words, [], [],
-                                            tc=5, pc=0, ec=0, lc=0, mc=0, fc=0,
+        testlist = [ '\n'.join([ gen_texts( words, [], [], [],
+                                            tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
                                           )
                                  for j in range(randint(0,10)) ])
@@ -140,8 +140,8 @@ class TestMacroDumpsRandom( object ) :
     def test_3_redirect( self ) :
         """Testing the Redirect() macro"""
         print "\nTesting the Redirect() macro"
-        testlist = [ '\n'.join([ gen_texts( words, [] , [],
-                                            tc=5, pc=0, ec=0, lc=0, mc=0, fc=0,
+        testlist = [ '\n'.join([ gen_texts( words, [] , [], [],
+                                            tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
                                           )
                                  for j in range(randint(0,10)) ])
@@ -173,8 +173,8 @@ class TestMacroDumpsRandom( object ) :
     def test_4_html( self ) :
         """Testing the Html() macro"""
         print "\nTesting the Html() macro"
-        testlist = [ '\n'.join([ gen_texts( words, [], [],
-                                            tc=5, pc=0, ec=0, lc=0, mc=0, fc=0,
+        testlist = [ '\n'.join([ gen_texts( words, [], [], [],
+                                            tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
                                           )
                                  for j in range(randint(0,10)) ])
@@ -202,8 +202,8 @@ class TestMacroDumpsRandom( object ) :
     def test_5_toc( self ) :
         """Testing the Toc() macro"""
         print "\nTesting the Toc() macro"
-        testlist = [ '\n'.join([ gen_texts( words, [], [],
-                                            tc=5, pc=0, ec=0, lc=0, mc=0, fc=0,
+        testlist = [ '\n'.join([ gen_texts( words, [], [], [],
+                                            tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
                                           )
                                  for j in range(randint(0,10)) ])

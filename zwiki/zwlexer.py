@@ -91,7 +91,7 @@ class ZWLexer( object ):
     tokens = (
         # RegEx tokens.
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
-        'PARAN_OPEN', 'PARAN_CLOSE', 'HTTP_URI', 'WWW_URI',
+        'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI', 'WWW_URI',
 
         # Pragmas
         'OPTIONS', 'TAGS',
@@ -104,7 +104,7 @@ class ZWLexer( object ):
         'NOWIKI_OPEN', 'NOWIKI_CLOSE', 'NOWIKI_CHARS', 'NOWIKI_SPECIALCHAR',
 
         # Special tokens
-        'LINK', 'MACRO',
+        'LINK', 'MACRO', 'HTML',
         'NEWLINE', 'ESCAPED',
     )
 
@@ -179,6 +179,10 @@ class ZWLexer( object ):
         r'\{\{[^\r\n]+\}\}'
         return t
 
+    def t_table_HTML( self, t ):
+        r"\[<[^\r\n]+>\]"
+        return t
+
     def t_ORDLIST_START( self, t ):
         r'^[ \t]*\#{1,5}'
         return t
@@ -193,6 +197,10 @@ class ZWLexer( object ):
 
     def t_MACRO( self, t ):
         r'\{\{[^\r\n]+\}\}'
+        return t
+
+    def t_HTML( self, t ):
+        r"\[<[^\r\n]+>\]"
         return t
 
     def t_ESCAPED( self, t ):
@@ -237,14 +245,18 @@ class ZWLexer( object ):
     t_SQR_CLOSE         = r'\]'
     t_PARAN_OPEN        = r'\{'
     t_PARAN_CLOSE       = r'\}'
-    t_SPECIALCHAR       = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+    t_ANGLE_OPEN        = r'\<'
+    t_ANGLE_CLOSE       = r'\>'
+    t_SPECIALCHAR       = r'[ `!@%&:;="/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
     
     t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
     t_table_SQR_OPEN     = r'\['
     t_table_SQR_CLOSE    = r'\]'
     t_table_PARAN_OPEN   = r'\{'
     t_table_PARAN_CLOSE  = r'\}'
-    t_table_SPECIALCHAR  = r'[ `!@%&:;="<>/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+    t_table_ANGLE_OPEN   = r'\<'
+    t_table_ANGLE_CLOSE  = r'\>'
+    t_table_SPECIALCHAR  = r'[ `!@%&:;="/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
 
     def t_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])
