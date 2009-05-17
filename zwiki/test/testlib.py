@@ -120,6 +120,9 @@ gen_psep     = lambda n : ''.join([ '\n' for i in range(randint(0,n)) ])
 gen_ordmark  = lambda : choice(ORDMARKUP)
 gen_unordmark= lambda : choice(UNORDMARKUP)
 gen_bqmark   = lambda : choice(BQMARKUP)
+gen_defnmark = lambda : ':' + \
+                        ''.join([ choice(alltext) for i in range(50) ]) + \
+                        '::'
 
 # generate - heading content.
 gen_headtext = lambda wordlist : choice( wordlist ).replace( '=', '' )
@@ -224,6 +227,21 @@ def random_bqformat( words, links, macros, htmls, newline, count ) :
         if count < 0 :
             break
     return bqitems
+# random - definition formatting
+def random_defnformat( words, links, macros, htmls, newline, count ) :
+    """Randomly generate wiki definitions."""
+    lines = count /10
+    defnitems  = ''
+    for i in range( lines ) :
+        defnitems += gen_defnmark()
+        for j in range(randint( 0, count )) :
+            defnitems += choice( words + links + macros + htmls + ZWMARKUP + \
+                                 BQMARKUP + ORDMARKUP + UNORDMARKUP )
+            count     -= 1
+        defnitems += newline
+        if count < 0 :
+            break
+    return defnitems
 # random - tableformatting
 def random_tableformat( words, links, macros, htmls, newline, count ) :
     """Randomly generate wiki lists."""

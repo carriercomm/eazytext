@@ -20,9 +20,6 @@
 #       * Shortcuts for image links (that would otherwise require the image
 #         macro )
 #       * Shortcuts for image macro
-#   * Definitions and Definition lists as,
-#       : definition-name1 : definition for definition-name1
-#       : definition-name2 : definition for definition-name2
 #   * Provide support for media wiki like table markup.
 #       {| styles
 #       | cell-content
@@ -364,6 +361,7 @@ class ZWParser( object ):
                                 | table_rows
                                 | orderedlists
                                 | unorderedlists
+                                | definitionlists
                                 | blockquotes
                                 | textlines"""
         p[0] = Paragraph( p.parser, p[1] )
@@ -510,6 +508,23 @@ class ZWParser( object ):
         """unorderedlist        : UNORDLIST_START text_contents NEWLINE
                                 | UNORDLIST_START empty NEWLINE"""
         p[0] = List( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
+
+    def p_definitionlists( self, p ):                    # Definitions
+        """definitionlists      : definitionlist
+                                | definitionlists definitionlist"""
+        if len(p) == 2 and isinstance( p[1], Definition ) :
+            p[0] = Definitions( p.parser, p[1] )
+        elif len(p) == 3 and isinstance( p[1], Definitions ) \
+                         and isinstance( p[2], Definition ):
+            p[1].appendlist( p[2] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for definitionlists")
+
+    def p_definitionlist( self, p ):                     # Definition
+        """definitionlist       : DEFINITION_START text_contents NEWLINE
+                                | DEFINITION_START empty NEWLINE"""
+        p[0] = Definition( p.parser, p[1], p[2], p[3] )
 
     def p_blockquotes( self, p ):                       # BQuotes
         """blockquotes          : blockquote

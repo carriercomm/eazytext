@@ -10,7 +10,7 @@ from   zwiki.zwlexer        import ZWLexer
 from   zwiki.zwparser       import ZWParser
 from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
                                    gen_psep, gen_ordmark, gen_unordmark, \
-                                   gen_bqmark, \
+                                   gen_bqmark, gen_defnmark, \
                                    gen_headtext, gen_texts, gen_row, \
                                    gen_wordlist, gen_words, gen_linkwords, gen_links,\
                                    gen_macrowords, gen_macros, \
@@ -216,7 +216,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'unordlists', t, testcount
             testcount += 1
 
-    def test_A_unordlists( self ) :
+    def test_A_blockquotes( self ) :
         """Testing blockquotes"""
         print "\nTesting blockquotes"
         testlist  = [ '\n'.join([ gen_bqmark() + \
@@ -232,7 +232,23 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'blockquotes', t, testcount
             testcount += 1
 
-    def test_B_unicode( self ) :
+    def test_B_definitions( self ) :
+        """Testing definitions"""
+        print "\nTesting definitions"
+        testlist  = [ '\n'.join([ gen_defnmark() + \
+                                  gen_texts(
+                                    words, links, macros, htmls,
+                                    tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=1,
+                                    nopipe=True
+                                  )
+                                  for j in range(randint(0,10)) ]) +
+                      gen_psep(randint(0,3)) for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'definitions', t, testcount
+            testcount += 1
+
+    def test_C_unicode( self ) :
         """Testing unicoded test"""
         print "\nTesting unicoded text"
         testlist = [ '' ]

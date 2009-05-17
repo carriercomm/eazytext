@@ -154,9 +154,9 @@ here is a long quotation here is a long quotation here is a long quotation.
 
 This is normal text here.
 
-> Indent me! The quick brown fox jumps over the lazy dog. \
-Now this the time for all good men to come to the aid of \
-their country. Notice how we can continue the block-quote \
+> Indent me! The quick brown fox jumps over the lazy dog.  \
+Now this the time for all good men to come to the aid of   \
+their country. Notice how we can continue the block-quote  \
 in the same "paragraph" by using a backslash at the end of \
 the line.
 >
@@ -165,6 +165,24 @@ the line.
 more than the previous one.
 
 Back to normal text.
+
+== Definition List ==
+
+: Definition 1 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+: Definition 2 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+: Definition 3 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+
+: Definition 4 : :: Not part of the list
+
 
 === All possible list combinations in a table
 

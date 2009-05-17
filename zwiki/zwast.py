@@ -756,6 +756,106 @@ class List( Node ) :
             raise ZWASTError( "show() : No listitem available for List() node" )
 
 
+class Definitions( Node ) :
+    """class to handle `definitionlists` grammar."""
+
+    def __init__( self, parser, definition ) :
+        self.parser = parser
+        self.listitems = [ definition ]
+
+    def appendlist( self, definition ) :
+        self.listitems.append( definition )
+
+    def children( self ) :
+        return self.listitems
+
+    def tohtml( self ) :
+        html         = '<dl>' + \
+                       ''.join([ c.tohtml() for c in self.listitems ]) + \
+                       '</dl>'
+        return html
+
+    def dump( self ) :
+        return ''.join([ c.dump() for c in self.listitems ])
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+
+        for c in self.listitems :
+            c.show( buf, offset + 2, attrnames, showcoord )
+
+
+class Definition( Node ) :
+    """class to handle `definitionlist` grammar."""
+
+    def __init__( self, parser, defnmarkup, defnitem, newline ) :
+        self.parser     = parser
+        self.defnmarkup = defnmarkup
+        defnmarkup      = defnmarkup.strip( ' \t' )
+        self.dt         = defnmarkup[1:-2]
+        if isinstance( defnitem, Empty ) :
+            self.empty        = defnitem
+            self.textcontents = None
+        elif isinstance( defnitem, TextContents ) :
+            self.textcontents = defnitem
+            self.empty        = None
+        else :
+            raise ZWASTError( "Unknown `defnitem` for Definition() node" )
+        self.newline      = Newline( parser, newline )
+
+    def children( self ) :
+        return ( self.defnmarkup, self.textcontents, self.newline )
+
+    def tohtml( self ) :
+        # Process the text contents and convert them into html
+        html = '<dt><b>' + self.dt + '</b></dt>'
+        if self.textcontents :
+            contents = []
+            [ contents.extend( item.contents )
+              for item in self.textcontents.textcontents ]
+            process_textcontent( contents )
+            dd = self.textcontents.tohtml()
+        elif self.empty :
+            dd = self.empty.tohtml()
+        else :
+            raise ZWASTError( 
+                    "tohtml() : No defnitem available for Definition() node" )
+        html += '<dd>' + dd + '</dd>'
+        return html
+
+    def dump( self ) :
+        if self.textcontents :
+            text = self.defnmarkup + self.textcontents.dump()  + \
+                   self.newline.dump()
+        elif self.empty :
+            text = self.defnmarkup + self.empty.dump()  +\
+                   self.newline.dump()
+        else :
+            raise ZWASTError(
+                    "dump() : No defnitem available for Definition() node" )
+        return text
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        buf.write( lead + 'definition: `%s` ' % self.defnmarkup )
+
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+        buf.write('\n')
+
+        if self.textcontents :
+            self.textcontents.show()
+        elif self.empty :
+            self.empty.show()
+        else :
+            raise ZWASTError(
+                    "show() : No defnitem available for Definition() node" )
+
+
 class BQuotes( Node ) :
     """class to handle `blockquotes` grammar."""
 
@@ -837,7 +937,8 @@ class BQuote( Node ) :
         elif self.empty :
             html = self.empty.tohtml()
         else :
-            raise ZWASTError( "tohtml() : No bqitem available for BQuote() node" )
+            raise ZWASTError(
+                    "tohtml() : No bqitem available for BQuote() node" )
         return html
 
     def dump( self ) :
@@ -848,7 +949,8 @@ class BQuote( Node ) :
             text = self.bqmarkup + self.empty.dump()  +\
                    self.newline.dump()
         else :
-            raise ZWASTError( "dump() : No bqitem available for BQuote() node" )
+            raise ZWASTError(
+                    "dump() : No bqitem available for BQuote() node" )
         return text
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
