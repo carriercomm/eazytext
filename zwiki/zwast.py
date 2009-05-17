@@ -7,6 +7,8 @@
 # Todo   :
 #   1. Add unicode support
 #   2. Add ismatched() method.
+#   3. For links that open in new window, append a character that would say
+#      so.
 
 import sys
 import re
@@ -754,6 +756,118 @@ class List( Node ) :
             raise ZWASTError( "show() : No listitem available for List() node" )
 
 
+class BQuotes( Node ) :
+    """class to handle `blockquotes` grammar."""
+
+    def __init__( self, parser, bq ) :
+        self.parser = parser
+        self.listitems = [ bq ]
+
+    def appendlist( self, bq ) :
+        self.listitems.append( bq )
+
+    def children( self ) :
+        return self.listitems
+
+    def tohtml( self ) :
+        html         = ''
+        closemarkups = []   # Stack to manage nested list.
+        pm   = ''
+        cm   = ''
+        for bq in self.listitems :
+            patt     = re.compile( r'[\>]{1,5}$', re.MULTILINE | re.UNICODE )
+            cm       = re.search( patt, bq.bqmarkup ).group()
+            cmpmark  = cmp( len(pm), len(cm) )  # -1 or 0 or 1
+            diffmark = abs( len(cm) - len(pm))  # 0 or 1
+            if cmpmark > 0 :
+                # previous bq markup (pm) is one or more level deeper,
+                # so end the blockquote(s)
+                html += ''.join([ closemarkups.pop() for i in range(diffmark) ])
+            elif cmpmark < 0 :
+                # current bq markup (cm) is one or more level deeper, 
+                # open new blockquote(s)
+                for i in range(diffmark) :
+                    html += '<blockquote>'
+                    closemarkups.append( '</blockquote>' )
+            html += bq.tohtml()
+            pm = cm
+        html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
+        return html
+
+    def dump( self ) :
+        return ''.join([ c.dump() for c in self.listitems ])
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+
+        for c in self.listitems :
+            c.show( buf, offset + 2, attrnames, showcoord )
+
+
+class BQuote( Node ) :
+    """class to handle `blockquote` grammar."""
+
+    def __init__( self, parser, bqmarkup, bqitem, newline ) :
+        self.parser   = parser
+        self.bqmarkup = bqmarkup
+        if isinstance( bqitem, Empty ) :
+            self.empty        = bqitem
+            self.textcontents = None
+        elif isinstance( bqitem, TextContents ) :
+            self.textcontents = bqitem
+            self.empty        = None
+        else :
+            raise ZWASTError( "Unknown `bqitem` for BQuote() node" )
+        self.newline      = Newline( parser, newline )
+
+    def children( self ) :
+        return ( self.bqmarkup, self.textcontents, self.newline )
+
+    def tohtml( self ) :
+        # Process the text contents and convert them into html
+        if self.textcontents :
+            contents = []
+            [ contents.extend( item.contents )
+              for item in self.textcontents.textcontents ]
+            process_textcontent( contents )
+            html = self.textcontents.tohtml()
+        elif self.empty :
+            html = self.empty.tohtml()
+        else :
+            raise ZWASTError( "tohtml() : No bqitem available for BQuote() node" )
+        return html
+
+    def dump( self ) :
+        if self.textcontents :
+            text = self.bqmarkup + self.textcontents.dump()  + \
+                   self.newline.dump()
+        elif self.empty :
+            text = self.bqmarkup + self.empty.dump()  +\
+                   self.newline.dump()
+        else :
+            raise ZWASTError( "dump() : No bqitem available for BQuote() node" )
+        return text
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        buf.write( lead + 'blockquote: `%s` ' % self.bqmarkup )
+
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+        buf.write('\n')
+
+        if self.textcontents :
+            self.textcontents.show()
+        elif self.empty :
+            self.empty.show()
+        else :
+            raise ZWASTError( "show() : No bqitem available for BQuote() node" )
+
+
 class TextContents( Node ) :
     """class to handle `textcontents` grammar."""
     def __init__( self, parser, item  ) : # item is Link or Macro or Html or BasicText
@@ -787,16 +901,22 @@ class Link( Node ) :
     """class to handle `link` grammer."""
 
     def __init__( self, parser, link ) :
-        # Convert the link to html.
-        # TODO: Later implement a fullfledged link processor
         self.parser = parser
+        # parse the text
+        text = ''
         tup  = link[2:-2].split( '|', 1 )
         if len(tup) == 2 :
             text = escape_htmlchars( tup[1] )
+        # parse the href and for special notations
+        href = tup[0].strip(' \t')
+        if href and href[0] == '*' :     # Open in new window
+            html = '<a target="_blank" href="' + href[1:] + '">' + \
+                   text.strip(' \t') + '</a>'
+        elif href and href[0] == '$' :   # Anchor
+            html = '<a name="' + href[1:] + '">' + text.strip(' \t') + '</a>'
         else :
-            text = tup[0]
-        href = tup[0]
-        html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
+            text = text or tup[0]
+            html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
     def children( self ) :

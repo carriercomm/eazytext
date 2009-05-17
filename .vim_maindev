@@ -24,8 +24,8 @@ nmap g :cs find g =expand("<cword>")
 nmap s :cs find s =expand("<cword>")	
 map Q gq
 map Y y$
-nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 nmap <silent> \aocom :AlignPush:AlignCtrl g /[*/]\acom:AlignPop
+nmap <silent> \t@ :AlignCtrl mIp1P1=l @:'a,.Align
 vmap \ev <Plug>Spchkev
 nmap \ec <Plug>LoadSpchk
 map \rwp <Plug>RestoreWinPosn
@@ -173,15 +173,15 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +198 zwiki/zwast.py
-badd +210 zwiki/zwlexer.py
-badd +89 zwiki/zwparser.py
+badd +333 zwiki/zwast.py
+badd +197 zwiki/zwlexer.py
+badd +67 zwiki/zwparser.py
 badd +2 zwiki/zwcore.py
-badd +41 zwiki/zwcmd.py
+badd +45 zwiki/zwcmd.py
 badd +46 zwiki/macro/__init__.py
 badd +72 zwiki/zwext/__init__.py
-badd +63 zwiki/macro/toc.py
-badd +51 zwiki/zwext/box.py
+badd +80 zwiki/macro/toc.py
+badd +83 zwiki/zwext/box.py
 badd +30 zwiki/macro/clear.py
 badd +32 zwiki/macro/span.py
 badd +9 zwiki/macro/redirect.py
@@ -189,8 +189,9 @@ badd +17 zwiki/macro/html.py
 badd +23 zwiki/zwext/html.py
 badd +25 zwiki/macro/anchor.py
 badd +2 zwiki/__init__.py
-badd +0 zwiki/test/stdfiles/creole1.0test.html
-badd +1 zwiki/test/stdfiles/creole1.0test.txt
+badd +1 zwiki/test/stdfiles/creole1.0test.html
+badd +70 zwiki/test/stdfiles/creole1.0test.txt
+badd +0 doc/zwiki-spec.notes
 args zwiki/zwast.py
 edit zwiki/zwcmd.py
 set splitbelow splitright
@@ -295,7 +296,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 45 - ((14 * winheight(0) + 21) / 42)
+let s:l = 45 - ((10 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -404,12 +405,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 366 - ((25 * winheight(0) + 21) / 42)
+let s:l = 35 - ((19 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-366
-normal! 0
+35
+normal! 017l
 tabedit zwiki/zwast.py
 set splitbelow splitright
 set nosplitbelow
@@ -518,7 +519,7 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 333
-normal! 013l
+normal! 0
 tabedit zwiki/macro/toc.py
 set splitbelow splitright
 set nosplitbelow
@@ -737,7 +738,7 @@ exe s:l
 normal! zt
 83
 normal! 0
-tabedit zwiki/test/stdfiles/creole1.0test.txt
+tabedit doc/zwiki-spec.notes
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -769,8 +770,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != ''
-setlocal filetype=
+if &filetype != 'notes'
+setlocal filetype=notes
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -828,8 +829,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != ''
-setlocal syntax=
+if &syntax != 'notes'
+setlocal syntax=notes
 endif
 setlocal tabstop=4
 setlocal tags=
@@ -840,13 +841,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 70 - ((20 * winheight(0) + 21) / 42)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-70
-normal! 044l
-tabnext 5
+1
+normal! 0
+tabnext 6
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif

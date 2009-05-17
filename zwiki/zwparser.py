@@ -5,34 +5,24 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
+#
 #   ( Testing )
+#
 #   * Unit test case for the following function,
 #       split_style()
 #   * All the macros, zwext and ZWParser should be tested for style.
+#   * Add test cases for extensions.
+#   * Test case for escaping new lines as '\\n'
 #
-#   ( Implement it right away )
+#   ( features - core )
+#
 #   * Links,
-#       * Zetalinks
-#
-#   ( future )
-#   * Add HTML interspercing feature as,
-#       <> ..... <>
-#     This markup should might define its own Grammer rules to simplify and
-#     yet support intercepersing HTML with wiki page.
-#   * Add test cases for macros and extensions.
-#   * Explore the possible addition of `indentation` feature, like,
-#       :some text          < one level indentation >
-#       ::some text         < two level indentation >
-#      while the indentation offset is configurable in the wiki style.
+#       * Shortcuts for image links (that would otherwise require the image
+#         macro )
+#       * Shortcuts for image macro
 #   * Definitions and Definition lists as,
-#       : definition-name1
-#       ; definition for definition-name1
-#       : definition-name2
-#       ; definition for definition-name2
-#   *  Block quotes. like,
-#       >
-#       >>
-#       >>>
+#       : definition-name1 : definition for definition-name1
+#       : definition-name2 : definition for definition-name2
 #   * Provide support for media wiki like table markup.
 #       {| styles
 #       | cell-content
@@ -42,46 +32,59 @@
 #   * Support merging table cells like (refer wiki-dot).
 #   * Provision for creating templates using properties. These templates can
 #     be pulled.
-#   * User addable title for Toc macro. And make it closable.
-#   * Backlinks, Pingbacks (Linkbacks )
-#   * Meta tagging support.
-#   * Zeta tagging support.
-#   * Zeta Attachment support.
-#   * Hide email-address feature.
-#   * Collapsible page contents, using zwextensions.
-#   * Links,
-#       * Zetalinks
-#       * Provision to generate links that can open in a new window,
-#           [[ *http://.... | text ]]
-#       * Shortcuts for Anchor macro.
-#       * Shortcuts for image links (that would otherwise require the image
-#         macro )
-#       * Shortcuts for image macro
-#   * Image Macro. Supporting integration with external links / sites.
-#   * Image Gallery (refer wiki-dot for more info).
-#   * Notes Macro
-#   * Code zwextensions.
-#   * Math Macro.
-#   * Math zwextensions.
-#   * Footnote macro.
-#   * Bibliography macro.
-#   * How long ago Macro.
-#   * For Toc() macro add numbering feature.
-#
-#   * All macros and extensions should accept css properties as keyword
+#     All macros and extensions should accept css properties as keyword
 #     arguments. To define a standard styling template for a wiki page.
 #     add a property name `[macro|extension]style` in the wikipage property.
 #     This is called style templating.
-#
-#   * Include macro to include pages from another wiki page.
+#   * Backlinks, Pingbacks (Linkbacks )
+#   * Hide email-address feature.
+#   * Meta tagging support.
 #   * Printable pages.
+#   * Should we add the concept of variables and namespace ?
+#
+#   ( features - macros )
+#
+#   * User addable title for Toc macro. And make it closable.
+#   * For Toc() macro add numbering feature.
+#   * Image Macro. Supporting integration with external links / sites.
+#   * Image Gallery (refer wiki-dot for more info).
+#   * Notes Macro
+#   * Math Macro (and extensions).
+#   * Footnote macro.
+#   * Bibliography macro.
+#   * How long ago Macro.
+#   * Include macro to include pages from another wiki page.
+#
+#   ( features - extensions )
+#
+#   * Collapsible page contents, using zwextensions.
+#   * Code zwextensions.
+#   * Math zwextensions (and  macros).
+#   * Tab viewing wiki contents.
+#   * Mako to be integrated with zwiki as an extension.
+#
+#   ( features - zeta )
+#
+#   * Zeta tagging support.
+#   * Zeta Attachment support.
+#   * Links,
+#       * Zetalinks
+#
+#
+#   * Explore the possible addition of `indentation` feature, like,
+#       :some text          < one level indentation >
+#       ::some text         < two level indentation >
+#      while the indentation offset is configurable in the wiki style.
+#      NOTE : indentation is not a feature of html. But can/should be achieved
+#             via CSS
 #
 # Other features,
 #   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
 #   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
 #   * Social bookmarking.
 #   * Flash support.
-#   * Tab viewing wiki contents.
+#   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
+#     macros
 
 
 import re
@@ -361,6 +364,7 @@ class ZWParser( object ):
                                 | table_rows
                                 | orderedlists
                                 | unorderedlists
+                                | blockquotes
                                 | textlines"""
         p[0] = Paragraph( p.parser, p[1] )
 
@@ -506,6 +510,23 @@ class ZWParser( object ):
         """unorderedlist        : UNORDLIST_START text_contents NEWLINE
                                 | UNORDLIST_START empty NEWLINE"""
         p[0] = List( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
+
+    def p_blockquotes( self, p ):                       # BQuotes
+        """blockquotes          : blockquote
+                                | blockquotes blockquote"""
+        if len(p) == 2 and isinstance( p[1], BQuote ) :
+            p[0] = BQuotes( p.parser, p[1] )
+        elif len(p) == 3 and isinstance( p[1], BQuotes ) \
+                         and isinstance( p[2], BQuote ):
+            p[1].appendlist( p[2] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for blockquotes")
+
+    def p_blockquote( self, p ):                        # BQuote
+        """blockquote           : BQUOTE_START text_contents NEWLINE
+                                | BQUOTE_START empty NEWLINE"""
+        p[0] = BQuote( p.parser, p[1], p[2], p[3] )
 
     def p_text_contents( self, p ) :                    # TextContents
         """text_contents        : basictext

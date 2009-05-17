@@ -98,7 +98,7 @@ class ZWLexer( object ):
 
         # Line markups
         'HORIZONTALRULE', 'HEADING',   'ORDLIST_START', 'UNORDLIST_START',
-        'TABLE_CELLSTART',
+        'BQUOTE_START', 'TABLE_CELLSTART',
 
         # Block markups
         'NOWIKI_OPEN', 'NOWIKI_CLOSE', 'NOWIKI_CHARS', 'NOWIKI_SPECIALCHAR',
@@ -189,6 +189,10 @@ class ZWLexer( object ):
 
     def t_UNORDLIST_START( self, t ):
         r'^[ \t]*\*{1,5}'
+        return t
+
+    def t_BQUOTE_START( self, t ):
+        r'^[ \t]*\>{1,5}'
         return t
 
     def t_LINK( self, t ):

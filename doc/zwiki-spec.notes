@@ -7,6 +7,7 @@ Formats :
   \n \n\r   - new line                      'new line'
 
   \\        - line break                    'line break'
+              beware of starting a new line immediately after a '\\'
   ''        - bold                          'bold'
   //        - italic                        'italic'
   '_        - underline
@@ -33,16 +34,9 @@ Formats :
   =====     - heading5
   ----      - horizontal rule               'horizontal rule'
 
-  *         - unordered list level1         'ordered list'
-  **        - unordered list level2
-  ***       - unordered list level3
-  ****      - unordered list level4
-  *****     - unordered list level5
-  #         - ordered list level1           'unordered list'
-  ##        - ordered list level2
-  ###       - ordered list level3
-  ####      - ordered list level4
-  #####     - ordered list level5
+  *{1,5}    - unordered list level 1-5      'ordered list'
+  #{1,5}    - ordered list level 1-5        'unordered list'
+  >{1,5}    - blockquoted text level 1-5    'blockquoted'
 
   |         - table start                   'table cell'
   |=        - table heading                 'table head cell'

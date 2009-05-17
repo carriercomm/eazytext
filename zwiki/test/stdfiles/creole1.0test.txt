@@ -8,8 +8,9 @@
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
 
-    Goto [[ #Subsub | other heading markups ]] for more ... \\
-    Goto [[ #anchor in list | anchor created using anchor macro ]]
+    Goto [[ #Subsub | other heading markups ]] for more ... \\ 
+    Goto [[ #anchor in list | anchor created using anchor macro ]] \\ 
+    Open the [[ *#contacts | contacts ]] in a new window
 
 == Some text markup
 
@@ -30,15 +31,15 @@ Empty markups are '''' //// are ignored.
 
 And, complex markups like '' hello // world // \\ is treated like this ''
 
-An example for indentation, \\
-{{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\
-{{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\
+An example for indentation, \\ 
+{{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\ 
+{{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\ 
 
 === Text with html special chars ===
 
->>> it = [ 1, 2, 3, ]   \\
->>> print type(it)      \\
-    < List  type ... >
+> >> it = [ 1, 2, 3, ] \\ 
+> >> print type(it)
+>>    < List  type ... >
 
 == Links ==
 
@@ -121,6 +122,49 @@ up to five levels
 ## level 2 item 2 ordered
 * level 1 item 1 unordered
 * level 1 item 2 unordered
+
+**** Level 4 item 1 unordered
+##### Level 5 item 2 ordered
+*** Level3 item 3 unordered
+
+== Block quoted text ==
+
+> ''Level 1 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+>> ''Level 2 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+>>> ''Level 3 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+>>>> ''Level 4 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+>>>>> ''Level 5 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+This is normal text here.
+
+> Indent me! The quick brown fox jumps over the lazy dog. \
+Now this the time for all good men to come to the aid of \
+their country. Notice how we can continue the block-quote \
+in the same "paragraph" by using a backslash at the end of \
+the line.
+>
+> Another block, leading to...
+>> Second level of indenting. This second is indented even \
+more than the previous one.
+
+Back to normal text.
 
 === All possible list combinations in a table
 
@@ -247,9 +291,10 @@ Tables are done like this:
 
 You can format an address by simply forcing linebreaks:
 
-My contact dates:\\
-Pone: xyz\\
-Fax: +45\\
+[[ $contacts ]]
+My contact dates:\\ 
+Pone: xyz\\ 
+Fax: +45\\ 
 Mobile: abc
 
 |= Header title               |= Another header title     |

@@ -14,6 +14,7 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_macrowords, gen_macros, \
                                  gen_htmlwords, gen_htmls, \
                                  random_textformat, random_listformat, \
+                                 random_bqformat, \
                                  random_tableformat, random_wikitext, random_wiki
 
 
@@ -109,7 +110,19 @@ class TestWikiDumpsRandom( object ) :
             yield self._test_execute, 'rnd_listformatting', t, testcount
             testcount += 1
 
-    def test_3_tableformatting( self ) :
+    def test_3_bquoteformatting( self ) :
+        """Testing by randomly injecting wiki text formatting and list markup"""
+        print "\nTesting by randomly injecting wiki text formatting and",
+        print "blockquote markup"
+        testlist = [ '#\n' ] + \
+                   [ random_bqformat( words, links, macros, htmls, '\n', 200 ) 
+                     for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'rnd_bquoteformatting', t, testcount
+            testcount += 1
+
+    def test_4_tableformatting( self ) :
         """Testing by randomly injecting wiki text formatting and table markup"""
         print "\nTesting by randomly injecting wiki text formatting and table markup"
         testlist = [ random_tableformat( words, links, macros, htmls, '\n', 200 ) 
@@ -119,7 +132,7 @@ class TestWikiDumpsRandom( object ) :
             yield self._test_execute, 'rnd_tableformatting', t, testcount
             testcount += 1
 
-    def test_4_wikitext( self ) :
+    def test_5_wikitext( self ) :
         """Testing by randomly generating wiki words and markups"""
         print "\nTesting by randomly generating wiki words and markups"
         testlist = [ random_wikitext( words, links, macros, htmls, 200 ) 
@@ -129,7 +142,7 @@ class TestWikiDumpsRandom( object ) :
             yield self._test_execute, 'rnd_wikitext', t, testcount
             testcount += 1
 
-    def test_5_wiki( self ) :
+    def test_6_wiki( self ) :
         """Testing by randomly generating wiki"""
         print "\nTesting by randomly generating wiki"
         testlist = [ random_wiki( 1000 ) for i in range(500) ]
