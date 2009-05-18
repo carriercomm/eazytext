@@ -1,0 +1,59 @@
+ Extensions to the C Language Family
+ GNU C provides several language features not found in ISO standard C. (The -pedantic option directs GCC to print a warning message if any of these features is used.) To test for the availability of these features in conditional compilation, check for a predefined macro __GNUC__, which is always defined under GCC. 
+These extensions are available in C and Objective-C. Most of them are also available in C++. See Extensions to the C++ Language, for extensions that apply only to C++. 
+Some features that are in ISO C99 but not C89 or C++ are also, as extensions, accepted by GCC in C89 mode and in C++. 
+Statement Exprs: Putting statements and declarations inside expressions. 
+Local Labels: Labels local to a block. 
+Labels as Values: Getting pointers to labels, and computed gotos. 
+Nested Functions: As in Algol and Pascal, lexical scoping of functions. 
+Constructing Calls: Dispatching a call to another function. 
+Typeof: typeof: referring to the type of an expression. 
+Conditionals: Omitting the middle operand of a `?:' expression. 
+Long Long: Double-word integers---long long int. 
+Complex: Data types for complex numbers. 
+Floating Types: Additional Floating Types. 
+Decimal Float: Decimal Floating Types. 
+Hex Floats: Hexadecimal floating-point constants. 
+Fixed-Point: Fixed-Point Types. 
+Zero Length: Zero-length arrays. 
+Variable Length: Arrays whose length is computed at run time. 
+Empty Structures: Structures with no members. 
+Variadic Macros: Macros with a variable number of arguments. 
+Escaped Newlines: Slightly looser rules for escaped newlines. 
+Subscripting: Any array can be subscripted, even if not an lvalue. 
+Pointer Arith: Arithmetic on void-pointers and function pointers. 
+Initializers: Non-constant initializers. 
+Compound Literals: Compound literals give structures, unions or arrays as values. 
+Designated Inits: Labeling elements of initializers. 
+Cast to Union: Casting to union type from any member of the union. 
+Case Ranges: `case 1 ... 9' and such. 
+Mixed Declarations: Mixing declarations and code. 
+Function Attributes: Declaring that functions have no side effects, or that they can never return. 
+Attribute Syntax: Formal syntax for attributes. 
+Function Prototypes: Prototype declarations and old-style definitions. 
+C++ Comments: C++ comments are recognized. 
+Dollar Signs: Dollar sign is allowed in identifiers. 
+Character Escapes: `\e' stands for the character <ESC>. 
+Variable Attributes: Specifying attributes of variables. 
+Type Attributes: Specifying attributes of types. 
+Alignment: Inquiring about the alignment of a type or variable. 
+Inline: Defining inline functions (as fast as macros). 
+Extended Asm: Assembler instructions with C expressions as operands. (With them you can define ``built-in'' functions.) 
+Constraints: Constraints for asm operands 
+Asm Labels: Specifying the assembler name to use for a C symbol. 
+Explicit Reg Vars: Defining variables residing in specified registers. 
+Alternate Keywords: __const__, __asm__, etc., for header files. 
+Incomplete Enums: enum foo;, with details to follow. 
+Function Names: Printable strings which are the name of the current function. 
+Return Address: Getting the return or frame address of a function. 
+Vector Extensions: Using vector instructions through built-in functions. 
+Offsetof: Special syntax for implementing offsetof. 
+Atomic Builtins: Built-in functions for atomic memory access. 
+Object Size Checking: Built-in functions for limited buffer overflow checking. 
+Other Builtins: Other built-in functions. 
+Target Builtins: Built-in functions specific to particular targets. 
+Target Format Checks: Format checks specific to particular targets. 
+Pragmas: Pragmas accepted by GCC. 
+Unnamed Fields: Unnamed struct/union fields within structs/unions. 
+Thread-Local: Per-thread variables. 
+Binary constants: Binary constants using the `0b' prefix. 

@@ -161,7 +161,7 @@ Python 2.2.2 (#1, Feb 10 2003, 12:57:01) \\
 >>> import re \\
 >>> p = re.compile('[a-z]+') \\
 >>> p \\
-~ <_sre.SRE_Pattern object at 80c3c28 ~>  \\
+<_sre.SRE_Pattern object at 80c3c28 >  \\
 
 Now, you can try matching various strings against the RE [a-z]+. An empty string shouldn't match at all, since + means 'one or more repetitions'. match() should return None in this case, which will cause the interpreter to print no output. You can explicitly print the result of match() to make this clear.
 
@@ -173,7 +173,7 @@ Now, let's try it on a string that it should match, such as tempo. In this case,
 
 >>> m = p.match('tempo') \\
 >>> print m \\
-~<_sre.SRE_Match object at 80c4f68 ~> \\
+<_sre.SRE_Match object at 80c4f68 > \\
 
 Now you can query the ''MatchObject'' for information about the matching string. ''MatchObject'' instances also have several methods and attributes; the most important ones are:
 
@@ -197,7 +197,7 @@ Trying these methods will soon clarify their meaning:
 // >>> print p.match('::: message') // \\
 None \\
 // >>> m = p.search('::: message') ; print m // \\
-~<re.MatchObject instance at 80c9650 ~>
+<re.MatchObject instance at 80c9650 >
 // >>> m.group() \\
 'message'
 // >>> m.span() \\
@@ -222,7 +222,7 @@ Two '' RegexObject '' methods return all of the matches for a pattern. // findal
 
 // >>> iterator = p.finditer('12 drummers drumming, 11 ... 10 ...') \\
 // >>> iterator \\
-~<callable-iterator object at 0x401833ac~> \\
+<callable-iterator object at 0x401833ac> \\
 //>>> for match in iterator: // \\
 // ...     print match.span() // \\
 ... \\
@@ -347,11 +347,11 @@ Some of the remaining metacharacters to be discussed are zero-width assertions. 
     Matches at the end of a line, which is defined as either the end of the string, or any location followed by a newline character.
 
     // >>> print re.search('}$', '{block}') \\
-    ~<re.MatchObject instance at 80adfa8 ~> \\
+    <re.MatchObject instance at 80adfa8 > \\
     >>> print re.search('}$', '{block} ') \\
     None \\
     >>> print re.search('}$', '{block}\n') \\
-    ~<re.MatchObject instance at 80adfa8 ~> // \\ 
+    <re.MatchObject instance at 80adfa8 > // \\ 
 
     To match a literal '$', use \$ or enclose it inside a character class, as in [$].
 
@@ -380,7 +380,7 @@ Some of the remaining metacharacters to be discussed are zero-width assertions. 
     >>> print p.search('no class at all') \\
     None \\
     >>> print p.search('\b' + 'class' + '\b') \\
-    ~<re.MatchObject instance at 80c3ee0 ~> // \\
+    <re.MatchObject instance at 80c3ee0 > // \\
 
     Second, inside a character class, where there's no use for this assertion, \b represents the backspace character, for compatibility with Python's string literals.
 

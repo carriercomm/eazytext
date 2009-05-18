@@ -1,0 +1,81 @@
+@ { 'font-family':'arial,sans-serif', 'font-size':'90%' }
+
+
+{{ Html( '<style type="text/css">' ) }}
+h1, h2, h3, h4, h5 { 
+    color : #003366;
+    margin : 0px;
+    padding: 5px 0px 2px 3px;
+    width : 100%;
+    border-bottom: 1px solid gray;
+}
+{{ Html( '</style>' ) }}
+
+{{ Toc( styles={ 'font-family' : 'arial,sans-serif' } ) }}
+
+{{{ Box
+# { 'width'  : '40%',
+#   'margin' : '10px 2px 10px 5px;',
+#   'title'  : 'GNU compiler project',
+#   'float'  : 'right',
+#   'color'  : 'blue'
+# }
+
+''Developed by''     : GNU Project \\
+''Initial release''  : May 23, 1987 (1987-05-23)[1] \\
+''Latest release''   : 4.4.0 / 2009-04-21; 21 days ago \\
+''Operating system'' : Cross-platform \\
+''Platform''         : GNU \\
+''Type''             : Compiler \\
+''License''          : GNU General Public License, GNU Lesser General Public License \\
+''Website''          :  http://gcc.gnu.org \\
+}}}
+
+{{Clear()}}
+
+
+== GNU Compiler Collection 
+
+
+===Structure
+
+GCC's external interface is generally standard for a UNIX compiler. Users invoke a driver program named gcc, which interprets command arguments, decides which language compilers to use for each input file, runs the assembler on their output, and then possibly runs the linker to produce a complete executable binary.
+
+Each of the language compilers is a separate program that inputs source code and outputs assembly code. All have a common internal structure. A per-language front end parses the source code in that language and produces an abstract syntax tree ("tree" for short).
+
+These are if necessary converted to the middle-end's input representation, called GENERIC form; the middle-end then gradually transforms the program towards its final form. [[file9.html|Compiler optimizations]] and static code analysis techniques (such as FORTIFY_SOURCE,[16] a compiler directive which attempts to discover some buffer overflows) are applied to the code. These work on multiple representation, mostly the architecture-independent GIMPLE representation and the architecture-dependent RTL representation. Finally, assembly language is produced using architecture-specific pattern matching originally based on an algorithm of Jack Davidson and Chris Fraser.
+
+GCC is written primarily in C except for parts of the Ada front end. The distribution includes the standard libraries for Ada, C++, and Java whose code is mostly written in those languages.[17]
+
+==== Front-ends
+
+Frontends vary internally, having to produce trees that can be handled by the backend. Currently, the parsers are all hand-coded recursive descent parsers, though there is no reason why a parser generator could not be used for new front-ends in the future.
+
+Until recently, the tree representation of the program was not fully independent of the processor being targeted. Confusingly, the meaning of a tree was somewhat different for different language front-ends, and front-ends could provide their own tree codes. This was simplified with the introduction of GENERIC (more complex, based on the GCC 3.x Java front-end's intermediate representation) and GIMPLE (a simplified GENERIC, in which various constructs are lowered to multiple GIMPLE instructions), two new forms of language-independent trees that were introduced in 2005 with the advent of GCC 4.0. The C, C++ and Java front ends produce GENERIC directly in the front end. Other front ends instead have different intermediate representations after parsing and convert these to GENERIC.
+
+In either case, the so-called "gimplifier" then lowers this more complex form into the simpler SSA-based GIMPLE form which is the common language for a large number of new powerful language- and architecture-independent global (function scope) optimizations.
+
+==== Optimization
+
+Optimization on trees does not generally fit into what most compiler developers would consider a front end task, as it is not language dependent and does not involve parsing. A common, even though somewhat contradictory, name for this part of the compiler is "middle end."
+
+The exact set of GCC optimizations varies from release to release as it develops, but includes the standard algorithms, such as loop optimization, jump threading, common subexpression elimination, instruction scheduling, and so forth. The RTL optimizations are of less importance with the addition of global SSA-based optimizations on GIMPLE trees,[18] as RTL optimizations have a much more limited scope, and have less high-level information.
+
+Some of these optimizations performed at this level include dead code elimination, partial redundancy elimination, global value numbering, sparse conditional constant propagation, and scalar replacement of aggregates. Array dependence based optimizations such as automatic vectorization and automatic parallelization are also performed. Profile-guided optimization is also possible as demonstrated here: http://gcc.gnu.org/install/build.html#TOC4
+
+==== Back-end
+
+The behavior of GCC's back end is partly specified by preprocessor macros and functions specific to a target architecture, for instance to define the endianness, word size, and calling conventions. The front part of the back end uses these to help decide RTL generation, so although GCC's RTL is nominally processor-independent, the initial sequence of abstract instructions is already adapted to the target. At any moment, the actual RTL instructions forming the program representation have to comply with the machine description of the target architecture.
+
+Towards the end of compilation, valid RTL is further reduced to a strict form in which each instruction refers to real machine registers and real instructions from the target's instruction set. Forming strict RTL is a very complicated task, done mostly by the register allocation first but completed only by a separate "reloading" phase which must account for the vagaries of all of GCC's targets.
+
+The final phase is somewhat anticlimactic, because the patterns to match were generally chosen during reloading, and so the assembly code is simply built by running substitutions of registers and addresses into the strings specifying the instructions.
+
+=== Debugging GCC programs
+
+The primary tool used to debug GCC code is the GNU Debugger (gdb). Among more specialized tools are Valgrind for finding memory errors and leaks. The GNU Profiler (gprof) can determine how much time is spent in which routines, and how often they are called; this requires programs to be compiled with profiling options.
+
+=== License
+
+"GCC 4.2.1 was the last release of GCC covered by version 2 of the GNU General Public License. All subsequent releases are released under GPL version 3." [19]
+
