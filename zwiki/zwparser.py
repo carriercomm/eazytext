@@ -5,25 +5,21 @@
 # Gotcha : None
 # Notes  : None
 # Todo   :
-#   * Add HTML interspercing feature as,
-#       <<>> ..... <<>>
-#     This markup should might define its own Grammer rules to simplify and
-#     yet support intercepersing HTML with wiki page.
-#   * Add test cases for macros and extensions.
-#   * Explore the possible addition of `indentation` feature, like,
-#       :some text          < one level indentation >
-#       ::some text         < two level indentation >
-#      while the indentation offset is configurable in the wiki style.
-#   * Definitions and Definition lists as,
-#       : definition-name1
-#       ; definition for definition-name1
-#       : definition-name2
-#       ; definition for definition-name2
-#   *  Block quotes. like,
-#       >
-#       >>
-#       >>>
-#   * Multiline Macros.
+#
+#   ( Testing )
+#
+#   * Unit test case for the following function,
+#       split_style()
+#   * All the macros, zwext and ZWParser should be tested for style.
+#   * Add test cases for extensions.
+#   * Test case for escaping new lines as '\\n'
+#
+#   ( features - core )
+#
+#   * Links,
+#       * Shortcuts for image links (that would otherwise require the image
+#         macro )
+#       * Shortcuts for image macro
 #   * Provide support for media wiki like table markup.
 #       {| styles
 #       | cell-content
@@ -33,44 +29,59 @@
 #   * Support merging table cells like (refer wiki-dot).
 #   * Provision for creating templates using properties. These templates can
 #     be pulled.
-#   * User addable title for Toc macro. And make it closable.
-#   * Backlinks, Pingbacks (Linkbacks )
-#   * Meta tagging support.
-#   * Zeta tagging support.
-#   * Zeta Attachment support.
-#   * Hide email-address feature.
-#   * Collapsible page contents, using zwextensions.
-#   * Links,
-#       * Provision to generate links that can open in a new window,
-#           [[ *http://.... | text ]]
-#       * Shortcuts for Anchor macro.
-#       * Shortcuts for image links (that would otherwise require the image
-#         macro )
-#       * Shortcuts for image macro
-#   * Image Macro. Supporting integration with external links / sites.
-#   * Image Gallery (refer wiki-dot for more info).
-#   * Notes Macro
-#   * Code zwextensions.
-#   * Math Macro.
-#   * Math zwextensions.
-#   * Footnote macro.
-#   * Bibliography macro.
-#   * How long ago Macro.
-#
-#   * All macros and extensions should accept css properties as keyword
+#     All macros and extensions should accept css properties as keyword
 #     arguments. To define a standard styling template for a wiki page.
 #     add a property name `[macro|extension]style` in the wikipage property.
 #     This is called style templating.
-#
-#   * Include macro to include pages from another wiki page.
+#   * Backlinks, Pingbacks (Linkbacks )
+#   * Hide email-address feature.
+#   * Meta tagging support.
 #   * Printable pages.
+#   * Should we add the concept of variables and namespace ?
+#
+#   ( features - macros )
+#
+#   * User addable title for Toc macro. And make it closable.
+#   * For Toc() macro add numbering feature.
+#   * Image Macro. Supporting integration with external links / sites.
+#   * Image Gallery (refer wiki-dot for more info).
+#   * Notes Macro
+#   * Math Macro (and extensions).
+#   * Footnote macro.
+#   * Bibliography macro.
+#   * How long ago Macro.
+#   * Include macro to include pages from another wiki page.
+#
+#   ( features - extensions )
+#
+#   * Collapsible page contents, using zwextensions.
+#   * Code zwextensions.
+#   * Math zwextensions (and  macros).
+#   * Tab viewing wiki contents.
+#   * Mako to be integrated with zwiki as an extension.
+#
+#   ( features - zeta )
+#
+#   * Zeta tagging support.
+#   * Zeta Attachment support.
+#   * Links,
+#       * Zetalinks
+#
+#
+#   * Explore the possible addition of `indentation` feature, like,
+#       :some text          < one level indentation >
+#       ::some text         < two level indentation >
+#      while the indentation offset is configurable in the wiki style.
+#      NOTE : indentation is not a feature of html. But can/should be achieved
+#             via CSS
 #
 # Other features,
 #   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
 #   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
 #   * Social bookmarking.
 #   * Flash support.
-#   * Tab viewing wiki contents.
+#   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
+#     macros
 
 
 import re
@@ -81,19 +92,11 @@ import ply.yacc
 
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwast    import *
+from   zwiki          import escape_htmlchars, split_style
 
 html_chars = [ '"', "'", '&', '<', '>' ]
 
-def escape_htmlchars( text ) :
-    """If the text is not supposed to have html characters, escape them"""
-    text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( '&amp;', text )
-    text = re.compile( r'"', re.MULTILINE | re.UNICODE ).sub( '&quot;', text )
-    text = re.compile( r'<', re.MULTILINE | re.UNICODE ).sub( '&lt;', text )
-    text = re.compile( r'>', re.MULTILINE | re.UNICODE ).sub( '&gt;', text )
-    return text
-
-
-# Wiki page properties
+# Default Wiki page properties
 wiki_css = {
     'white-space' : 'normal'
 }
@@ -189,12 +192,8 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
         self.parser.zwparser = self
-        # Styling
-        self._wiki_css = {}
-        if isinstance( style, dict ) :
-            self._wiki_css.update( style )
-        else :
-            self._wiki_css.update( wiki_css )
+        self.style    = style
+        self.debug    = lex_debug or yacc_debug
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
@@ -204,12 +203,11 @@ class ZWParser( object ):
         """The text to be parsed is pre-parsed to remove the fix unwanted
         side effects in the parser.
         Return the preprossed text"""
-        # Replace escaped new lines.
-        text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub(
-                                                                '\n', text )
-        text = text.rstrip( '~' )
-        #if text and text[-1] == '~' : 
-        #    text = text[:-1]
+        # Replace `~ ESCAPEd new lines`.
+        text = re.compile( r'~+\n', re.MULTILINE | re.UNICODE ).sub('\n', text)
+        text = text.rstrip( '~' )   # Remove trailing ESCAPE char
+        # Replace `\ ESCAPEd new lines'.
+        text = text.replace( '\\\n', '' )
         return text
 
     def _wiki_properties( self, text ) :
@@ -251,16 +249,23 @@ class ZWParser( object ):
         self.predivs      = []  # <div> elements prepend before wikipage
         self.postdivs     = []  # <div> elements append after wikipage
 
-        self.wiki_css.update( self._wiki_css )
-        props, text = self._wiki_properties( text )
-        self.wiki_css.update( props )
+        d_style, s_style = split_style( self.style )
+        d_style and self.wiki_css.update( d_style )
+        self.style       = s_style or ''
+        if not d_style and not s_style :
+            self.wiki_css.update( wiki_css )
+
+        props, text      = self._wiki_properties( text )
+        d_style, s_style = split_style( props )
+        d_style and self.wiki_css.update( d_style )
+        if s_style :
+            self.style += '; ' + s_style + '; '
 
         # Pre-process the text.
-        text        += '\n'
         self.pptext = self.wiki_preprocess( text )
-        # self.pptext = escape_htmlchars( self.pptext )
 
         # parse and get the Translation Unit
+        self.pptext += '\n'
         self.tu = self.parser.parse( self.pptext,
                                      lexer=self.zwlex, debug=debuglevel )
         return self.tu
@@ -322,7 +327,7 @@ class ZWParser( object ):
     # ---------- Precedence and associativity of operators --------------------
 
     precedence = (
-        ( 'left', 'PREC_LINK', 'PREC_MACRO', ),
+        ( 'left', 'PREC_LINK', 'PREC_MACRO', 'PREC_HTML' ),
     )
     
     def p_wikipage( self, p ):                          # WikiPage
@@ -356,6 +361,8 @@ class ZWParser( object ):
                                 | table_rows
                                 | orderedlists
                                 | unorderedlists
+                                | definitionlists
+                                | blockquotes
                                 | textlines"""
         p[0] = Paragraph( p.parser, p[1] )
 
@@ -502,17 +509,53 @@ class ZWParser( object ):
                                 | UNORDLIST_START empty NEWLINE"""
         p[0] = List( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
 
+    def p_definitionlists( self, p ):                    # Definitions
+        """definitionlists      : definitionlist
+                                | definitionlists definitionlist"""
+        if len(p) == 2 and isinstance( p[1], Definition ) :
+            p[0] = Definitions( p.parser, p[1] )
+        elif len(p) == 3 and isinstance( p[1], Definitions ) \
+                         and isinstance( p[2], Definition ):
+            p[1].appendlist( p[2] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for definitionlists")
+
+    def p_definitionlist( self, p ):                     # Definition
+        """definitionlist       : DEFINITION_START text_contents NEWLINE
+                                | DEFINITION_START empty NEWLINE"""
+        p[0] = Definition( p.parser, p[1], p[2], p[3] )
+
+    def p_blockquotes( self, p ):                       # BQuotes
+        """blockquotes          : blockquote
+                                | blockquotes blockquote"""
+        if len(p) == 2 and isinstance( p[1], BQuote ) :
+            p[0] = BQuotes( p.parser, p[1] )
+        elif len(p) == 3 and isinstance( p[1], BQuotes ) \
+                         and isinstance( p[2], BQuote ):
+            p[1].appendlist( p[2] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for blockquotes")
+
+    def p_blockquote( self, p ):                        # BQuote
+        """blockquote           : BQUOTE_START text_contents NEWLINE
+                                | BQUOTE_START empty NEWLINE"""
+        p[0] = BQuote( p.parser, p[1], p[2], p[3] )
+
     def p_text_contents( self, p ) :                    # TextContents
         """text_contents        : basictext
                                 | link
                                 | macro
+                                | html
                                 | text_contents basictext
                                 | text_contents link
-                                | text_contents macro"""
-        if len(p) == 2 and isinstance( p[1], (Link,Macro,BasicText) ):
+                                | text_contents macro
+                                | text_contents html"""
+        if len(p) == 2 and isinstance( p[1], (Link,Macro,Html,BasicText) ):
             p[0] = TextContents( p.parser, p[1] ) 
         elif len(p) == 3 and isinstance( p[1], TextContents ) \
-                         and isinstance( p[2], (Link,Macro,BasicText) ) :
+                         and isinstance( p[2], (Link,Macro,Html,BasicText) ) :
             p[1].appendcontent( p[2] )
             p[0] = p[1]
         else :
@@ -525,6 +568,10 @@ class ZWParser( object ):
     def p_macro( self, p ):                             # Macro
         """macro                : MACRO %prec PREC_MACRO"""
         p[0] = Macro( p.parser, p[1] )
+
+    def p_html( self, p ):                             # Html
+        """html                 : HTML %prec PREC_HTML"""
+        p[0] = Html( p.parser, p[1] )
 
     def p_basictext_1( self, p ):
         """basictext            : PIPE"""
@@ -539,7 +586,9 @@ class ZWParser( object ):
                                 | SQR_OPEN
                                 | SQR_CLOSE
                                 | PARAN_OPEN
-                                | PARAN_CLOSE"""
+                                | PARAN_CLOSE
+                                | ANGLE_OPEN
+                                | ANGLE_CLOSE"""
         p[0] = BasicText( p.parser, TEXT_SPECIALCHAR, p[1] )
 
     def p_basictext_4( self, p ):

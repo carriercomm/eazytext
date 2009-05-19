@@ -3,6 +3,8 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
+#   1. While testing ZWiki, make sure that the exception is not re-raised
+#      for `eval()` call.
 # Notes  : None
 # Todo   : None
 
@@ -59,10 +61,12 @@ def build_zwext( zwextnode, nowiki ) :
         break;
     nowiki = '\n'.join( nowikilines[i:] )
     try :
-        props  = eval( ''.join( props ) )
+        props = props and eval( ''.join( props ) ) or {}
         o = globals()[zwextnode.xwikiname]( props, nowiki )
     except :
         o = ZWExtension( {}, nowiki )
+        # if zwextnode.parser.zwparser.debug :
+        #     raise
     if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
     o.zwextnode = zwextnode

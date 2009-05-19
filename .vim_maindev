@@ -173,20 +173,25 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +198 zwiki/zwast.py
-badd +210 zwiki/zwlexer.py
-badd +188 zwiki/zwparser.py
+badd +333 zwiki/zwast.py
+badd +197 zwiki/zwlexer.py
+badd +67 zwiki/zwparser.py
 badd +2 zwiki/zwcore.py
-badd +41 zwiki/zwcmd.py
-badd +43 zwiki/macro/__init__.py
-badd +22 zwiki/zwext/__init__.py
-badd +72 zwiki/macro/toc.py
-badd +6 zwiki/zwext/box.py
-badd +12 zwiki/macro/clear.py
-badd +26 zwiki/macro/span.py
-badd +12 zwiki/macro/redirect.py
-badd +1 zwiki/macro/html.py
-badd +0 zwiki/zwext/html.py
+badd +45 zwiki/zwcmd.py
+badd +46 zwiki/macro/__init__.py
+badd +72 zwiki/zwext/__init__.py
+badd +80 zwiki/macro/toc.py
+badd +83 zwiki/zwext/box.py
+badd +30 zwiki/macro/clear.py
+badd +32 zwiki/macro/span.py
+badd +9 zwiki/macro/redirect.py
+badd +17 zwiki/macro/html.py
+badd +23 zwiki/zwext/html.py
+badd +25 zwiki/macro/anchor.py
+badd +2 zwiki/__init__.py
+badd +1 zwiki/test/stdfiles/creole1.0test.html
+badd +70 zwiki/test/stdfiles/creole1.0test.txt
+badd +0 doc/zwiki-spec.notes
 args zwiki/zwast.py
 edit zwiki/zwcmd.py
 set splitbelow splitright
@@ -291,12 +296,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 41 - ((20 * winheight(0) + 21) / 43)
+let s:l = 45 - ((10 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-41
-normal! 0
+45
+normal! 032l
 tabedit zwiki/zwparser.py
 set splitbelow splitright
 set nosplitbelow
@@ -400,12 +405,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 188 - ((27 * winheight(0) + 21) / 42)
+let s:l = 35 - ((19 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-188
-normal! 031l
+35
+normal! 017l
 tabedit zwiki/zwast.py
 set splitbelow splitright
 set nosplitbelow
@@ -509,13 +514,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 198 - ((28 * winheight(0) + 21) / 42)
+let s:l = 333 - ((21 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-198
-normal! 07l
-tabedit zwiki/macro/html.py
+333
+normal! 0
+tabedit zwiki/macro/toc.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -618,13 +623,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+let s:l = 80 - ((30 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+80
 normal! 0
-tabedit zwiki/zwext/html.py
+tabedit zwiki/zwext/box.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -727,13 +732,122 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
+let s:l = 83 - ((31 * winheight(0) + 21) / 42)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+83
+normal! 0
+tabedit doc/zwiki-spec.notes
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal noarabic
+setlocal autoindent
+setlocal autoread
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal completefunc=
+setlocal nocopyindent
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'notes'
+setlocal filetype=notes
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=tcq
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=2
+setlocal imsearch=2
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keymap=
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'notes'
+setlocal syntax=notes
+endif
+setlocal tabstop=4
+setlocal tags=
+setlocal textwidth=78
+setlocal thesaurus=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+silent! normal! zE
 let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 0
-tabnext 5
+tabnext 6
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
 endif

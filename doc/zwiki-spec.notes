@@ -3,21 +3,27 @@ Formats :
   @options  - option line
   @tags     - labels to add to the wiki page
   ~         - escape character              'escape'
+  \\n       - escape new line
   \n \n\r   - new line                      'new line'
 
   \\        - line break                    'line break'
+              beware of starting a new line immediately after a '\\'
   ''        - bold                          'bold'
   //        - italic                        'italic'
   '_        - underline
   '^        - superscript
   '.        - subscript
   '/        - bold and italic
+  '_        - bold and underline
+  /_        - italic and underline
   '/_       - bold, italic and underline
 
   [[        - open link, open image         'link'
   ]]        - close link, close image
   {{        - open macro                    'macro'
   }}        - close macro
+  [>        - open raw html                 'html'
+  >]        - close raw html
   {{{       - open no wiki                  'nowiki'
   }}}       - close no wiki
 
@@ -28,16 +34,9 @@ Formats :
   =====     - heading5
   ----      - horizontal rule               'horizontal rule'
 
-  *         - unordered list level1         'ordered list'
-  **        - unordered list level2
-  ***       - unordered list level3
-  ****      - unordered list level4
-  *****     - unordered list level5
-  #         - ordered list level1           'unordered list'
-  ##        - ordered list level2
-  ###       - ordered list level3
-  ####      - ordered list level4
-  #####     - ordered list level5
+  *{1,5}    - unordered list level 1-5      'ordered list'
+  #{1,5}    - ordered list level 1-5        'unordered list'
+  >{1,5}    - blockquoted text level 1-5    'blockquoted'
 
   |         - table start                   'table cell'
   |=        - table heading                 'table head cell'
@@ -97,103 +96,91 @@ List :
 
   * List can immediately succeed or preceed text in the same paragraph.
 
+Raw Html : 
+
+  Advanced users can write raw htmls using,
+  macro,
+    {{ Html( ... ) }}
+  or extension,
+    {{{ Html
+        ....
+    }}}
+  or by simply doing,
+    [< ... html \
+       content .... \
+    >]
+    note that new lines can be escaped and used between [< >]
+
+Macros : 
+  Macros are python functions that are directly callable in the wiki-markup.
+  Each macro have their own parameter specification as well as accepting the
+  `style` parameter.
+        {{ Macroname( params ... ) }}
+  Macros can span multiple line by escaping it with backslash,
+        {{ Macroname( param1, \
+                      param2, ... ) }}
+
+Extensions : 
+  Extensions can be used via nowiki-blocks. Each nowiki block carries a block
+  name as,
+        {{{ blockname
+              ....
+  This would invoke the block handler passing down the nowiki content to the
+  handler.
+
+Properties and Styles : 
+  All macros and extensions along with the main wiki page can have accept
+  CSS style as properties and / or string.
+
+Link : 
+  General syntax for links. No new line is allowed between [[  ]]
+
+        [[ link | linkname ]]
+
+        link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
+        
 Zetalinks : 
 
   Zeta links is a hyper link notation and generation syntax in the context
-of Zeta app.
+  of Zeta app.
 
   General syntax for zetalinks. (Nothing else is allowed)
 
         [[ link | linkname ]]
-        
-        link     := [InterZeta]( url | (<rsrc>:<id>)+ )
-        url      := wikipagename[#fragment] | urlpath[#fragment]
-        linkname := sequence of words to be displayed as the hyper link.
 
-        wikipagename := CamelCased single word without path seperator
-        urlpath := url path starting from '/' relative to mountpoint.
-
-        <rsrc> := 'img'  |
-                  'usr'  | 'urel' | 'lic'  | 'file' | 'tag'  | 'prj'  | 'team' |
-                  'comp' | 'mstn' | 'ver'  | 'tst'  | 'ttp'  | 'tsev' | 'tck'  |
-                  'ts'   | 'tcmt' | 'cact' | 'rev'  | 'rcmt' | 'wtp'  | 'wiki' |
-                  'wcmt' |
-
-
-  * If the link 
-
-  Image : 
-
-    img:<id>  := /url/path
-
-  Users : 
-
-    usr:<id>  := user_id | username
-    urel:<id> := userrelation_type_id | userrel_type
-
-  System : 
-
-    lic:<id>  := license_id | licensename
-    file:<id> := /url/path
-    tag:<id>  := tag_id | tagname
-
-    * /url/path is relative to environment path from the application perspective
-      and relative to mountpoint from user perspective.
-
-  Projects : 
-
-    team:<id> := projecteam_type_id | team_type
-    comp:<id> := component_id | comp_number | componentname
-    mstn:<id> := milestone_id | mstn_number | milestone_name
-    ver:<id>  := version_id | ver_number | version_name
-    prj:<id>  := project_id | projectname
-
-    * `comp_number`, `mstn_number`, `ver_number` can be used only in the
-      context of an identified project placed before it. EG,
-
-            prj:10:comp:2
-
-      will identify component number 2 of project_id 10.
-
-  Tickets : 
-
-    tst:<id>  := ticket_status_id | tck_statusname
-    ttp:<id>  := ticket_type_id   | tck_typename
-    tsev:<id> := ticket_severity_id | tck_severityname
-    tck:<id>  := ticket_id | ticket_number
-    ts:<id>   := ticket_status_history_id
-    tcmt:<id> := ticket_comment_id
-
-    * `ticket_number` can be used only in the context of a project placed
-      before it. EG,
-        
-            prj:1:tck:20
-
-  Reviews : 
-
-    cact:<id> := reviewcomment_action_id | actionname
-    rev:<id>  := review_id
-    rcmt:<id> := review_comment_id
-
-  Wiki : 
-
-    wtp:<id>  := wiki_type_id | wiki_typename
-    wiki:<id> := wiki_id | /wiki/url/path#fragment
-    wcmt:<id> := wiki_comment_id
-
-    * /wiki/url/path is same as what appears on the http url. It must be same as
-      the one stored in the database as `wikiurl`.
-    * #fragment can identify the section or subsection in the wiki page.
-
-  Source : 
-
-    src:<id> := /url/path#fragment
-
-    * /url/path is same as what appears on the http url.
-    * #fragment cna identify the source line number.
-
-  Special cases,
-
-Glossary : 
-
-mountpoint,
+        link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
+        zetalink    := [@interzeta]#<userbyid | userbyname>
+                     | [@interzeta]#<attbyid  | attbyname>
+                     | [@interzeta]#<tagbyid  | tagbyname>
+                     | [@interzeta]#<licbyid  | licbyname>
+                     | [@interzeta]#<projbyid | projbyname>
+                     | [@interzeta]#compbyid
+                     | [@interzeta]#<projbyid | projbyname>.compbynum
+                     | [@interzeta]#mstnbyid
+                     | [@interzeta]#<projbyid | projbyname>.mstnbynum
+                     | [@interzeta]#verbyid
+                     | [@interzeta]#<projbyid | projbyname>.verbynum
+                     | [@interzeta]#tckbyid
+                     | [@interzeta]#<projbyid | projbyname>.tckbynum
+                     | [@interzeta]#revbyid
+                     | [@interzeta]#<projbyid | projbyname>.revbynum
+        userbyid    := 'u'user_id
+        userbyname  := 'u'username
+        attbyid     := 'a'attachment_id
+        attbyname   := 'a'filename
+        tagbyid     := 'g'tag_id
+        tagbyname   := 'g'tagname
+        licbyid     := 'l'license_id
+        licbyname   := 'l'licensename
+        projbyid    := 'p'project_id
+        projbyname  := 'p'projectname
+        compbyid    := 'c'component_id
+        compbynum   := 'c'component_number
+        mstnbyid    := 'm'milestone_id
+        mstnbynum   := 'm'milestone_number
+        verbyid     := 'v'version_id
+        verbynum    := 'v'version_number
+        tckbyid     := 't'ticket_id
+        tckbynum    := 't'ticket_number
+        revbyid     := 'r'review_id
+        revbynum    := 'r'review_number

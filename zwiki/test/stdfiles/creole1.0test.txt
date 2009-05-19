@@ -2,13 +2,15 @@
 @   'font-family' : 'arial,sans-serif' }
 
 
-{{ Toc( index='1', width='20%' ) }}
+{{ Toc( index='1', \
+        width='20%' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
 
-    Goto [[ #Subsub | other heading markups ]] for more ... \\
-    Goto [[ #anchor in list | anchor created using anchor macro ]]
+    Goto [[ #Subsub | other heading markups ]] for more ... \\ 
+    Goto [[ #anchor in list | anchor created using anchor macro ]] \\ 
+    Open the [[ *#contacts | contacts ]] in a new window
 
 == Some text markup
 
@@ -29,15 +31,15 @@ Empty markups are '''' //// are ignored.
 
 And, complex markups like '' hello // world // \\ is treated like this ''
 
-An example for indentation, \\
-{{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\
-{{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\
+An example for indentation, \\ 
+{{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\ 
+{{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\ 
 
 === Text with html special chars ===
 
->>> it = [ 1, 2, 3, ]   \\
->>> print type(it)      \\
-    < List  type ... >
+> >> it = [ 1, 2, 3, ] \\ 
+> >> print type(it)
+>>    < List  type ... >
 
 == Links ==
 
@@ -121,11 +123,73 @@ up to five levels
 * level 1 item 1 unordered
 * level 1 item 2 unordered
 
+**** Level 4 item 1 unordered
+##### Level 5 item 2 ordered
+*** Level3 item 3 unordered
+
+== Block quoted text ==
+
+> ''Level 1 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+>> ''Level 2 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+>>> ''Level 3 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+>>>> ''Level 4 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+>>>>> ''Level 5 block quote : ''\
+Here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation  \
+here is a long quotation here is a long quotation here is a long quotation.
+
+This is normal text here.
+
+> Indent me! The quick brown fox jumps over the lazy dog.  \
+Now this the time for all good men to come to the aid of   \
+their country. Notice how we can continue the block-quote  \
+in the same "paragraph" by using a backslash at the end of \
+the line.
+>
+> Another block, leading to...
+>> Second level of indenting. This second is indented even \
+more than the previous one.
+
+Back to normal text.
+
+== Definition List ==
+
+: Definition 1 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+: Definition 2 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+: Definition 3 : :: The recommended way to test for a feature is to use the \
+python hasattr() builtin. Working out what is and is not support from the   \
+version number information is quite complex and unnessesary. For example to \
+test for lock and unlock support
+
+: Definition 4 : :: Not part of the list
+
+
 === All possible list combinations in a table
 
-{{ Html( '<table border="1" >' ) }}
-{{ Html( '<tr>' ) }}
-{{ Html( '<td>' ) }}
+[< <table border="1" > \
+   <tr> \
+   <td> \
+ >] 
 * level 1 item 1 unordered
 * level 1 item 2 unordered
 ** level 2 item 1 unordered {{ Anchor( 'anchor in list', 'Anchored here', style={ 'font-weight' : 'bold' } ) }}
@@ -144,10 +208,10 @@ up to five levels
 {{ Html( '</td>' ) }}
 {{ Html( '<td>' ) }}
 *** level 3 item 2 unordered
-{{ Html( '</td>' ) }}
-{{ Html( '</tr>' ) }}
-{{ Html( '<tr>' ) }}
-{{ Html( '<td>' ) }}
+[<</td>>]
+[<</tr>>]
+[<<tr>>]
+[<<td>>]
 ## level 2 item 1 ordered
 ## level 2 item 2 ordered
 # level 1 item 1 ordered
@@ -158,9 +222,11 @@ up to five levels
 {{ Html( '<td>' ) }}
 * level 1 item 1 unordered
 * level 1 item 2 unordered
-{{ Html( '</td>' ) }}
-{{ Html( '</tr>' ) }}
-{{ Html( '</table>' ) }}
+[<              \
+    </td>       \
+    </tr>       \
+    </table>    \
+>]
 
 You cannot have
 * multiline list,
@@ -217,7 +283,6 @@ cancellation of the Fourth East Asia Summit.
 
 {{Clear()}}
 
-Zwiki does not support {{{ inline no-wiki }}} instead use
 
 == HTML wiki extension 
 
@@ -244,13 +309,13 @@ Tables are done like this:
 
 You can format an address by simply forcing linebreaks:
 
-My contact dates:\\
-Pone: xyz\\
-Fax: +45\\
+[[ $contacts ]]
+My contact dates:\\ 
+Pone: xyz\\ 
+Fax: +45\\ 
 Mobile: abc
 
 |= Header title               |= Another header title     |
-| [[ //not italic text// ]]   | {{{ **not bold text** }}} |
 | //italic text//             | ''  bold text ''          |
 
 If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: [[WikiCreole:Creole1.0TestCases]].
@@ -265,4 +330,7 @@ If interwiki links are setup in your wiki, this links to the WikiCreole page abo
 ==== Subsub (4) ====
 ===== Subsubsub (5) =====
 
-
+{{{ Box
+This is a sample box written using wiki extensions. Note that the width is
+adjustable and you can even position it.
+}}}

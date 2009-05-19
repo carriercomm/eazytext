@@ -12,7 +12,9 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_headtext, gen_texts, gen_row, \
                                  gen_wordlist, gen_words, gen_linkwords, gen_links,\
                                  gen_macrowords, gen_macros, \
+                                 gen_htmlwords, gen_htmls, \
                                  random_textformat, random_listformat, \
+                                 random_bqformat, random_defnformat, \
                                  random_tableformat, random_wikitext, random_wiki
 
 
@@ -23,9 +25,10 @@ zwparser        = None
 words           = None
 links           = None
 macros          = None
+htmls           = None
 
 def setUpModule() :
-    global zwparser, words, links, macros
+    global zwparser, words, links, macros, htmls
     print "Initialising the parser ..."
     zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
                            yacc_optimize=False )
@@ -38,6 +41,9 @@ def setUpModule() :
     print "Initialising macros ..."
     macrowords   = gen_macrowords( maxlen=50, count=200 )
     macros       = gen_macros( macrowords, 100 )
+    print "Initialising htmls ..."
+    htmlwords    = gen_htmlwords( maxlen=50, count=200 )
+    htmls        = gen_htmls( htmlwords, 100 )
     
 def tearDownModule() :
     pass
@@ -63,9 +69,12 @@ class TestWikiDumpsRandom( object ) :
             tu      = zwparser.parse( testcontent, debuglevel=0 )
             result  = tu.dump()[:-1]
         except :
+            # open( 'testcontent', 'w' ).write( testcontent )
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
         if result != ref :
+            # open( 'result', 'w' ).write( result )
+            # open( 'ref', 'w' ).write( ref )
             print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
         assert result == ref, type+'... testcount %s'%count
 
@@ -83,7 +92,7 @@ class TestWikiDumpsRandom( object ) :
         """Testing by randomly injecting wiki text formatting markup"""
         print "Testing by randomly injecting wiki text formatting markup"
         newlines = [ '\n' ] * 5 
-        testlist = [ random_textformat( words + newlines, links, macros, 200 ) 
+        testlist = [ random_textformat( words + newlines, links, macros, htmls, 200 ) 
                      for i in range(100) ]
         testcount = 1
         for t in testlist :
@@ -94,34 +103,56 @@ class TestWikiDumpsRandom( object ) :
         """Testing by randomly injecting wiki text formatting and list markup"""
         print "\nTesting by randomly injecting wiki text formatting and list markup"
         testlist = [ '#\n' ] + \
-                   [ random_listformat( words, links, macros, '\n', 200 ) 
+                   [ random_listformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'rnd_listformatting', t, testcount
             testcount += 1
 
-    def test_3_tableformatting( self ) :
+    def test_3_bquoteformatting( self ) :
+        """Testing by randomly injecting wiki text formatting and blockquote markup"""
+        print "\nTesting by randomly injecting wiki text formatting and",
+        print "blockquote markup"
+        testlist = [ random_bqformat( words, links, macros, htmls, '\n', 200 ) 
+                     for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'rnd_bquoteformatting', t, testcount
+            testcount += 1
+
+    def test_4_defnformatting( self ) :
+        """Testing by randomly injecting wiki text formatting and definition markup"""
+        print "\nTesting by randomly injecting wiki text formatting and",
+        print "defnition markup"
+        testlist = [ random_defnformat( words, links, macros, htmls, '\n', 200 ) 
+                     for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'rnd_defnformatting', t, testcount
+            testcount += 1
+
+    def test_5_tableformatting( self ) :
         """Testing by randomly injecting wiki text formatting and table markup"""
         print "\nTesting by randomly injecting wiki text formatting and table markup"
-        testlist = [ random_tableformat( words, links, macros, '\n', 200 ) 
+        testlist = [ random_tableformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'rnd_tableformatting', t, testcount
             testcount += 1
 
-    def test_4_wikitext( self ) :
+    def test_6_wikitext( self ) :
         """Testing by randomly generating wiki words and markups"""
         print "\nTesting by randomly generating wiki words and markups"
-        testlist = [ random_wikitext( words, links, macros, 200 ) 
+        testlist = [ random_wikitext( words, links, macros, htmls, 200 ) 
                      for i in range(500) ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'rnd_wikitext', t, testcount
             testcount += 1
 
-    def test_5_wiki( self ) :
+    def test_7_wiki( self ) :
         """Testing by randomly generating wiki"""
         print "\nTesting by randomly generating wiki"
         testlist = [ random_wiki( 1000 ) for i in range(500) ]
