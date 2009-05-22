@@ -334,3 +334,31 @@ If interwiki links are setup in your wiki, this links to the WikiCreole page abo
 This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 }}}
+
+=== Imporper Tables ===
+
+|=|=|=
+
+|||=
+|=||=
+
+|
+|
+
+|
+
+=== Improper no-wiki blocks ===
+
+hello world {{{ }}}
+{{{}}}
+{{{ }}}
+{{{
+  }}}
+{{{
+    hello world
+    {{{
+          {{{
+            }}}
+{{{
+    Leaving it open
+

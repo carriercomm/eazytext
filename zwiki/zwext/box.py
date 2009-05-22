@@ -16,8 +16,8 @@ box_css = {
     'border-right'  : 'thin solid #CEF2E0',
     'border-bottom' : 'thin solid #CEF2E0',
     'border-left'   : 'thin solid #CEF2E0',
-    'position'      : 'relative',
-    'float'         : 'left',
+    #'position'      : 'relative',
+    #'float'         : 'left',
 }
 title_css = {
     'color'          : '',

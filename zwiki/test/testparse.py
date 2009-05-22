@@ -19,18 +19,39 @@ from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
-zwparser        = None
 words           = None
 links           = None
 macros          = None
 htmls           = None
 xwikinames      = None
 
+crooked_nowiki  ="""
+{{{}}}
+{{{ }}}
+{{{
+  }}}
+{{{
+    hello world
+    {{{
+          {{{
+            }}}
+{{{
+    hi world"""
+
+crooked_table  ="""
+|=|=|=
+
+|||=
+|=||=
+
+|
+|
+
+|
+"""
 
 def setUpModule() :
-    global zwparser, words, links, macros, htmls, xwikinames
-    print "Initialising the parser ..."
-    zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
+    global words, links, macros, htmls, xwikinames
     print "Initialising wiki ..."
     wordlist     = gen_wordlist( maxlen=20, count=200 )
     words        = gen_words( wordlist, count=200, huri_c=10, wuri_c=10 )
@@ -53,6 +74,8 @@ class TestDumpsValid( object ) :
     """Test cases to validate ZWiki parser."""
 
     def _test_execute( self, type, testcontent, count, ref='' ) :
+        # Initialising the parser
+        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
@@ -256,3 +279,22 @@ class TestDumpsValid( object ) :
         for t in testlist :
             yield self._test_execute, 'unordlists', t, testcount
             testcount += 1
+
+    def test_D_crooked_wikix( self ) :
+        """Testing crooked nowiki syntax"""
+        print "\nTesting crooked nowiki syntax"
+        testlist = [ crooked_nowiki, '{{{ \n hi world \n' ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'crooked_nowiki', t, testcount
+            testcount += 1
+
+    def test_E_crooked_table( self ) :
+        """Testing crooked table syntax"""
+        print "\nTesting crooked table syntax"
+        testlist = [ crooked_table ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'crooked_table', t, testcount
+            testcount += 1
+

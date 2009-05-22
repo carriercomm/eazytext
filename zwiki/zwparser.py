@@ -82,6 +82,8 @@
 #   * Flash support.
 #   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
 #     macros
+#   * When an ENDMARKER is detected by any grammar other than `wikipage`, it
+#     can be indicated to the user, via translated HTML.
 
 
 import re
@@ -95,6 +97,7 @@ from   zwiki.zwast    import *
 from   zwiki          import escape_htmlchars, split_style
 
 html_chars = [ '"', "'", '&', '<', '>' ]
+ENDMARKER  = '<{<{}>}>'
 
 # Default Wiki page properties
 wiki_css = {
@@ -265,7 +268,7 @@ class ZWParser( object ):
         self.pptext = self.wiki_preprocess( text )
 
         # parse and get the Translation Unit
-        self.pptext += '\n'
+        self.pptext += '\n' + ENDMARKER
         self.tu = self.parser.parse( self.pptext,
                                      lexer=self.zwlex, debug=debuglevel )
         return self.tu
@@ -331,13 +334,12 @@ class ZWParser( object ):
     )
     
     def p_wikipage( self, p ):                          # WikiPage
-        """wikipage             : pragmas
-                                | pragmas paragraphs
-                                | paragraphs"""
+        """wikipage             : paragraphs
+                                | paragraphs ENDMARKER"""
         if len(p) == 2 :
             p[0] = Wikipage( p.parser, p[1] )
         elif len(p) == 3 :
-            p[0] = Wikipage( p.parser, p[1], p[2] )
+            p[0] = Wikipage( p.parser, p[1] )
         else :
             raise ParseError( "unexpected rule-match for wikipage")
 
@@ -366,26 +368,26 @@ class ZWParser( object ):
                                 | textlines"""
         p[0] = Paragraph( p.parser, p[1] )
 
-    def p_pragmas( self, p ):                           # Pragmas
-        """pragmas              : OPTIONS NEWLINE
-                                | TAGS NEWLINE"""
-        p[0] = Pragmas( p.parser, p[1], p[2] )
-
     def p_nowiki( self, p ):                            # NoWiki
-        """nowikiblock          : NOWIKI_OPEN NEWLINE nowikilines NOWIKI_CLOSE NEWLINE"""
-        p[0] = NoWiki( p.parser, p[1], p[2], p[3], p[4], p[5] )
+        """nowikiblock          : NOWIKI_OPEN NEWLINE nowikilines NOWIKI_CLOSE NEWLINE
+                                | NOWIKI_OPEN NEWLINE nowikilines ENDMARKER"""
+        if len(p) == 6 :
+            p[0] = NoWiki( p.parser, p[1], p[2], p[3], p[4], p[5] )
+        elif len(p) == 5 : 
+            p[0] = NoWiki( p.parser, p[1], p[2], p[3], p[4], skip=True )
 
     def p_nowikilines( self, p ):
-        """nowikilines          : nowikicontent NEWLINE
-                                | empty NEWLINE
-                                | nowikilines nowikicontent NEWLINE
-                                | nowikilines empty NEWLINE"""
-        if len(p) == 3 and isinstance( p[1], Empty ):
-            p[0] = p[2]
+        """nowikilines          : empty
+                                | NEWLINE
+                                | nowikicontent NEWLINE
+                                | nowikilines NEWLINE
+                                | nowikilines nowikicontent NEWLINE"""
+        if len(p) == 2 and isinstance( p[1], Empty ):
+            p[0] = ''
+        elif len(p) == 2 :
+            p[0] = p[1]
         elif len(p) == 3 :
             p[0] = p[1] + p[2]
-        elif len(p) == 4 and isinstance( p[2], Empty ):
-            p[0] = p[1] + p[3]
         elif len(p) == 4 :
             p[0] = p[1] + p[2] + p[3]
         else :
@@ -619,8 +621,8 @@ class ZWParser( object ):
         p[0] = Empty( p.parser )
         
     def p_error( self, p ):
-        column = self.zwlex._find_tok_column( p )
         if p:
+            column = self.zwlex._find_tok_column( p )
             self._parse_error( 'before: %s ' % p.value, self._coord(p.lineno, column) )
         else:
             self._parse_error( 'At end of input', '' )

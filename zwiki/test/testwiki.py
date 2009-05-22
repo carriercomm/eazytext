@@ -21,17 +21,13 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
-zwparser        = None
 words           = None
 links           = None
 macros          = None
 htmls           = None
 
 def setUpModule() :
-    global zwparser, words, links, macros, htmls
-    print "Initialising the parser ..."
-    zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
-                           yacc_optimize=False )
+    global words, links, macros, htmls
     print "Initialising wiki ..."
     wordlist     = gen_wordlist( maxlen=20, count=200 )
     words        = gen_words( wordlist, count=200, huri_c=10, wuri_c=10 )
@@ -52,6 +48,9 @@ class TestWikiDumpsRandom( object ) :
     """Test cases to validate ZWiki random"""
 
     def _test_execute( self, type, testcontent, count, ref=''  ) :
+        # Initialising the parser
+        zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
+                                 yacc_optimize=False )
         # The first character is forced to be a `A` to avoid having `@` as the
         # first character
         testcontent = 'A' + testcontent

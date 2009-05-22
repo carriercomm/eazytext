@@ -20,14 +20,10 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
-zwparser        = None
 words           = None
 
 def setUpModule() :
-    global zwparser, words
-    print "Initialising the parser ..."
-    zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
-                             yacc_optimize=False )
+    global words
     print "Initialising wiki ..."
     alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     words    = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
@@ -40,6 +36,9 @@ class TestMacroDumpsRandom( object ) :
     """Test cases to validate Macro random"""
 
     def _test_execute( self, type, testcontent, count, ref='', cfunc=None  ) :
+        # Initialising the parser
+        zwparser     = ZWParser( lex_optimize=True, yacc_debug=True,
+                                 yacc_optimize=False )
         # The first character is forced to be a `A` to avoid having `@` as the
         # first character
         testcontent = 'A' + testcontent

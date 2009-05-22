@@ -214,23 +214,12 @@ class Node( object ):
 class Wikipage( Node ):
     """class to handle `wikipage` grammar."""
 
-    def __init__( self, parser, *args  ) :
-        self.parser = parser
-        if len( args ) == 1 and isinstance( args[0], Pragmas ) :
-            self.pragmas    = args[0]
-        elif len( args ) == 1 and isinstance( args[0], Paragraphs ) :
-            self.paragraphs = args[0]
-        elif len( args ) == 2 :
-            self.pragmas    = args[0]
-            self.paragraphs = args[1]
+    def __init__( self, parser, paragraphs ) :
+        self.parser     = parser
+        self.paragraphs = paragraphs
 
     def children( self ) :
-        childnames = [ 'pragmas', 'paragraphs' ]
-        nodes      = filter(
-                        None,
-                        [ getattr( self, attr, None ) for attr in childnames ]
-                     )
-        return tuple(nodes)
+        return (self.paragraphs,)
 
     def tohtml( self ):
         zwparser = self.parser.zwparser
@@ -363,52 +352,32 @@ class Paragraph( Node ) :
             c.show( buf, offset + 2, attrnames, showcoord )
 
 
-class Pragmas( Node ) :
-    """class to handle `pragmas` grammar."""
-
-    def __init__( self, parser, pragma , newline ) :
-        self.parser = parser
-        self.pragma  = pragma
-        self.newline = Newline( parser, newline )
-
-    def children( self ) :
-        return ( self.pragma, self.newline )
-
-    def tohtml( self ) :
-        return ''
-
-    def dump( self ) :
-        return self.pragma + self.newline.dump()
-
-    def show( self, buf=sys.stdout, offset=0, attrnames=False,
-              showcoord=False ) :
-        lead = ' ' * offset
-        buf.write( lead + 'pragmas: `%s` ' % self.children()[:-1] )
-
-        if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
-
-
 class NoWiki( Node ) :
     """class to handle `nowikiblock` grammar."""
 
-    def __init__( self, parser, opennowiki, opennl, nowikilines, closenowiki,
-                  closenl  ) :
+    def __init__( self, parser, opennowiki, opennl, nowikilines,
+                  closenowiki=None, closenl=None, skip=False  ) :
         self.parser       = parser
         self.xwikiname    = opennowiki[3:].strip()
         self.opennewline  = Newline( parser, opennl )
         self.nowikilines  = nowikilines
-        self.closenewline = Newline( parser, closenl )
-        self.wikixobject  = build_zwext( self, nowikilines )
-        self.nowikitext   = opennowiki  + opennl + nowikilines + \
-                            closenowiki + closenl
+        self.skip         = skip
+        if self.skip :
+            self.nowikitext   = opennowiki  + opennl + nowikilines
+        else :
+            self.closenewline = Newline( parser, closenl )
+            self.wikixobject  = build_zwext( self, nowikilines )
+            self.nowikitext   = opennowiki  + opennl + nowikilines + \
+                                closenowiki + closenl
 
     def children( self ) :
         return (self.nowikilines,)
 
     def tohtml( self ):
-        return self.wikixobject.tohtml()
+        if self.skip :
+            return ''
+        else :
+            return self.wikixobject.tohtml()
 
     def dump( self ) :
         return self.nowikitext
@@ -551,7 +520,7 @@ class TableRows( Node ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
 
     def tohtml( self ) :
-        html    = '<table border="1px" cellspacing="0" cellpadding="3px" >'
+        html    = '<table border="1px" cellspacing="0" cellpadding="5px" >'
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \

@@ -93,9 +93,6 @@ class ZWLexer( object ):
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
         'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI', 'WWW_URI',
 
-        # Pragmas
-        'OPTIONS', 'TAGS',
-
         # Line markups
         'HORIZONTALRULE', 'HEADING',   'ORDLIST_START', 'UNORDLIST_START',
         'DEFINITION_START', 'BQUOTE_START', 'TABLE_CELLSTART',
@@ -106,17 +103,10 @@ class ZWLexer( object ):
         # Special tokens
         'LINK', 'MACRO', 'HTML',
         'NEWLINE', 'ESCAPED',
+        'ENDMARKER',
     )
 
     ## Rules for the lexer.
-
-    def t_OPTIONS( self, t ):
-        r'^@options.*$'
-        return t
-
-    def t_TAGS( self, t ):
-        r'^@tags.*$'
-        return t
 
     def t_HORIZONTALRULE( self, t ):
         r'^-{4,}[ \t]*$'
@@ -136,8 +126,12 @@ class ZWLexer( object ):
         return t
 
     def t_nowiki_NOWIKI_CLOSE( self, t ):
-        r'^}}}$'
+        r'^[ \t]*}}}$'
         t.lexer.pop_state()
+        return t
+
+    def t_nowiki_ENDMARKER( self, t ):  
+        r'\<\{\<\{\}\>\}\>'
         return t
 
     def t_nowiki_NOWIKI_CHARS( self, t ):  
@@ -218,6 +212,10 @@ class ZWLexer( object ):
 
     def t_NEWLINE( self, t ):
         r'(\r?\n)|\r'
+        return t
+
+    def t_ENDMARKER( self, t ):  
+        r'\<\{\<\{\}\>\}\>'
         return t
 
     # Complex regex
