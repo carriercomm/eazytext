@@ -300,12 +300,35 @@ a tilde alone: ~
 
 a tilde escapes itself: ~~xxx
 
+=== Tables ===
+
 Tables are done like this:
 
 |=header col1|=header col2| 
 |col1|col2| col3
 |you         |can         | |
 |also      ||align\\ it. | col4 |
+
+=== Big Tables ===
+
+And big tables are done, like this :
+
+{| { "style" : "color:green; background-color:#ffffcc;", "cellpadding" : "20", \
+     "cellspacing" : "0", "border" : "5px",  \
+     "caption" : "fruits and icecreams" }
+|- { "background-color" : "white" }
+||style { "color" : "black" } | Fruits 
+||style { "color" : "black" } | Icecreams
+|-
+|                                        Orange
+|style { "background-color" : "gray" } | Apple
+|- { "style" : "font-weight : bold;", "color" : "gray" }
+| Bread
+| Pie
+|-
+| Butter
+| Ice cream 
+|}
 
 You can format an address by simply forcing linebreaks:
 
