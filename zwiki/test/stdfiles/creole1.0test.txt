@@ -14,6 +14,8 @@
 
 == Some text markup
 
+[[ +http://code.google.com/images/code_logo.png | image ]]
+
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
 More formatting, __ underline __
 superscripting, x^^2^^
@@ -67,6 +69,8 @@ And even mix html code in between <div>This text was inside html tag `div`</div>
 
 You can use nowiki syntax if you would like do stuff like this:
 
+[[ +<http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
+
 {{{ Box
 # { 'color' : 'blue', 'width' : '100%', 'border-top' : 'thin solid green',
 # 'border-bottom' : 'thin solid green', 'background' : 'Aquamarine', }
@@ -77,6 +81,7 @@ adjustable and you can even position it.
 == list ==
 You can use lists, start it at the first column for now, please...
 
+[[ +>http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
 unnumbered lists are like
 * item a
 * item b
@@ -313,22 +318,22 @@ Tables are done like this:
 
 And big tables are done, like this :
 
-{| { "style" : "color:green; background-color:#ffffcc;", "cellpadding" : "20", \
-     "cellspacing" : "0", "border" : "5px",  \
-     "caption" : "fruits and icecreams" }
-|- { "background-color" : "white" }
-||style { "color" : "black" } | Fruits 
-||style { "color" : "black" } | Icecreams
-|-
-|                                        Orange
-|style { "background-color" : "gray" } | Apple
-|- { "style" : "font-weight : bold;", "color" : "gray" }
-| Bread
-| Pie
-|-
-| Butter
-| Ice cream 
-|}
+||{ { "style" : "color:green; background-color:#ffffcc;", "cellpadding" : "20", \
+      "cellspacing" : "0", "border" : "5px",  \
+      "caption" : "fruits and icecreams" }
+||- { "background-color" : "white" }
+|| { "color" : "black" } | Fruits 
+|| { "color" : "black" } | Icecreams
+||-
+||                                        Orange
+|| { "background-color" : "gray" } | Apple
+||- { "style" : "font-weight : bold;", "color" : "gray" }
+|| Bread
+|| Pie
+||-
+|| Butter
+|| Ice cream 
+||}
 
 You can format an address by simply forcing linebreaks:
 

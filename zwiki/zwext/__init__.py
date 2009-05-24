@@ -38,9 +38,11 @@ class ZWExtension( object ) :
         pass
 
 
+from zwiki            import split_style
 from zwiki.zwext.box  import Box
 from zwiki.zwext.html import Html
 
+extnames = [ 'ZWExtension', 'Box', 'Html' ]
 
 def build_zwext( zwextnode, nowiki ) :
     """Parse the nowiki text, like,
@@ -69,6 +71,21 @@ def build_zwext( zwextnode, nowiki ) :
         #     raise
     if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
+    zwparser = zwextnode.parser.zwparser
+    # Setup templates and override them with computed extension's
+    # `style` and `css`
+    d_style, s_style = split_style( 
+                        zwparser.extstyles[o.__class__.__name__+'style'] )
+    d_style.update( getattr( o, 'css', {} ) )
+    o.css = d_style
+    o.style = s_style + getattr( o, 'style', '' )
+    # Register extension
     o.zwextnode = zwextnode
     zwextnode.parser.zwparser.regzwext( o )
     return o
+
+def extension_styles( d_style ) :
+    """Extract the extension styles and return them as a dictionary"""
+    mstyles = dict([ ( e+'style', d_style.pop( e+'style', {} ))
+                     for e in extnames ])
+    return mstyles

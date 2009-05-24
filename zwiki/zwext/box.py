@@ -47,11 +47,11 @@ class Box( ZWExtension ) :
         contentstyle = props.pop( 'contentstyle', '' )
 
         d_style, s_style = split_style( boxstyle )
-        self.boxstyle  = s_style
-        self.box_css   = {}
-        self.box_css.update( box_css )
-        self.box_css.update( props )
-        self.box_css.update( d_style )
+        self.style     = s_style
+        self.css   = {}
+        self.css.update( box_css )
+        self.css.update( props )
+        self.css.update( d_style )
 
         d_style, s_style = split_style( titlestyle )
         self.titlestyle  = s_style
@@ -68,10 +68,10 @@ class Box( ZWExtension ) :
     def tohtml( self ) :
         from   zwiki.zwparser import ZWParser
 
-        boxstyle = '; '.join([k + ' : ' + self.box_css[k] for k in self.box_css])
-        if self.boxstyle :
-            boxstyle += '; ' + self.boxstyle + '; '
-        box_div       = et.Element( 'div', { 'style' : boxstyle } )
+        style = '; '.join([k + ' : ' + self.css[k] for k in self.css])
+        if self.style :
+            style += '; ' + self.style + '; '
+        box_div       = et.Element( 'div', { 'style' : style } )
 
         titlestyle = '; '.join([ k + ' : ' + self.title_css[k] for k in self.title_css ])
         if self.titlestyle  :

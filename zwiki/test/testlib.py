@@ -22,7 +22,16 @@ ZWMARKUP_RE  = [ r"''", r'//', r'__', r'\^\^', r',,', r"'/", "'_", "/_'", r"'/_"
 ORDMARKUP    = [ '*', '**', '***', '****', '*****' ]
 UNORDMARKUP  = [ '#', '##', '###', '####', '#####' ]
 BQMARKUP     = [ '>', '>>', '>>>', '>>>>', '>>>>>' ]
+TBMARKUP     = [ '||{', '||}', '||-', '||=', '|| ' ]
 alltext      = ALPHANUM + SPECIALCHAR + ZWCHARS + LINKCHARS + MACROCHARS + HTMLCHARS
+
+styles_elements = [ 
+    { 'style' : 'color : black; background-color : white;' },
+    { 'font-weight' : 'bold' },
+    { 'font' : 'arial' },
+    { 'width' : '100%' },
+    { 'height' : '200px' },
+]
 
 # literals - to generate http and www uri
 URI_RESRVED  = r':;/@&=,\?\#\+\$'
@@ -43,7 +52,7 @@ htmltext     = ALPHANUM + SPECIALCHAR + ZWCHARS + LINKCHARS + MACROCHARS + HTMLC
 # literals - to generate wiki content
 wikilist = [ c for c in ALPHANUM + SPECIALCHAR + ZWCHARS + PIPECHAR + \
                         ESCCHAR + LINKCHARS + MACROCHARS + HTMLCHARS + NEWLINE ] + \
-                        ZWMARKUP + ORDMARKUP + UNORDMARKUP + BQMARKUP + \
+                        ZWMARKUP + ORDMARKUP + UNORDMARKUP + BQMARKUP + TBMARKUP + \
                         [ 'www.', 'http://' ]
 
 # generate - http/www uri
@@ -164,6 +173,7 @@ def gen_texts( words, links, macros, htmls, tc=1, pc=1, ec=1, lc=1, mc=1, hc=1,
 
 # generate - table cell seperator
 _gen_cellstart = lambda : ' ' * randint(0,3) + choice([ PIPECHAR, HPIPECHAR ]) + ' ' * randint(0,3)
+_gen_tbmarkup  = lambda : ' ' * randint(0,3) + choice(TBMARKUP) + ' ' * randint(0,3)
 # generate - table cells
 def _gen_cell( words, links, macros, htmls ):
     """Generate a table cell."""
@@ -181,7 +191,7 @@ def _gen_cell( words, links, macros, htmls ):
     #   Make ~ as ~~ if found at the end.
     cellwords = [ w.replace(PIPECHAR, '')
                   for w in wordlist + ewordlist + fwordlist ] +\
-                linklist + macrolist
+                linklist + macrolist + htmllist
     shuffle( cellwords )
     cell      = ''.join( cellwords )
     if cell and cell[-1] == ESCCHAR :
@@ -193,6 +203,33 @@ gen_row = lambda words, links, macros, htmls : \
                           for i in range(randint(0,4)) ]) + \
                 _gen_cellstart()
 
+# generate - table row
+def gen_btableline( words, links, macros, htmls ) :
+    wordlist  = [ choice(words) for i in range(randint(0,5)) ]
+    ewordlist = [ choice(words)+ESCCHAR+choice(words)
+                  for i in range( randint( 0,2 )) ]
+    linklist  = [ choice(links) for i in range(randint(0,2)) ]
+    macrolist = [ choice(macros) for i in range(randint(0,2)) ]
+    htmllist  = [ choice(htmls) for i in range(randint(0,2)) ]
+    fwordlist = [ _formatwords(
+                    choice(ZWMARKUP),
+                    ''.join([ choice(words) for j in range(randint(0,200)) ])
+                  ) for i in range(randint(0,2)) ]
+    # Aggregate, shuffle, join contents
+    #   Make ~ as ~~ if found at the end.
+    cellwords = wordlist + ewordlist + linklist + macrolist + htmllist + fwordlist 
+    # Styles options
+    styles = {}
+    [ styles.update( styles_elements[i] ) 
+      for i in range(randint(0,len(styles_elements))) ]
+    shuffle( cellwords )
+    cell   = ''.join( cellwords )
+    if cell and cell[-1] == ESCCHAR :
+        cell = cell + ESCCHAR
+    tbline = _gen_tbmarkup() + choice([ str(styles), '' ]) + \
+              choice([ '|', '' ]) + cell
+    return tbline
+    
 # random - textformatting
 random_textformat = lambda words, links, macros, htmls, count : \
                         ''.join([ choice( words + links + macros + htmls + ZWMARKUP )
@@ -206,7 +243,7 @@ def random_listformat( words, links, macros, htmls, newline, count ) :
         listitems += choice(ORDMARKUP + UNORDMARKUP)
         for j in range(randint( 0, count )) :
             listitems += choice( words + links + macros + htmls + ZWMARKUP + \
-                                 ORDMARKUP + UNORDMARKUP  + BQMARKUP )
+                                 ORDMARKUP + UNORDMARKUP  + BQMARKUP + TBMARKUP )
             count     -= 1
         listitems += newline
         if count < 0 :
@@ -221,7 +258,7 @@ def random_bqformat( words, links, macros, htmls, newline, count ) :
         bqitems += choice(BQMARKUP)
         for j in range(randint( 0, count )) :
             bqitems += choice( words + links + macros + htmls + ZWMARKUP + \
-                               BQMARKUP + ORDMARKUP + UNORDMARKUP )
+                               BQMARKUP + TBMARKUP + ORDMARKUP + UNORDMARKUP )
             count     -= 1
         bqitems += newline
         if count < 0 :
@@ -236,7 +273,7 @@ def random_defnformat( words, links, macros, htmls, newline, count ) :
         defnitems += gen_defnmark()
         for j in range(randint( 0, count )) :
             defnitems += choice( words + links + macros + htmls + ZWMARKUP + \
-                                 BQMARKUP + ORDMARKUP + UNORDMARKUP )
+                                 BQMARKUP + TBMARKUP + ORDMARKUP + UNORDMARKUP )
             count     -= 1
         defnitems += newline
         if count < 0 :
@@ -261,7 +298,7 @@ def random_tableformat( words, links, macros, htmls, newline, count ) :
 random_wikitext = lambda words, links, macros, htmls, count : \
                     ''.join([ choice( words + links + macros + htmls + ZWMARKUP + \
                                       [ NEWLINE, PIPECHAR ] + ORDMARKUP + \
-                                      UNORDMARKUP + BQMARKUP )
+                                      UNORDMARKUP + BQMARKUP + TBMARKUP  )
                               for i in range( count ) ])
 random_wiki     = lambda count : \
                     ''.join([ choice( wikilist ) for i in range( count ) ])

@@ -1,19 +1,20 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html><body><div class="wikiblk"><div style="position : relative; white-space : normal; float : left; font-family : arial,sans-serif; width : 70%;">
+<html><body><div class="wikiblk"><div style="position : relative; white-space : normal; float : left; font-family : arial,sans-serif; width : 70%; ; ">
 
-<p>{{ Toc( index='1', \
-        width='20%' ) }}
+<p>
 </p>
 <p><h1> Top-level heading<a style="visibility : hidden;" name="Top-level heading">&#167;</a></h1>
 </p><p>    This sample markup is taken from creole and modified to zwiki markup.
 </p>
-<p>    Goto <a href=" #Subsub ">other heading markups</a> for more ... <br></br> 
-    Goto <a href=" #anchor in list ">anchor created using anchor macro</a> <br></br> 
-    Open the <a href=" *#contacts ">contacts</a> in a new window
+<p>    Goto <a href="#Subsub">other heading markups</a> for more ... <br></br> 
+    Goto <a href="#anchor in list">anchor created using anchor macro</a> <br></br> 
+    Open the <a target="_blank" href="#contacts">contacts</a> in a new window
 </p>
 <p><h2> Some text markup<a style="visibility : hidden;" name="Some text markup">&#167;</a></h2>
+</p>
+<p><img src="http://code.google.com/images/code_logo.png" alt="image" style=""></img>
 </p>
 <p>You can make things <strong>bold</strong> or <em>italic</em> or <strong><em>both</em></strong> but /'not this one'/.
 More formatting, <u> underline </u>
@@ -38,10 +39,7 @@ This line is single line <br></br> but uses line break markup to split the line.
 </p>
 <p><h3> Text with html special chars<a style="visibility : hidden;" name="Text with html special chars">&#167;</a></h3>
 </p>
-<p>&gt; &gt;&gt; it = [ 1, 2, 3, ] <br></br> 
-&gt; &gt;&gt; print type(it)
-&gt;&gt;    &lt; List  type ... &gt;
-</p>
+<p><blockquote> &gt;&gt; it = [ 1, 2, 3, ] <br></br>  &gt;&gt; print type(it)<blockquote>    &lt; List  type ... &gt;</blockquote></blockquote></p>
 <p><h2> Links<a style="visibility : hidden;" name="Links">&#167;</a></h2>
 </p>
 <p>You can use <a href="internal links">internal links</a> or <a href="http://www.wikicreole.org">external links</a>,
@@ -67,18 +65,17 @@ something like foo:</em>bar// should render as italic.
 </p>
 <p>You can use nowiki syntax if you would like do stuff like this:
 </p>
-<<<<<<< TREE
-<p><div style="float : left; color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0; position : relative"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px;"><p>This is a sample box written using wiki extensions. Note that the width is
-=======
+<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : left;"></img>
+</p>
 <p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
->>>>>>> MERGE-SOURCE
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
 <p><h2> list<a style="visibility : hidden;" name="list">&#167;</a></h2>
 </p><p>You can use lists, start it at the first column for now, please...
 </p>
-<p>unnumbered lists are like
+<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : right;"></img>
+unnumbered lists are like
 </p><p><ul><li> item a</li><li> item b</li><li> <strong>bold item c</strong></li></ul></p>
 <p>blank space is also permitted before lists like:
 </p><p><ul><li>   item a</li><li> item b</li><li> item c</li><ul><li> item c.a</li></ul></ul></p>
@@ -92,77 +89,23 @@ adjustable and you can even position it.
 <p><ul><ul><ul><ul><li> Level 4 item 1 unordered</li></ul></ul></ul></ul></p><p><ol><ol><ol><ol><ol><li> Level 5 item 2 ordered</li></ol></ol></ol></ol></ol></p><p><ul><ul><ul><li> Level3 item 3 unordered</li></ul></ul></ul></p>
 <p><h2> Block quoted text<a style="visibility : hidden;" name="Block quoted text">&#167;</a></h2>
 </p>
-<p>&gt; <strong>Level 1 block quote : </strong>\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation.
-&gt;&gt; <strong>Level 2 block quote : </strong>\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation.
-&gt;&gt;&gt; <strong>Level 3 block quote : </strong>\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation.
-</p>
-<p>&gt;&gt;&gt;&gt; <strong>Level 4 block quote : </strong>\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation.
-</p>
-<p>&gt;&gt;&gt;&gt;&gt; <strong>Level 5 block quote : </strong>\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation.
-</p>
+<p><blockquote> <strong>Level 1 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<blockquote> <strong>Level 2 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<blockquote> <strong>Level 3 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></p>
+<p><blockquote><blockquote><blockquote><blockquote> <strong>Level 4 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></blockquote></p>
+<p><blockquote><blockquote><blockquote><blockquote><blockquote> <strong>Level 5 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></blockquote></blockquote></p>
 <p>This is normal text here.
 </p>
-<<<<<<< TREE
-<p>&gt; Indent me! The quick brown fox jumps over the lazy dog.  \
-Now this the time for all good men to come to the aid of   \
-their country. Notice how we can continue the block-quote  \
-in the same &quot;paragraph&quot; by using a backslash at the end of \
-the line.
-&gt;
-&gt; Another block, leading to...
-&gt;&gt; Second level of indenting. This second is indented even \
-more than the previous one.
-</p>
-=======
 <p><blockquote> Indent me! The quick brown fox jumps over the lazy dog.  Now this the time for all good men to come to the aid of   their country. Notice how we can continue the block-quote  in the same &quot;paragraph&quot; by using a backslash at the end of the line. Another block, leading to...<blockquote> Second level of indenting. This second is indented even more than the previous one.</blockquote></blockquote></p>
->>>>>>> MERGE-SOURCE
 <p>Back to normal text.
 </p>
 <p><h2> Definition List<a style="visibility : hidden;" name="Definition List">&#167;</a></h2>
 </p>
-<<<<<<< TREE
-<p>: Definition 1 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
-test for lock and unlock support
-: Definition 2 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
-test for lock and unlock support
-: Definition 3 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
-test for lock and unlock support
-</p>
-<p>: Definition 4 : :: Not part of the list
-</p>
-=======
 <p><dl><dt><b> Definition 1 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd><dt><b> Definition 2 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd><dt><b> Definition 3 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd></dl></p>
 <p><dl><dt><b> Definition 4 : </b></dt><dd> Not part of the list</dd></dl></p>
->>>>>>> MERGE-SOURCE
 
 <p><h3> All possible list combinations in a table<a style="visibility : hidden;" name="All possible list combinations in a table">&#167;</a></h3>
 </p>
-<p>[&lt; &lt;table border=&quot;1&quot; &gt; \
-   &lt;tr&gt; \
-   &lt;td&gt; \
- &gt;] 
-</p><p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style="font-weight : bold">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p></td>
+ <table border="1" >    <tr>    <td>   
+<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style="font-weight : bold">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p></td>
 <td>
 <p><ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol></ol></p></td>
 </tr>
@@ -170,18 +113,14 @@ test for lock and unlock support
 <td>
 <p><ul><ul><ul><li> level 3 item 1 unordered</li></ul></ul></ul></p></td>
 <td>
-<p><ul><ul><ul><li> level 3 item 2 unordered</li></ul></ul></ul></p><p>[&lt;&lt;/td&gt;&gt;]
-[&lt;&lt;/tr&gt;&gt;]
-[&lt;&lt;tr&gt;&gt;]
-[&lt;&lt;td&gt;&gt;]
-</p><p><ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol></ol></p></td>
+<p><ul><ul><ul><li> level 3 item 2 unordered</li></ul></ul></ul></p></td>
+</tr>
+<tr>
 <td>
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p><p>[&lt;              \
-    &lt;/td&gt;       \
-    &lt;/tr&gt;       \
-    &lt;/table&gt;    \
-&gt;]
-</p>
+<p><ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol></ol></p></td>
+<td>
+<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>                  </td>           </tr>           </table>    
+
 <p>You cannot have
 </p><p><ul><li> multiline list,</li></ul></p><p>items
 </p>
@@ -190,11 +129,7 @@ test for lock and unlock support
 <p>This line demonstrates the <span style="padding-right : 2px; padding-bottom : 2px; color : green; padding-top : 2px; border : thin solid red; padding-left : 2px">Span Macro</span>
 </p>
 <p><h2> Box Wiki extensions<a style="visibility : hidden;" name="Box Wiki extensions">&#167;</a></h2>
-<<<<<<< TREE
-</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; position : relative; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; float : left; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px;">
-=======
 </p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; ">
->>>>>>> MERGE-SOURCE
 <p>The Joseph Priestley House was the American home of 18th-century British
 theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
@@ -208,11 +143,7 @@ due to low visitation and budget cuts.
 <p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
 </div></div></div></p>
-<<<<<<< TREE
-<p><div style="width : 48%; border-top : thin solid #CEF2E0; position : relative; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; float : left; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px;">
-=======
 <p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; ">
->>>>>>> MERGE-SOURCE
 <p>Four people associated with the torrent tracking website The Pirate Bay,
 including co-founder Peter Sunde (pictured), are found guilty of promoting
 copyright infringements.
@@ -247,11 +178,7 @@ cancellation of the Fourth East Asia Summit.
 </p>
 <p>Tables are done like this:
 </p>
-<<<<<<< TREE
-<p><table border="1" cellspacing="0" cellpadding="3px" ><tr><th>header col1</th><th>header col2</th><td> </td>
-=======
 <p><table border="1px" cellspacing="0" cellpadding="5px" ><tr><th>header col1</th><th>header col2</th><td> </td>
->>>>>>> MERGE-SOURCE
 </tr><tr><td>col1</td><td>col2</td><td> col3</td>
 </tr><tr><td>you</td><td>can</td><td></td>
 </tr><tr><td>also</td><td></td><td>align<br></br> it. </td><td> col4</td>
@@ -260,20 +187,16 @@ cancellation of the Fourth East Asia Summit.
 </p>
 <p>And big tables are done, like this :
 </p>
-<p><table border="5px" cellspacing="0" cellpadding="20" style="cellpadding : 20; border : 5px; cellspacing : 0; caption : fruits and icecreams; color:green; background-color:#ffffcc;;"><caption>fruits and icecreams</caption><tr style="background-color : white; ;"><th style="color : black; "> Fruits </th><th style="color : black; "> Icecreams</th></tr><tr style="; ;"><td style="; ">                                       Orange</td><td style="background-color : gray; "> Apple</td></tr><tr style="color : gray; font-weight : bold;;"><td style="; ">Bread</td><td style="; ">Pie</td></tr><tr style="; ;"><td style="; ">Butter</td><td style="; ">Ice cream </td></tr></table></p>
+<p><table border="5px" cellspacing="0" cellpadding="20" style="cellpadding : 20; border : 5px; cellspacing : 0; caption : fruits and icecreams;color:green; background-color:#ffffcc;"><caption>fruits and icecreams</caption><tr style="background-color : white;"><td style="color : black;"> Fruits </td><td style="color : black;"> Icecreams</td></tr><tr style=";"><td style=";">                                       Orange</td><td style="background-color : gray;"> Apple</td></tr><tr style="color : gray;font-weight : bold;"><td style=";">Bread</td><td style=";">Pie</td></tr><tr style=";"><td style=";">Butter</td><td style=";">Ice cream </td></tr></table></p>
 <p>You can format an address by simply forcing linebreaks:
 </p>
-<p><a href=" $contacts ">$contacts</a>
+<p><a name="contacts"></a>
 My contact dates:<br></br> 
 Pone: xyz<br></br> 
 Fax: +45<br></br> 
 Mobile: abc
 </p>
-<<<<<<< TREE
-<p><table border="1" cellspacing="0" cellpadding="3px" ><tr><th> Header title</th><th> Another header title</th>
-=======
 <p><table border="1px" cellspacing="0" cellpadding="5px" ><tr><th> Header title</th><th> Another header title</th>
->>>>>>> MERGE-SOURCE
 </tr><tr><td> <em>italic text</em>             </td><td> <strong>  bold text </strong>          </td>
 </tr></table></p>
 <p>If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: <a href="WikiCreole:Creole1.0TestCases">WikiCreole:Creole1.0TestCases</a>.
@@ -288,9 +211,6 @@ Mobile: abc
 </p><p><h4> Subsub (4)<a style="visibility : hidden;" name="Subsub (4)">&#167;</a></h4>
 </p><p><h5> Subsubsub (5)<a style="visibility : hidden;" name="Subsubsub (5)">&#167;</a></h5>
 </p>
-<<<<<<< TREE
-<p></p>
-</div></div></body></html>=======
 <p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
@@ -312,4 +232,4 @@ adjustable and you can even position it.
 <p>hello world 
 
 
-</p><p></p><p></p><p></p></div><div name="TOC" style="float : left; padding-bottom : 3px; margin-bottom : 10px; width : 20%; margin-top : 10px; padding-right : 3px; margin-left : 10px; background : #f8f7bc; margin-right : 10px; position : relative; padding-top : 3px; padding-left : 3px"><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All possible list combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block quoted text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All possible list combinations in a table">All possible list combinations in a table</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#HTML wiki extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1)">Top-level heading (1)</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 2em;"><a href="#Imporper Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper no-wiki blocks">Improper no-wiki blocks</a></div></div></div></body></html>>>>>>>> MERGE-SOURCE
+</p><p></p><p></p><p></p></div><div name="TOC" style="float : left; padding-bottom : 3px; margin-bottom : 10px; width : 20%; margin-top : 10px; padding-right : 3px; margin-left : 10px; background : #f8f7bc; margin-right : 10px; position : relative; padding-top : 3px; padding-left : 3px"><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All possible list combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block quoted text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All possible list combinations in a table">All possible list combinations in a table</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#HTML wiki extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1)">Top-level heading (1)</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 2em;"><a href="#Imporper Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper no-wiki blocks">Improper no-wiki blocks</a></div></div></div></body></html>

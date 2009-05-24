@@ -37,12 +37,15 @@ class ZWMacro( object ) :
         pass
 
 
+from zwiki                import split_style
 from zwiki.macro.span     import Span
 from zwiki.macro.toc      import Toc
 from zwiki.macro.clear    import Clear
 from zwiki.macro.anchor   import Anchor
 from zwiki.macro.html     import Html  
 from zwiki.macro.redirect import Redirect  
+
+macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect' ]
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,
@@ -57,6 +60,21 @@ def build_macro( macronode, macro ) :
         #     raise
     if not isinstance( o, ZWMacro ) :
         o = ZWMacro()
+    zwparser = macronode.parser.zwparser
+    # Setup templates and override them with computed macronode's 
+    # `style` and `css`
+    d_style, s_style = split_style( 
+                        zwparser.macrostyles[o.__class__.__name__+'style'] )
+    d_style.update( getattr( o, 'css', {} ) )
+    o.css = d_style
+    o.style = s_style + getattr( o, 'style', '' )
+    # Register macro-node
     o.macronode = macronode
-    macronode.parser.zwparser.regmacro( o )
+    zwparser.regmacro( o )
     return o
+
+def macro_styles( d_style ) :
+    """Extract the macro styles and return them as a dictionary"""
+    mstyles = dict([ ( m+'style', d_style.pop( m+'style', {} ))
+                     for m in macronames ])
+    return mstyles

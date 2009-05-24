@@ -16,7 +16,7 @@ import cElementTree as et
 
 from   zwiki.macro    import build_macro
 from   zwiki.zwext    import build_zwext
-from   zwiki          import escape_htmlchars
+from   zwiki          import escape_htmlchars, split_style
 
 # text type for BasicText
 TEXT_ZWCHARPIPE      = 'zwcharpipe'
@@ -42,6 +42,8 @@ FORMAT_ITALICUNDERLINE = 'fmt_italicunderline'
 FORMAT_BOLDITALICUNDERLINE = 'fmt_bolditalicunderline'
 FORMAT_NON           = 'fmt_non'
 FORMAT_EMPTY         = 'fmt_empty'
+FORMAT_BTABLE        = 'fmt_bt'
+FORMAT_BTABLESTYLE   = 'fmt_btstyle'
 
 # List Type
 LIST_ORDERED         = 'ordered'
@@ -506,6 +508,150 @@ class TextLines( Node ) :
             linecount += 1
             textcontent.show( buf, offset + 2, attrnames, showcoord )
             newline.show( buf, offset + 2, attrnames, showcoord )
+
+
+class BtableRows( Node ) :
+    """class to handle `btablerows` grammar"""
+
+    def __init__( self, parser, row ) :
+        self.parser = parser
+        self.rows   = [ row ]
+
+    def appendrow( self, row ) :
+        self.rows.append( row )
+
+    def children( self ) :
+        return self.rows
+
+    def tohtml( self ) :
+        html       = ''
+        closerow   = []       # Stack to manage rows
+        closetable = []       # Stack to manage table
+        for row in self.rows :
+            mrkup = row.rowmarkup.lstrip( ' \t' )[:3]
+            style = row.style()
+            d_style, s_style = split_style( style )
+            style = '; '.join([ k + ' : ' + d_style[k] for k in d_style ]) + \
+                    ';' + s_style
+            if mrkup == '||{' : # open table
+                if closetable : continue
+                border      = d_style.pop( 'border', '1px' )
+                cellspacing = d_style.pop( 'cellspacing', '0' )
+                cellpadding = d_style.pop( 'cellpadding', '5px' )
+                caption     = d_style.pop( 'caption', '' )
+                html  += '<table border="' + border + '" cellspacing="' + \
+                         cellspacing + '" cellpadding="' + cellpadding + \
+                         '" style="' + style + '">'
+                if caption :
+                    html  += '<caption>' + caption + '</caption>'
+                closetable.append( '</table>' )
+            elif mrkup == '||-' : # Row
+                if closerow :
+                    html += closerow.pop()
+                html += '<tr style="' + style + '">'
+                closerow.append( '</tr>' )
+            elif mrkup == '||=' : # header cell
+                html += '<th style="' + style + '">' + row.tohtml() + '</th>'
+            elif mrkup == '|| ' : # Cell
+                html += '<td style="' + style + '">' + row.tohtml() + '</td>'
+            elif mrkup == '||}' : # close table
+                pass
+
+        if closerow :
+            html+= ''.join([ closerow.pop() for i in range(len(closerow)) ])
+        if closetable :
+            html+= ''.join([ closetable.pop() for i in range(len(closetable)) ])
+        return html
+
+    def dump( self ) :
+        return ''.join([ row.dump() for row in self.rows ])
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+
+        for row in self.rows :
+            row.show( buf, offset + 2, attrnames, showcoord )
+
+
+class BtableRow( Node ) :
+    """class to handle `btablerow` grammar"""
+
+    def __init__( self, parser, rowmarkup, rowitem, newline, type=None ) :
+        self.parser    = parser
+        self.rowtype   = type
+        self.rowmarkup = rowmarkup
+        if isinstance( rowitem, Empty ) :
+            self.empty        = rowitem
+            self.textcontents = None
+        elif isinstance( rowitem, TextContents ) :
+            self.textcontents = rowitem
+            self.empty        = None
+        else :
+            raise ZWASTError( "Unknown `rowitem` for BtableRow() node" )
+        self.newline = Newline( parser, newline )
+
+    def children( self ) :
+        return ( self.rowmarkup, self.textcontents, self.newline )
+
+    def tohtml( self ) :
+        html = ''
+        mrkup = self.rowmarkup.lstrip( ' \t' )[:3]
+        if mrkup in [ '|| ', '||=' ] and self.textcontents:
+            contents = []
+            [ contents.extend( item.contents )
+              for item in self.textcontents.textcontents ]
+            process_textcontent( contents )
+            html += self.textcontents.tohtml()
+        return html
+
+    def style( self ) :
+        mrkup = self.rowmarkup.lstrip( ' \t' )[:3]
+        style = {}
+        if mrkup in [ '||{', '||-' ] :
+            if self.rowtype == FORMAT_BTABLESTYLE :
+                try :
+                    style = eval( self.rowmarkup.lstrip( ' \t' )[3:-1] )
+                except :
+                    style = {}
+            else :
+                try :
+                    style = self.textcontents and \
+                            eval( self.textcontents.dump() ) or {}
+                except :
+                    style = {}
+        elif mrkup in [ '|| ', '||=' ] and self.rowtype == FORMAT_BTABLESTYLE :
+            try :
+                style = eval( self.rowmarkup.lstrip( ' \t' )[3:-1] )
+            except :
+                style = {}
+        return style
+
+    def dump( self ) :
+        if self.textcontents :
+            text = self.rowmarkup + self.textcontents.dump() + \
+                   self.newline.dump()
+        elif self.empty :
+            text = self.rowmarkup + self.empty.dump() + self.newline.dump()
+        else :
+            raise ZWASTError( "dump() : No item available for BtableRow() node" )
+        return text
+
+    def show( self, buf=sys.stdout, offset=0, attrnames=False,
+              showcoord=False ) :
+        lead = ' ' * offset
+        buf.write( lead + 'btablerow : `%s`' % self.rowmarkup )
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+        buf.write( '\n' )
+        if self.textcontents :
+            self.textcontents.show()
+        elif self.empty :
+            self.empty.show()
+        else :
+            raise ZWASTError( "show() : No bqitem available for BtableRow() node" )
 
 
 class TableRows( Node ) :
@@ -980,11 +1126,22 @@ class Link( Node ) :
             text = escape_htmlchars( tup[1] )
         # parse the href and for special notations
         href = tup[0].strip(' \t')
-        if href and href[0] == '*' :     # Open in new window
+        if href and href[0] == '*' :        # link Open in new window
             html = '<a target="_blank" href="' + href[1:] + '">' + \
                    text.strip(' \t') + '</a>'
-        elif href and href[0] == '$' :   # Anchor
+        elif href and href[0] == '$' :      # Anchor
             html = '<a name="' + href[1:] + '">' + text.strip(' \t') + '</a>'
+        elif href and href[0] == '+' :      # Image
+            style = ''
+            src   = href[1:]
+            if src and src[0] == '<' :
+                style = 'float : left;'
+                src   = src[1:]
+            elif src and src[0] == '>' :
+                style = 'float : right;'
+                src   = src[1:]
+            html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
+                    '" style="' + style + '"></img>'
         else :
             text = text or tup[0]
             html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'

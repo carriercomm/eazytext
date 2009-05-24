@@ -14,7 +14,9 @@ class Html( ZWMacro ) :
     """Implements Html() Macro"""
 
     def __init__( self, html='' ) :
-        self.html = html
+        self.html  = html
+        self.style = ''
+        self.css   = {}
 
     def tohtml( self ) :
         return self.html

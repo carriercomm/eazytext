@@ -184,3 +184,16 @@ Zetalinks :
         tckbynum    := 't'ticket_number
         revbyid     := 'r'review_id
         revbynum    := 'r'review_number
+
+  * To open in a new window, prepend,
+        * to the 'link'
+  * To create an anchore, prepend,
+        $ to the 'link', which will be taken as the anchor name.
+
+  To create an image,
+
+    [[ +<imglink> | altname ]]
+    [[ +<<imglink> | altname ]]     float right
+    [[ +><imglink> | altname ]]     float left
+
+    {{ Image( imglink, alt, href, *attr ) }}

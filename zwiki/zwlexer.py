@@ -8,6 +8,7 @@
 #   1. Enabling optimize screws up the order of regex match (while lexing)
 #      Bug in PLY ???
 # Notes  : None
+#   1. The SPACE character is not getting detected for token BTABLE_START.
 # Todo   :
 #   1. Due to ordering issues the following functions are created from
 #      simple regex variables.
@@ -94,7 +95,8 @@ class ZWLexer( object ):
         'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI', 'WWW_URI',
 
         # Line markups
-        'HORIZONTALRULE', 'HEADING',   'ORDLIST_START', 'UNORDLIST_START',
+        'HORIZONTALRULE', 'HEADING', 'BTABLE_START', 'BTABLESTYLE_START', 
+        'ORDLIST_START', 'UNORDLIST_START',
         'DEFINITION_START', 'BQUOTE_START', 'TABLE_CELLSTART',
 
         # Block markups
@@ -114,6 +116,14 @@ class ZWLexer( object ):
 
     def t_HEADING( self, t ):
         r'^={1,5}[^=\n\r]+={0,5}$'
+        return t
+
+    def t_BTABLESTYLE_START( self, t ) :
+        r'^[ \t]*\|\|[=\-\{\} ][ \t]*\{[^\r\n]*\}[ \t]*\|'
+        return t
+
+    def t_BTABLE_START( self, t ) :
+        r'^[ \t]*\|\|[ =\-{}]'
         return t
 
     def t_NOWIKI_OPEN( self, t ) :

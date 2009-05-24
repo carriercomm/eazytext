@@ -13,31 +13,7 @@
 #   * All the macros, zwext and ZWParser should be tested for style.
 #   * Add test cases for extensions.
 #   * Test case for escaping new lines as '\\n'
-#
-#   ( features - core )
-#
-#   * Links,
-#       * Shortcuts for image links (that would otherwise require the image
-#         macro )
-#       * Shortcuts for image macro
-#   * Provide support for media wiki like table markup.
-#       {| styles
-#       | cell-content
-#       |+ caption
-#       |-
-#       | styles | cell-content
-#   * Support merging table cells like (refer wiki-dot).
-#   * Provision for creating templates using properties. These templates can
-#     be pulled.
-#     All macros and extensions should accept css properties as keyword
-#     arguments. To define a standard styling template for a wiki page.
-#     add a property name `[macro|extension]style` in the wikipage property.
-#     This is called style templating.
-#   * Backlinks, Pingbacks (Linkbacks )
-#   * Hide email-address feature.
-#   * Meta tagging support.
-#   * Printable pages.
-#   * Should we add the concept of variables and namespace ?
+#   * Test case for style templating.
 #
 #   ( features - macros )
 #
@@ -76,12 +52,25 @@
 #             via CSS
 #
 # Other features,
-#   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
-#   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
-#   * Social bookmarking.
-#   * Flash support.
+#
+#   ( features - core )
+#
+#   * Support merging table cells like (refer wiki-dot).
+#   * Backlinks, Pingbacks (Linkbacks )
+#   * Hide email-address feature.
+#   * Meta tagging support.
+#   * Printable pages.
+#   * Should we add the concept of variables and namespace ?
+#
 #   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
 #     macros
+#   * Social bookmarking.
+#
+#   * Flash support.
+#
+#   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
+#   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
+#
 #   * When an ENDMARKER is detected by any grammar other than `wikipage`, it
 #     can be indicated to the user, via translated HTML.
 
@@ -95,6 +84,8 @@ import ply.yacc
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwast    import *
 from   zwiki          import escape_htmlchars, split_style
+from   zwiki.macro    import macro_styles
+from   zwiki.zwext    import extension_styles
 
 html_chars = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
@@ -111,8 +102,8 @@ class Coord( object ):
         - (optional) column number, for the Lexer
     """
     def __init__( self, file, line, column=None ):
-        self.file = file
-        self.line = line
+        self.file   = file
+        self.line   = line
         self.column = column
 
     def __str__( self ):
@@ -195,8 +186,10 @@ class ZWParser( object ):
                                        tabmodule=yacctab
                         )
         self.parser.zwparser = self
-        self.style    = style
-        self.debug    = lex_debug or yacc_debug
+        self.style           = style
+        self.macrostyles     = {}
+        self.extstyles       = {}
+        self.debug           = lex_debug or yacc_debug
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
@@ -229,6 +222,30 @@ class ZWParser( object ):
             props = {}
         return props, text
 
+    def _macro_styletmpl( self, d_style ) :
+        """Parse the macro style templates provided to the ZWparser() and / or
+        in the wiki page."""
+        mstyles = macro_styles( d_style )
+        for k in mstyles :
+            if k in self.macrostyles and \
+               isinstance( self.macrostyles[k], dict ) and \
+               isinstance( mstyles[k], dict ) :
+                self.macrostyles[k].update( mstyles[k] )
+            else :
+                self.macrostyles[k] = mstyles[k]
+
+    def _ext_styletmpl( self, d_style ) :
+        """Parse the exten. style templates provided to the ZWparser() and / or
+        in the wiki page."""
+        mstyles = extension_styles( d_style )
+        for k in mstyles :
+            if k in self.extstyles and \
+               isinstance( self.extstyles[k], dict ) and \
+               isinstance( mstyles[k], dict ) :
+                self.extstyles[k].update( mstyles[k] )
+            else :
+                self.extstyles[k] = mstyles[k]
+
     def parse( self, text, filename='', debuglevel=0 ):
         """Parses C code and returns an AST.
         
@@ -257,12 +274,18 @@ class ZWParser( object ):
         self.style       = s_style or ''
         if not d_style and not s_style :
             self.wiki_css.update( wiki_css )
+        # Setup style templates for macros and extensions from caller.
+        self._macro_styletmpl( d_style )
+        self._ext_styletmpl( d_style )
 
         props, text      = self._wiki_properties( text )
         d_style, s_style = split_style( props )
         d_style and self.wiki_css.update( d_style )
         if s_style :
             self.style += '; ' + s_style + '; '
+        # Setup style templates for macros and extensions from wikipage.
+        self._macro_styletmpl( d_style )
+        self._ext_styletmpl( d_style )
 
         # Pre-process the text.
         self.pptext = self.wiki_preprocess( text )
@@ -360,6 +383,7 @@ class ZWParser( object ):
         """paragraph            : nowikiblock
                                 | heading
                                 | horizontalrule
+                                | btablerows
                                 | table_rows
                                 | orderedlists
                                 | unorderedlists
@@ -423,6 +447,28 @@ class ZWParser( object ):
             p[0] = p[1]
         else :
             raise ParseError( "unexpected rule-match for textlines")
+
+    def p_btablerows( self, p ):                        # BtableRows
+        """btablerows           : btablerow
+                                | btablerows btablerow"""
+        if len(p) == 2 and isinstance( p[1], BtableRow ) :
+            p[0] = BtableRows( p.parser, p[1] )
+        elif len(p) == 3 and isinstance( p[1], BtableRows ) \
+                         and isinstance( p[2], BtableRow ) :
+            p[1].appendrow( p[2] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for btablerows")
+
+    def p_btablerow_1( self, p ):                         # BtableRow
+        """btablerow            : BTABLE_START text_contents NEWLINE
+                                | BTABLE_START empty NEWLINE"""
+        p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLE )
+
+    def p_btablerow_2( self, p ):                         # BtableRow
+        """btablerow            : BTABLESTYLE_START text_contents NEWLINE
+                                | BTABLESTYLE_START empty NEWLINE"""
+        p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLESTYLE )
 
     def p_table_rows_1( self, p ):
         """table_rows           : table_cells NEWLINE

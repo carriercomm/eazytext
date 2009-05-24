@@ -10,7 +10,7 @@ from   zwiki.zwlexer        import ZWLexer
 from   zwiki.zwparser       import ZWParser
 from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
                                    gen_psep, gen_ordmark, gen_unordmark, \
-                                   gen_bqmark, gen_defnmark, \
+                                   gen_bqmark, gen_defnmark, gen_btableline, \
                                    gen_headtext, gen_texts, gen_row, \
                                    gen_wordlist, gen_words, gen_linkwords, gen_links,\
                                    gen_macrowords, gen_macros, \
@@ -48,6 +48,22 @@ crooked_table  ="""
 |
 
 |
+"""
+crooked_btable = """
+||{ { "style" : "color:green; background-color:#ffffcc;", "cellpadding" : "20", \
+      "cellspacing" : "0", "border" : "5px",  \
+      "caption" : "fruits and icecreams" }
+||={ "color" : "black" } | Fruits 
+
+||-{ "color" : "black" } | Fruits 
+
+|| { "color" : "black" } | Fruits 
+
+||={ "color" : "black" } | Fruits 
+
+||{{ "color" : "black" } | Fruits 
+
+||}
 """
 
 def setUpModule() :
@@ -196,7 +212,17 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'textlines', t, testcount
             testcount += 1
 
-    def test_7_table( self ) :
+    def test_7_bigtable( self ) :
+        """Testing big tables"""
+        print "\nTesting big tables"
+        testlist = [ '\n'.join([ gen_btableline( words, links, macros, htmls )
+                                 for j in range(randint(0,10)) ]) +
+                      gen_psep(randint(0,3)) for i in range(100) ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'bigtable', t, testcount
+
+    def test_8_table( self ) :
         """Testing tables"""
         print "\nTesting tables"
         testlist  = [ '\n'.join([ gen_row( words, links, macros, htmls )
@@ -207,7 +233,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'table', t, testcount
             testcount += 1
 
-    def test_8_ordlists( self ) :
+    def test_9_ordlists( self ) :
         """\nTesting ordered list"""
         print "\nTesting ordered list"
         testlist  = [ '\n'.join([ gen_ordmark() + \
@@ -223,7 +249,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'ordlists', t, testcount
             testcount += 1
 
-    def test_9_unordlists( self ) :
+    def test_A_unordlists( self ) :
         """Testing unordered list"""
         print "\nTesting unordered list"
         testlist  = [ '\n'.join([ gen_unordmark() + \
@@ -239,7 +265,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'unordlists', t, testcount
             testcount += 1
 
-    def test_A_blockquotes( self ) :
+    def test_B_blockquotes( self ) :
         """Testing blockquotes"""
         print "\nTesting blockquotes"
         testlist  = [ '\n'.join([ gen_bqmark() + \
@@ -255,7 +281,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'blockquotes', t, testcount
             testcount += 1
 
-    def test_B_definitions( self ) :
+    def test_C_definitions( self ) :
         """Testing definitions"""
         print "\nTesting definitions"
         testlist  = [ '\n'.join([ gen_defnmark() + \
@@ -271,7 +297,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'definitions', t, testcount
             testcount += 1
 
-    def test_C_unicode( self ) :
+    def test_D_unicode( self ) :
         """Testing unicoded test"""
         print "\nTesting unicoded text"
         testlist = [ '' ]
@@ -280,7 +306,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'unordlists', t, testcount
             testcount += 1
 
-    def test_D_crooked_wikix( self ) :
+    def test_E_crooked_wikix( self ) :
         """Testing crooked nowiki syntax"""
         print "\nTesting crooked nowiki syntax"
         testlist = [ crooked_nowiki, '{{{ \n hi world \n' ]
@@ -289,12 +315,21 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'crooked_nowiki', t, testcount
             testcount += 1
 
-    def test_E_crooked_table( self ) :
+    def test_F_crooked_table( self ) :
         """Testing crooked table syntax"""
         print "\nTesting crooked table syntax"
         testlist = [ crooked_table ]
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'crooked_table', t, testcount
+            testcount += 1
+
+    def test_G_crooked_btable( self ) :
+        """Testing crooked big table syntax"""
+        print "\nTesting crooked big table syntax"
+        testlist = [ crooked_btable ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'crooked_btable', t, testcount
             testcount += 1
 
