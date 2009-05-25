@@ -1,9 +1,6 @@
-@ { 'width' : '70%', 'float' : 'left', 'position' : 'relative',
-@   'font-family' : 'arial,sans-serif' }
+@ { 'font-family' : 'arial,sans-serif' }
 
-
-{{ Toc( index='1', \
-        width='20%' ) }}
+{{ Toc( float='right', position='relative', maxheadlen=30 ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to zwiki markup.
@@ -81,7 +78,6 @@ adjustable and you can even position it.
 == list ==
 You can use lists, start it at the first column for now, please...
 
-[[ +>http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
 unnumbered lists are like
 * item a
 * item b
@@ -288,6 +284,32 @@ cancellation of the Fourth East Asia Summit.
 
 {{Clear()}}
 
+== Images  ==
+
+[[ +>http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
+
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+          'alternative text', href='http://www.google.com' ) }}
+
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+          'alternative text', float='right' ) }}
+
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+          'alternative text', href='http://www.google.com', float='right' ) }}
+
+{{ Images( \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg', \
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg', \
+alt='alternate text', height='100px', width='100px', cols='3', \
+style="border : 3px solid gray;" ) }}
 
 == HTML wiki extension 
 
@@ -352,7 +374,7 @@ If interwiki links are setup in your wiki, this links to the WikiCreole page abo
 
 ===== Subsubsub
 
-= Top-level heading (1) =
+= Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle =
 == This a test for creole 0.1 (2) ==
 === This is a Subheading (3) ===
 ==== Subsub (4) ====

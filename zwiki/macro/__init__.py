@@ -44,8 +44,11 @@ from zwiki.macro.clear    import Clear
 from zwiki.macro.anchor   import Anchor
 from zwiki.macro.html     import Html  
 from zwiki.macro.redirect import Redirect  
+from zwiki.macro.image    import Image
+from zwiki.macro.images   import Images
 
-macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect' ]
+macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect',
+               'Image', 'Images' ]
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,

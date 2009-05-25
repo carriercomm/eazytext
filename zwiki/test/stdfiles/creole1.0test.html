@@ -1,8 +1,43 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html><body><div class="wikiblk"><div style="position : relative; white-space : normal; float : left; font-family : arial,sans-serif; width : 70%; ; ">
-
+<html><head><script src="/home/pratap/dev/oss/dojo-release-1.2.3/dojo/dojo.js" 
+                         type="text/javascript"></script></head><body><div class="wikiblk"><div class="toc" style="margin-right : 10px; float : right; margin-bottom : 10px; margin-top : 10px; padding-right : 3px; margin-left : 10px; background : #f8f7bc; padding-bottom : 3px; position : relative; padding-top : 3px; padding-left : 3px"><div style="margin-bottom : 5px;"><span style="font-weight : bold;">Table of Contents</span><span style="margin-left: 20px; color : blue; cursor : pointer; font-size : small;               text-align :  right;">close</span></div><div><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All possible list combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block quoted text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All possible list combinations in a table">All possible list combinations ...</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#Images">Images</a></div><div style="margin-left : 1em;"><a href="#HTML wiki extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle">Top-level heading (1) A looooo ...</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 2em;"><a href="#Imporper Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper no-wiki blocks">Improper no-wiki blocks</a></div></div></div>
+<style type="text/css">
+    .dispnone { display : none; }
+</style>
+<script type="text/javascript">
+    dojo.addOnLoad(
+        function() {
+            var toc_nodes = dojo.getObject( 'toc_nodes', null );
+            if( ! toc_nodes ) {
+                toc_nodes = dojo.query( 'div.toc' );
+                dojo.forEach(
+                    toc_nodes,
+                    function( node ) {
+                        var headdiv = node.childNodes[0];
+                        var toc_div = node.childNodes[1];
+                        dojo.connect(
+                            headdiv.childNodes[1], 'onclick',
+                            function( e ) {
+                                if ( e.target.innerHTML == 'close' ) {
+                                    dojo.toggleClass( toc_div, 'dispnone', true );
+                                    e.target.innerHTML = 'show';
+                                } else if ( e.target.innerHTML == 'show' ) {
+                                    dojo.toggleClass( toc_div, 'dispnone', false );
+                                    e.target.innerHTML = 'close';
+                                }
+                                dojo.stopEvent( e );
+                            }
+                        );
+                    }
+                );
+                dojo.setObject( 'toc_nodes', toc_nodes );
+            }
+        }
+    );
+</script>
+<div style="white-space : normal; font-family : arial,sans-serif; ; ">
 <p>
 </p>
 <p><h1> Top-level heading<a style="visibility : hidden;" name="Top-level heading">&#167;</a></h1>
@@ -67,15 +102,14 @@ something like foo:</em>bar// should render as italic.
 </p>
 <p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : left;"></img>
 </p>
-<p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="width : 100%; border-top : thin solid green; background : Aquamarine; border-left : thin solid #CEF2E0; color : blue; border-right : thin solid #CEF2E0; border-bottom : thin solid green"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
 <p><h2> list<a style="visibility : hidden;" name="list">&#167;</a></h2>
 </p><p>You can use lists, start it at the first column for now, please...
 </p>
-<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : right;"></img>
-unnumbered lists are like
+<p>unnumbered lists are like
 </p><p><ul><li> item a</li><li> item b</li><li> <strong>bold item c</strong></li></ul></p>
 <p>blank space is also permitted before lists like:
 </p><p><ul><li>   item a</li><li> item b</li><li> item c</li><ul><li> item c.a</li></ul></ul></p>
@@ -161,7 +195,18 @@ cancellation of the Fourth East Asia Summit.
 </div></div></div></p>
 <p><div style="clear : both"></div>
 </p>
-
+<p><h2> Images<a style="visibility : hidden;" name="Images">&#167;</a></h2>
+</p>
+<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : right;"></img>
+</p>
+<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style="padding : 0px; margin : 0px; border : 0px" /></a>
+</p>
+<p><img  src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style="padding : 0px; margin : 0px; float : right; border : 0px"></img>
+</p>
+<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style="padding : 0px; margin : 0px; float : right; border : 0px" /></a>
+</p>
+<p><div style="display : table;"><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg" style="padding : 0px; margin : 10px; border : 0px; border : 3px solid gray;; " width="100px" /></div></div></div>
+</p>
 <p><h2> HTML wiki extension<a style="visibility : hidden;" name="HTML wiki extension">&#167;</a></h2>
 </p>
 <p><div style="border : thin solid green"><div> Hello world </div></div></p>
@@ -205,13 +250,13 @@ Mobile: abc
 </p>
 <p><h5> Subsubsub<a style="visibility : hidden;" name="Subsubsub">&#167;</a></h5>
 </p>
-<p><h1> Top-level heading (1)<a style="visibility : hidden;" name="Top-level heading (1)">&#167;</a></h1>
+<p><h1> Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle<a style="visibility : hidden;" name="Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle">&#167;</a></h1>
 </p><p><h2> This a test for creole 0.1 (2)<a style="visibility : hidden;" name="This a test for creole 0.1 (2)">&#167;</a></h2>
 </p><p><h3> This is a Subheading (3)<a style="visibility : hidden;" name="This is a Subheading (3)">&#167;</a></h3>
 </p><p><h4> Subsub (4)<a style="visibility : hidden;" name="Subsub (4)">&#167;</a></h4>
 </p><p><h5> Subsubsub (5)<a style="visibility : hidden;" name="Subsubsub (5)">&#167;</a></h5>
 </p>
-<p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="color : gray; border-left : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-right : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
@@ -232,4 +277,4 @@ adjustable and you can even position it.
 <p>hello world 
 
 
-</p><p></p><p></p><p></p></div><div name="TOC" style="float : left; padding-bottom : 3px; margin-bottom : 10px; width : 20%; margin-top : 10px; padding-right : 3px; margin-left : 10px; background : #f8f7bc; margin-right : 10px; position : relative; padding-top : 3px; padding-left : 3px"><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#Some text markup">Some text markup</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All possible list combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block quoted text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All possible list combinations in a table">All possible list combinations in a table</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#HTML wiki extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1)">Top-level heading (1)</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 2em;"><a href="#Imporper Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper no-wiki blocks">Improper no-wiki blocks</a></div></div></div></body></html>
+</p><p></p><p></p><p></p></div></div></body></html>

@@ -22,6 +22,44 @@ rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
 words           = None
 
+image_macros   = [
+( """{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+               'alternative text', href='http://www.google.com' ) }}""",
+  [ '<img', 'src=', 'alt=', 'href=' ]
+),
+( """{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+               'alternative text', float='right' ) }}""",
+  [ '<img', 'src=', 'alt=', 'style=', 'float', 'right' ]
+),
+( """{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+               'alternative text', href='http://www.google.com', \
+               float='right' ) }}""",
+  [ '<img', 'src=', 'alt=', 'href=', 'style=', 'float', 'right' ]
+),
+]
+
+images_macro    = [
+( 
+ """{{ Images( \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg', \
+ 'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg', \
+ alt='alternate text', height='100px', width='100px', cols='3', \
+ style="border : 3px solid gray;" ) }}
+ """,
+ [ 'matanuska', 'pharaohs', 'drypowell', 'elephants', 'bora', 'churchill',
+   'powder', 'boundless', 'purple', 'bubbles', 'height=', 'width=', 'alt=',
+   'style=' ]
+)
+]
+
 def setUpModule() :
     global words
     print "Initialising wiki ..."
@@ -42,10 +80,6 @@ class TestMacroDumpsRandom( object ) :
         # The first character is forced to be a `A` to avoid having `@` as the
         # first character
         testcontent = 'A' + testcontent
-        # Prepare the reference.
-        ref        = ref or testcontent
-        ref        = zwparser.wiki_preprocess( ref )
-        props, ref = zwparser._wiki_properties( ref )
 
         # Characterize the generated testcontent set the wikiproperties
         wikiprops   = {}
@@ -58,12 +92,17 @@ class TestMacroDumpsRandom( object ) :
         except :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
-        if result != ref :
-            print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
-        assert result == ref, type+'... testcount %s'%count
 
+        # The reference is computed if no compare function (cfunc) is passed.
         if cfunc :
             cfunc( ref, tu )
+        else :
+            ref        = ref or testcontent
+            ref        = zwparser.wiki_preprocess( ref )
+            props, ref = zwparser._wiki_properties( ref )
+            if result != ref :
+                print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
+            assert result == ref, type+'... testcount %s'%count
 
     def test_0_file( self ) :
         """If file `ref` is available pick it and test it"""
@@ -213,11 +252,41 @@ class TestMacroDumpsRandom( object ) :
 
         def toc_cfunc( ref, tu ) :
             html= tu.tohtml()
-            assert_true( 'name="TOC"' in html,
+            assert_true( 'class="toc"' in html,
                          'Fail Toc Macro : %s ' % html )
 
         for t in testlist :
             t   = choice( toc_macros ) + t
             yield self._test_execute, 'macro_toc', t, testcount, '', \
                   toc_cfunc
+            testcount += 1
+
+    def test_6_image( self ) :
+        """Testing the Image() macro"""
+        print "\nTesting the Image() macro"""
+
+        def img_cfunc( ref, tu ) :
+            html= tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, r in image_macros :
+            yield self._test_execute, 'macro_image', t, testcount, r, \
+                  img_cfunc
+            testcount += 1
+            
+    def test_7_image( self ) :
+        """Testing the Images() macro"""
+        print "\nTesting the Images() macro"
+        
+        def imgs_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, r in images_macro :
+            yield self._test_execute, 'macro_images', t, testcount, r, \
+                  imgs_cfunc
             testcount += 1

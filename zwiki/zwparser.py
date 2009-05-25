@@ -17,20 +17,14 @@
 #
 #   ( features - macros )
 #
-#   * User addable title for Toc macro. And make it closable.
-#   * For Toc() macro add numbering feature.
-#   * Image Macro. Supporting integration with external links / sites.
-#   * Image Gallery (refer wiki-dot for more info).
 #   * Notes Macro
-#   * Math Macro (and extensions).
 #   * Footnote macro.
 #   * Bibliography macro.
 #   * How long ago Macro.
-#   * Include macro to include pages from another wiki page.
 #
 #   ( features - extensions )
 #
-#   * Collapsible page contents, using zwextensions.
+#   * Collapsible option for `box` zwextensions.
 #   * Code zwextensions.
 #   * Math zwextensions (and  macros).
 #   * Tab viewing wiki contents.
@@ -51,7 +45,7 @@
 #      NOTE : indentation is not a feature of html. But can/should be achieved
 #             via CSS
 #
-# Other features,
+# Other features ( post 1.0v ) ,
 #
 #   ( features - core )
 #
@@ -64,6 +58,9 @@
 #
 #   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
 #     macros
+#   * For Toc() macro add numbering feature.
+#   * Math Macro (and extensions).
+#   * Include macro to include pages from another wiki page.
 #   * Social bookmarking.
 #
 #   * Flash support.

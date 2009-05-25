@@ -29,6 +29,9 @@ DTD = """
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 """
 
+dojo_script = """<script src="/home/pratap/dev/oss/dojo-release-1.2.3/dojo/dojo.js" 
+                         type="text/javascript"></script>"""
+
 def _option_parse() :
     '''Parse the options and check whether the semantics are correct.'''
     parser  = OptionParser(usage="usage: %prog [options] cmd")
@@ -57,7 +60,8 @@ def main() :
         file     = args[0]
         wikitext = open( file ).read()
         tu       = zwparser.parse( wikitext, debuglevel=0 )
-        html     = DTD + '<html><body>' + tu.tohtml() + '</body></html>'
+        html     = DTD + '<html><head>' + dojo_script + '</head>' + \
+                         '<body>' + tu.tohtml() + '</body></html>'
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
         # print tu.dump()
 
