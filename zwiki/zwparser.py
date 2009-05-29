@@ -15,6 +15,12 @@
 #   * Test case for escaping new lines as '\\n'
 #   * Test case for style templating.
 #
+#   ( features - core ) 
+#   
+#   * The following html tags should be directly supported in the wiki text,
+#       <pre> <code> <tt>  <kbd> <var> <dfn> <samp> <acronym> <abbr> <address>
+#       <blockquote> <q> <cite> <ins> <del>
+#
 #   ( features - macros )
 #
 #   * Notes Macro
