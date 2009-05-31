@@ -147,5 +147,4 @@ class Toc( ZWMacro ) :
         except :
             self.posthtml = 'Unable to generate the TOC, ' +\
                             'Wiki page not properly formed ! <br></br>'
-            raise 
         return
