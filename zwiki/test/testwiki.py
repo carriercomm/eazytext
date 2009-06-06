@@ -1,12 +1,16 @@
+import logging
 import unittest
 import os
 import difflib            as diff
+import random
 from   random             import choice, randint, shuffle
 
 from   nose.tools         import assert_equal
+from   pylons             import config
 
 from   zwiki.zwlexer      import ZWLexer
 from   zwiki.zwparser     import ZWParser
+import zwiki.test.testlib as testlib
 from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_psep, gen_ordmark, gen_unordmark, \
                                  gen_headtext, gen_texts, gen_row, \
@@ -15,9 +19,12 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_htmlwords, gen_htmls, \
                                  random_textformat, random_listformat, \
                                  random_bqformat, random_defnformat, \
-                                 random_tableformat, random_wikitext, random_wiki
+                                 random_tableformat, random_wikitext, \
+                                 random_wiki, log_mheader, log_mfooter, \
+                                 genseed
 
-
+log             = logging.getLogger(__name__)
+seed            = None
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
@@ -26,23 +33,36 @@ links           = None
 macros          = None
 htmls           = None
 
+def _loginfo( info ) :
+    log.info( info )
+    print info
+
 def setUpModule() :
-    global words, links, macros, htmls
-    print "Initialising wiki ..."
+    global words, links, macros, htmls, seed
+
+    testdir = os.path.basename( os.path.dirname( __file__ ))
+    testfile= os.path.basename( __file__ )
+    seed    = config['seed'] and int(config['seed']) or genseed()
+    random.seed( seed )
+    testlib.random.seed(  seed )
+    log_mheader( log, testdir, testfile, seed )
+    _loginfo( "Initialising wiki ..." )
     wordlist     = gen_wordlist( maxlen=20, count=200 )
     words        = gen_words( wordlist, count=200, huri_c=10, wuri_c=10 )
-    print "Initialising links ..."
+    _loginfo( "Initialising links ..." )
     linkwords    = gen_linkwords( maxlen=50, count=200 )
     links        = gen_links( linkwords, 100 )
-    print "Initialising macros ..."
+    _loginfo( "Initialising macros ..." )
     macrowords   = gen_macrowords( maxlen=50, count=200 )
     macros       = gen_macros( macrowords, 100 )
-    print "Initialising htmls ..."
+    _loginfo( "Initialising htmls ..." )
     htmlwords    = gen_htmlwords( maxlen=50, count=200 )
     htmls        = gen_htmls( htmlwords, 100 )
     
 def tearDownModule() :
-    pass
+    testdir  = os.path.basename( os.path.dirname( __file__ ))
+    testfile = os.path.basename( __file__ )
+    log_mfooter( log, testdir, testfile )
 
 class TestWikiDumpsRandom( object ) :
     """Test cases to validate ZWiki random"""
@@ -89,7 +109,8 @@ class TestWikiDumpsRandom( object ) :
 
     def test_1_textformatting( self ) :
         """Testing by randomly injecting wiki text formatting markup"""
-        print "Testing by randomly injecting wiki text formatting markup"
+        print "\nTesting by randomly injecting wiki text formatting markup"
+        log.info( "Testing by randomly injecting wiki text formatting markup" )
         newlines = [ '\n' ] * 5 
         testlist = [ random_textformat( words + newlines, links, macros, htmls, 200 ) 
                      for i in range(100) ]
@@ -101,6 +122,7 @@ class TestWikiDumpsRandom( object ) :
     def test_2_listformatting( self ) :
         """Testing by randomly injecting wiki text formatting and list markup"""
         print "\nTesting by randomly injecting wiki text formatting and list markup"
+        log.info( "Testing by randomly injecting wiki text formatting and list markup" )
         testlist = [ '#\n' ] + \
                    [ random_listformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
@@ -111,8 +133,8 @@ class TestWikiDumpsRandom( object ) :
 
     def test_3_bquoteformatting( self ) :
         """Testing by randomly injecting wiki text formatting and blockquote markup"""
-        print "\nTesting by randomly injecting wiki text formatting and",
-        print "blockquote markup"
+        print "\nTesting by randomly injecting wiki text formatting and blockquote markup"
+        log.info( "Testing by randomly injecting wiki text formatting and blockquote markup" )
         testlist = [ random_bqformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
         testcount = 1
@@ -122,8 +144,8 @@ class TestWikiDumpsRandom( object ) :
 
     def test_4_defnformatting( self ) :
         """Testing by randomly injecting wiki text formatting and definition markup"""
-        print "\nTesting by randomly injecting wiki text formatting and",
-        print "defnition markup"
+        print "\nTesting by randomly injecting wiki text formatting and defnition markup"
+        log.info( "Testing by randomly injecting wiki text formatting and defnition markup" )
         testlist = [ random_defnformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
         testcount = 1
@@ -134,6 +156,7 @@ class TestWikiDumpsRandom( object ) :
     def test_5_tableformatting( self ) :
         """Testing by randomly injecting wiki text formatting and table markup"""
         print "\nTesting by randomly injecting wiki text formatting and table markup"
+        log.info( "Testing by randomly injecting wiki text formatting and table markup" )
         testlist = [ random_tableformat( words, links, macros, htmls, '\n', 200 ) 
                      for i in range(100) ]
         testcount = 1
@@ -144,6 +167,7 @@ class TestWikiDumpsRandom( object ) :
     def test_6_wikitext( self ) :
         """Testing by randomly generating wiki words and markups"""
         print "\nTesting by randomly generating wiki words and markups"
+        log.info( "Testing by randomly generating wiki words and markups" )
         testlist = [ random_wikitext( words, links, macros, htmls, 200 ) 
                      for i in range(500) ]
         testcount = 1
@@ -154,6 +178,7 @@ class TestWikiDumpsRandom( object ) :
     def test_7_wiki( self ) :
         """Testing by randomly generating wiki"""
         print "\nTesting by randomly generating wiki"
+        log.info( "Testing by randomly generating wiki" )
         testlist = [ random_wiki( 1000 ) for i in range(500) ]
         testcount = 1
         for t in testlist :

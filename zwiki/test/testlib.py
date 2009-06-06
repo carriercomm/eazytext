@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import random
 from   random         import choice, randint, shuffle
 import re
+import os
 
 # literals - common
 ALPHANUM     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -305,3 +307,18 @@ random_wiki     = lambda count : \
 
 # literal - unicode
 UNICODE = u''
+
+def log_mheader( log, testdir, testfile, seed ) :
+    logthead = ">> Setting up tests for `%s` with seed %s" % \
+               ( os.path.join( testdir, testfile ), seed )
+    print '\n', logthead
+    log.info( logthead )
+
+def log_mfooter( log, testfile, testdir ) :
+    logttail = ">> Tearing down tests for `%s` " % \
+               os.path.join( testdir, testfile )
+    print logttail
+    log.info( logttail )
+
+def genseed() :
+    return randint(1, 100000)

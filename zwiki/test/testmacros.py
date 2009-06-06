@@ -1,22 +1,28 @@
+import logging
 import unittest
 import os
 import difflib            as diff
+import random
 from   random             import choice, randint, shuffle
 
 from   nose.tools         import assert_equal, assert_raises, assert_true, \
                                  assert_false
+from   pylons             import config
 
 from   zwiki.zwlexer      import ZWLexer
 from   zwiki.zwparser     import ZWParser
+import zwiki.test.testlib as testlib
 from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_psep, gen_ordmark, gen_unordmark, \
                                  gen_headtext, gen_texts, gen_row, \
                                  gen_wordlist, gen_words, gen_linkwords, gen_links,\
                                  gen_macrowords, gen_macros, \
                                  random_textformat, random_listformat, \
-                                 random_tableformat, random_wikitext, random_wiki
+                                 random_tableformat, random_wikitext, \
+                                 random_wiki, log_mheader,log_mfooter, genseed
 
-
+log             = logging.getLogger(__name__)
+seed            = None
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
 rndfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'rndfiles' )
 samplefiles_dir = os.path.join( os.path.split( __file__ )[0], 'samplefiles' )
@@ -61,14 +67,25 @@ images_macro    = [
 ]
 
 def setUpModule() :
-    global words
-    print "Initialising wiki ..."
-    alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    words    = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
+    global words, seed
+
+    testdir = os.path.basename( os.path.dirname( __file__ ))
+    testfile= os.path.basename( __file__ )
+    seed    = config['seed'] and int(config['seed']) or genseed()
+    random.seed( seed )
+    testlib.random.seed(  seed )
+    log_mheader( log, testdir, testfile, seed )
+    info    = "Initialising wiki ..."
+    log.info( info )
+    print info
+    alphanum= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    words   = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
                  for j in range( 1000 ) ]
     
 def tearDownModule() :
-    pass
+    testdir  = os.path.basename( os.path.dirname( __file__ ))
+    testfile = os.path.basename( __file__ )
+    log_mfooter( log, testdir, testfile )
 
 class TestMacroDumpsRandom( object ) :
     """Test cases to validate Macro random"""
@@ -117,6 +134,7 @@ class TestMacroDumpsRandom( object ) :
     def test_1_clear( self ) :
         """Testing the Clear() macro"""
         print "\nTesting the Clear() macro"
+        log.info( "Testing the Clear() macro" )
         testlist = [ '\n'.join([ gen_texts( words, [] , [], [],
                                             tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
@@ -143,6 +161,7 @@ class TestMacroDumpsRandom( object ) :
     def test_2_span( self ) :
         """Testing the Span() macro"""
         print "\nTesting the Span() macro"
+        log.info( "Testing the Span() macro" )
         testlist = [ '\n'.join([ gen_texts( words, [], [], [],
                                             tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
@@ -178,6 +197,7 @@ class TestMacroDumpsRandom( object ) :
     def test_3_redirect( self ) :
         """Testing the Redirect() macro"""
         print "\nTesting the Redirect() macro"
+        log.info( "Testing the Redirect() macro" )
         testlist = [ '\n'.join([ gen_texts( words, [] , [], [],
                                             tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
@@ -211,6 +231,7 @@ class TestMacroDumpsRandom( object ) :
     def test_4_html( self ) :
         """Testing the Html() macro"""
         print "\nTesting the Html() macro"
+        log.info( "Testing the Html() macro" )
         testlist = [ '\n'.join([ gen_texts( words, [], [], [],
                                             tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
@@ -240,6 +261,7 @@ class TestMacroDumpsRandom( object ) :
     def test_5_toc( self ) :
         """Testing the Toc() macro"""
         print "\nTesting the Toc() macro"
+        log.info( "Testing the Toc() macro" )
         testlist = [ '\n'.join([ gen_texts( words, [], [], [],
                                             tc=5, pc=0, ec=0, lc=0, mc=0, hc=0, fc=0,
                                             nopipe=True
@@ -264,6 +286,7 @@ class TestMacroDumpsRandom( object ) :
     def test_6_image( self ) :
         """Testing the Image() macro"""
         print "\nTesting the Image() macro"""
+        log.info( "Testing the Image() macro" )
 
         def img_cfunc( ref, tu ) :
             html= tu.tohtml()
@@ -276,9 +299,10 @@ class TestMacroDumpsRandom( object ) :
                   img_cfunc
             testcount += 1
             
-    def test_7_image( self ) :
+    def test_7_images( self ) :
         """Testing the Images() macro"""
         print "\nTesting the Images() macro"
+        log.info( "Testing the Images() macro" )
         
         def imgs_cfunc( ref, tu ) :
             html = tu.tohtml()
