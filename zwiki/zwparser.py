@@ -77,7 +77,7 @@
 #   * When an ENDMARKER is detected by any grammar other than `wikipage`, it
 #     can be indicated to the user, via translated HTML.
 
-
+import logging
 import re
 import sys
 from   types    import StringType
@@ -89,6 +89,14 @@ from   zwiki.zwast    import *
 from   zwiki          import escape_htmlchars, split_style
 from   zwiki.macro    import macro_styles
 from   zwiki.zwext    import extension_styles
+
+logging.basicConfig(
+    level    = logging.WARNING,
+    filename = "parselog.txt",
+    filemode = "w",
+    format   = "%(filename)10s:%(lineno)4d:%(message)s"
+)
+log = logging.getLogger()
 
 html_chars = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
@@ -180,14 +188,16 @@ class ZWParser( object ):
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
         self.app      = app
+        yacc_debug == False and logging.ERROR or logging.WARNING
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug)
+        self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug )
         self.tokens   = self.zwlex.tokens
         self.parser   = ply.yacc.yacc( module=self, 
                                        debug=yacc_debug,
                                        optimize=yacc_optimize,
-                                       tabmodule=yacctab
-                        )
+                                       tabmodule=yacctab,
+                                       debuglog=log
+                                     )
         self.parser.zwparser = self
         self.style           = style
         self.macrostyles     = {}
@@ -423,6 +433,8 @@ class ZWParser( object ):
     def p_nowikicontent( self, p ):
         """nowikicontent        : NOWIKI_CHARS
                                 | NOWIKI_SPECIALCHAR
+                                | NOWIKI_OPEN
+                                | nowikicontent NOWIKI_OPEN
                                 | nowikicontent NOWIKI_CHARS
                                 | nowikicontent NOWIKI_SPECIALCHAR"""
         if len(p) == 2 :

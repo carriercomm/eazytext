@@ -28,7 +28,7 @@ This line is single line \\ but uses line break markup to split the line.
 
 Empty markups are '''' //// are ignored.
 
-And, complex markups like '' hello // world // \\ is treated like this ''
+And, complex markups like '' hello // world // \\ is __treated__ like this ''
 
 An example for indentation, \\ 
 {{ Span( 'First level', style={ 'margin-left' : '2em'} ) }} \\ 

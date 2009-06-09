@@ -43,7 +43,9 @@ crooked_nowiki  ="""
           {{{
             }}}
 {{{
-    hi world"""
+    hi world
+{{{
+    hello world again"""
 
 crooked_table  ="""
 |=|=|=
@@ -111,15 +113,15 @@ class TestDumpsValid( object ) :
 
     def _test_execute( self, type, testcontent, count, ref='' ) :
         # Initialising the parser
-        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
+        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=True )
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
         props, ref = zwparser._wiki_properties( ref )
 
         # Characterize the generated testcontent set the wikiproperties
-        wikiprops   = {}
-        testcontent = ( "@ %s " % wikiprops ) + '\n' + testcontent
+        wikiprops  = {}
+        testcontent= ( "@ %s " % wikiprops ) + '\n' + testcontent
 
         # Test by comparing the dumps
         try :
