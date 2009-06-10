@@ -11,7 +11,7 @@ h1, h2, h3, h4, h5 {
 }
 {{ Html( '</style>' ) }}
 
-{{ Toc( styles={ 'font-family' : 'arial,sans-serif' } ) }}
+{{ Toc( style={ 'font-family' : 'arial,sans-serif' } ) }}
 
 {{{ Box
 # { 'width'  : '40%',
