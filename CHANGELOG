@@ -1,0 +1,32 @@
+0.1dev1 :
+---------
+
+- Basic ZWiki up.
+
+0.2dev1 :
+---------
+
+
+0.3dev1 : 
+---------
+
+- Feature Updates.
+- Integration with Zeta.
+
+0.4dev  :
+---------
+
+- ZWiki features and enhancements
+    - Markups for heading and horizontal rule.
+    - Markups for text formatting.
+    - Markups for list formatting.
+    - Markups for blockquoting and definition lists.
+    - Markups for Tables, Big tables.
+    - Interspercing HTML within wiki text.
+    - Macros facility. Currently available macros,
+        Table of contents, Span, Html, Box, Redirect, Anchor, Image,
+        Images (image gallery)
+    - Extension facility. Currently availabl extensions,
+        Box, Html
+    - Styling for entire wiki page, macros, extensions and big tables.
+    - Generation hyper-links.
