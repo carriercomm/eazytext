@@ -23,10 +23,10 @@
     - Markups for blockquoting and definition lists.
     - Markups for Tables, Big tables.
     - Interspercing HTML within wiki text.
-    - Macros facility. Currently available macros,
+    - Macros feature. Currently available macros,
         Table of contents, Span, Html, Box, Redirect, Anchor, Image,
         Images (image gallery)
-    - Extension facility. Currently availabl extensions,
+    - Extension feature. Currently availabl extensions,
         Box, Html
     - Styling for entire wiki page, macros, extensions and big tables.
     - Generation hyper-links.
