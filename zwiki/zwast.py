@@ -1115,7 +1115,11 @@ class TextContents( Node ) :
 
 
 class Link( Node ) :
-    """class to handle `link` grammer."""
+    """class to handle `link` grammer.
+    There are special links, 
+        * - Open in new window,
+        $ - Create an anchor
+        + - Image"""
 
     def __init__( self, parser, link ) :
         self.parser = parser
@@ -1126,22 +1130,35 @@ class Link( Node ) :
             text = escape_htmlchars( tup[1] )
         # parse the href and for special notations
         href = tup[0].strip(' \t')
-        if href and href[0] == '*' :        # link Open in new window
-            html = '<a target="_blank" href="' + href[1:] + '">' + \
-                   text.strip(' \t') + '</a>'
-        elif href and href[0] == '$' :      # Anchor
-            html = '<a name="' + href[1:] + '">' + text.strip(' \t') + '</a>'
-        elif href and href[0] == '+' :      # Image
-            style = ''
-            src   = href[1:]
-            if src and src[0] == '<' :
-                style = 'float : left;'
-                src   = src[1:]
-            elif src and src[0] == '>' :
-                style = 'float : right;'
-                src   = src[1:]
-            html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
-                    '" style="' + style + '"></img>'
+        if href :
+            # Link - Open in new window
+            if href[0] == '*' :
+                html = '<a target="_blank" href="' + href[1:] + '">' + \
+                       text.strip(' \t') + '</a>'
+            # Link - Anchor 
+            elif href[0] == '$' :
+                html = '<a name="' + href[1:] + '">' + text.strip(' \t') + '</a>'
+            # Link - Image (actually no href)
+            elif href[0] == '+' :
+                style = ''
+                src   = href[1:]
+                if src and src[0] == '<' :
+                    style = 'float : left;'
+                    src   = src[1:]
+                elif src and src[0] == '>' :
+                    style = 'float : right;'
+                    src   = src[1:]
+                html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
+                        '" style="' + style + '"></img>'
+            elif (parser.zwparser.app.name == 'zeta' and href[0] == '@') or \
+                 (parser.zwparser.app.name == 'zeta' and href[0] == '%') : 
+                # InterZeta or # ZetaLinks
+                import zwiki.zetawiki
+                href = zwiki.zetawiki.parse_link( parser, href )
+                if href :
+                    html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
+                else :
+                    html = '<span>--Invalid zetalink--</span>'
         else :
             text = text or tup[0]
             html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'

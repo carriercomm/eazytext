@@ -155,6 +155,9 @@ class ZWParser( object ):
                 name    should indicate the application name. Supported
                         applications are,
                             'zeta'
+                h       Helper function that can be used by zeta specific
+                        code.
+                c       Context in which to handle the wiki page.
             For more information refer to the ZWiki documentation.
 
         style:

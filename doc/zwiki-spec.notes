@@ -1,7 +1,7 @@
 Formats : 
 
-  @options  - option line
-  @tags     - labels to add to the wiki page
+  { key : value, ... }
+            - properties 
   ~         - escape character              'escape'
   \\n       - escape new line
   \n \n\r   - new line                      'new line'
@@ -137,7 +137,24 @@ Link :
 
         [[ link | linkname ]]
 
-        link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
+        link        := ( http://goog.... | www.google.... | #<anchor>
+                         | /p/../.../.. | <zetalink> )
+
+  Special links,
+    * To open in a new window, prepend,
+        '*' to the 'link'
+    * To create an anchore, prepend,
+        '$' to the 'link', which will be taken as the anchor name.
+
+    * To create an image (to generate an image with link, use Image() macro)
+
+        [[ +<imglink> | altname ]]
+        [[ +<<imglink> | altname ]]     float right
+        [[ +><imglink> | altname ]]     float left
+
+        Alternately use the macro,
+
+        {{ Image( imglink, alt, href, *attr ) }}
         
 Zetalinks : 
 
@@ -149,51 +166,38 @@ Zetalinks :
         [[ link | linkname ]]
 
         link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
-        zetalink    := [@interzeta]#<userbyid | userbyname>
-                     | [@interzeta]#<attbyid  | attbyname>
-                     | [@interzeta]#<tagbyid  | tagbyname>
-                     | [@interzeta]#<licbyid  | licbyname>
-                     | [@interzeta]#<projbyid | projbyname>
-                     | [@interzeta]#compbyid
-                     | [@interzeta]#<projbyid | projbyname>.compbynum
-                     | [@interzeta]#mstnbyid
-                     | [@interzeta]#<projbyid | projbyname>.mstnbynum
-                     | [@interzeta]#verbyid
-                     | [@interzeta]#<projbyid | projbyname>.verbynum
-                     | [@interzeta]#tckbyid
-                     | [@interzeta]#<projbyid | projbyname>.tckbynum
-                     | [@interzeta]#revbyid
-                     | [@interzeta]#<projbyid | projbyname>.revbynum
+        zetalink    := [@interzeta]%<userbyid | userbyname>
+                     | [@interzeta]%<attbyid>
+                     | [@interzeta]%<tagbyid  | tagbyname>
+                     | [@interzeta]%<licbyid  | licbyname>
+                     | [@interzeta]%<projbyid | projbyname>
+                     | [@interzeta]%compbyid                            <TBD>
+                     | [@interzeta]%<projbyid | projbyname>.compbynum   <TBD>
+                     | [@interzeta]%mstnbyid                            <TBD>
+                     | [@interzeta]%<projbyid | projbyname>.mstnbynum   <TBD>
+                     | [@interzeta]%verbyid                             <TBD>
+                     | [@interzeta]%<projbyid | projbyname>.verbynum    <TBD>
+                     | [@interzeta]%tckbyid
+                     | [@interzeta]%<projbyid | projbyname>.tckbynum    <TBD>
+                     | [@interzeta]%revbyid
+                     | [@interzeta]%<projbyid | projbyname>.revbynum    <TBD>
         userbyid    := 'u'user_id
         userbyname  := 'u'username
         attbyid     := 'a'attachment_id
-        attbyname   := 'a'filename
         tagbyid     := 'g'tag_id
         tagbyname   := 'g'tagname
         licbyid     := 'l'license_id
         licbyname   := 'l'licensename
         projbyid    := 'p'project_id
         projbyname  := 'p'projectname
-        compbyid    := 'c'component_id
-        compbynum   := 'c'component_number
-        mstnbyid    := 'm'milestone_id
-        mstnbynum   := 'm'milestone_number
-        verbyid     := 'v'version_id
-        verbynum    := 'v'version_number
+        compbyid    := 'c'component_id          <TBD>
+        compbynum   := 'c'component_number      <TBD>
+        mstnbyid    := 'm'milestone_id          <TBD>
+        mstnbynum   := 'm'milestone_number      <TBD>
+        verbyid     := 'v'version_id            <TBD>
+        verbynum    := 'v'version_number        <TBD>
         tckbyid     := 't'ticket_id
-        tckbynum    := 't'ticket_number
+        tckbynum    := 't'ticket_number         <TBD>
         revbyid     := 'r'review_id
-        revbynum    := 'r'review_number
+        revbynum    := 'r'review_number         <TBD>
 
-  * To open in a new window, prepend,
-        * to the 'link'
-  * To create an anchore, prepend,
-        $ to the 'link', which will be taken as the anchor name.
-
-  To create an image,
-
-    [[ +<imglink> | altname ]]
-    [[ +<<imglink> | altname ]]     float right
-    [[ +><imglink> | altname ]]     float left
-
-    {{ Image( imglink, alt, href, *attr ) }}

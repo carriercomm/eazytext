@@ -1,3 +1,4 @@
-nosetests -s -x testparse
-nosetests -s -x testwiki
-nosetests -s -x testmacros
+nosetests -s -x --with-pylons=../../test.ini testparse
+nosetests -s -x --with-pylons=../../test.ini testwiki
+nosetests -s -x --with-pylons=../../test.ini testmacros
+

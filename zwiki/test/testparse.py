@@ -32,6 +32,14 @@ macros          = None
 htmls           = None
 xwikinames      = None
 
+crooked_heading ="""
+=== hello = world
+how are you
+======= I am doing fine
+How about your
+=== Me too ========
+"""
+
 crooked_nowiki  ="""
 {{{}}}
 {{{ }}}
@@ -340,6 +348,16 @@ class TestDumpsValid( object ) :
         testcount = 1
         for t in testlist :
             yield self._test_execute, 'unordlists', t, testcount
+            testcount += 1
+
+    def test_E_crooked_heading( self ) :
+        """Testing crooked heading syntax"""
+        print "\nTesting crooked heading syntax"
+        log.info( "Testing crooked heading syntax" )
+        testlist = [ crooked_heading ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'crooked_heading', t, testcount
             testcount += 1
 
     def test_E_crooked_wikix( self ) :
