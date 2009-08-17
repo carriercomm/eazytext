@@ -1130,6 +1130,7 @@ class Link( Node ) :
             text = escape_htmlchars( tup[1] )
         # parse the href and for special notations
         href = tup[0].strip(' \t')
+        html =''
         if href :
             # Link - Open in new window
             if href[0] == '*' :
@@ -1159,9 +1160,9 @@ class Link( Node ) :
                     html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
                 else :
                     html = '<span>--Invalid zetalink--</span>'
-        else :
-            text = text or tup[0]
-            html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
+            else :
+                text = text or tup[0]
+                html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
     def children( self ) :
