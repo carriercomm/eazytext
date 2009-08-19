@@ -1151,8 +1151,9 @@ class Link( Node ) :
                     src   = src[1:]
                 html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
                         '" style="' + style + '"></img>'
-            elif (parser.zwparser.app.name == 'zeta' and href[0] == '@') or \
-                 (parser.zwparser.app.name == 'zeta' and href[0] == '%') : 
+            elif parser.zwparser.app and \
+                 ((parser.zwparser.app.name == 'zeta' and href[0] == '@') or \
+                  (parser.zwparser.app.name == 'zeta' and href[0] == '%')) : 
                 # InterZeta or # ZetaLinks
                 import zwiki.zetawiki
                 href = zwiki.zetawiki.parse_link( parser, href )
