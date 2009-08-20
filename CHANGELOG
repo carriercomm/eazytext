@@ -30,3 +30,9 @@
         Box, Html
     - Styling for entire wiki page, macros, extensions and big tables.
     - Generation hyper-links.
+
+0.5dev  :
+---------
+
+- ZWiki features and enhancements
+    - Zetalinks supported.

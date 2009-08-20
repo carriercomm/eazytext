@@ -1,5 +1,7 @@
 import re
 
+VERSION = '0.5dev'
+
 def escape_htmlchars( text ) :
     """If the text is not supposed to have html characters, escape them"""
     text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( '&amp;', text )
