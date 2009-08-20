@@ -1156,7 +1156,7 @@ class Link( Node ) :
                   (parser.zwparser.app.name == 'zeta' and href[0] == '%')) : 
                 # InterZeta or # ZetaLinks
                 import zwiki.zetawiki
-                href = zwiki.zetawiki.parse_link( parser, href )
+                href, text = zwiki.zetawiki.parse_link( parser, href, text )
                 if href :
                     html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
                 else :
