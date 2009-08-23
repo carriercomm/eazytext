@@ -3,9 +3,11 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
-# Notes  : None
-# Todo   :
-#
+# Notes  :
+#   1. Currently the parser does not check for html characters in the
+#      document.
+#   2. Endmarker is appender to the wiki text to facilitate the wiki parsing.
+# Todo   : 
 #   ( Testing )
 #
 #   * Unit test case for the following function,
@@ -27,6 +29,7 @@
 #   * Footnote macro.
 #   * Bibliography macro.
 #   * How long ago Macro.
+#   * SVG macro.
 #
 #   ( features - extensions )
 #
@@ -35,6 +38,7 @@
 #   * Math zwextensions (and  macros).
 #   * Tab viewing wiki contents.
 #   * Mako to be integrated with zwiki as an extension.
+#   * SVG macro.
 #
 #   ( features - zeta )
 #
@@ -76,6 +80,8 @@
 #
 #   * When an ENDMARKER is detected by any grammar other than `wikipage`, it
 #     can be indicated to the user, via translated HTML.
+#   * While documenting the wiki, also document the original wiki texts that
+#     gets consumed by wiki parsing and html translation.
 
 import logging
 import re
@@ -98,7 +104,7 @@ logging.basicConfig(
 )
 log = logging.getLogger()
 
-html_chars = [ '"', "'", '&', '<', '>' ]
+HTML_CHARS = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
 
 # Default Wiki page properties
@@ -209,7 +215,7 @@ class ZWParser( object ):
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
-        return [ ch for ch in html_chars if ch in text ]
+        return [ ch for ch in HTML_CHARS if ch in text ]
 
     def wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove the fix unwanted

@@ -1124,8 +1124,8 @@ class Link( Node ) :
     def __init__( self, parser, link ) :
         self.parser = parser
         # parse the text
-        text = ''
-        tup  = link[2:-2].split( '|', 1 )
+        text   = ''
+        tup    = link[2:-2].split( '|', 1 )
         if len(tup) == 2 :
             text = escape_htmlchars( tup[1] )
         # parse the href and for special notations
@@ -1134,7 +1134,7 @@ class Link( Node ) :
         if href :
             # Link - Open in new window
             if href[0] == '*' :
-                html = '<a target="_blank" href="' + href[1:] + '">' + \
+                html   = '<a target="_blank" href="' + href[1:] + '">' + \
                        text.strip(' \t') + '</a>'
             # Link - Anchor 
             elif href[0] == '$' :

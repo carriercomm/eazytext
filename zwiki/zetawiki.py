@@ -29,6 +29,7 @@ linkmap = {
 }
 
 def normalize( val ) :
+    """Normalize the identification in table referenced by zetalink"""
     try :
         val = int(val)
     except :
@@ -36,6 +37,7 @@ def normalize( val ) :
     return val
 
 def parse_interzeta( app, name ) :
+    """Find the mapped host for 'name'"""
     host = name and app.h.interzeta_map( name ) or ''
     return host
 
@@ -52,7 +54,10 @@ def parse_zetalink( app, zlink, text='', interzeta='' ) :
     return ( href, text )
 
 def parse_link( parser, href, text='' ) :
-    """Parse href into ( interzeta, zetalink )"""
+    """Parse href for interzeta and zetalink. If text is NULL, construct text
+    from href.
+    Return,
+        (href-url, text) to be used in anchor element"""
     href = href.strip( ' \t' )
     if href[0] == '@' :
         X     = href[1:].split( '%' )

@@ -7,7 +7,7 @@
 # Gotcha :
 #   1. Enabling optimize screws up the order of regex match (while lexing)
 #      Bug in PLY ???
-# Notes  : None
+# Notes  :
 #   1. The SPACE character is not getting detected for token BTABLE_START.
 # Todo   :
 #   1. Due to ordering issues the following functions are created from
@@ -81,14 +81,12 @@ class ZWLexer( object ):
         return tok 
 
     # States
-
     states = (
                ( 'nowiki', 'exclusive' ),
                ( 'table',  'exclusive' ),
              )
 
     ## Tokens recognized by the ZWLexer
-
     tokens = (
         # RegEx tokens.
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
@@ -228,7 +226,7 @@ class ZWLexer( object ):
         r'\<\{\<\{\}\>\}\>'
         return t
 
-    # Complex regex
+    # Tokenize Complex regex
     http_schema    = r'http://'
     www_domain     = r'www\.'
     uri_reserved   = r':;/@&=,\?\#\+\$'
@@ -253,8 +251,8 @@ class ZWLexer( object ):
     def t_table_WWW_URI( self, t ):
         return t
 
-    # Tokens
 
+    # Tokens
     t_PIPE              = r'\|'
     t_ALPHANUM          = r'[a-zA-Z0-9]+'
     t_SQR_OPEN          = r'\['
