@@ -329,6 +329,8 @@ class Paragraph( Node ) :
 
     def tohtml( self ):
         html = self.paragraph.tohtml()
+        # Before packging into a paragraph element check whether the html is
+        # correctly formed.
         try : 
             et.fromstring( '<div>' + html + '</div>' )
         except :

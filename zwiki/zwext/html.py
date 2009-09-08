@@ -30,10 +30,11 @@ class Html( ZWExtension ) :
             style   += '; ' + self.style + '; '
         box_div = et.Element( 'div', { 'style' : style } )
         try :
-            boxhtml = et.fromstring( self.nowiki )
-            box_div.insert( 0, boxhtml )
+            boxnode = et.fromstring( self.nowiki )
         except :
-            boxhtml = et.fromstring( '<div></div>' )
+            box_div.insert( 0, et.fromstring( '<div></div>' ) )
+        else :
+            box_div.insert( 0, boxnode )
         html = ( self.nowiki and et.tostring( box_div ) ) or ''
         return html
 

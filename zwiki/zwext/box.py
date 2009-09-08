@@ -89,6 +89,11 @@ class Box( ZWExtension ) :
                                         style=self.cont_css )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()
-            box_div.insert( 1, et.fromstring( self.nowiki_h ))
+            try :
+                cnode = et.fromstring( self.nowiki_h )
+            except :
+                box_div.insert( 1, et.fromstring( '<div></div>' ))
+            else :
+                box_div.insert( 1, cnode )
         html = ( (self.title or self.nowiki) and et.tostring( box_div ) ) or ''
         return html
