@@ -128,25 +128,26 @@ class Toc( ZWMacro ) :
         return ''
 
     def on_posthtml( self ) :
-        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
+        zwparser = self.macronode.parser.zwparser
+        style    = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         if self.style :
             style += '; ' + self.style + '; '
-        zwparser = self.macronode.parser.zwparser
+        contrdiv = et.Element( 'div', { 'class' : 'toc', 'style' : style, } )
+        headdiv  = et.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
+        toc_div  = et.Element( 'div', {} )
+        id       = random_word()
+        contrdiv.append( toc_div )
         try :
             htmltree = et.fromstring( zwparser.html )
-            id       = random_word()
-            contrdiv = et.Element( 'div', { 'class' : 'toc', 'style' : style, } )
-            headdiv  = et.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
             topicdiv = et.fromstring( html_topic(self.topic) )
             closediv = et.fromstring( html_close )
-            headdiv.append( topicdiv )
-            headdiv.append( closediv )
-            contrdiv.append( headdiv )
-            toc_div  = et.Element( 'div', {} )
-            self._maketoc( htmltree, toc_div, self.numbered )
-            contrdiv.append( toc_div )
-            self.posthtml = et.tostring( contrdiv ) + script
         except :
             self.posthtml = 'Unable to generate the TOC, ' +\
                             'Wiki page not properly formed ! <br></br>'
+        else :
+            headdiv.append( topicdiv )
+            headdiv.append( closediv )
+            contrdiv.append( headdiv )
+            self._maketoc( htmltree, toc_div, self.numbered )
+            self.posthtml = et.tostring( contrdiv ) + script
         return
