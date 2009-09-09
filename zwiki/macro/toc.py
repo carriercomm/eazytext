@@ -8,6 +8,7 @@
 
 import cElementTree as et
 from   random       import choice
+from   copy         import copy, deepcopy
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style
@@ -52,30 +53,30 @@ script = """
     dojo.addOnLoad(
         function() {
             var toc_nodes = dojo.getObject( 'toc_nodes', null );
-            if( ! toc_nodes ) {
-                toc_nodes = dojo.query( 'div.toc' );
-                dojo.forEach(
-                    toc_nodes,
-                    function( node ) {
-                        var headdiv = node.childNodes[0];
-                        var toc_div = node.childNodes[1];
-                        dojo.connect(
-                            headdiv.childNodes[1], 'onclick',
-                            function( e ) {
-                                if ( e.target.innerHTML == 'close' ) {
-                                    dojo.toggleClass( toc_div, 'dispnone', true );
-                                    e.target.innerHTML = 'show';
-                                } else if ( e.target.innerHTML == 'show' ) {
-                                    dojo.toggleClass( toc_div, 'dispnone', false );
-                                    e.target.innerHTML = 'close';
-                                }
-                                dojo.stopEvent( e );
-                            }
-                        );
-                    }
-                );
-                dojo.setObject( 'toc_nodes', toc_nodes );
+            if( toc_nodes ) {
+                return;
             }
+            toc_nodes = dojo.query( 'div.toc' );
+            dojo.forEach( toc_nodes,
+                function( node ) {
+                    var headdiv = node.childNodes[0];
+                    var toc_div = node.childNodes[1];
+                    dojo.connect(
+                        headdiv.childNodes[1], 'onclick',
+                        function( e ) {
+                            if ( e.target.innerHTML == 'close' ) {
+                                dojo.toggleClass( toc_div, 'dispnone', true );
+                                e.target.innerHTML = 'show';
+                            } else if ( e.target.innerHTML == 'show' ) {
+                                dojo.toggleClass( toc_div, 'dispnone', false );
+                                e.target.innerHTML = 'close';
+                            }
+                            dojo.stopEvent( e );
+                        }
+                    );
+                }
+            );
+            dojo.setObject( 'toc_nodes', toc_nodes );
         }
     );
 </script>
@@ -92,7 +93,8 @@ class Toc( ZWMacro ) :
         self.maxheadlen= maxheadlen and int(maxheadlen) or None
         self.numbered  = kwargs.pop( 'numbered', False )
         self.postindex = index == 0 and -1 or index
-        htags.update(
+        self.htags     = deepcopy( htags )
+        self.htags.update(
             [ ( h, htags[h] + str(indent * n) + 'em;' )
               for h, n in [ ('h2', 1), ('h3', 2), ('h4', 3), ('h5', 4) ]]
         )
@@ -108,8 +110,8 @@ class Toc( ZWMacro ) :
         count     = 1
         level     = level[:-1]
         for n in node.getchildren() :
-            if n.tag in htags :
-                item      = n.makeelement( 'div', { 'style' : htags[n.tag] } )
+            if n.tag in self.htags :
+                item      = n.makeelement( 'div', { 'style' : self.htags[n.tag] } )
                 text      = n.getchildren()[0].get( 'name' ) # The anchor child
                 link      = item.makeelement( 'a', { 'href' : '#' + text } )
                 link.text = self.maxheadlen and \
