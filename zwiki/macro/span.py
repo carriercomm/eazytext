@@ -21,9 +21,14 @@ css = {
 }
 
 class Span( ZWMacro ) :
-    """Implements Span() Macro"""
+    """Span() macro"""
 
     def __init__( self, *args, **kwargs ) :
+        """
+        args    : span text
+        kwargs  : CSS styling as key, value pairs.
+                  special key, 'style' is accepted
+        """
         self.text = len(args) > 0 and args[0] or ''
 
         d_style, s_style = split_style( kwargs.pop( 'style', {} ))

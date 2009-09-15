@@ -28,6 +28,7 @@ css = {
     'padding-left'   : '3px',
     'padding-bottom' : '3px',
     'padding-right'  : '3px',
+    'width'          : '20em'
 }
 
 htags = {
@@ -39,11 +40,11 @@ htags = {
 }
 
 html_close = """
-<span style="margin-left: 20px; color : blue; cursor : pointer; font-size : small; 
-             text-align :  right;">close</span>"""
+<div style="color : blue; cursor : pointer; font-size : small; 
+            position: relative; float: right;">close</div>"""
 
-html_topic = lambda topic : '<span style="font-weight : bold;">' + topic + \
-                            '</span>'
+html_topic = lambda topic : '<div style="font-weight : bold;">' + topic + \
+                            '</div>'
 
 script = """
 <style type="text/css">
@@ -52,31 +53,21 @@ script = """
 <script type="text/javascript">
     dojo.addOnLoad(
         function() {
-            var toc_nodes = dojo.getObject( 'toc_nodes', null );
-            if( toc_nodes ) {
-                return;
-            }
-            toc_nodes = dojo.query( 'div.toc' );
-            dojo.forEach( toc_nodes,
-                function( node ) {
-                    var headdiv = node.childNodes[0];
-                    var toc_div = node.childNodes[1];
-                    dojo.connect(
-                        headdiv.childNodes[1], 'onclick',
-                        function( e ) {
-                            if ( e.target.innerHTML == 'close' ) {
-                                dojo.toggleClass( toc_div, 'dispnone', true );
-                                e.target.innerHTML = 'show';
-                            } else if ( e.target.innerHTML == 'show' ) {
-                                dojo.toggleClass( toc_div, 'dispnone', false );
-                                e.target.innerHTML = 'close';
-                            }
-                            dojo.stopEvent( e );
-                        }
-                    );
+            var n_toc = dojo.query( 'div.toc' )[0];
+            var headdiv = n_toc.childNodes[0];
+            var toc_div = n_toc.childNodes[1];
+            dojo.connect( headdiv.childNodes[0], 'onclick',
+                function( e ) {
+                    if ( e.target.innerHTML == 'close' ) {
+                        dojo.toggleClass( toc_div, 'dispnone', true );
+                        e.target.innerHTML = 'show';
+                    } else if ( e.target.innerHTML == 'show' ) {
+                        dojo.toggleClass( toc_div, 'dispnone', false );
+                        e.target.innerHTML = 'close';
+                    }
+                    dojo.stopEvent( e );
                 }
             );
-            dojo.setObject( 'toc_nodes', toc_nodes );
         }
     );
 </script>
@@ -136,7 +127,6 @@ class Toc( ZWMacro ) :
         headdiv  = et.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
         toc_div  = et.Element( 'div', {} )
         id       = random_word()
-        contrdiv.append( toc_div )
         try :
             htmltree = et.fromstring( zwparser.html )
             topicdiv = et.fromstring( html_topic(self.topic) )
@@ -145,9 +135,10 @@ class Toc( ZWMacro ) :
             self.posthtml = 'Unable to generate the TOC, ' +\
                             'Wiki page not properly formed ! <br></br>'
         else :
-            headdiv.append( topicdiv )
             headdiv.append( closediv )
+            headdiv.append( topicdiv )
             contrdiv.append( headdiv )
+            contrdiv.append( toc_div )
             self._maketoc( htmltree, toc_div, self.numbered )
             self.posthtml = et.tostring( contrdiv ) + script
         return
