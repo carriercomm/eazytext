@@ -8,7 +8,7 @@ ZWiki is a markup language that is primarily developed for Zeta Project
 Managment and SCM web application.
 """
 
-description='Zwiki Parser and HTML translator'
+description='Wiki Parser and HTML translator'
 
 setup(
     name='zwiki',

@@ -1,2 +1,1 @@
-recursive-include test/stdfiles *.txt *.wiki
-recursive-include test/samplefiles *.txt *.wiki
+recursive-include docs *
