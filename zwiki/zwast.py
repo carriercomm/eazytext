@@ -780,7 +780,7 @@ class Lists( Node ) :
             patt     = re.compile( r'[\*\#]{1,5}$', re.MULTILINE | re.UNICODE )
             cm       = re.search( patt, l.listmarkup ).group()
             cmpmark  = cmp( len(pm), len(cm) )  # -1 or 0 or 1
-            diffmark = abs( len(cm) - len(pm))  # 0 or 1
+            diffmark = abs( len(cm) - len(pm))  # 0 to 4
             if cmpmark > 0 :
                 # previous list markup (pm) is one level deeper, so end the list
                 html += ''.join([ closemarkups.pop() for i in range(diffmark) ])

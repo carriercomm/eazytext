@@ -549,6 +549,7 @@ class ZWParser( object ):
 
     def p_orderedlists( self, p ):                      # Lists
         """orderedlists : orderedlist
+                        | orderedlists unorderedlist
                         | orderedlists orderedlist"""
         if len(p) == 2 and isinstance( p[1], List ) :
             p[0] = Lists( p.parser, p[1] )
@@ -559,13 +560,9 @@ class ZWParser( object ):
         else :
             raise ParseError( "unexpected rule-match for orderedlists")
 
-    def p_orderedlist( self, p ):                       # List
-        """orderedlist : ORDLIST_START text_contents NEWLINE
-                       | ORDLIST_START empty NEWLINE"""
-        p[0] = List( p.parser, LIST_ORDERED, p[1], p[2], p[3] )
-
     def p_unorderedlists( self, p ):                    # Lists
         """unorderedlists       : unorderedlist
+                                | unorderedlists orderedlist
                                 | unorderedlists unorderedlist"""
         if len(p) == 2 and isinstance( p[1], List ) :
             p[0] = Lists( p.parser, p[1] )
@@ -575,6 +572,11 @@ class ZWParser( object ):
             p[0] = p[1]
         else :
             raise ParseError( "unexpected rule-match for unorderedlists")
+
+    def p_orderedlist( self, p ):                       # List
+        """orderedlist : ORDLIST_START text_contents NEWLINE
+                       | ORDLIST_START empty NEWLINE"""
+        p[0] = List( p.parser, LIST_ORDERED, p[1], p[2], p[3] )
 
     def p_unorderedlist( self, p ):                     # List
         """unorderedlist        : UNORDLIST_START text_contents NEWLINE
