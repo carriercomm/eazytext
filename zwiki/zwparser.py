@@ -96,13 +96,13 @@ from   zwiki          import escape_htmlchars, split_style
 from   zwiki.macro    import macro_styles
 from   zwiki.zwext    import extension_styles
 
-logging.basicConfig(
-    level    = logging.WARNING,
-    filename = "parselog.txt",
-    filemode = "w",
-    format   = "%(filename)10s:%(lineno)4d:%(message)s"
-)
-log = logging.getLogger()
+# logging.basicConfig(
+#     level    = logging.WARNING,
+#     filename = "parselog.txt",
+#     filemode = "w",
+#     format   = "%(filename)10s:%(lineno)4d:%(message)s"
+# )
+# log = logging.getLogger()
 
 HTML_CHARS = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
@@ -205,7 +205,7 @@ class ZWParser( object ):
                                        debug=yacc_debug,
                                        optimize=yacc_optimize,
                                        tabmodule=yacctab,
-                                       debuglog=log
+                                       # debuglog=log
                                      )
         self.parser.zwparser = self
         self.style           = style

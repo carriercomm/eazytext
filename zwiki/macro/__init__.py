@@ -6,7 +6,8 @@
 #   1. While testing ZWiki, make sure that the exception is not re-raised
 #      for `eval()` call.
 # Notes  : none
-# Todo   : none
+# Todo   : 
+#   1. Test case for yearsbefore macro
 
 
 class ZWMacro( object ) :
@@ -37,18 +38,19 @@ class ZWMacro( object ) :
         pass
 
 
-from zwiki                import split_style
-from zwiki.macro.span     import Span
-from zwiki.macro.toc      import Toc
-from zwiki.macro.clear    import Clear
-from zwiki.macro.anchor   import Anchor
-from zwiki.macro.html     import Html  
-from zwiki.macro.redirect import Redirect  
-from zwiki.macro.image    import Image
-from zwiki.macro.images   import Images
+from zwiki                    import split_style
+from zwiki.macro.span         import Span
+from zwiki.macro.toc          import Toc
+from zwiki.macro.clear        import Clear
+from zwiki.macro.anchor       import Anchor
+from zwiki.macro.html         import Html  
+from zwiki.macro.redirect     import Redirect  
+from zwiki.macro.image        import Image
+from zwiki.macro.images       import Images
+from zwiki.macro.yearsbefore  import YearsBefore
 
 macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect',
-               'Image', 'Images' ]
+               'Image', 'Images', 'YearsBefore' ]
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,

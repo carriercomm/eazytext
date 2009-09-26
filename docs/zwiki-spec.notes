@@ -10,9 +10,9 @@ Formats :
               beware of starting a new line immediately after a '\\'
   ''        - bold                          'bold'
   //        - italic                        'italic'
-  '_        - underline
-  '^        - superscript
-  '.        - subscript
+  __        - underline
+  ^^        - superscript
+  ..        - subscript
   '/        - bold and italic
   '_        - bold and underline
   /_        - italic and underline
@@ -40,6 +40,14 @@ Formats :
 
   |         - table start                   'table cell'
   |=        - table heading                 'table head cell'
+
+  ||{       - Open table
+  ||-       - Table row
+  ||=       - Table Header
+  ||        - Table cell
+  ||}       - Close table
+
+  Style can be by { ... }
 
   bold_text    := 'escape', 'new line', 'line break', 'italic', 'link'
 

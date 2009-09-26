@@ -29,7 +29,7 @@ setup(
         ],
     },
     install_requires=[                      # setuptools
-        'ply >= 3.0',
+        'ply>=3.0',
     ],
     extras_require={},                      # setuptools
     setup_requires={},                      # setuptools
