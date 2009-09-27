@@ -88,8 +88,8 @@ markup2html   = {
         "''"  : ('<strong>','</strong>' ),
         '//'  : ('<em>','</em>' ),
         '__'  : ('<u>','</u>' ),
-        '^^'  : ('<sup>','</sup>' ),
-        ',,'  : ('<sub>','</sub>' ),
+        '^^'  : ('<span style="vertical-align: super; font-size: x-small">','</span>' ),
+        ',,'  : ('<span style="vertical-align: sub; font-size: x-small">','</span>' ),
         "'/"  : ('<strong><em>','</em></strong>' ),
         "'_"  : ('<strong><u>','</u></strong>' ),
         "/_"  : ('<em><u>','</u></em>' ),
@@ -537,10 +537,12 @@ class BtableRows( Node ) :
                     ';' + s_style
             if mrkup == '||{' : # open table
                 if closetable : continue
-                border      = d_style.pop( 'border', '1px' )
+                border      = d_style.pop( 'border', 'none' )
                 cellspacing = d_style.pop( 'cellspacing', '0' )
                 cellpadding = d_style.pop( 'cellpadding', '5px' )
                 caption     = d_style.pop( 'caption', '' )
+                style       = 'border-left : 1px solid gray; ' + \
+                              'border-top : 1px solid gray; ' + style
                 html  += '<table border="' + border + '" cellspacing="' + \
                          cellspacing + '" cellpadding="' + cellpadding + \
                          '" style="' + style + '">'
@@ -550,12 +552,16 @@ class BtableRows( Node ) :
             elif mrkup == '||-' : # Row
                 if closerow :
                     html += closerow.pop()
-                html += '<tr style="' + style + '">'
+                html += '<tr style="%s">' % style
                 closerow.append( '</tr>' )
             elif mrkup == '||=' : # header cell
-                html += '<th style="' + style + '">' + row.tohtml() + '</th>'
+                style = 'padding : 5px; border-right : 1px solid gray; ' + \
+                        'border-bottom : 1px solid gray; ' + style
+                html += '<th style="%s">%s</th>' % (style, row.tohtml())
             elif mrkup == '|| ' : # Cell
-                html += '<td style="' + style + '">' + row.tohtml() + '</td>'
+                style = 'padding : 5px; border-right : 1px solid gray; ' + \
+                        'border-bottom : 1px solid gray; ' + style
+                html += '<td style="%s">%s</td>' % (style, row.tohtml())
             elif mrkup == '||}' : # close table
                 pass
 
@@ -668,7 +674,9 @@ class TableRows( Node ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
 
     def tohtml( self ) :
-        html    = '<table border="1px" cellspacing="0" cellpadding="5px" >'
+        style   = 'border-top : 1px solid gray; border-left : 1px solid gray; '
+        html    = '<table style="%s" cellspacing="0" cellpadding="5px" >' % \
+                  style
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \
@@ -723,7 +731,10 @@ class TableCells( Node ) :
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
-        begintag  = { M_PIPEHEAD : '<th>',  M_PIPE : '<td>' }
+        style     = 'padding : 5px; border-right : 1px solid gray; ' + \
+                    'border-bottom : 1px solid gray;'
+        begintag  = { M_PIPEHEAD : '<th style="%s">' % style,
+                      M_PIPE     : '<td style="%s">' % style }
         endtag    = { M_PIPEHEAD : '</th>', M_PIPE : '</td>' }
         htmlcells = []
         for pipe, cell in self.cells :
