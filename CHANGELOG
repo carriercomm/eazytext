@@ -36,3 +36,23 @@
 
 - ZWiki features and enhancements
     - Zetalinks supported.
+
+0.6dev  :
+---------
+
+- ZWiki features and enhancements
+    - Restricting the width of TOC block to 20em
+    - Added YearsBefore macro.
+    - Changed the parser grammer to support free mix of ordered and un-ordered
+      markups across different levels.
+    - Better styling for small-table, big-table, subscript, superscript, wiki
+      page etc.
+
+- ZWiki bug fixes.
+    - All et.fromstring() calls are fixed under a try...except clause when
+      doubtful about html formation.
+    - 'htags' dictionary in TOC macro was globally updated, which will
+      get preserved across ZWParser() instanses.
+    - Refactored the try...except clasue into try...except...else clause in
+      TOC macro
+    - Refined EGG packaging.

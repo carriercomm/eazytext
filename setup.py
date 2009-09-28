@@ -12,7 +12,7 @@ description='Wiki Parser and HTML translator'
 
 setup(
     name='zwiki',
-    version='0.5dev',
+    version='0.6dev',
     py_modules=[],
     package_dir={},
     packages=find_packages(),

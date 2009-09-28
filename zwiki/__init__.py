@@ -1,6 +1,6 @@
 import re
 
-VERSION = '0.5dev'
+VERSION = '0.6dev'
 
 def escape_htmlchars( text ) :
     """If the text is not supposed to have html characters, escape them"""
@@ -29,4 +29,3 @@ def split_style( style ) :
     elif isinstance( inner_style, ( str, unicode )) :
         s_style = inner_style
     return style, s_style
-
