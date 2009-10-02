@@ -110,7 +110,6 @@ ENDMARKER  = '<{<{}>}>'
 # Default Wiki page properties
 wiki_css = {
     'white-space' : 'normal',
-    'margin-left' : '10px'
 }
 
 class Coord( object ):
