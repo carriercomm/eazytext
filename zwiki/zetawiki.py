@@ -3,7 +3,9 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
-# Notes  : None
+# Notes  : 
+#   interzeta, must be a alphanumeric word which doesn't start with '_' or '-'
+#   but can contain, '_' or '-'
 # Todo   :
 #   1. Add unicode support
 #   2. Add ismatched() method.
@@ -14,6 +16,8 @@ import sys
 import re
 
 from   zwiki          import escape_htmlchars, split_style
+
+tokenizer = re.compile( r'(@@[a-zA-Z0-9\-_]*)?((@[^ @\t\r\n]*)+)' )
 
 linkmap = {
         'u' : lambda val : ( 'user', normalize(val) ),
@@ -26,6 +30,7 @@ linkmap = {
         'v' : lambda val : ( 'version', normalize(val) ),
         't' : lambda val : ( 'ticket', normalize(val) ),
         'r' : lambda val : ( 'review', normalize(val) ),
+        's' : lambda val : ( 'source', normalize(val) ),
 }
 
 def normalize( val ) :
@@ -41,30 +46,34 @@ def parse_interzeta( app, name ) :
     host = name and app.h.interzeta_map( name ) or ''
     return host
 
-def parse_zetalink( app, zlink, text='', interzeta='' ) :
+def parse_zetalink( app, zlink ) :
     """Parse 'zlink' into zeta understandable notation and convert them into
     relative url"""
-    vals   = zlink.split( '.' )
+    vals   = [ ( nm[1], nm[1:].lstrip(':') )
+               for nm in zlink.split( '@' )[1:] if nm[1] in linkmap.keys() ]
     kwargs = {}
-    kwargs.update([ linkmap[val[0]]( val[1:] )
-                    for val in vals if val and val[0] in linkmap.keys() ])
+    kwargs.update([ linkmap[obj]( id ) for obj, id in vals  ])
     url    = app.h.url_forzetalink( **kwargs )
-    href   = url and ( interzeta.rstrip('/') + '/' + url.lstrip('/') ) or ''
-    text   = text or zlink
-    return ( href, text )
+    return url
 
-def parse_link( parser, href, text='' ) :
-    """Parse href for interzeta and zetalink. If text is NULL, construct text
-    from href.
+def parse_link( parser, markup, text='' ) :
+    """Parse markup for interzeta and zetalink. If text is NULL, construct text
+    from markup.
     Return,
-        (href-url, text) to be used in anchor element"""
-    href = href.strip( ' \t' )
-    if href[0] == '@' :
-        X     = href[1:].split( '%' )
-        host  = parse_interzeta( parser.zwparser.app, X[0] )
-        href, text  = host and \
-                        parse_zetalink( parser.zwparser.app, X[1], text, host )\
-                      or ''
-    elif href[0] == '%' :
-        href, text = parse_zetalink( parser.zwparser.app, href[1:], text )
-    return (href, text)
+        (href, text, left) to be used in anchor element"""
+    markup = markup.strip( ' \t' )
+    m      = tokenizer.match( markup )
+    groups = m.groups()
+
+    if groups[1] :                      # translate zetalink
+        href = parse_zetalink( parser.zwparser.app, groups[1] )
+
+    if href and groups[0] :             # Found interzeta pattern
+        interzeta = parse_interzeta( parser.zwparser.app, groups[0] )
+        if interzeta :
+            href  = '%s/%s' % ( interzeta, href )
+        else :
+            href  = ''
+    text = text or markup
+    left = markup[m.start():m.end()]    # Left over string
+    return ( href, text, left )

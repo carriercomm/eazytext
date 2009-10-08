@@ -174,28 +174,29 @@ Zetalinks :
         [[ link | linkname ]]
 
         link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
-        zetalink    := [@interzeta]%<userbyid | userbyname>
-                     | [@interzeta]%<attbyid>
-                     | [@interzeta]%<tagbyid  | tagbyname>
-                     | [@interzeta]%<licbyid  | licbyname>
-                     | [@interzeta]%<projbyid | projbyname>
-                     | [@interzeta]%compbyid                            <TBD>
-                     | [@interzeta]%<projbyid | projbyname>.compbynum   <TBD>
-                     | [@interzeta]%mstnbyid                            <TBD>
-                     | [@interzeta]%<projbyid | projbyname>.mstnbynum   <TBD>
-                     | [@interzeta]%verbyid                             <TBD>
-                     | [@interzeta]%<projbyid | projbyname>.verbynum    <TBD>
-                     | [@interzeta]%tckbyid
-                     | [@interzeta]%<projbyid | projbyname>.tckbynum    <TBD>
-                     | [@interzeta]%revbyid
-                     | [@interzeta]%<projbyid | projbyname>.revbynum    <TBD>
+        zetalink    := [@interzeta]@<userbyid | userbyname>
+                     | [@interzeta]@<attbyid>
+                     | [@interzeta]@<tagbyid  | tagbyname>
+                     | [@interzeta]@<licbyid  | licbyname>
+                     | [@interzeta]@<projbyid | projbyname>
+                     | [@interzeta]@compbyid                            <TBD>
+                     | [@interzeta]@<projbyid | projbyname>@compbynum   <TBD>
+                     | [@interzeta]@mstnbyid                            <TBD>
+                     | [@interzeta]@<projbyid | projbyname>@mstnbynum   <TBD>
+                     | [@interzeta]@verbyid                             <TBD>
+                     | [@interzeta]@<projbyid | projbyname>@verbynum    <TBD>
+                     | [@interzeta]@tckbyid
+                     | [@interzeta]@<projbyid | projbyname>@tckbynum    <TBD>
+                     | [@interzeta]@revbyid
+                     | [@interzeta]@<projbyid | projbyname>@revbynum    <TBD>
+                     | [@interzeta]@<source_id>
+                     | 
         userbyid    := 'u'user_id
         userbyname  := 'u'username
         attbyid     := 'a'attachment_id
         tagbyid     := 'g'tag_id
         tagbyname   := 'g'tagname
         licbyid     := 'l'license_id
-        licbyname   := 'l'licensename
         projbyid    := 'p'project_id
         projbyname  := 'p'projectname
         compbyid    := 'c'component_id          <TBD>
@@ -208,4 +209,4 @@ Zetalinks :
         tckbynum    := 't'ticket_number         <TBD>
         revbyid     := 'r'review_id
         revbynum    := 'r'review_number         <TBD>
-
+        source_url  := 's'<vcs_id>

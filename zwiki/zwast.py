@@ -1165,15 +1165,11 @@ class Link( Node ) :
                 html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
                         '" style="' + style + '"></img>'
             elif parser.zwparser.app and \
-                 ((parser.zwparser.app.name == 'zeta' and href[0] == '@') or \
-                  (parser.zwparser.app.name == 'zeta' and href[0] == '%')) : 
+                 (parser.zwparser.app.name == 'zeta' and href[0] == '@') :
                 # InterZeta or # ZetaLinks
                 import zwiki.zetawiki
-                href, text = zwiki.zetawiki.parse_link( parser, href, text )
-                if href :
-                    html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
-                else :
-                    html = '<span>--Invalid zetalink--</span>'
+                href, text, _left = zwiki.zetawiki.parse_link( parser, href, text )
+                html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
             else :
                 text = text or tup[0]
                 html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
