@@ -63,7 +63,7 @@ def parse_link( zwparser, markup, text='' ) :
     markup = markup.strip( ' \t' )
     m      = tokenizer.match( markup )
     href   = ''
-    href   = title
+    title  = ''
     groups = []
     if m :
         groups = m.groups()
