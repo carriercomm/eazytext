@@ -199,7 +199,7 @@ class ZWParser( object ):
         self.app      = app
         yacc_debug == False and logging.ERROR or logging.WARNING
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex.build(optimize=lex_optimize, lextab=lextab, debug=lex_debug )
+        self.zwlex.build( optimize=lex_optimize, lextab=lextab, debug=lex_debug )
         self.tokens   = self.zwlex.tokens
         self.parser   = ply.yacc.yacc( module=self, 
                                        debug=yacc_debug,

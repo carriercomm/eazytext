@@ -1168,11 +1168,13 @@ class Link( Node ) :
                  (parser.zwparser.app.name == 'zeta' and href[0] == '@') :
                 # InterZeta or # ZetaLinks
                 import zwiki.zetawiki
-                href, text, _left = zwiki.zetawiki.parse_link( parser, href, text )
-                html = '<a href="' + href + '">' + text.strip(' \t') +'</a>'
+                href, title, text, _left = \
+                        zwiki.zetawiki.parse_link( parser.zwparser, href, text )
+                html = '<a href="%s" title="%s">%s</a>' % \
+                                ( href, title, text.strip(' \t') )
             else :
                 text = text or tup[0]
-                html = '<a href="' + href + '">' + text.strip(' \t') + '</a>'
+                html = '<a href="%s">%s</a>' % ( href, text.strip(' \t') )
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
     def children( self ) :

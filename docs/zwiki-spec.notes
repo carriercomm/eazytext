@@ -174,22 +174,22 @@ Zetalinks :
         [[ link | linkname ]]
 
         link        := ( http://goog.... | www.google.... | /p/../.../.. | <zetalink> )
-        zetalink    := [@interzeta]@<userbyid | userbyname>
-                     | [@interzeta]@<attbyid>
-                     | [@interzeta]@<tagbyid  | tagbyname>
-                     | [@interzeta]@<licbyid  | licbyname>
-                     | [@interzeta]@<projbyid | projbyname>
-                     | [@interzeta]@compbyid                            <TBD>
-                     | [@interzeta]@<projbyid | projbyname>@compbynum   <TBD>
-                     | [@interzeta]@mstnbyid                            <TBD>
-                     | [@interzeta]@<projbyid | projbyname>@mstnbynum   <TBD>
-                     | [@interzeta]@verbyid                             <TBD>
-                     | [@interzeta]@<projbyid | projbyname>@verbynum    <TBD>
-                     | [@interzeta]@tckbyid
-                     | [@interzeta]@<projbyid | projbyname>@tckbynum    <TBD>
-                     | [@interzeta]@revbyid
-                     | [@interzeta]@<projbyid | projbyname>@revbynum    <TBD>
-                     | [@interzeta]@<source_id>
+        zetalink    := [@@interzeta]@<userbyid | userbyname>
+                     | [@@interzeta]@<attbyid>
+                     | [@@interzeta]@<tagbyid  | tagbyname>
+                     | [@@interzeta]@<licbyid  | licbyname>
+                     | [@@interzeta]@<projbyid | projbyname>
+                     | [@@interzeta]@compbyid                            <TBD>
+                     | [@@interzeta]@<projbyid | projbyname>@compbynum   <TBD>
+                     | [@@interzeta]@mstnbyid                            <TBD>
+                     | [@@interzeta]@<projbyid | projbyname>@mstnbynum   <TBD>
+                     | [@@interzeta]@verbyid                             <TBD>
+                     | [@@interzeta]@<projbyid | projbyname>@verbynum    <TBD>
+                     | [@@interzeta]@tckbyid
+                     | [@@interzeta]@<projbyid | projbyname>@tckbynum    <TBD>
+                     | [@@interzeta]@revbyid
+                     | [@@interzeta]@<projbyid | projbyname>@revbynum    <TBD>
+                     | [@@interzeta]@<source_id>
                      | 
         userbyid    := 'u'user_id
         userbyname  := 'u'username

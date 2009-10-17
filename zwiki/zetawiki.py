@@ -53,27 +53,30 @@ def parse_zetalink( app, zlink ) :
                for nm in zlink.split( '@' )[1:] if nm[0] in linkmap.keys() ]
     kwargs = {}
     kwargs.update([ linkmap[obj]( id ) for obj, id in vals  ])
-    url    = app.h.url_forzetalink( **kwargs )
-    return url
+    return app.h.url_forzetalink( **kwargs )
 
-def parse_link( parser, markup, text='' ) :
+def parse_link( zwparser, markup, text='' ) :
     """Parse markup for interzeta and zetalink. If text is NULL, construct text
     from markup.
     Return,
         (href, text, left) to be used in anchor element"""
     markup = markup.strip( ' \t' )
     m      = tokenizer.match( markup )
-    groups = m.groups()
+    href   = ''
+    href   = title
+    groups = []
+    if m :
+        groups = m.groups()
+        left   = markup[m.start():m.end()]    # Left over string
+    else :
+        left   = markup
 
-    if groups[1] :                      # translate zetalink
-        href = parse_zetalink( parser.zwparser.app, groups[1] )
+    if groups and groups[1] :           # translate zetalink
+        ( href, title ) = parse_zetalink( zwparser.app, groups[1] )
 
     if href and groups[0] :             # Found interzeta pattern
-        interzeta = parse_interzeta( parser.zwparser.app, groups[0] )
+        interzeta = parse_interzeta( zwparser.app, groups[0] )
         if interzeta :
             href  = '%s/%s' % ( interzeta, href )
-        else :
-            href  = ''
     text = text or markup
-    left = markup[m.start():m.end()]    # Left over string
-    return ( href, text, left )
+    return ( href, title, text, left )
