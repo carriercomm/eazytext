@@ -97,6 +97,9 @@ class Toc( ZWMacro ) :
         self.css.update( d_style )
         self.css.update( kwargs )
 
+    def tohtml( self ) :
+        return ''
+
     def _maketoc( self, node, toc_div, numbered=False, level='' ) :
         count     = 1
         level     = level[:-1]
@@ -114,9 +117,6 @@ class Toc( ZWMacro ) :
                 count     += 1
             self._maketoc( n, toc_div, numbered )
         return
-
-    def tohtml( self ) :
-        return ''
 
     def on_posthtml( self ) :
         zwparser = self.macronode.parser.zwparser

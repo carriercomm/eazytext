@@ -38,19 +38,27 @@ class ZWMacro( object ) :
         pass
 
 
-from zwiki                    import split_style
-from zwiki.macro.span         import Span
-from zwiki.macro.toc          import Toc
-from zwiki.macro.clear        import Clear
-from zwiki.macro.anchor       import Anchor
-from zwiki.macro.html         import Html  
-from zwiki.macro.redirect     import Redirect  
-from zwiki.macro.image        import Image
-from zwiki.macro.images       import Images
-from zwiki.macro.yearsbefore  import YearsBefore
+from zwiki                            import split_style
+from zwiki.macro.span                 import Span
+from zwiki.macro.toc                  import Toc
+from zwiki.macro.clear                import Clear
+from zwiki.macro.anchor               import Anchor
+from zwiki.macro.html                 import Html  
+from zwiki.macro.redirect             import Redirect  
+from zwiki.macro.image                import Image
+from zwiki.macro.images               import Images
+from zwiki.macro.yearsbefore          import YearsBefore
+from zwiki.macro.projectdescription   import ProjectDescription
+from zwiki.macro.projectattributes    import ProjectAttributes
+from zwiki.macro.projectteam          import ProjectTeam
+from zwiki.macro.projectcomponents    import ProjectComponents
+from zwiki.macro.projectversions      import ProjectVersions
 
 macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect',
-               'Image', 'Images', 'YearsBefore' ]
+               'Image', 'Images', 'YearsBefore', 'ProjectDescription',
+               'ProjectAttributes', 'ProjectTeam', 'ProjectComponents',
+               'ProjectVersions' ]
+
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,

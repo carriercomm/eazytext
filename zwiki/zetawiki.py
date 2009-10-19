@@ -50,9 +50,10 @@ def parse_zetalink( app, zlink ) :
     """Parse 'zlink' into zeta understandable notation and convert them into
     relative url"""
     vals   = [ ( nm[0], nm[1:].lstrip(':') )
-               for nm in zlink.split( '@' )[1:] if nm[0] in linkmap.keys() ]
+               for nm in zlink.split( '@' )[1:] if nm and nm[0] in linkmap.keys() ]
     kwargs = {}
     kwargs.update([ linkmap[obj]( id ) for obj, id in vals  ])
+    
     return app.h.url_forzetalink( **kwargs )
 
 def parse_link( zwparser, markup, text='' ) :
