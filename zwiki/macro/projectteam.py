@@ -29,7 +29,8 @@ template = """
         <div class="bgblue1 p5" style="margin: 0px 1px 0px 1px;">
             <table>
                 <tr>
-                    <td class="ralign p5 w30 fntbold"> Admin : </td><td class="p5"> %s </td>
+                    <td class="ralign p5 w30 fntbold" style="border: none;"> Admin : </td>
+                    <td class="p5" style="border: none;"> %s </td>
                 </tr>
                 %s
             </table>
@@ -46,7 +47,8 @@ template = """
 """
 team_template = """
 <tr>
-    <td class="ralign p5 w30 fntbold">%s : </td><td class="p5"> %s </td>
+    <td class="ralign p5 w30 fntbold" style="border: none;">%s : </td>
+    <td class="p5" style="border: none"> %s </td>
 </tr>
 """
 
