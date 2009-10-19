@@ -35,7 +35,12 @@ class ProjectComponents( ZWMacro ) :
 
     def tohtml( self ) :
         app = self.macronode.parser.zwparser.app
-        p   = self.project and app.projcomp.get_project( unicode(self.project ))
+        try :   # To handle test cases.
+            p   = getattr( app.c, 'project', None )
+        except :
+            p   = None
+        if self.project :
+            p = app.projcomp.get_project( unicode(self.project ))
 
         style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         if self.style :
