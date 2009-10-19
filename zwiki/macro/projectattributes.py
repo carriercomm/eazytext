@@ -30,16 +30,20 @@ template = """
         <div class="bgblue1 p5" style="margin: 0px 1px 0px 1px;">
             <table>
                 <tr>
-                    <td class="ralign p5 fntbold">admin-email : </td><td class="p5"> %s </td>
+                    <td class="ralign p5 fntbold" style="border: none">admin-email : </td>
+                    <td  class="p5" style="border: none"> %s </td>
                 </tr>
                 <tr>
-                    <td class="ralign p5 fntbold">license : </td><td class="p5"> %s </td>
+                    <td class="ralign p5 fntbold" style="border: none;">license : </td>
+                    <td class="p5" style="border: none"> %s </td>
                 </tr>
                 <tr>
-                    <td class="ralign p5 fntbold">mailing-lists : </td><td class="p5"> %s </td>
+                    <td class="ralign p5 fntbold" style="border: none;">mailing-lists : </td>
+                    <td class="p5" style="border: none"> %s </td>
                 </tr>
                 <tr>
-                    <td class="ralign p5 fntbold">irc-channels : </td><td class="p5"> %s </td>
+                    <td class="ralign p5 fntbold" style="border: none;">irc-channels : </td>
+                    <td class="p5" style="border: none"> %s </td>
                 </tr>
             </table>
         </div>
