@@ -16,6 +16,7 @@
 #   * Add test cases for extensions.
 #   * Test case for escaping new lines as '\\n'
 #   * Test case for style templating.
+#   * Test cases for project* MACROS
 #
 #   ( features - core ) 
 #   

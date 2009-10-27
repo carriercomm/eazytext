@@ -89,7 +89,7 @@ class ProjectAttributes( ZWMacro ) :
             cntnr.append(
                 et.fromstring(
                     template % \
-                        ( p.admin_email, p.license.licensename,
+                        ( p.admin_email, p.license and p.license.licensename,
                           ', '.join([ m.mailing_list for m in p.mailinglists ]),
                           ', '.join([ m.ircchannel for m in p.ircchannels ]),
                         )
