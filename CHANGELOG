@@ -56,3 +56,13 @@
     - Refactored the try...except clasue into try...except...else clause in
       TOC macro
     - Refined EGG packaging.
+
+0.7dev :
+--------
+
+- ZWiki features and enhancements
+    - Macros added : ProjectAttributes, ProjectTeam, ProjectDescription, ProjectComponents,
+      ProjectVersions
+
+- ZWiki bug fixes.
+    - Improved and intuitive Zetalink markup.
