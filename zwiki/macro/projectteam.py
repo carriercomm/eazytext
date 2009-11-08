@@ -89,7 +89,8 @@ class ProjectTeam( ZWMacro ) :
             for team, value in sorted( items, key=lambda x : x[0] ) :
                 if team == app.projcomp.team_nomember :
                     continue
-                users = [ '<a href="%s">%s</a>' % ( u, u ) for id, u in value[0] ]
+                users = [ '<a href="%s">%s</a>' % ( app.h.url_foruser(u), u ) 
+                          for id, u in value[0] ]
                 teams += team_template % \
                             ( team, users and ', '.join( users ) or '-' )
             cntnr.append( et.fromstring( template % ( admin, teams )))
