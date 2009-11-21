@@ -91,6 +91,7 @@ class ZWLexer( object ):
         # RegEx tokens.
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
         'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI', 'WWW_URI',
+        'TEXTMARKUPCHAR',
 
         # Line markups
         'HORIZONTALRULE', 'HEADING', 'BTABLE_START', 'BTABLESTYLE_START', 
@@ -99,6 +100,11 @@ class ZWLexer( object ):
 
         # Block markups
         'NOWIKI_OPEN', 'NOWIKI_CLOSE', 'NOWIKI_CHARS', 'NOWIKI_SPECIALCHAR',
+
+        # Text markups 
+        'M_SPAN', 'M_BOLD', 'M_ITALIC', 'M_UNDERLINE', 'M_SUPERSCRIPT',
+        'M_SUBSCRIPT', 'M_BOLDITALIC', 'M_BOLDUNDERLINE', 'M_ITALICUNDERLINE',
+        'M_BOLDITALICUNDERLINE',
 
         # Special tokens
         'LINK', 'MACRO', 'HTML',
@@ -113,7 +119,7 @@ class ZWLexer( object ):
         return t
 
     def t_HEADING( self, t ):
-        r'^={1,5}[^=\n\r]+={0,5}$'
+        r'^={1,5}(\{[^{}\r\n]*\})?'
         return t
 
     def t_BTABLESTYLE_START( self, t ) :
@@ -155,12 +161,12 @@ class ZWLexer( object ):
         return t
 
     def t_TABLE_CELLSTART( self, t ):
-        r'^[ \t]*\|=?'
+        r'^[ \t]*\|=?(\{[^{}\r\n]*\})?'
         t.lexer.push_state('table')
         return t
 
     def t_table_TABLE_CELLSTART( self, t ):
-        r'[ \t]*\|=?'
+        r'[ \t]*\|{1,10}=?(\{[^{}\r\n]*\})?'
         return t
 
     def t_table_NEWLINE( self, t ):
@@ -182,7 +188,47 @@ class ZWLexer( object ):
         return t
 
     def t_table_HTML( self, t ):
-        r"\[<[^\r\n]+>\]"
+        r"\[<[^\r\n\]]+>\]"
+        return t
+
+    def t_table_M_SPAN( self, t ) :
+        r"``(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_BOLDITALICUNDERLINE( self, t ) :
+        r"('/_|_/')(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_BOLD( self, t ) :
+        r"''(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_ITALIC( self, t ) :
+        r"//(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_UNDERLINE( self, t ) :
+        r"__(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_SUPERSCRIPT( self, t ) :
+        r"\^\^(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_SUBSCRIPT( self, t ) :
+        r",,(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_BOLDITALIC( self, t ) :
+        r"('/|/')(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_ITALICUNDERLINE( self, t ) :
+        r"(/_|_/)(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_table_M_BOLDUNDERLINE( self, t ) :
+        r"('_|_')(\{[^{}\r\n]*\})?"
         return t
 
     def t_ORDLIST_START( self, t ):
@@ -210,7 +256,7 @@ class ZWLexer( object ):
         return t
 
     def t_HTML( self, t ):
-        r"\[<[^\r\n]+>\]"
+        r"\[<[^\r\n\]]+>\]"
         return t
 
     def t_ESCAPED( self, t ):
@@ -220,6 +266,46 @@ class ZWLexer( object ):
 
     def t_NEWLINE( self, t ):
         r'(\r?\n)|\r'
+        return t
+
+    def t_M_SPAN( self, t ) :
+        r"``(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_BOLDITALICUNDERLINE( self, t ) :
+        r"('/_|_/')(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_BOLD( self, t ) :
+        r"''(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_ITALIC( self, t ) :
+        r"//(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_UNDERLINE( self, t ) :
+        r"__(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_SUPERSCRIPT( self, t ) :
+        r"\^\^(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_SUBSCRIPT( self, t ) :
+        r",,(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_BOLDITALIC( self, t ) :
+        r"('/|/')(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_ITALICUNDERLINE( self, t ) :
+        r"(/_|_/)(\{[^{}\r\n]*\})?"
+        return t
+
+    def t_M_BOLDUNDERLINE( self, t ) :
+        r"('_|_')(\{[^{}\r\n]*\})?"
         return t
 
     def t_ENDMARKER( self, t ):  
@@ -251,8 +337,6 @@ class ZWLexer( object ):
     def t_table_WWW_URI( self, t ):
         return t
 
-
-    # Tokens
     t_PIPE              = r'\|'
     t_ALPHANUM          = r'[a-zA-Z0-9]+'
     t_SQR_OPEN          = r'\['
@@ -261,16 +345,18 @@ class ZWLexer( object ):
     t_PARAN_CLOSE       = r'\}'
     t_ANGLE_OPEN        = r'\<'
     t_ANGLE_CLOSE       = r'\>'
-    t_SPECIALCHAR       = r'[ `!@%&:;="/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+    t_TEXTMARKUPCHAR    = r"['/_,`\^]"
+    t_SPECIALCHAR       = r'[ !@%&:;=" \#\*\.\?\+\\\(\)\$\-\t]+'
     
-    t_table_ALPHANUM     = r'[a-zA-Z0-9]+'
-    t_table_SQR_OPEN     = r'\['
-    t_table_SQR_CLOSE    = r'\]'
-    t_table_PARAN_OPEN   = r'\{'
-    t_table_PARAN_CLOSE  = r'\}'
-    t_table_ANGLE_OPEN   = r'\<'
-    t_table_ANGLE_CLOSE  = r'\>'
-    t_table_SPECIALCHAR  = r'[ `!@%&:;="/_, \^\'\#\*\.\?\+\\\(\)\$\-\t]+'
+    t_table_ALPHANUM    = r'[a-zA-Z0-9]+'
+    t_table_SQR_OPEN    = r'\['
+    t_table_SQR_CLOSE   = r'\]'
+    t_table_PARAN_OPEN  = r'\{'
+    t_table_PARAN_CLOSE = r'\}'
+    t_table_ANGLE_OPEN  = r'\<'
+    t_table_ANGLE_CLOSE = r'\>'
+    t_table_TEXTMARKUPCHAR = r"['/_,`\^]"
+    t_table_SPECIALCHAR = r'[ !@%&:;=" \#\*\.\?\+\\\(\)\$\-\t]+'
 
     def t_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])

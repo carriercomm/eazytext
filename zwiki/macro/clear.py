@@ -10,28 +10,18 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 css = {
-    'clear' : 'both'
+    'clear' : 'both',
 }
 
 class Clear( ZWMacro ) :
     """Implements Clear() Macro"""
 
     def __init__( self, *args, **kwargs ) :
-        style    = kwargs.pop( 'style', {} )
-
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( css )
-        self.css.update( d_style )
-        self.css.update( kwargs )
+        self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; ' + self.style + '; '
-        html  = '<div style="' + style + '"></div>'
+        html  = '<div style="%s"></div>' % self.style
         return html

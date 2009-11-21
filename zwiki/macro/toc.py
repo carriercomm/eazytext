@@ -11,24 +11,19 @@ from   random       import choice
 from   copy         import copy, deepcopy
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
 
 css = {
-    'background'     : '#f8f7bc',
-    'position'       : 'relative',
-    'float'          : 'left',
-    'margin-top'     : '10px',
-    'margin-left'    : '10px',
-    'margin-bottom'  : '10px',
-    'margin-right'   : '10px',
-    'padding-top'    : '3px',
-    'padding-left'   : '3px',
-    'padding-bottom' : '3px',
-    'padding-right'  : '3px',
-    'width'          : '20em'
+    'background'         : '#f8f7bc',
+    'position'           : 'relative',
+    'float'              : 'left',
+    'margin'             : '10px',
+    'padding'            : '3px',
+    'width'              : '20em',
+    '-moz-border-radius' : '5px'
 }
 
 htags = {
@@ -43,8 +38,7 @@ html_close = """
 <div style="color : blue; cursor : pointer; font-size : small; 
             position: relative; float: right;">close</div>"""
 
-html_topic = lambda topic : '<div style="font-weight : bold;">' + topic + \
-                            '</div>'
+html_topic = lambda topic : '<div style="font-weight : bold;">%s</div>' % topic
 
 script = """
 <style type="text/css">
@@ -79,9 +73,8 @@ class Toc( ZWMacro ) :
     def __init__( self, *args, **kwargs ) :
         indent         = int( kwargs.pop( 'indent', '1' ))
         index          = int( kwargs.pop( 'index', '-1' ))
-        maxheadlen     = kwargs.pop( 'maxheadlen', '' )
+        self.maxheadlen = int(kwargs.pop( 'maxheadlen', 30 ))
         self.topic     = kwargs.pop( 'topic', 'Table of Contents' )
-        self.maxheadlen= maxheadlen and int(maxheadlen) or None
         self.numbered  = kwargs.pop( 'numbered', False )
         self.postindex = index == 0 and -1 or index
         self.htags     = deepcopy( htags )
@@ -89,13 +82,7 @@ class Toc( ZWMacro ) :
             [ ( h, htags[h] + str(indent * n) + 'em;' )
               for h, n in [ ('h2', 1), ('h3', 2), ('h4', 3), ('h5', 4) ]]
         )
-
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( css )
-        self.css.update( d_style )
-        self.css.update( kwargs )
+        self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
         return ''
@@ -120,10 +107,7 @@ class Toc( ZWMacro ) :
 
     def on_posthtml( self ) :
         zwparser = self.macronode.parser.zwparser
-        style    = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; ' + self.style + '; '
-        contrdiv = et.Element( 'div', { 'class' : 'toc', 'style' : style, } )
+        contrdiv = et.Element( 'div', { 'class' : 'toc', 'style' : self.style, } )
         headdiv  = et.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
         toc_div  = et.Element( 'div', {} )
         id       = random_word()

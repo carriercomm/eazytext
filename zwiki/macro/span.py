@@ -10,14 +10,11 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 css = {
-    'color'          : 'gray',
-    'padding-top'    : '2px',
-    'padding-right'  : '2px',
-    'padding-bottom' : '2px',
-    'padding-left'   : '2px',
+    'color'   : 'gray',
+    'padding' : '2px',
 }
 
 class Span( ZWMacro ) :
@@ -29,20 +26,11 @@ class Span( ZWMacro ) :
         kwargs  : CSS styling as key, value pairs.
                   special key, 'style' is accepted
         """
-        self.text = len(args) > 0 and args[0] or ''
-
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( css )
-        self.css.update( d_style )
-        self.css.update( kwargs )
+        self.text  = len(args) > 0 and args[0] or ''
+        self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        style     = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style     += '; ' + self.style + '; '
-        span      = et.Element( 'span', { 'style' : style } )
+        span      = et.Element( 'span', { 'style' : self.style } )
         span.text = self.text
         html      = ( self.text and et.tostring( span ) ) or ''
         return html

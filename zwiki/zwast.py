@@ -12,91 +12,142 @@
 
 import sys
 import re
-import cElementTree as et
+import cElementTree       as et
 
-from   zwiki.macro    import build_macro
-from   zwiki.zwext    import build_zwext
-from   zwiki          import escape_htmlchars, split_style
+from   zwiki.macro        import build_macro
+from   zwiki.zwext        import build_zwext
+from   zwiki              import escape_htmlchars, split_style
+from   zwiki.textlexer    import TextLexer
+from   zwiki.stylelookup  import *
 
 # text type for BasicText
-TEXT_ZWCHARPIPE      = 'zwcharpipe'
-TEXT_ALPHANUM        = 'alphanum'
-TEXT_SPECIALCHAR     = 'specialchar'
-TEXT_SPECIALCHAR_LB  = 'linebreak'
-TEXT_HTTPURI         = 'httpuri'
-TEXT_WWWURI          = 'wwwuri'
-TEXT_ESCAPED         = 'escaped'
-TEXT_LINK            = 'link'
-TEXT_MACRO           = 'macro'
-TEXT_HTML            = 'html'
+TEXT_ZWCHARPIPE     = 'zwcharpipe'
+TEXT_ALPHANUM       = 'alphanum'
+TEXT_SPECIALCHAR    = 'specialchar'
+TEXT_SPECIALCHAR_LB = 'linebreak'
+TEXT_HTTPURI        = 'httpuri'
+TEXT_WWWURI         = 'wwwuri'
+TEXT_ESCAPED        = 'escaped'
+TEXT_LINK           = 'link'
+TEXT_MACRO          = 'macro'
+TEXT_HTML           = 'html'
 
-# Format type for FormattedText
-FORMAT_BOLD          = 'fmt_bold'
-FORMAT_ITALIC        = 'fmt_italic'
-FORMAT_UNDERLINE     = 'fmt_underline'
-FORMAT_SUPERSCRIPT   = 'fmt_superscript'
-FORMAT_SUBSCRIPT     = 'fmt_subscript'
-FORMAT_BOLDITALIC    = 'fmt_bolditalic'
-FORMAT_BOLDUNDERLINE = 'fmt_boldunderline'
-FORMAT_ITALICUNDERLINE = 'fmt_italicunderline'
-FORMAT_BOLDITALICUNDERLINE = 'fmt_bolditalicunderline'
-FORMAT_NON           = 'fmt_non'
-FORMAT_EMPTY         = 'fmt_empty'
-FORMAT_BTABLE        = 'fmt_bt'
-FORMAT_BTABLESTYLE   = 'fmt_btstyle'
+TEXT_M_SPAN              = 'm_span'
+TEXT_M_BOLD              = 'm_bold'
+TEXT_M_ITALIC            = 'm_italic'
+TEXT_M_UNDERLINE         = 'm_underline'
+TEXT_M_SUBSCRIPT         = 'm_subscript'
+TEXT_M_SUPERSCRIPT       = 'm_superscript'
+TEXT_M_BOLDITALIC        = 'm_bolditalic'
+TEXT_M_BOLDUNDERLINE     = 'm_boldunderline'
+TEXT_M_ITALICUNDERLINE   = 'm_italicunderline'
+TEXT_M_BOLDITALICUNDERLINE = 'm_bolditalicunderline'
 
 # List Type
-LIST_ORDERED         = 'ordered'
-LIST_UNORDERED       = 'unordered'
+LIST_ORDERED        = 'ordered'
+LIST_UNORDERED      = 'unordered'
 
 # Markup
-M_PIPE               = '|'
-M_PIPEHEAD           = '|='
-M_NOWIKI_OPEN        = '{{{'
-M_NOWIKI_CLOSE       = '}}}'
-M_MACROOPEN          = '{{'
-M_MACROCLOSE         = '}}'
-M_LINKOPEN           = '[['
-M_LINKCLOSE          = ']]'
-M_HTMLOPEN           = "'<"
-M_HTMLCLOSE          = ">'"
-M_BOLD               = "''"
-M_ITALIC             = "//"
-M_UNDERLINE          = "__"
-M_SUPERSCRIPT        = "^^"
-M_SUBSCRIPT          = ",,"
-M_BOLDITALIC         = "'/"
-M_BOLDUNDERLINE      = "'_"
-M_ITALICUNDERLINE    = "/_"
-M_BOLDITALICUNDERLINE = "'/_"
+M_PIPE              = '|'
+M_PIPEHEAD          = '|='
 
-ref2markups  = [ M_BOLD, M_ITALIC, M_UNDERLINE, M_SUPERSCRIPT, M_SUBSCRIPT, 
-                 M_BOLDITALIC, M_BOLDUNDERLINE, M_ITALICUNDERLINE ]
-ref3markups  = [ M_BOLDITALICUNDERLINE ]
-markup2type  = {
-                 M_BOLD                : FORMAT_BOLD,
-                 M_ITALIC              : FORMAT_ITALIC,
-                 M_UNDERLINE           : FORMAT_UNDERLINE,
-                 M_SUPERSCRIPT         : FORMAT_SUPERSCRIPT,
-                 M_SUBSCRIPT           : FORMAT_SUBSCRIPT,
-                 M_BOLDITALIC          : FORMAT_BOLDITALIC,
-                 M_BOLDUNDERLINE       : FORMAT_BOLDUNDERLINE,
-                 M_ITALICUNDERLINE     : FORMAT_ITALICUNDERLINE,
-                 M_BOLDITALICUNDERLINE : FORMAT_BOLDITALICUNDERLINE,
-               }
-markup2html   = { 
-        "''"  : ('<strong>','</strong>' ),
-        '//'  : ('<em>','</em>' ),
-        '__'  : ('<u>','</u>' ),
-        '^^'  : ('<span style="vertical-align: super; font-size: x-small">','</span>' ),
-        ',,'  : ('<span style="vertical-align: sub; font-size: x-small">','</span>' ),
-        "'/"  : ('<strong><em>','</em></strong>' ),
-        "'_"  : ('<strong><u>','</u></strong>' ),
-        "/_"  : ('<em><u>','</u></em>' ),
-        "'/_" : ('<strong><em><u>','</u></em></strong>' ),
-}
+FORMAT_NON          = 'fmt_non'
+FORMAT_EMPTY        = 'fmt_empty'
+FORMAT_BTABLE       = 'fmt_bt'
+FORMAT_BTABLESTYLE  = 'fmt_btstyle'
 
 # ---------------------- Helper Class objects --------------
+
+def style_color( m ) :
+    return 'color: %s;' % fgcolors[m]
+
+def style_background( m ) :
+    return 'background: %s;' % bgcolors[m]
+
+def style_border( m ) :
+    w, style, color = m[1:].split( ',' )
+    color = fgcolors[color]
+    return 'border : %spx %s %s;' % ( w, style, color )
+
+def style_margin( m ) :
+    return 'margin : %spx' % m[:-1]
+
+def style_padding( m ) :
+    return 'padding : %spx' % m[1:]
+
+fg_pattern      = ( re.compile( r'^[a-z]$' ), style_color )
+bg_pattern      = ( re.compile( r'^[A-Z]$' ), style_background )
+border_pattern  = ( re.compile( r'^/[0-9]+,(dotted|dashed|solid|double|groove|ridge|inset|outset),[a-z]$' ),
+                    style_border 
+                  )
+margin_pattern  = ( re.compile( r'^[0-9]+\|$' ), style_margin )
+padding_pattern = ( re.compile( r'^\|[0-9]+$' ), style_padding )
+
+stylematcher    = [ fg_pattern, bg_pattern, border_pattern, margin_pattern,
+                    padding_pattern ]
+
+def styleparser( stylemarkups ) :
+    """Parse the text for style markup and convert them into html style
+    attribute values"""
+    stylemarkups = stylemarkups.strip('{}')
+    props        = [ prop.strip( ' \t' ) for prop in stylemarkups.split( ';' ) ]
+    styleprops   = []
+    for prop in props :
+        for regex, func in stylematcher :
+            if regex.match( prop ) :
+                styleprops.append( func( prop ))
+                break
+        else :
+            styleprops.append( prop )
+    return '; '.join( styleprops )
+
+
+def markup2html( type, mtext, steed ) :
+    tag_b  = ''
+    tag_e  = ''
+    if type == TEXT_M_SPAN :
+        
+        tags = [ '<span style="%s">' % styleparser( mtext[2:] ), '</span>' ]
+
+    elif type == TEXT_M_BOLD :
+
+        tags = [ '<strong style="%s">' % styleparser( mtext[2:] ), '</strong>' ]
+
+    elif type == TEXT_M_ITALIC :
+
+        tags = [ '<em style="%s">' % styleparser( mtext[2:] ), '</em>' ]
+
+    elif type == TEXT_M_UNDERLINE :
+
+        tags = [ '<u style="%s">' % styleparser( mtext[2:] ), '</u>' ]
+
+    elif type == TEXT_M_SUPERSCRIPT :
+
+        tags = ['<sup style="%s">' % styleparser( mtext[2:] ), '</sup>' ]
+
+    elif type == TEXT_M_SUBSCRIPT :
+
+        tags = [ '<sub style="%s">' % styleparser( mtext[2:] ), '</sub>' ]
+
+    elif type == TEXT_M_BOLDITALIC :
+
+        tags = [ '<strong style="%s"><em>' % styleparser( mtext[2:] ), '</em></strong>']
+
+    elif type == TEXT_M_BOLDUNDERLINE :
+
+        tags = [ '<strong style="%s"><u>' % styleparser( mtext[2:] ), '</u></strong>' ]
+
+    elif type == TEXT_M_ITALICUNDERLINE :
+
+        tags = [ '<em style="%s"><u>' % styleparser( mtext[2:] ), '</u></em>' ]
+
+    elif type == TEXT_M_BOLDITALICUNDERLINE :
+
+        tags = [ '<strong style="%s"><em><u>' % styleparser( mtext[3:] ),
+                 '</u></em></strong>' ]
+
+    return tags[steed]
+
 
 class Content( object ) :
     """The whole of wiki text is parsed and encapulated as lists of Content
@@ -111,16 +162,26 @@ class Content( object ) :
         return "Console<'%s','%s','%s'>" % (self.text, self.type, self.html )
 
 def process_textcontent( contents ) :
-    for i in range(len(contents)) :
+    """From the list of content objects (tokenized), construct the html page."""
+    count = len(contents)
+    for i in range( count ) :
         beginmarkup_cont = contents[i]
-        if beginmarkup_cont.html or beginmarkup_cont.type == TEXT_SPECIALCHAR :
+        if beginmarkup_cont.html or \
+           beginmarkup_cont.type == TEXT_SPECIALCHAR or\
+           beginmarkup_cont.type == TEXT_ALPHANUM :
             continue
-        for j in range( i+1, len(contents) ) :
+        for j in range( i+1, count ) :
             endmarkup_cont = contents[j]
             if endmarkup_cont.type == beginmarkup_cont.type and j != i+1  :
                 # Found the markup pair, with some text in between
-                beginmarkup_cont.html = markup2html[ beginmarkup_cont.text ][0]
-                endmarkup_cont.html   = markup2html[ endmarkup_cont.text ][1]
+                beginmarkup_cont.html = markup2html( beginmarkup_cont.type,
+                                                     beginmarkup_cont.text,
+                                                     0
+                                                   )
+                endmarkup_cont.html   = markup2html( endmarkup_cont.type,
+                                                     endmarkup_cont.text,
+                                                     1
+                                                   )
                 # All the markups in between should be self contained between
                 # i and j
                 process_textcontent( contents[i+1:j] )
@@ -129,40 +190,35 @@ def process_textcontent( contents ) :
             beginmarkup_cont.html = beginmarkup_cont.text
     return
 
-def parse_text( parser, text ) :
-    """Parse the text for wiki text markup and valid text content and return a
-    list of content object"""
-    i = 0
-    contents = []
-    spchars  = ''
-    while i < len(text) :
-        ch2 = text[i:i+2]
-        ch3 = text[i:i+3]
-        if ch3 in ref3markups :
-            if spchars :
-                spchars_e = escape_htmlchars( spchars )
-                contents.append( Content( parser, spchars,
-                                          TEXT_SPECIALCHAR, spchars_e ))
-                spchars = ''
-            contents.append( Content( parser, ch3, markup2type[ch3] ))
-            i += 3
-        elif ch2 in ref2markups :
-            if spchars :
-                spchars_e = escape_htmlchars( spchars )
-                contents.append( Content( parser, spchars,
-                                          TEXT_SPECIALCHAR, spchars_e ))
-                spchars = ''
-            contents.append( Content( parser, ch2, markup2type[ch2] ))
-            i += 2
-        else :
-            spchars = spchars + text[i]
-            i += 1
-
-    if spchars :
-        spchars_e = escape_htmlchars( spchars )
-        contents.append( Content( parser, spchars, TEXT_SPECIALCHAR, spchars_e))
-
-    return contents
+#def parse_text( parser, text ) :
+#    """Parse the text for wiki text markup and valid text content and return a
+#    list of content object"""
+#
+#    def errfoo(msg, a, b):
+#        print msg
+#
+#    textlex = TextLexer( errfoo )
+#    textlex.build()
+#    if text :
+#        textlex.input( text )
+#        tok = textlex.token()
+#        contents = []
+#        while tok :
+#            if tok.type == 'M_TEXT' :
+#                cont = Content( parser, tok.value, TEXT_ALPHANUM, 
+#                                escape_htmlchars( tok.value )
+#                              )
+#            elif tok.type == 'M_SPCHAR' :
+#                cont = Content( parser, tok.value, TEXT_SPECIALCHAR, 
+#                                escape_htmlchars( tok.value )
+#                              )
+#            else :
+#                cont = Content( parser, tok.value, tok.type )
+#
+#            contents.append( cont )
+#            tok = textlex.token()
+#
+#    return contents
 
 # ---------------------- Exception classes ----------------
 
@@ -399,23 +455,31 @@ class NoWiki( Node ) :
 class Heading( Node ) :
     """class to handle `heading` grammar."""
 
-    def __init__( self, parser, fulltext, newline ) :
-        self.parser     = parser
-        self.fulltext   = fulltext
-        self.fulltext_e = escape_htmlchars( fulltext )
-        self.newline    = Newline( parser, newline )
+    def __init__( self, parser, headmarkup, headline, newline ) :
+        off = headmarkup.find( '{' )
+        if off > 0 :
+            self.headmarkup   = headmarkup[:off]
+            self.style        = styleparser( headmarkup[off:] )
+        else :
+            self.headmarkup   = headmarkup
+            self.style        = ''
+        self.parser       = parser
+        self.textcontents = headline
+        self.newline      = Newline( parser, newline )
 
     def children( self ) :
         return ( self.fulltext, self.newline )
 
     def tohtml( self ):
-        text = self.fulltext_e.strip( '= \t' )
-        # Replace html syntax with html entities
-        patt = re.compile( r'^={1,5}', re.MULTILINE | re.UNICODE )
-        l    = len(re.search( patt, self.fulltext ).group())
-        html = '<h'+str(l)+'> ' + text + \
-                '<a style="visibility : hidden;" name="' + text + '">&#167;</a>' + \
-               '</h'+str(l)+'>' + \
+        l    = len(self.headmarkup)
+        contents = []
+        [ contents.extend( item.contents )
+          for item in self.textcontents.textcontents ]
+        process_textcontent( contents )
+        text = self.textcontents.dump().strip(' \t=')
+        html = self.textcontents.tohtml().strip(' \t=')
+        html = '<h%s style="%s"><a style="visibility : hidden;" name="%s"></a>%s</h%s>' % \
+                        ( l, self.style, text, html, l ) + \
                self.newline.tohtml()
         return html
 
@@ -532,22 +596,12 @@ class BtableRows( Node ) :
         for row in self.rows :
             mrkup = row.rowmarkup.lstrip( ' \t' )[:3]
             style = row.style()
-            d_style, s_style = split_style( style )
-            style = '; '.join([ k + ' : ' + d_style[k] for k in d_style ]) + \
-                    ';' + s_style
             if mrkup == '||{' : # open table
                 if closetable : continue
-                border      = d_style.pop( 'border', 'none' )
-                cellspacing = d_style.pop( 'cellspacing', '0' )
-                cellpadding = d_style.pop( 'cellpadding', '5px' )
-                caption     = d_style.pop( 'caption', '' )
                 style       = 'border-left : 1px solid gray; ' + \
                               'border-top : 1px solid gray; ' + style
-                html  += '<table border="' + border + '" cellspacing="' + \
-                         cellspacing + '" cellpadding="' + cellpadding + \
-                         '" style="' + style + '">'
-                if caption :
-                    html  += '<caption>' + caption + '</caption>'
+                html  += '<table cellspacing="0px" cellpadding="5px" style="%s">' % \
+                            ( style )
                 closetable.append( '</table>' )
             elif mrkup == '||-' : # Row
                 if closerow :
@@ -616,25 +670,11 @@ class BtableRow( Node ) :
         return html
 
     def style( self ) :
-        mrkup = self.rowmarkup.lstrip( ' \t' )[:3]
-        style = {}
-        if mrkup in [ '||{', '||-' ] :
-            if self.rowtype == FORMAT_BTABLESTYLE :
-                try :
-                    style = eval( self.rowmarkup.lstrip( ' \t' )[3:-1] )
-                except :
-                    style = {}
-            else :
-                try :
-                    style = self.textcontents and \
-                            eval( self.textcontents.dump() ) or {}
-                except :
-                    style = {}
-        elif mrkup in [ '|| ', '||=' ] and self.rowtype == FORMAT_BTABLESTYLE :
-            try :
-                style = eval( self.rowmarkup.lstrip( ' \t' )[3:-1] )
-            except :
-                style = {}
+        if self.rowtype == FORMAT_BTABLESTYLE :
+            style = self.rowmarkup.lstrip( ' \t' )[3:].lstrip( ' \t' )
+            style = styleparser( style.rstrip( '| \t' ) )
+        else :
+            style = ''
         return style
 
     def dump( self ) :
@@ -666,9 +706,9 @@ class TableRows( Node ) :
     """class to handle `table_rows` grammar."""
 
     def __init__( self, parser, row, pipe=None, newline=None  ) :
-        self.parser = parser
         """`row` is table_cells"""
-        self.rows = [ (row, pipe, Newline( parser, newline )) ]
+        self.parser = parser
+        self.rows   = [ (row, pipe, Newline( parser, newline )) ]
 
     def appendrow( self, row, pipe=None, newline=None ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
@@ -713,42 +753,67 @@ class TableRows( Node ) :
 class TableCells( Node ) :
     """class to handle `table_cells` grammar."""
 
-    def __init__( self, parser, pipe, cell  ) :
-        self.parser = parser
+    def __init__( self, parser, markup, cell  ) :
         """`cell` can be `Empty` object or `TextContents` object"""
-        self.cells     = [ (pipe, cell) ]
+        self.parser = parser
+        # `markup` captures the cell markup - pipe+style
+        markup      = markup.strip()
+        self.cells  = [ [markup, cell, 1] ]
 
-    def appendcell( self, pipe, cell ) :
-        self.cells.append( ( pipe, cell ) )
+    def appendcell( self, markup, cell ) :
+        # `markup` captures the cell markup - pipe+style
+        markup  = markup.strip()
+        colspan = len(markup) - len(markup.lstrip( M_PIPE ))
+        if colspan == 1 :
+            self.cells.append([ markup, cell, 1 ])
+        elif colspan > 1 :
+            # If no content for this cell, then merge the cell with the
+            # previous cell
+            self.cells[-1][2] += colspan - 1 # By incrementing the colspan
+            self.cells.append([ markup, cell, 1 ])
 
     def children( self ) :
         return ( self.cells, )
 
     def totalcells( self ) :
         return sum([ 1
-                for pipe, cell in self.cells if isinstance( cell, TextContents )
+                for markup, cell in self.cells if isinstance( cell, TextContents )
                ])
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
         style     = 'padding : 5px; border-right : 1px solid gray; ' + \
                     'border-bottom : 1px solid gray;'
-        begintag  = { M_PIPEHEAD : '<th style="%s">' % style,
-                      M_PIPE     : '<td style="%s">' % style }
-        endtag    = { M_PIPEHEAD : '</th>', M_PIPE : '</td>' }
         htmlcells = []
-        for pipe, cell in self.cells :
+
+        for markup, cell, colspan in self.cells :
             contents = []
             if isinstance( cell, TextContents ) :
                 [ contents.extend( item.contents ) for item in cell.textcontents ]
+                # Detect text alignment for the cell
+                chtml = contents[-1].html
+                if chtml and chtml[-1] == '$' :
+                    style +=  ' ;text-align : right; '
+                    contents[-1].html = chtml[-1][:-1]
             process_textcontent( contents )
-            pipe = pipe.strip()
-            htmlcells.append( begintag[pipe] + cell.tohtml() + endtag[pipe] )
+            
+            if markup[:2] == M_PIPEHEAD :
+                begintag = '<th colspan="%s" style="%s">' % \
+                            ( colspan, style + styleparser( markup[2:] ) )
+                endtag   = '</th>'
+            else :
+                begintag = '<td colspan="%s" style="%s">' % \
+                            ( colspan, style + styleparser( markup[1:] ) )
+                endtag   = '</td>'
+
+            cellcontnet = cell.tohtml()
+            colspan     = cellcontnet and True or False
+            htmlcells.append( begintag + cell.tohtml() + endtag )
         return ''.join( htmlcells )
 
     def dump( self ) :
         return ''.join(
-            [ pipe + cell.dump() for pipe, cell in self.cells ]
+            [ markup + cell.dump() for markup, cell in self.cells ]
         )
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -761,7 +826,7 @@ class TableCells( Node ) :
         buf.write('\n')
 
         cellcount = 1
-        for pipe, cell in self.cells :
+        for markup, cell in self.cells :
             buf.write( lead + '(cell %s)\n' % cellcount )
             cellcount += 1
             cell.show( buf, offset + 2, attrnames, showcoord )
@@ -999,10 +1064,14 @@ class BQuotes( Node ) :
 
     def tohtml( self ) :
         html         = ''
+        stylefirst   = 'border-left : 2px solid #d6d6d6; padding-left : 5px'
+        stylerest    = 'margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px'
         closemarkups = []   # Stack to manage nested list.
         pm   = ''
         cm   = ''
-        for bq in self.listitems :
+        for i in range(len(self.listitems)) :
+            style    = (i == 0) and stylefirst or stylerest
+            bq       = self.listitems[i]
             patt     = re.compile( r'[\>]{1,5}$', re.MULTILINE | re.UNICODE )
             cm       = re.search( patt, bq.bqmarkup ).group()
             cmpmark  = cmp( len(pm), len(cm) )  # -1 or 0 or 1
@@ -1014,9 +1083,11 @@ class BQuotes( Node ) :
             elif cmpmark < 0 :
                 # current bq markup (cm) is one or more level deeper, 
                 # open new blockquote(s)
-                for i in range(diffmark) :
+                for j in range(diffmark-1) :
                     html += '<blockquote>'
                     closemarkups.append( '</blockquote>' )
+                html += '<blockquote style="%s">' % style
+                closemarkups.append( '</blockquote>' )
             html += bq.tohtml()
             pm = cm
         html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
@@ -1229,9 +1300,36 @@ class Html( Node ) :
     """class to handle `html` grammer."""
 
     def __init__( self, parser, html_text ) :
-        self.parser   = parser
-        self.text     = html_text
-        self.html     = html_text[2:-2]
+        self.parser = parser
+        self.text   = html_text
+        self.html   = html_text[2:-2]
+        keyword     = self.html[:5]
+
+        if keyword[:4] == 'ABBR' :
+
+            args      = self.html[4:].split(',')
+            cont      = args and args.pop(0).strip() or ''
+            title     = args and args.pop(0).strip() or ''
+            self.html = '<abbr title="%s">%s</abbr>' % ( title, cont )
+
+        elif keyword == 'FIXME' :
+
+            style = "-moz-border-radius : 3px; border : 1px solid cadetBlue; " + \
+                    "color : red; padding: 1px; font-family : monospace;"
+            self.html = '<span style="%s">%s</span>' % (style, 'FIXME')
+
+        elif keyword[:3] == ':-)' :
+
+            style = "font-size: x-large; " + \
+                    "color: darkOrchid; padding: 1px; font-family : monospace;"
+            self.html = '<span style="%s">%s</span>' % (style, '&#9786;')
+
+        elif keyword[:3] == ':-(' :
+
+            style = "font-size: x-large; " + \
+                    "color: orangeRed; padding: 1px; font-family : monospace;"
+            self.html = '<span style="%s">%s</span>' % (style, '&#9785;')
+
         self.contents = [ Content( parser, self.text, TEXT_HTML, self.html ) ]
 
     def children( self ) :
@@ -1262,26 +1360,35 @@ class BasicText( Node ) :
 
         if type == TEXT_SPECIALCHAR :
             self.contents = []
-            linebreaks    = text.split( '\\\\' )
-            if len(linebreaks) >= 1 :
-                self.contents.extend( parse_text( parser, linebreaks[0] ))
-            for text in linebreaks[1:] :
+            virtuallines  = text.split( '\\\\' )
+            self.contents.append(
+                    Content( parser, virtuallines[0], TEXT_SPECIALCHAR,
+                             escape_htmlchars( virtuallines[0] ))
+            )
+            for line in virtuallines[1:] :
                 self.contents.append(
                     Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br></br>' )
                 )
-                self.contents.extend( parse_text( parser, text ))
+                self.contents.append( Content( parser, line, TEXT_SPECIALCHAR,
+                                               escape_htmlchars(line) ))
+
         elif type == TEXT_HTTPURI :
             self.contents = [ Content( parser, 
                                        text, type,
                                        '<a href="'+text+ '">' + text + '</a>'
                               )
                             ]
+
         elif type == TEXT_WWWURI :
             self.contents = [ Content( parser,
                                        text, type,
                                        '<a href="'+text+ '">' + text + '</a>'
                               )
                             ]
+        
+        elif type[:2] == 'm_' :
+            self.contents = [ Content( parser, text, type ) ]
+
         else : # TEXT_ZWCHARPIPE, TEXT_ALPHANUM, TEXT_ESCAPED
             self.contents = [ Content( parser, text, type, text ) ]
 

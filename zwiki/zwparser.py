@@ -455,8 +455,8 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for nowikicontent")
 
     def p_heading( self, p ):                           # Heading
-        """heading              : HEADING NEWLINE"""
-        p[0] = Heading( p.parser, p[1], p[2] )
+        """heading              : HEADING text_contents NEWLINE"""
+        p[0] = Heading( p.parser, p[1], p[2], p[3] )
 
     def p_horizontalrule( self, p ):                    # HorizontalRule
         """horizontalrule       : HORIZONTALRULE NEWLINE"""
@@ -658,6 +658,7 @@ class ZWParser( object ):
 
     def p_basictext_3( self, p ):
         """basictext            : SPECIALCHAR
+                                | TEXTMARKUPCHAR
                                 | SQR_OPEN
                                 | SQR_CLOSE
                                 | PARAN_OPEN
@@ -675,6 +676,46 @@ class ZWParser( object ):
         p[0] = BasicText( p.parser, TEXT_WWWURI, p[1] )
 
     def p_basictext_6( self, p ):
+        """basictext            : M_SPAN"""
+        p[0] = BasicText( p.parser, TEXT_M_SPAN, p[1] )
+
+    def p_basictext_7( self, p ):
+        """basictext            : M_BOLD"""
+        p[0] = BasicText( p.parser, TEXT_M_BOLD, p[1] )
+
+    def p_basictext_8( self, p ):
+        """basictext            : M_ITALIC"""
+        p[0] = BasicText( p.parser, TEXT_M_ITALIC, p[1] )
+
+    def p_basictext_9( self, p ):
+        """basictext            : M_UNDERLINE"""
+        p[0] = BasicText( p.parser, TEXT_M_UNDERLINE, p[1] )
+
+    def p_basictext_10( self, p ):
+        """basictext            : M_SUPERSCRIPT"""
+        p[0] = BasicText( p.parser, TEXT_M_SUPERSCRIPT, p[1] )
+
+    def p_basictext_11( self, p ):
+        """basictext            : M_SUBSCRIPT"""
+        p[0] = BasicText( p.parser, TEXT_M_SUBSCRIPT, p[1] )
+
+    def p_basictext_12( self, p ):
+        """basictext            : M_BOLDITALIC"""
+        p[0] = BasicText( p.parser, TEXT_M_BOLDITALIC, p[1] )
+
+    def p_basictext_13( self, p ):
+        """basictext            : M_BOLDUNDERLINE"""
+        p[0] = BasicText( p.parser, TEXT_M_BOLDUNDERLINE, p[1] )
+
+    def p_basictext_14( self, p ):
+        """basictext            : M_ITALICUNDERLINE"""
+        p[0] = BasicText( p.parser, TEXT_M_ITALICUNDERLINE, p[1] )
+
+    def p_basictext_15( self, p ):
+        """basictext            : M_BOLDITALICUNDERLINE"""
+        p[0] = BasicText( p.parser, TEXT_M_BOLDITALICUNDERLINE, p[1] )
+
+    def p_basictext_16( self, p ):
         """basictext            : ESCAPED"""
         p[0] = BasicText( p.parser, TEXT_ESCAPED, p[1] )
 

@@ -9,7 +9,7 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 css = {
     'margin'    : '0px',
@@ -26,20 +26,15 @@ class Image( ZWMacro ) :
         self.height = kwargs.pop( 'height', None )
         self.width  = kwargs.pop( 'width', None )
         self.href   = kwargs.pop( 'href', '' )
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = css
-        self.css.update( d_style )
-        self.css.update( kwargs )
+
+        self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; ' + self.style + '; '
-        hattr = self.height and ( ' height="' + hattr + '" ' ) or ''
-        wattr = self.width and ( ' width="' + wattr + '" ' ) or ''
-        img   = '<img ' + hattr + wattr + ' src="' + self.src + '" alt="' + \
-                self.alt + '" style="' + style +'"></img>'
+        hattr = self.height and ( 'height="%s"' % self.height ) or ''
+        wattr = self.width and ( 'width="%s"' % self.width ) or ''
+        img   = '<img %s %s src="%s" alt="%s" style="%s"></img>' % \
+                    ( hattr, wattr, self.src, self.alt, self.style )
+        # If the image is a link, enclose it with a 'anchor' dom-element.
         if self.href :
             href = et.Element( 'a', { 'href' : self.href } )
             href.append( et.fromstring( img ))

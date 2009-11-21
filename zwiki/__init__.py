@@ -29,3 +29,15 @@ def split_style( style ) :
     elif isinstance( inner_style, ( str, unicode )) :
         s_style = inner_style
     return style, s_style
+
+def constructstyle( kwargs, defcss={} ) :
+    """From the different types of parameters construct a style string"""
+    d_style, s_style = split_style( kwargs.pop( 'style', {} ))
+    css    = {}
+    css.update( defcss )
+    css.update( d_style )
+    css.update( kwargs )
+
+    style = '; '.join([ "%s: %s" % (k,  css[k]) for k in css ])
+    style = "%s; %s ; " % ( style, s_style )
+    return style

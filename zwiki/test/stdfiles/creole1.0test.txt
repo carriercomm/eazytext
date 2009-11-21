@@ -9,7 +9,7 @@
     Goto [[ #anchor in list | anchor created using anchor macro ]] \\ 
     Open the [[ *#contacts | contacts ]] in a new window
 
-== Some text markup
+=={c;/1,solid,c;A} '_Some text markup_'
 
 [[ +http://code.google.com/images/code_logo.png | image ]]
 
@@ -40,6 +40,24 @@ An example for indentation, \\
 > >> print type(it)
 >>    < List  type ... >
 
+=== Special HTML markups
+
+[<ABBR WHO, World Health Organisation >]
+
+Here is a problem that needs to be explored, [<FIXME>]
+
+As for what will raise errors, the GAE Python runtime docs make the oh-
+so-helpful statement that "the os module is available, but with
+unsupported features disabled," without mentioning exact function
+All smilies as well, [<:-)>] to smile and [<:-(>] to frown.
+names. I generated a list, though, and it's pretty long. Another issue
+is that while some will raise ImportError/AttributeError (e.g.
+os.mkdir), others will import fine but not work (tempfile.mkstemp). 
+
+
+| :-) | [<:-)>]
+| :-( | [<:-(>]
+
 == Links ==
 
 You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
@@ -60,13 +78,11 @@ something like foo://bar// should render as italic.
 You can use this to draw a line to separate the page:
 ----
 
-And even mix html code in between <div>This text was inside html tag `div`</div> in the same line
-
 == wiki extension ==
 
 You can use nowiki syntax if you would like do stuff like this:
 
-[[ +<http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
+[[ +http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
 
 {{{ Box
 # { 'color' : 'blue', 'width' : '100%', 'border-top' : 'thin solid green',
@@ -331,26 +347,24 @@ a tilde escapes itself: ~~xxx
 
 Tables are done like this:
 
-|=header col1|=header col2| 
-|col1|col2| col3
-|you         |can         | |
-|also      ||align\\ it. | col4 |
+|= header col1 |= header col2 |=            |=     |
+| col1         |{y} col2      | ''{g}col3'' |      |
+| you          | can        $||            $|
+| also                       || align\\ it. | col4 |
 
 === Big Tables ===
 
 And big tables are done, like this :
 
-||{ { "style" : "color:green; background-color:#ffffcc;", "cellpadding" : "20", \
-      "cellspacing" : "0", "border" : "5px",  \
-      "caption" : "fruits and icecreams" }
-||- { "background-color" : "white" }
-|| { "color" : "black" } | Fruits 
-|| { "color" : "black" } | Icecreams
+||{ { g; background-color:#ffffcc; cellpadding : 20; cellspacing : 0; /5,solid,gray } |
+||-{ W }
+|| { y } | Fruits 
+|| Icecreams
 ||-
 ||                                        Orange
-|| { "background-color" : "gray" } | Apple
-||- { "style" : "font-weight : bold;", "color" : "gray" }
-|| Bread
+|| { G } | Apple
+||-{ font-weight : bold; m } |
+|| //{m} Bread //
 || Pie
 ||-
 || Butter

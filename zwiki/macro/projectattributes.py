@@ -10,51 +10,34 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 css = {
-    'padding'   : '0px',
-    'border'    : '0px',
+    'padding'            : '5px',
+    'background'         : '#e5ecf9',
+    '-moz-border-radius' : '5px'
 }
 
 template = """
 <div>
-    <div class="curvy4"> </div>
-    <div class="curvy2">
-        <div class="bgblue1" style="height : 1px ; margin: 0px 2px 0px 2px;"> </div>
-    </div>
-    <div class="curvy1">
-        <div class="bgblue1" style="height : 1px ; margin: 0px 1px 0px 1px;"> </div>
-    </div>
-    <div>
-        <div class="bgblue1 p5" style="margin: 0px 1px 0px 1px;">
-            <table>
-                <tr>
-                    <td class="ralign p5 fntbold" style="border: none">admin-email : </td>
-                    <td  class="p5" style="border: none"> %s </td>
-                </tr>
-                <tr>
-                    <td class="ralign p5 fntbold" style="border: none;">license : </td>
-                    <td class="p5" style="border: none"> %s </td>
-                </tr>
-                <tr>
-                    <td class="ralign p5 fntbold" style="border: none;">mailing-lists : </td>
-                    <td class="p5" style="border: none"> %s </td>
-                </tr>
-                <tr>
-                    <td class="ralign p5 fntbold" style="border: none;">irc-channels : </td>
-                    <td class="p5" style="border: none"> %s </td>
-                </tr>
-            </table>
+    <div style="display: table">
+        <div style="display: table-row">
+            <div  class="ralign p5 fntbold" style="display: table-cell; border: none">admin-email :</div>
+            <div  class="p5" style="display: table-cell; border: none">%s</div>
+        </div>
+        <div style="display: table-row">
+            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">license : </div>
+            <div class="p5" style="display: table-cell; border: none"> %s </div>
+        </div>
+        <div style="display: table-row">
+            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">mailing-lists : </div>
+            <div class="p5" style="display: table-cell; border: none"> %s </div>
+        </div>
+        <div style="display: table-row">
+            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">irc-channels : </div>
+            <div class="p5" style="display: table-cell; border: none"> %s </div>
         </div>
     </div>
-    <div class="curvy1">
-        <div class="bgblue1" style="height : 1px ; margin: 0px 1px 0px 1px;"> </div>
-    </div>
-    <div class="curvy2">
-        <div class="bgblue1" style="height : 1px ; margin: 0px 2px 0px 2px;" > </div>
-    </div>
-    <div class="curvy4"> </div>
 </div>
 """
 
@@ -63,13 +46,7 @@ class ProjectAttributes( ZWMacro ) :
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]
-
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( css )
-        self.css.update( d_style )
-        self.css.update( kwargs )
+        self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
         app = self.macronode.parser.zwparser.app
@@ -80,11 +57,7 @@ class ProjectAttributes( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; %s ;' % self.style
-        
-        cntnr = et.Element( 'div', { 'name' : 'projectattrs', 'style' : style } )
+        cntnr = et.Element( 'div', { 'name' : 'projectattrs', 'style' : self.style } )
         if p :
             cntnr.append(
                 et.fromstring(
@@ -96,4 +69,3 @@ class ProjectAttributes( ZWMacro ) :
                 )
             )
         return et.tostring( cntnr )
-

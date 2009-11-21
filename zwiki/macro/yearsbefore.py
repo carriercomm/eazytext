@@ -9,27 +9,53 @@
 import datetime     as dt
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 class YearsBefore( ZWMacro ) :
     """Implements YearsBefore() Macro"""
 
-    def __init__( self, template, fromyear, **kwargs ) :
-        self.template = template
-        self.fromyear = int(fromyear)
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( d_style )
-        self.css.update( kwargs )
+    def __init__( self, template, fromyear, frommonth=1, fromday=1, **kwargs ) :
+        utc = dt.datetime.utcnow()
+
+        self.template  = template
+        try :
+            self.fromyear  = int(fromyear)
+            self.frommonth = int(fromyear)
+            self.fromday   = int(fromday)
+        except :
+            self.fromyear  = utc.year
+            self.frommonth = utc.month
+            self.fromday   = utc.day
+        self.style     = constructstyle( kwargs )
 
     def tohtml( self ) :
-        style  = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; ' + self.style + '; '
-        utc    = dt.datetime.utcnow()
-        num    = utc.year - self.fromyear
-        years  = utc.year < self.fromyear and 'sometime' \
-                 or (num and (str(num+1) + ' years') or '1 year')
-        string = self.template % years
-        return '<span>%s</span>' % string
+        utc   = dt.datetime.utcnow()
+        date  = dt.datetime( self.fromyear, self.frommonth, self.fromday )
+        delta = date - utc
+        days  = delta.days
+        if days > 0 :
+            years  = days/365
+            months = (days%365) / 30
+
+            if years == 0 :
+                years = ''
+            elif years == 1 :
+                years = '1 year'
+            else :
+                years = '%s years' % years
+
+            if months == 0 :
+                months = ''
+            elif months == 1 :
+                months = '1 month'
+            else :
+                months = '%s months' % months
+
+            text  = "%s, %s" % ( years, months )
+
+        else :
+            text = 'sometime'
+
+        string = self.template % text
+
+        return '<span style="%s">%s</span>' % (self.style, string)

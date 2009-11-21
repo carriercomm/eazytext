@@ -9,7 +9,7 @@
 import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style
+from   zwiki        import split_style, constructstyle
 
 css = {
     'padding'   : '0px',
@@ -21,13 +21,7 @@ class ProjectVersions( ZWMacro ) :
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]
-
-        d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-        self.style  = s_style
-        self.css    = {}
-        self.css.update( css )
-        self.css.update( d_style )
-        self.css.update( kwargs )
+        self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
         app = self.macronode.parser.zwparser.app
@@ -38,11 +32,7 @@ class ProjectVersions( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        style = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
-        if self.style :
-            style += '; %s ;' % self.style
-        
-        cntnr = et.Element( 'div', { 'name' : 'projectvers', 'style' : style } )
+        cntnr = et.Element( 'div', { 'name' : 'projectvers', 'style' : self.style } )
         e     = et.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Versions'
         cntnr.append( e )
@@ -55,4 +45,3 @@ class ProjectVersions( ZWMacro ) :
             e.text = v.description
             cntnr.append( e )
         return et.tostring( cntnr )
-
