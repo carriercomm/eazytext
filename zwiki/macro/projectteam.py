@@ -45,13 +45,13 @@ class ProjectTeam( ZWMacro ) :
     def tohtml( self ) :
         app = self.macronode.parser.zwparser.app
         try :   # To handle test cases.
-            p   = getattr( app.c, 'project', None )
+            p = getattr( app.c, 'project', None )
         except :
-            p   = None
+            p = None
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectteam', 'style' : self.style } )
+        cntnr = et.Element( 'div', { 'name' : 'projectteam', 'style' : self.style })
 
         if p :
             admin  = p.admin.username
