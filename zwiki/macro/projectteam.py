@@ -14,15 +14,16 @@ from   zwiki        import split_style, constructstyle
 css = {
     'padding'            : '5px',
     'background'         : '#e5ecf9',
-    '-moz-border-radius' : '5px'
+    '-moz-border-radius' : '5px',
+    'margin'             : '10px 0px 10px 5px'
 }
 
 template = """
 <div>
     <div style="display: table">
         <div style="display: table-row">
-            <div class="ralign p5 fntbold" style="border: none;"> Admin : </div>
-            <div class="p5" style="border: none;"> %s </div>
+            <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;"> Admin : </div>
+            <div class="p5" style="display: table-cell; border: none;"> %s </div>
         </div>
         %s
     </div>
@@ -30,8 +31,8 @@ template = """
 """
 team_template = """
 <div style="display: table-row">
-    <div class="ralign p5 fntbold" style="border: none;">%s : </div>
-    <div class="p5" style="border: none"> %s </div>
+    <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">%s : </div>
+    <div class="p5" style="display: table-cell; border: none"> %s </div>
 </div>
 """
 

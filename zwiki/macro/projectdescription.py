@@ -23,7 +23,7 @@ template = """
         <em> %s </em>
     </div>
     <div name="desc">
-        <blockquote> %s </blockquote> 
+        %s
     </div>
 </div>
 """

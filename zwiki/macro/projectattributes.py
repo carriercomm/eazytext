@@ -15,26 +15,27 @@ from   zwiki        import split_style, constructstyle
 css = {
     'padding'            : '5px',
     'background'         : '#e5ecf9',
-    '-moz-border-radius' : '5px'
+    '-moz-border-radius' : '5px',
+    'margin'             : '10px 0px 10px 5px'
 }
 
 template = """
 <div>
     <div style="display: table">
         <div style="display: table-row">
-            <div  class="ralign p5 fntbold" style="display: table-cell; border: none">admin-email :</div>
+            <div  class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none">admin-email :</div>
             <div  class="p5" style="display: table-cell; border: none">%s</div>
         </div>
         <div style="display: table-row">
-            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">license : </div>
+            <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">license : </div>
             <div class="p5" style="display: table-cell; border: none"> %s </div>
         </div>
         <div style="display: table-row">
-            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">mailing-lists : </div>
+            <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">mailing-lists : </div>
             <div class="p5" style="display: table-cell; border: none"> %s </div>
         </div>
         <div style="display: table-row">
-            <div class="ralign p5 fntbold" style="display: table-cell; border: none;">irc-channels : </div>
+            <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">irc-channels : </div>
             <div class="p5" style="display: table-cell; border: none"> %s </div>
         </div>
     </div>
