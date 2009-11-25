@@ -32,7 +32,8 @@ class ProjectVersions( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectvers', 'style' : self.style } )
+        cntnr = et.Element( 'div', { 'name' : 'projectvers', 'class': 'verdescr',
+                                     'style' : self.style } )
         e     = et.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Versions'
         cntnr.append( e )
@@ -42,6 +43,6 @@ class ProjectVersions( ZWMacro ) :
             e.text = v.version_name
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
-            e.text = v.description
+            e.append( et.fromstring( getattr( v, 'descriptionhtml', '' )))
             cntnr.append( e )
         return et.tostring( cntnr )

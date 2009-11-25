@@ -36,7 +36,7 @@ class ProjectComponents( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectcomps', 'style' : self.style } )
+        cntnr = et.Element( 'div', { 'name' : 'projectcomps', 'class' : 'compdescr', 'style' : self.style } )
         e     = et.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Components'
         cntnr.append( e )
@@ -50,7 +50,7 @@ class ProjectComponents( ZWMacro ) :
                                   )
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
-            e.text = c.description
+            e.append( et.fromstring( getattr( c, 'descriptionhtml', '' )))
             cntnr.append( e )
         return et.tostring( cntnr )
 

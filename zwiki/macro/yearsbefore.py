@@ -16,11 +16,10 @@ class YearsBefore( ZWMacro ) :
 
     def __init__( self, template, fromyear, frommonth=1, fromday=1, **kwargs ) :
         utc = dt.datetime.utcnow()
-
         self.template  = template
         try :
             self.fromyear  = int(fromyear)
-            self.frommonth = int(fromyear)
+            self.frommonth = int(frommonth)
             self.fromday   = int(fromday)
         except :
             self.fromyear  = utc.year
