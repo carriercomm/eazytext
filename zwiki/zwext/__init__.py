@@ -38,11 +38,12 @@ class ZWExtension( object ) :
         pass
 
 
-from zwiki            import split_style
-from zwiki.zwext.box  import Box
-from zwiki.zwext.html import Html
+from zwiki              import split_style
+from zwiki.zwext.box    import Box
+from zwiki.zwext.html   import Html
+from zwiki.zwext.nested import Nested
 
-extnames = [ 'ZWExtension', 'Box', 'Html' ]
+extnames = [ 'ZWExtension', 'Box', 'Html', 'Nested' ]
 
 def build_zwext( zwextnode, nowiki ) :
     """Parse the nowiki text, like,

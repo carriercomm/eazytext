@@ -31,6 +31,7 @@ TEXT_ESCAPED        = 'escaped'
 TEXT_LINK           = 'link'
 TEXT_MACRO          = 'macro'
 TEXT_HTML           = 'html'
+TEXT_NEWLINE        = 'newline'
 
 TEXT_M_SPAN              = 'm_span'
 TEXT_M_BOLD              = 'm_bold'
@@ -188,6 +189,7 @@ def process_textcontent( contents ) :
                 break;
         else :
             beginmarkup_cont.html = beginmarkup_cont.text
+
     return
 
 #def parse_text( parser, text ) :
@@ -540,7 +542,8 @@ class TextLines( Node ) :
         return (self.textlines,)
 
     def tohtml( self ) :
-        # Process the text contents and convert them into html
+        # Combine text lines, process the text contents and convert them into
+        # html
         contents = []
         [ contents.extend( item.contents )
           for textcontents, nl in self.textlines 
@@ -1062,11 +1065,29 @@ class BQuotes( Node ) :
     def children( self ) :
         return self.listitems
 
+    def _extendcontents( self, bq, contents ) :
+        # Collect the contents that spans across muliple lines of same block
+        # level. 'contents' is the accumulator
+        if bq.textcontents :
+            [ contents.extend( item.contents )
+              for item in bq.textcontents.textcontents ]
+        else :
+            raise ZWASTError(
+                    "tohtml() : No bqitem available for BQuote() node" )
+        return
+
+    def _processcontents( self, contents ) :
+        # Process the accumulated contents
+        process_textcontent( contents )
+        html = ''.join([ cont.html for cont in contents ])
+        return html
+
     def tohtml( self ) :
         html         = ''
         stylefirst   = 'border-left : 2px solid #d6d6d6; padding-left : 5px'
         stylerest    = 'margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px'
         closemarkups = []   # Stack to manage nested list.
+        contents = []
         pm   = ''
         cm   = ''
         for i in range(len(self.listitems)) :
@@ -1076,20 +1097,35 @@ class BQuotes( Node ) :
             cm       = re.search( patt, bq.bqmarkup ).group()
             cmpmark  = cmp( len(pm), len(cm) )  # -1 or 0 or 1
             diffmark = abs( len(cm) - len(pm))  # 0 or 1
+
             if cmpmark > 0 :
                 # previous bq markup (pm) is one or more level deeper,
                 # so end the blockquote(s)
-                html += ''.join([ closemarkups.pop() for i in range(diffmark) ])
+                # And, process the accumulated content
+                html     += self._processcontents( contents )
+                contents = []
+
+                html     += ''.join([ closemarkups.pop() for i in range(diffmark) ])
+
             elif cmpmark < 0 :
                 # current bq markup (cm) is one or more level deeper, 
                 # open new blockquote(s)
+                # And, process the accumulated content
+                html     += self._processcontents( contents )
+                contents = []
+
                 for j in range(diffmark-1) :
                     html += '<blockquote>'
                     closemarkups.append( '</blockquote>' )
                 html += '<blockquote style="%s">' % style
                 closemarkups.append( '</blockquote>' )
-            html += bq.tohtml()
-            pm = cm
+
+            self._extendcontents( bq, contents )
+            contents.append( Content( self.parser, '\n', TEXT_NEWLINE, '<br></br>' ))
+            # html += bq.tohtml()
+            pm    = cm
+
+        html += self._processcontents( contents )
         html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
         return html
 
@@ -1126,6 +1162,9 @@ class BQuote( Node ) :
         return ( self.bqmarkup, self.textcontents, self.newline )
 
     def tohtml( self ) :
+        # This function is not used. The logic for html translation is with
+        # BQuotes class
+
         # Process the text contents and convert them into html
         if self.textcontents :
             contents = []
