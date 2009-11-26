@@ -50,7 +50,7 @@ class ProjectComponents( ZWMacro ) :
                                   )
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
-            e.append( et.fromstring( getattr( c, 'descriptionhtml', '' )))
+            e.append( et.fromstring( getattr( c, 'descriptionhtml', '<div></div>' )))
             cntnr.append( e )
         return et.tostring( cntnr )
 

@@ -43,6 +43,6 @@ class ProjectVersions( ZWMacro ) :
             e.text = v.version_name
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
-            e.append( et.fromstring( getattr( v, 'descriptionhtml', '' )))
+            e.append( et.fromstring( getattr( v, 'descriptionhtml', '<div></div>' )))
             cntnr.append( e )
         return et.tostring( cntnr )
