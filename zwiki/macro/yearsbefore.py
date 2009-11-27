@@ -30,8 +30,9 @@ class YearsBefore( ZWMacro ) :
     def tohtml( self ) :
         utc   = dt.datetime.utcnow()
         date  = dt.datetime( self.fromyear, self.frommonth, self.fromday )
-        delta = date - utc
+        delta = utc - date
         days  = delta.days
+        
         if days > 0 :
             years  = days/365
             months = (days%365) / 30

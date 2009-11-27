@@ -66,6 +66,12 @@ images_macro    = [
 )
 ]
 
+yearsbefore_macro   = [
+( """It happened {{ YearsBefore( '%s before', '2007', '2' ) }}""",
+  [ 'span', 'year', 'month' ]
+)
+]
+
 def setUpModule() :
     global words, seed
 
@@ -144,7 +150,7 @@ class TestMacroDumpsRandom( object ) :
 
         def clear_cfunc( ref, tu ) :
             html= tu.tohtml()
-            assert_true( 'clear : both' in html,
+            assert_true( 'clear: both' in html,
                          'Fail Clear Macro : %s ' % html )
 
         testcount = 1
@@ -172,9 +178,9 @@ class TestMacroDumpsRandom( object ) :
                         [ '{{ Span("How are you") }}',
                           [ 'How are you' ] ],
                         [ '{{ Span("With style", style={ "font-weight" : "bold"} ) }}',
-                          [ 'With style', 'font-weight : bold' ] ] ,
+                          [ 'With style', 'font-weight: bold' ] ] ,
                         [ '{{ Span("With kw styles", color="blue") }}',
-                          [ 'With kw styles', 'color : blue' ] ]
+                          [ 'With kw styles', 'color: blue' ] ]
                       ]
 
         def span_cfunc( macro_ref ) :
@@ -312,4 +318,20 @@ class TestMacroDumpsRandom( object ) :
         for t, r in images_macro :
             yield self._test_execute, 'macro_images', t, testcount, r, \
                   imgs_cfunc
+            testcount += 1
+
+    def test_8_images( self ) :
+        """Testing the YearsBefore() macro"""
+        print "\nTesting the YearsBefore() macro"
+        log.info( "Testing the YearsBefore() macro" )
+        
+        def yb_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, r in yearsbefore_macro :
+            yield self._test_execute, 'macro_yearsbefore', t, testcount, r, \
+                  yb_cfunc
             testcount += 1

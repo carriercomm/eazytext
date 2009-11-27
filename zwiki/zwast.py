@@ -470,7 +470,7 @@ class Heading( Node ) :
         self.newline      = Newline( parser, newline )
 
     def children( self ) :
-        return ( self.fulltext, self.newline )
+        return ( self.headmarkup, self.textcontents, self.newline )
 
     def tohtml( self ):
         l    = len(self.headmarkup)
@@ -486,7 +486,7 @@ class Heading( Node ) :
         return html
 
     def dump( self ) :
-        return self.fulltext + self.newline.dump()
+        return self.headmarkup + self.textcontents.dump() + self.newline.dump()
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -760,13 +760,12 @@ class TableCells( Node ) :
         """`cell` can be `Empty` object or `TextContents` object"""
         self.parser = parser
         # `markup` captures the cell markup - pipe+style
-        markup      = markup.strip()
         self.cells  = [ [markup, cell, 1] ]
 
     def appendcell( self, markup, cell ) :
         # `markup` captures the cell markup - pipe+style
-        markup  = markup.strip()
-        colspan = len(markup) - len(markup.lstrip( M_PIPE ))
+        strippedmarkup  = markup.strip()
+        colspan         = len(strippedmarkup) - len(strippedmarkup.lstrip( M_PIPE ))
         if colspan == 1 :
             self.cells.append([ markup, cell, 1 ])
         elif colspan > 1 :
@@ -790,6 +789,7 @@ class TableCells( Node ) :
         htmlcells = []
 
         for markup, cell, colspan in self.cells :
+            markup   = markup.strip()
             contents = []
             if isinstance( cell, TextContents ) :
                 [ contents.extend( item.contents ) for item in cell.textcontents ]
@@ -816,7 +816,7 @@ class TableCells( Node ) :
 
     def dump( self ) :
         return ''.join(
-            [ markup + cell.dump() for markup, cell in self.cells ]
+            [ markup + cell.dump() for markup, cell, colspan in self.cells ]
         )
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -1071,9 +1071,6 @@ class BQuotes( Node ) :
         if bq.textcontents :
             [ contents.extend( item.contents )
               for item in bq.textcontents.textcontents ]
-        else :
-            raise ZWASTError(
-                    "tohtml() : No bqitem available for BQuote() node" )
         return
 
     def _processcontents( self, contents ) :
