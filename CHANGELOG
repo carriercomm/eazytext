@@ -66,3 +66,18 @@
 
 - ZWiki bug fixes.
     - Improved and intuitive Zetalink markup.
+
+0.8dev :
+--------
+
+- ZWiki features and enhancements
+    - Stype-shortcut support for Text-markups, Big-table markups, Table-markup.
+    - Nested, Zwiki extension added.
+
+- ZWiki bug fixes.
+    - url for project-users not properly formed in Projectteams() macro.
+    - Text markup lexer merged with zwlexer.py
+    - YearsBefore() macro computes expired days in (years, months).
+    - Project*() macro templates changed.
+    - Blockquoted supports text-markups across newlines, but within the same
+      level of blockquoting.
