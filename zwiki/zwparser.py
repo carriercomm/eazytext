@@ -145,6 +145,7 @@ class ZWParser( object ):
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
                     yacc_debug=False,
+                    outputdir='',
                 ):
         """Create a new ZWParser.
         
@@ -194,6 +195,10 @@ class ZWParser( object ):
             you're modifying the parser, make this point to a local yacc table
             file.
                         
+        outputdir:
+            To change the directory in which the parsetab.py file (and other
+            output files) are written.
+                        
         yacc_debug:
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar."""
@@ -206,6 +211,7 @@ class ZWParser( object ):
                                        debug=yacc_debug,
                                        optimize=yacc_optimize,
                                        tabmodule=yacctab,
+                                       outputdir=outputdir
                                        # debuglog=log
                                      )
         self.parser.zwparser = self
