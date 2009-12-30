@@ -24,6 +24,8 @@
 #       <pre> <code> <tt>  <kbd> <var> <dfn> <samp> <acronym> <abbr> <address>
 #       <blockquote> <q> <cite> <ins> <del>
 #
+#   * Try to integrate markdown wiki features.
+#
 #   ( features - macros )
 #
 #   * Notes Macro
