@@ -25,6 +25,9 @@
 #       <blockquote> <q> <cite> <ins> <del>
 #
 #   * Try to integrate markdown wiki features.
+#   * Should wiki text be line oriented or paragraph oriented ? Make an
+#     analysis and if possible provide a switch to enable it this way or the
+#     other way.
 #
 #   ( features - macros )
 #
