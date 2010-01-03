@@ -81,3 +81,8 @@
     - Project*() macro templates changed.
     - Blockquoted supports text-markups across newlines, but within the same
       level of blockquoting.
+
+0.81dev :
+---------
+
+    Added comments
