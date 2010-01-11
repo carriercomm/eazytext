@@ -1418,7 +1418,7 @@ class BasicText( Node ) :
         elif type == TEXT_WWWURI :
             self.contents = [ Content( parser,
                                        text, type,
-                                       '<a href="'+text+ '">' + text + '</a>'
+                                       '<a href="http://%s">%s</a>' % (text,text)
                               )
                             ]
         

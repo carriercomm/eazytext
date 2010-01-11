@@ -1,0 +1,12 @@
+Back out 480132: orange on Linux ( http://tinderbox.mozilla.org/showlog.cgi?log=TraceMonkey/1237017748.1237029269.2403.gz&fulltext=1)
+Back out fix for 481444; orange on Linux TraceMonkey unit test:
+http://tinderbox.mozilla.org/showlog.cgi?log=TraceMonkey/1236978913.1236990062.26824.gz&fulltext=1
+triggering tinderbox rebuild for to check if orange there persists
+Crash [@ jsds_SyncFilter(FilterRecord*, jsdIFilter*) ] when appendFilter()
+called with Console2 installed
+Crash [@ jsds_SyncFilter(FilterRecord*, jsdIFilter*) ] when appendFilter()
+called with Console2 installed
+- Quickstub additional properties on nsIDOMHTMLAnchorElement and
+nsIDOMNSHTMLAnchorElement, r=bz
+Check for non-stub getters/setters in SETNAME and SETPROP and invoke
+SetPropHit after setting the property in INITPROP (481989, r=brendan).
