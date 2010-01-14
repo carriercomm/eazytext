@@ -3,6 +3,8 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
+#   1. Do not enable optimize for yacc-er. It optimizes the rules and the
+#      rule handler fails.
 # Notes  :
 #   1. Currently the parser does not check for html characters in the
 #      document.
@@ -585,13 +587,35 @@ class ZWParser( object ):
         else :
             raise ParseError( "unexpected rule-match for unorderedlists")
 
-    def p_orderedlist( self, p ):                       # List
-        """orderedlist : ORDLIST_START text_contents NEWLINE
-                       | ORDLIST_START empty NEWLINE"""
+    def p_orderedlist( self, p ):                       # List+newline+text
+        """orderedlist : orderedlistbegin
+                       | orderedlist text_contents NEWLINE"""
+        if len(p) == 2 :
+            p[0] = p[1]
+        elif len(p) == 4 :
+            p[1].contlist( p.parser, p[2], p[3] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for orderedlist")
+
+    def p_orderedlistbegin( self, p ):                  # List
+        """orderedlistbegin : ORDLIST_START text_contents NEWLINE
+                            | ORDLIST_START empty NEWLINE"""
         p[0] = List( p.parser, LIST_ORDERED, p[1], p[2], p[3] )
 
-    def p_unorderedlist( self, p ):                     # List
-        """unorderedlist        : UNORDLIST_START text_contents NEWLINE
+    def p_unorderedlist( self, p ):                     # List+newline+text
+        """unorderedlist : unorderedlistbegin
+                         | unorderedlist text_contents NEWLINE"""
+        if len(p) == 2 :
+            p[0] = p[1]
+        elif len(p) == 4 :
+            p[1].contlist( p.parser, p[2], p[3] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for unorderedlist")
+
+    def p_unorderedlistbegin( self, p ):                # List
+        """unorderedlistbegin   : UNORDLIST_START text_contents NEWLINE
                                 | UNORDLIST_START empty NEWLINE"""
         p[0] = List( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
 
@@ -607,8 +631,19 @@ class ZWParser( object ):
         else :
             raise ParseError( "unexpected rule-match for definitionlists")
 
-    def p_definitionlist( self, p ):                     # Definition
-        """definitionlist       : DEFINITION_START text_contents NEWLINE
+    def p_definitionlist( self, p ):                    # Def..+Text+Newline
+        """definitionlist       : definitionlistbegin
+                                | definitionlist  text_contents NEWLINE"""
+        if len(p) == 2 :
+            p[0] = p[1]
+        elif len(p) == 4 :
+            p[1].contlist( p.parser, p[2], p[3] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for definitionlist")
+
+    def p_definitionlistbegin( self, p ):               # Definition
+        """definitionlistbegin  : DEFINITION_START text_contents NEWLINE
                                 | DEFINITION_START empty NEWLINE"""
         p[0] = Definition( p.parser, p[1], p[2], p[3] )
 

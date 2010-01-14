@@ -1,4 +1,3 @@
-"""Implementing the Html macro""" 
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
@@ -10,8 +9,21 @@ import cElementTree as et
 
 from   zwiki.macro  import ZWMacro
 
+wikidoc = """
+=== Html
+
+: Description ::
+    Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup first,
+    if advanced styling is required for the embedded HTML text, then this
+    macro can come in handy.
+
+Positional arguments,
+|= html | HTML text
+
+CSS styling accepted as optional keyword arguments
+"""
+
 class Html( ZWMacro ) :
-    """Implements Html() Macro"""
 
     def __init__( self, html='' ) :
         self.html  = html
@@ -19,5 +31,5 @@ class Html( ZWMacro ) :
         self.css   = {}
 
     def tohtml( self ) :
+        print self.html
         return self.html
-

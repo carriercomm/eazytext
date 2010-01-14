@@ -1,4 +1,37 @@
-"""Implement and package zwiki extension framework"""
+"""
+== ZWiki Extensions
+
+ZWiki Extension is a plugin like framework to extend wiki engine itself. One
+can define markups, text formats etc ... and integrate it with ZWiki as an
+extension.
+
+=== Extension Framework
+
+Extented wiki text can be added into the main document by enclosing them within
+triple curly braces '' ~{~{{ ... ~}~}} ''. Everything between the curly braces
+are passed directly to the extension module, which, in most of the cases will
+return a translated HTML text. The general format while using a wiki extension
+is,
+
+> [<PRE
+{{{<b>extension-name</b>
+# { '<b>property-name</b>' : '<b>value</b>'
+#   '<b>property-name</b>' : '<b>value</b>'
+#   <b>...</b>
+# }
+
+<b>wiki-text ...</b>
+
+}}}
+>]
+
+* ''extension-name'', should be one of the valid extensions.
+* ''property-name'', property name can be a property accepted by the extension
+  module or can be CSS property. Note that, the entire property block should
+  be marked by a beginning ''hash (#)''
+
+== Extension List
+"""
 
 # -*- coding: utf-8 -*-
 

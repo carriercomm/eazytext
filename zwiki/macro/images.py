@@ -17,8 +17,28 @@ css = {
     'border'    : '0px',
 }
 
+wikidoc = """
+=== Images
+
+: Description ::
+    Embed Image galleries in the doc. 
+
+Positional arguments,
+|= *args  | variable number of image sources (@src), one for each for image
+
+keyword argument,
+|= alt    | alternate text (@alt), that goes into each image
+|= height | optional, image height, applicable to all image's @height attribute
+|= width  | optional, image width, applicable to all image's @width attribute
+|= cols   | optional, number of image columns in the gallery, default is 3.
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 class Images( ZWMacro ) :
-    """Implements Images() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.imgsources = args

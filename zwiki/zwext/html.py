@@ -10,6 +10,11 @@ import cElementTree as et
 from   zwiki.zwext    import ZWExtension
 from   zwiki          import split_style
 
+wikidoc = """
+=== Html
+: Description :: Raw html text.
+"""
+
 class Html( ZWExtension ) :
     """Implements Html() wikix"""
 

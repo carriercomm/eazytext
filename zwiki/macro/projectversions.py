@@ -16,8 +16,19 @@ css = {
     'border'    : '0px',
 }
 
+wikidoc = """
+=== ProjectVersions
+
+: Description ::
+    Meant to be used in project front page, displays list of project versions
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 class ProjectVersions( ZWMacro ) :
-    """Implements ProjectVersions() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]

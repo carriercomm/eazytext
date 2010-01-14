@@ -12,6 +12,14 @@ from   zwiki        import split_style, constructstyle
 
 css = { }
 
+wikidoc = """
+=== Nested
+
+: Description ::
+    Simpley nest another ZWiki document / text within the current
+    document.
+"""
+
 class Nested( ZWExtension ) :
     """Implements Nested() wikix"""
 
@@ -34,4 +42,3 @@ class Nested( ZWExtension ) :
             except :
                 pass
         return self.nowiki_h
-

@@ -16,12 +16,23 @@ css = {
     'border'    : '0px',
 }
 
+wikidoc = """
+=== ProjectComponents
+
+: Description ::
+    Meant to be used in project front page, displays list of project components
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 ct_template = """
 <div><span style="font-weight: bold">%s</span> owned by <a href="%s">%s</a></div>
 """
 
 class ProjectComponents( ZWMacro ) :
-    """Implements ProjectComponents() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]
@@ -56,4 +67,3 @@ class ProjectComponents( ZWMacro ) :
                 pass
             cntnr.append( e )
         return et.tostring( cntnr )
-

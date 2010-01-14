@@ -69,7 +69,7 @@ class TestWikiDumpsRandom( object ) :
 
     def _test_execute( self, type, testcontent, count, ref=''  ) :
         # Initialising the parser
-        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=True )
+        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
         # The first character is forced to be a `A` to avoid having `@` as the
         # first character
         testcontent = 'A' + testcontent

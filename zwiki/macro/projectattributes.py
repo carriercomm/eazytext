@@ -19,6 +19,19 @@ css = {
     'margin'             : '10px 0px 10px 5px'
 }
 
+wikidoc = """
+=== ProjectAttributes
+
+: Description ::
+    Meant to be used in project front page, displays project attributes, like
+    admin, mailinglist, license etc ...
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 template = """
 <div>
     <div style="display: table">
@@ -43,7 +56,6 @@ template = """
 """
 
 class ProjectAttributes( ZWMacro ) :
-    """Implements ProjectAttributes() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]

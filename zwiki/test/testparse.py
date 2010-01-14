@@ -83,6 +83,11 @@ crooked_btable = """
 ||}
 """
 
+definitionnewline = """
+:h?O	O&5	"Z94U'e(h<6SNaynA	0b99n$e	_ukRiIT`y{hA#}2I::g
+www.RN'uw\nRD8j;vd3NE&YHX-Db(OF;'E@Old=
+"""
+
 def _loginfo( info ) :
     log.info( info )
     print info
@@ -121,7 +126,7 @@ class TestDumpsValid( object ) :
 
     def _test_execute( self, type, testcontent, count, ref='' ) :
         # Initialising the parser
-        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=True )
+        zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False, yacc_debug=False )
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
@@ -139,9 +144,10 @@ class TestDumpsValid( object ) :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
         if result != ref :
-            # open( 'result', 'w' ).write( result )
-            # open( 'ref', 'w' ).write( ref )
+            #open( 'result', 'w' ).write( result )
+            #open( 'ref', 'w' ).write( ref )
             print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
+
         assert result == ref, type+'... testcount %s'%count
 
         # Test by translating to html
@@ -389,3 +395,15 @@ class TestDumpsValid( object ) :
         for t in testlist :
             yield self._test_execute, 'crooked_btable', t, testcount
             testcount += 1
+
+    def test_H_definitionwithnewline( self ) :
+        """Testing definition item with new line"""
+        print "\nTesting definition item with new line"
+        log.info( "Testing crooked big table syntax" )
+        testlist = [ definitionnewline ]
+        testcount = 1
+        for t in testlist :
+            yield self._test_execute, 'definitionnewline', t, testcount
+            testcount += 1
+
+

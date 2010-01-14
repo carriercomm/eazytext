@@ -1,5 +1,3 @@
-"""Implementing the Image macro"""
-
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
@@ -17,8 +15,29 @@ css = {
     'border'    : '0px',
 }
 
+wikidoc = """
+=== Image
+
+: Description ::
+    Embed Images in the doc. Try to use ''Link markup'' to embed images, if
+    advanced styling is required, this macro can come in handy.
+
+Positional arguments,
+|= src    | source-url for image, goes into @src attribute
+|= alt    | alternate text, goes into @alt attribute
+
+keyword argument,
+|= height | optional, image height, goes into @height attribute
+|= width  | optional, image width, goes into @width attribute
+|= href   | optional, href, to convert the image into a hyper-link
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 class Image( ZWMacro ) :
-    """Implements Image() Macro"""
 
     def __init__( self, src, alt, **kwargs ) :
         self.src    = src

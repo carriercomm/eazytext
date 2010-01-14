@@ -11,6 +11,24 @@ import datetime     as dt
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
 
+wikidoc = """
+=== YearsBefore
+
+: Description ::
+    Generate a string (based on a template) describing time elapsed since the
+    given (day,month,year). The described time is in UTC.
+
+Positional arguments,
+|= template | template string.
+|= fromyear | from year
+
+keyword argument,
+|= frommonth | from month
+|= fromday   | from day
+
+CSS styling accepted as optional keyword arguments
+"""
+
 class YearsBefore( ZWMacro ) :
     """Implements YearsBefore() Macro"""
 

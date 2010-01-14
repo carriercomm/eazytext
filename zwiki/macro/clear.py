@@ -1,5 +1,3 @@
-"""Implementing the Clear macro"""
-
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
@@ -16,8 +14,22 @@ css = {
     'clear' : 'both',
 }
 
+wikidoc = """
+=== Clear
+
+: Description :: 
+    Styling macro to clear the DOM elements on both sides, warding off from
+    floating effects
+
+Positional arguments, None
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 class Clear( ZWMacro ) :
-    """Implements Clear() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.style  = constructstyle( kwargs, defcss=css )

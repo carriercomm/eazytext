@@ -19,6 +19,7 @@ from   zwiki.zwext        import build_zwext
 from   zwiki              import escape_htmlchars, split_style
 from   zwiki.textlexer    import TextLexer
 from   zwiki.stylelookup  import *
+import zwiki.ttags        as tt
 
 # text type for BasicText
 TEXT_ZWCHARPIPE     = 'zwcharpipe'
@@ -160,7 +161,7 @@ class Content( object ) :
         self.html   = html
 
     def __repr__( self ) :
-        return "Console<'%s','%s','%s'>" % (self.text, self.type, self.html )
+        return "Content<'%s','%s','%s'>" % (self.text, self.type, self.html )
 
 def process_textcontent( contents ) :
     """From the list of content objects (tokenized), construct the html page."""
@@ -458,6 +459,7 @@ class Heading( Node ) :
     """class to handle `heading` grammar."""
 
     def __init__( self, parser, headmarkup, headline, newline ) :
+        headmarkup = headmarkup.lstrip( ' \t' )
         off = headmarkup.find( '{' )
         if off > 0 :
             self.headmarkup   = headmarkup[:off]
@@ -897,11 +899,22 @@ class List( Node ) :
             self.empty        = listitem
             self.textcontents = None
         elif isinstance( listitem, TextContents ) :
-            self.textcontents = listitem
             self.empty        = None
+            self.textcontents = listitem
         else :
             raise ZWASTError( "Unknown `listitem` for List() node" )
-        self.newline      = Newline( parser, newline )
+        self.newline  = Newline( parser, newline )
+
+        # The node handles the raw text dumping a little different, because of
+        # the support added for multiline listitem
+        self.dumptext = listmarkup + listitem.dump() + self.newline.dump()
+
+    def contlist( self, parser, textcontents, newline ) :
+        self.dumptext += textcontents.dump() + newline
+        if self.textcontents :
+            self.textcontents.extendtextcontents( textcontents )
+        else :
+            self.textcontents = textcontents
 
     def children( self ) :
         return ( self.listtype, self.listmarkup, self.textcontents,
@@ -922,12 +935,8 @@ class List( Node ) :
         return html
 
     def dump( self ) :
-        if self.textcontents :
-            text = self.listmarkup + self.textcontents.dump()  + \
-                   self.newline.dump()
-        elif self.empty :
-            text = self.listmarkup + self.empty.dump()  +\
-                   self.newline.dump()
+        if self.textcontents or self.empty :
+            text = self.dumptext
         else :
             raise ZWASTError( "dump() : No listitem available for List() node" )
         return text
@@ -983,7 +992,6 @@ class Definitions( Node ) :
         for c in self.listitems :
             c.show( buf, offset + 2, attrnames, showcoord )
 
-
 class Definition( Node ) :
     """class to handle `definitionlist` grammar."""
 
@@ -996,11 +1004,22 @@ class Definition( Node ) :
             self.empty        = defnitem
             self.textcontents = None
         elif isinstance( defnitem, TextContents ) :
-            self.textcontents = defnitem
             self.empty        = None
+            self.textcontents = defnitem
         else :
             raise ZWASTError( "Unknown `defnitem` for Definition() node" )
         self.newline      = Newline( parser, newline )
+
+        # The node handles the raw text dumping a little different, because of
+        # the support added for multiline listitem
+        self.dumptext = defnmarkup + defnitem.dump() + self.newline.dump()
+
+    def contlist( self, parser, textcontents, newline ) :
+        self.dumptext += textcontents.dump() + newline
+        if self.textcontents :
+            self.textcontents.extendtextcontents( textcontents )
+        else :
+            self.textcontents = textcontents
 
     def children( self ) :
         return ( self.defnmarkup, self.textcontents, self.newline )
@@ -1023,12 +1042,8 @@ class Definition( Node ) :
         return html
 
     def dump( self ) :
-        if self.textcontents :
-            text = self.defnmarkup + self.textcontents.dump()  + \
-                   self.newline.dump()
-        elif self.empty :
-            text = self.defnmarkup + self.empty.dump()  +\
-                   self.newline.dump()
+        if self.textcontents or self.empty :
+            text = self.dumptext
         else :
             raise ZWASTError(
                     "dump() : No defnitem available for Definition() node" )
@@ -1122,6 +1137,10 @@ class BQuotes( Node ) :
             # html += bq.tohtml()
             pm    = cm
 
+        # Pop-out the last new-line (<br></br>)
+        if contents[-1].html == '<br></br>' :
+            contents.pop( -1 )
+
         html += self._processcontents( contents )
         html += ''.join([ closemarkups.pop() for i in range(len(closemarkups)) ])
         return html
@@ -1207,12 +1226,16 @@ class BQuote( Node ) :
 
 class TextContents( Node ) :
     """class to handle `textcontents` grammar."""
-    def __init__( self, parser, item  ) : # item is Link or Macro or Html or BasicText
+    def __init__( self, parser, item  ) :  # item is Link or Macro or Html or BasicText
         self.parser = parser
         self.textcontents = [ item ]
 
-    def appendcontent( self, item ) :     # item is Link or Macro or Html or BasicText
+    def appendcontent( self, item ) :      # item is Link or Macro or Html or BasicText
         self.textcontents.append( item )
+
+    def extendtextcontents( self, textcontents ) : # item is Link or Macro or Html or BasicText
+        if isinstance( textcontents, TextContents ) :
+            self.textcontents.extend( textcontents.textcontents )
 
     def children( self ) :
         return self.textcontents
@@ -1309,15 +1332,16 @@ class Macro( Node ) :
     def __init__( self, parser, macro  ) :
         self.parser      = parser
         self.text        = macro
-        html             = macro
-        self.contents    = [ Content( parser, macro, TEXT_MACRO, html ) ]
         self.macroobject = build_macro( self, macro )
+        # Translate the macro object right here itself.
+        html             = self.macroobject.tohtml()
+        self.contents    = [ Content( parser, macro, TEXT_MACRO, html ) ]
 
     def children( self ) :
         return self.contents
 
     def tohtml( self ) :
-        return self.macroobject.tohtml()
+        return ''.join([ c.html for c in self.contents ])
 
     def dump( self ) :
         return ''.join([ c.text for c in self.contents ])
@@ -1339,32 +1363,8 @@ class Html( Node ) :
         self.parser = parser
         self.text   = html_text
         self.html   = html_text[2:-2]
-        keyword     = self.html[:5]
 
-        if keyword[:4] == 'ABBR' :
-
-            args      = self.html[4:].split(',')
-            cont      = args and args.pop(0).strip() or ''
-            title     = args and args.pop(0).strip() or ''
-            self.html = '<abbr title="%s">%s</abbr>' % ( title, cont )
-
-        elif keyword == 'FIXME' :
-
-            style = "-moz-border-radius : 3px; border : 1px solid cadetBlue; " + \
-                    "color : red; padding: 1px; font-family : monospace;"
-            self.html = '<span style="%s">%s</span>' % (style, 'FIXME')
-
-        elif keyword[:3] == ':-)' :
-
-            style = "font-size: x-large; " + \
-                    "color: darkOrchid; padding: 1px; font-family : monospace;"
-            self.html = '<span style="%s">%s</span>' % (style, '&#9786;')
-
-        elif keyword[:3] == ':-(' :
-
-            style = "font-size: x-large; " + \
-                    "color: orangeRed; padding: 1px; font-family : monospace;"
-            self.html = '<span style="%s">%s</span>' % (style, '&#9785;')
+        self.html   = tt.parsetag( self.html )
 
         self.contents = [ Content( parser, self.text, TEXT_HTML, self.html ) ]
 

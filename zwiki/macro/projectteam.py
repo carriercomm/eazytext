@@ -18,6 +18,18 @@ css = {
     'margin'             : '10px 0px 10px 5px'
 }
 
+wikidoc = """
+=== ProjectTeam
+
+: Description ::
+    Meant to be used in project front page, displays project team-members
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 template = """
 <div>
     <div style="display: table">
@@ -29,6 +41,7 @@ template = """
     </div>
 </div>
 """
+
 team_template = """
 <div style="display: table-row">
     <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">%s : </div>
@@ -37,7 +50,6 @@ team_template = """
 """
 
 class ProjectTeam( ZWMacro ) :
-    """Implements ProjectTeam() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]

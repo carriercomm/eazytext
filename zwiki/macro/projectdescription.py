@@ -16,6 +16,18 @@ css = {
     'border'    : '0px',
 }
 
+wikidoc = """
+=== ProjectDescription
+
+: Description ::
+    Meant to be used in project front page, displays project description
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 template = """
 <div>
     <div name="summary">
@@ -29,7 +41,6 @@ template = """
 """
 
 class ProjectDescription( ZWMacro ) :
-    """Implements ProjectDescription() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         self.project = args and args[0]

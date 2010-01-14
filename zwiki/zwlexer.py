@@ -119,7 +119,7 @@ class ZWLexer( object ):
         return t
 
     def t_HEADING( self, t ):
-        r'^={1,5}(\{[^{}\r\n]*\})?'
+        r'^[ \t]*={1,5}(\{[^{}\r\n]*\})?'
         return t
 
     def t_BTABLESTYLE_START( self, t ) :
@@ -188,7 +188,7 @@ class ZWLexer( object ):
         return t
 
     def t_table_HTML( self, t ):
-        r"\[<[^\r\n\]]+>\]"
+        r'\[<([\r\n]|.)+?>\]'
         return t
 
     def t_table_M_SPAN( self, t ) :
@@ -252,11 +252,11 @@ class ZWLexer( object ):
         return t
 
     def t_MACRO( self, t ):
-        r'\{\{[^\r\n]+\}\}'
+        r'\{\{([\r\n]|.)+?\}\}'
         return t
 
     def t_HTML( self, t ):
-        r"\[<[^\r\n\]]+>\]"
+        r'\[<([\r\n]|.)+?>\]'
         return t
 
     def t_ESCAPED( self, t ):

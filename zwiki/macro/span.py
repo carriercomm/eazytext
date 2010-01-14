@@ -17,15 +17,25 @@ css = {
     'padding' : '2px',
 }
 
+wikidoc = """
+=== Span
+
+: Description ::
+    Create a span element. Try using ~``...~`` markup to generate span
+    elements, if advanced styling is required, this macro can come in handy.
+
+Positional arguments,
+|= text   | optional, text for the span element
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 class Span( ZWMacro ) :
-    """Span() macro"""
 
     def __init__( self, *args, **kwargs ) :
-        """
-        args    : span text
-        kwargs  : CSS styling as key, value pairs.
-                  special key, 'style' is accepted
-        """
         self.text  = len(args) > 0 and args[0] or ''
         self.style  = constructstyle( kwargs, defcss=css )
 

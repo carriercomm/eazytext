@@ -26,6 +26,18 @@ css = {
     '-moz-border-radius' : '5px'
 }
 
+wikidoc = """
+=== Toc
+
+: Description ::
+    Macro to generate Table of contents.
+
+Default CSS styling,
+> [<PRE %s >]
+
+CSS styling accepted as optional keyword arguments
+""" % css
+
 htags = {
     'h1' : 'margin-left : 2px; ',
     'h2' : 'margin-left : ',
@@ -68,7 +80,6 @@ script = """
 """
 
 class Toc( ZWMacro ) :
-    """Implements Toc() Macro"""
 
     def __init__( self, *args, **kwargs ) :
         indent         = int( kwargs.pop( 'indent', '1' ))
@@ -85,7 +96,10 @@ class Toc( ZWMacro ) :
         self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        return ''
+        # Gotcha : cannot return a empty string since process_textcontent()
+        # logic assumes that the translation fails. actually this macro is a
+        # post html macro.
+        return ' '
 
     def _maketoc( self, node, toc_div, numbered=False, level='' ) :
         count     = 1

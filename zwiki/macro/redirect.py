@@ -10,7 +10,6 @@
 from   zwiki.macro  import ZWMacro
 
 class Redirect( ZWMacro ) :
-    """Implements Redirect() Macro"""
 
     def __init__( self, redireclink='' ) :
         self.redirect = redireclink

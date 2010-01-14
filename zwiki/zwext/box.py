@@ -16,8 +16,6 @@ box_css = {
     'border-right'  : 'thin solid #CEF2E0',
     'border-bottom' : 'thin solid #CEF2E0',
     'border-left'   : 'thin solid #CEF2E0',
-    #'position'      : 'relative',
-    #'float'         : 'left',
 }
 title_css = {
     'color'          : '',
@@ -35,6 +33,28 @@ cont_css = {
     'padding-bottom' : '3px',
     'padding-left'   : '3px',
 }
+
+wikidoc = """
+=== Box
+
+: Description ::
+    Generate a box with title and content. Text within the curly braces will be
+    interpreted as the content and can contain ZWiki text as well.
+
+keyword argument,
+|= title        | optional, title string
+|= titlestyle   | optional, title style string in CSS style format
+|= contentstyle | optional, content style string in CSS style format
+
+Default CSS styling for title,
+> [<PRE %s >]
+
+Default CSS styling for content,
+> [<PRE %s >]
+
+Default CSS styling for the entire extension,
+> [<PRE %s >]
+""" % ( title_css, cont_css, box_css )
 
 class Box( ZWExtension ) :
     """Implements Box() wikix"""
