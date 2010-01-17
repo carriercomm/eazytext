@@ -188,7 +188,7 @@ class ZWLexer( object ):
         return t
 
     def t_table_HTML( self, t ):
-        r'\[<([\r\n]|.)+?>\]'
+        r'\[<(.|[\n])+?>\]'
         return t
 
     def t_table_M_SPAN( self, t ) :
@@ -252,11 +252,11 @@ class ZWLexer( object ):
         return t
 
     def t_MACRO( self, t ):
-        r'\{\{([\r\n]|.)+?\}\}'
+        r'\{\{([\n]|.)+?\}\}'
         return t
 
     def t_HTML( self, t ):
-        r'\[<([\r\n]|.)+?>\]'
+        r'\[<(.|[\n])+?>\]'
         return t
 
     def t_ESCAPED( self, t ):

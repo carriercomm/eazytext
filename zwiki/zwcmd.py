@@ -59,9 +59,13 @@ def main() :
     else :
         file     = args[0]
         wikitext = open( file ).read()
+        print "Parsing ..."
         tu       = zwparser.parse( wikitext, debuglevel=0 )
+        print "Done"
+        print "Translation ..."
         html     = DTD + '<html><head>' + dojo_script + '</head>' + \
                          '<body>' + tu.tohtml() + '</body></html>'
+        print "Done"
         open( os.path.splitext( file )[0] + '.html', 'w' ).write( html )
         # print tu.dump()
 

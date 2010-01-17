@@ -31,5 +31,4 @@ class Html( ZWMacro ) :
         self.css   = {}
 
     def tohtml( self ) :
-        print self.html
         return self.html

@@ -459,6 +459,8 @@ class Heading( Node ) :
     """class to handle `heading` grammar."""
 
     def __init__( self, parser, headmarkup, headline, newline ) :
+        self.headmarkuptxt = headmarkup
+
         headmarkup = headmarkup.lstrip( ' \t' )
         off = headmarkup.find( '{' )
         if off > 0 :
@@ -488,7 +490,7 @@ class Heading( Node ) :
         return html
 
     def dump( self ) :
-        return self.headmarkup + self.textcontents.dump() + self.newline.dump()
+        return self.headmarkuptxt + self.textcontents.dump() + self.newline.dump()
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
