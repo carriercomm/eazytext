@@ -86,3 +86,22 @@
 ---------
 
     Added comments
+
+0.82dev :
+---------
+
+- ZWiki features and enhancements
+    - Multiline support for list item.
+    - Multiline support for definition item.
+    - Multiline support for html text with HTML markup [< ... >]
+    - Templated tags.
+
+- ZWiki bug fixes.
+    - 'www' uri is automatically converted to http://www. ... form
+    - Documentation for macros, templated tags, zwiki-extensions
+    - Macro object is converted to html during parsing time, instead of in
+      tohtml() phase, since BQuotes object simply collects the html content.
+    - Toc() macro's tohtml() was returning an empty string. This leads the
+      framework to think that there was no html. All the post-html processing
+      macros should return a ' ' to avoid this anomaly.
+    - Optional spaces and tabs are allowed before head-markup
