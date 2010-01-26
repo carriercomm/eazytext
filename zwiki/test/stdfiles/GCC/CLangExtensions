@@ -1,4 +1,21 @@
- Extensions to the C Language Family
+@ { 'font-family':'arial,sans-serif', 'font-size':'90%' }
+
+
+{{ Html( '<style type="text/css">' ) }}
+h1, h2, h3, h4, h5 { 
+    color : #003366;
+    margin : 0px;
+    padding: 5px 0px 2px 3px;
+    width : 100%;
+    border-bottom: 1px solid gray;
+}
+{{ Html( '</style>' ) }}
+
+{{ Toc( styles={ 'font-family' : 'arial,sans-serif' } ) }}
+
+{{Clear()}}
+
+= Extensions to the C Language Family
  GNU C provides several language features not found in ISO standard C. (The -pedantic option directs GCC to print a warning message if any of these features is used.) To test for the availability of these features in conditional compilation, check for a predefined macro __GNUC__, which is always defined under GCC. 
 These extensions are available in C and Objective-C. Most of them are also available in C++. See Extensions to the C++ Language, for extensions that apply only to C++. 
 Some features that are in ISO C99 but not C89 or C++ are also, as extensions, accepted by GCC in C89 mode and in C++. 

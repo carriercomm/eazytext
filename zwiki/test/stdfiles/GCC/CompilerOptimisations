@@ -1,8 +1,36 @@
+@ { 'font-family':'arial,sans-serif', 'font-size':'90%' }
+
+
+{{ Html( '<style type="text/css">' ) }}
+h1, h2, h3, h4, h5 { 
+    color : #003366;
+    margin : 0px;
+    padding: 5px 0px 2px 3px;
+    width : 100%;
+    border-bottom: 1px solid gray;
+}
+{{ Html( '</style>' ) }}
+
+{{ Toc( style={ 'font-family' : 'arial,sans-serif' } ) }}
+
+{{{ Box
+# { 'width'  : '40%',
+#   'margin' : '10px 2px 10px 5px;',
+#   'title'  : 'GNU compiler optimizations',
+#   'float'  : 'right',
+#   'color'  : 'blue'
+# }
+{{Clear()}}
+
+[[ +http://gcc.gnu.org/img/gccegg-65.png | image ]]
+
+== GNU Compiler Optimization 
+
 Compiler optimization is the process of tuning the output of a compiler to minimize or maximize some attribute of an executable computer program. The most common requirement is to minimize the time taken to execute a program; a less common one is to minimize the amount of memory occupied. The growth of portable computers has created a market for minimizing the power consumed by a program.
 
 It has been shown that some code optimization problems are NP-complete, or even undecidable. In practice, factors such as the programmer's willingness to wait for the compiler to complete its task place upper limits on the optimizations that a compiler implementor might provide. (Optimization is generally a very CPU- and memory-intensive process.) In the past, computer memory limitations were also a major factor in limiting which optimizations could be performed.
 
-Types of optimizations
+===Types of optimizations
 
 Techniques used in optimization can be broken up among various scopes which can affect anything from a single statement to the entire program. Generally speaking, locally scoped techniques are easier to implement than global ones but result in smaller gains. Some examples of scopes include:
 
