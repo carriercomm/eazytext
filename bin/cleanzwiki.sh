@@ -1,5 +1,5 @@
 echo -n "Removing build/ ... "; rm -rf build; echo "ok"
 echo -n "Removing dist/ ... "; rm -rf dist; echo "ok"
 echo -n "Removing zwiki.egg-info/ ... "; rm -rf zwiki.egg-info; echo "ok"
-echo -n "Removing *.pyc ... "; rm `find ./ -name "*.pyc"`; echo "ok"
-echo -n "Removing yacctab.py ... "; rm `find ./ -name "yacctab.py"`; echo "ok"
+echo -n "Removing *.pyc ... "; rm -rf `find ./ -name "*.pyc"`; echo "ok"
+echo -n "Removing yacctab.py ... "; rm -rf `find ./ -name "yacctab.py"`; echo "ok"
