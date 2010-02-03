@@ -105,3 +105,9 @@
       framework to think that there was no html. All the post-html processing
       macros should return a ' ' to avoid this anomaly.
     - Optional spaces and tabs are allowed before head-markup
+
+0.83dev :
+---------
+
+- Minor fixes.
+

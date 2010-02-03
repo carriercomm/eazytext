@@ -3,3 +3,4 @@ TODO before release :
 
 * Change the release version in 
     ./setup.py, ./CHANGELOG, zwiki/__init__.py
+    ../zeta/bin/regrupgrade.py
