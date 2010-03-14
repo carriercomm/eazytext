@@ -175,8 +175,8 @@ class TestDumpsValid( object ) :
             tu     = zwparser.parse( testcontent, debuglevel=2 )
             result = tu.dump()[:-1]
         if result != ref :
-            open( 'result', 'w' ).write( result )
-            open( 'ref', 'w' ).write( ref )
+            #open( 'result', 'w' ).write( result )
+            #open( 'ref', 'w' ).write( ref )
             print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
 
         assert result == ref, type+'... testcount %s'%count
