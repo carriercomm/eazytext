@@ -98,7 +98,7 @@ class Box( ZWExtension ) :
             titlestyle += '; ' + self.titlestyle + '; '
         if self.title :
             title_div        = et.Element( 'div', { 'style' : titlestyle } )
-            title_div.text   = self.title
+            title_div.text   = self.title or ' ' # Dont keep text empty
             box_div.insert( 0, title_div )
 
         if self.nowiki :
@@ -111,8 +111,9 @@ class Box( ZWExtension ) :
             self.nowiki_h   = tu.tohtml()
             try :
                 cnode = et.fromstring( self.nowiki_h )
+                cnode.text = ' '                # Don't keep text empty
             except :
-                box_div.insert( 1, et.fromstring( '<div></div>' ))
+                box_div.insert( 1, et.fromstring( '<div> </div>' ))
             else :
                 box_div.insert( 1, cnode )
         html = ( (self.title or self.nowiki) and et.tostring( box_div ) ) or ''

@@ -71,7 +71,7 @@ class ZWExtension( object ) :
         pass
 
 
-from zwiki              import split_style
+from zwiki              import split_style, constructstyle
 from zwiki.zwext.box    import Box
 from zwiki.zwext.html   import Html
 from zwiki.zwext.nested import Nested
@@ -107,12 +107,15 @@ def build_zwext( zwextnode, nowiki ) :
         o = ZWExtension( {}, nowiki )
     zwparser = zwextnode.parser.zwparser
     # Setup templates and override them with computed extension's
-    # `style` and `css`
+    # `style`
     d_style, s_style = split_style( 
                         zwparser.extstyles[o.__class__.__name__+'style'] )
     d_style.update( getattr( o, 'css', {} ) )
-    o.css = d_style
-    o.style = s_style + getattr( o, 'style', '' )
+    o.style = "%s ; %s ; %s" % ( s_style, 
+                                 getattr( o, 'style', '' ),
+                                 constructstyle( d_style )
+                               )
+
     # Register extension
     o.zwextnode = zwextnode
     zwextnode.parser.zwparser.regzwext( o )

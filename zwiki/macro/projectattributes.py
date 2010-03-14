@@ -37,7 +37,7 @@ template = """
     <div style="display: table">
         <div style="display: table-row">
             <div  class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none">admin-email :</div>
-            <div  class="p5" style="display: table-cell; border: none">%s</div>
+            <div  class="p5" style="display: table-cell; border: none">%s </div>
         </div>
         <div style="display: table-row">
             <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;">license : </div>
@@ -62,7 +62,10 @@ class ProjectAttributes( ZWMacro ) :
         self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        app = self.macronode.parser.zwparser.app
+        zwp = self.macronode.parser.zwparser
+        app = zwp.app
+        zwp.dynamictext = True
+
         try :   # To handle test cases.
             p   = getattr( app.c, 'project', None )
         except :

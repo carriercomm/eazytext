@@ -63,7 +63,7 @@ class Images( ZWMacro ) :
                     break
                 src    = imgsources.pop( 0 )
                 coldiv = et.Element('div', {'style' : 'display : table-cell;'})
-                img    = '<img %s %s src="%s" alt="%s" style="%s"></img>' % \
+                img    = '<img %s %s src="%s" alt="%s" style="%s"> </img>' % \
                                 ( hattr, wattr, src, self.alt, self.style )
                 coldiv.append( et.fromstring( img ))
                 rowdiv.append( coldiv )

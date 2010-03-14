@@ -6,7 +6,7 @@ import random
 from   random             import choice, randint, shuffle
 
 from   nose.tools         import assert_equal
-from   pylons             import config
+import pylons.test
 
 from   zwiki.zwlexer      import ZWLexer
 from   zwiki.zwparser     import ZWParser
@@ -23,6 +23,7 @@ from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  random_wiki, log_mheader, log_mfooter, \
                                  genseed
 
+config          = pylons.test.pylonsapp.config
 log             = logging.getLogger(__name__)
 seed            = None
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )

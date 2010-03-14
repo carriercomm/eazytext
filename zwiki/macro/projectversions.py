@@ -35,7 +35,10 @@ class ProjectVersions( ZWMacro ) :
         self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        app = self.macronode.parser.zwparser.app
+        zwp = self.macronode.parser.zwparser
+        app = zwp.app
+        zwp.dynamictext = True
+
         try :   # To handle test cases.
             p   = getattr( app.c, 'project', None )
         except :
@@ -51,11 +54,11 @@ class ProjectVersions( ZWMacro ) :
         versions = p and sorted( p.versions, key=lambda v : v.created_on ) or []
         for v in versions :
             e      = et.Element( 'div', { 'style' : 'font-weight: bold' } ) 
-            e.text = v.version_name
+            e.text = v.version_name or ' '  # Don't leave the text empty
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
             try :
-                e.append( et.fromstring( getattr( v, 'descriptionhtml', '<div></div>' )))
+                e.append( et.fromstring( getattr( v, 'descriptionhtml', '<div> </div>' )))
             except :
                 pass
             cntnr.append( e )

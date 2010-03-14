@@ -50,7 +50,7 @@ html_close = """
 <div style="color : blue; cursor : pointer; font-size : small; 
             position: relative; float: right;">close</div>"""
 
-html_topic = lambda topic : '<div style="font-weight : bold;">%s</div>' % topic
+html_topic = lambda topic : '<div style="font-weight : bold;">%s </div>' % topic
 
 script = """
 <style type="text/css">
@@ -112,7 +112,7 @@ class Toc( ZWMacro ) :
                 link.text = self.maxheadlen and \
                                 (  text[:self.maxheadlen] + \
                                   (text[self.maxheadlen:] and ' ...' or '' ) ) \
-                            or text
+                            or text or ' '
                 item.append( link )
                 toc_div.append( item )
                 count     += 1

@@ -34,7 +34,7 @@ template = """
 <div>
     <div style="display: table">
         <div style="display: table-row">
-            <div class="ralign p5 fntbold" style="width: 8em; display: table-cell; border: none;"> Admin : </div>
+            <div class="ralign p5 fntbold" style="display: table-cell; border: none;"> Admin : </div>
             <div class="p5" style="display: table-cell; border: none;"> %s </div>
         </div>
         %s
@@ -56,7 +56,10 @@ class ProjectTeam( ZWMacro ) :
         self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        app = self.macronode.parser.zwparser.app
+        zwp = self.macronode.parser.zwparser
+        app = zwp.app
+        zwp.dynamictext = True
+
         try :   # To handle test cases.
             p = getattr( app.c, 'project', None )
         except :

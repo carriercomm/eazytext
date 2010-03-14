@@ -15,7 +15,6 @@
 #   * Unit test case for the following function,
 #       split_style()
 #   * All the macros, zwext and ZWParser should be tested for style.
-#   * Add test cases for extensions.
 #   * Test case for escaping new lines as '\\n'
 #   * Test case for style templating.
 #   * Test cases for project* MACROS
@@ -104,14 +103,6 @@ from   zwiki          import escape_htmlchars, split_style
 from   zwiki.macro    import macro_styles
 from   zwiki.zwext    import extension_styles
 
-# logging.basicConfig(
-#     level    = logging.WARNING,
-#     filename = "parselog.txt",
-#     filemode = "w",
-#     format   = "%(filename)10s:%(lineno)4d:%(message)s"
-# )
-# log = logging.getLogger()
-
 HTML_CHARS = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
 
@@ -145,7 +136,7 @@ class ParseError( Exception ):
 class ZWParser( object ):
     def __init__(   self, 
                     app=None,
-                    style=None,
+                    style={},
                     lex_optimize=False,
                     lextab='zwiki.lextab',
                     lex_debug=False,
@@ -225,6 +216,9 @@ class ZWParser( object ):
         self.style           = style
         self.macrostyles     = {}
         self.extstyles       = {}
+        self.wikiprops       = {}
+        # Specify whether the text needs dynamic translation
+        self.dynamictext     = False
         self.debug           = lex_debug or yacc_debug
     
     def is_matchinghtml( self, text ) :
@@ -232,7 +226,7 @@ class ZWParser( object ):
         return [ ch for ch in HTML_CHARS if ch in text ]
 
     def wiki_preprocess( self, text ) :
-        """The text to be parsed is pre-parsed to remove the fix unwanted
+        """The text to be parsed is pre-parsed to remove and fix unwanted
         side effects in the parser.
         Return the preprossed text"""
         # Replace `~ ESCAPEd new lines`.
@@ -243,12 +237,19 @@ class ZWParser( object ):
         return text
 
     def _wiki_properties( self, text ) :
-        """Parse the wiki properties"""
+        """Parse wiki properties, in the begining of the text,
+            @ .....
+            @ .....
+        Should be a python consumable dictionary.
+        Return property, remainint-text.
+        """
         props = []
-        textlines = text.split('\n')
+        # Strip off leading newlines
+        textlines = text.lstrip( '\n\r' ).split('\n')
         for i in range(len( textlines )) :
-            if len( textlines[i] ) and textlines[i][0] == '@' :
-                props.append( textlines[i][1:] )
+            strippedline = textlines[i].lstrip(' \t')
+            if len(strippedline) and strippedline[0] == '@' :
+                props.append( strippedline[1:] )
                 continue
             break;
         text = '\n'.join( textlines[i:] )
@@ -256,31 +257,24 @@ class ZWParser( object ):
             props = eval( ''.join( props ) )
         except :
             props = {}
+
+        # If there are any special properties to be remembered while parsing
+        # the wiki text, update them in `wikiprops`
+        self.wikiprops.update( {} )
         return props, text
 
     def _macro_styletmpl( self, d_style ) :
         """Parse the macro style templates provided to the ZWparser() and / or
         in the wiki page."""
-        mstyles = macro_styles( d_style )
-        for k in mstyles :
-            if k in self.macrostyles and \
-               isinstance( self.macrostyles[k], dict ) and \
-               isinstance( mstyles[k], dict ) :
-                self.macrostyles[k].update( mstyles[k] )
-            else :
-                self.macrostyles[k] = mstyles[k]
+        [ self.macrostyles.setdefault( key, {} ).update( value )
+          for key, value in macro_styles( d_style ).items() ]
 
     def _ext_styletmpl( self, d_style ) :
         """Parse the exten. style templates provided to the ZWparser() and / or
         in the wiki page."""
-        mstyles = extension_styles( d_style )
-        for k in mstyles :
-            if k in self.extstyles and \
-               isinstance( self.extstyles[k], dict ) and \
-               isinstance( mstyles[k], dict ) :
-                self.extstyles[k].update( mstyles[k] )
-            else :
-                self.extstyles[k] = mstyles[k]
+
+        [ self.extstyles.setdefault( key, {} ).update( value )
+          for key, value in extension_styles( d_style ).items() ]
 
     def parse( self, text, filename='', debuglevel=0 ):
         """Parses C code and returns an AST.
@@ -299,31 +293,43 @@ class ZWParser( object ):
         self.zwlex.reset_lineno()
         self.redirect     = None
         self.text         = text
-        self.wiki_css     = {}
+        self.macrostyles  = {}
+        self.extstyles    = {}
+        self.wikiprops    = {}
+        self.wiki_css     = wiki_css                    # Agreegate styles
         self.macroobjects = []  # ZWMacro objects detected while parsing
         self.zwextobjects = []  # ZWExtension objects detected while parsing
         self.predivs      = []  # <div> elements prepend before wikipage
         self.postdivs     = []  # <div> elements append after wikipage
 
+        # On top of default wiki css, update it with `style` argument passed
+        # while instantiating this object.
         d_style, s_style = split_style( self.style )
-        d_style and self.wiki_css.update( d_style )
+        d_style and self.wiki_css.update( d_style )     # Agreegate styles
         self.style       = s_style or ''
-        if not d_style and not s_style :
-            self.wiki_css.update( wiki_css )
-        # Setup style templates for macros and extensions from caller.
-        self._macro_styletmpl( d_style )
-        self._ext_styletmpl( d_style )
 
+        # Confirm and remove !!
+        #if not d_style and not s_style :
+        #    self.wiki_css.update( wiki_css )
+
+        # Parse wiki properties, returned `props` contains only styling
+        # (key,value) pairs
         props, text      = self._wiki_properties( text )
         d_style, s_style = split_style( props )
-        d_style and self.wiki_css.update( d_style )
+        d_style and self.wiki_css.update( d_style )     # Aggregate styles
         if s_style :
             self.style += '; ' + s_style + '; '
-        # Setup style templates for macros and extensions from wikipage.
-        self._macro_styletmpl( d_style )
-        self._ext_styletmpl( d_style )
 
-        # Pre-process the text.
+        # Pop out styling for macros and extensions, which could come from
+        # three places,
+        #   1. default wiki_css
+        #   2. `style` argument passed while instantiating this object
+        #   3. wiki-properties
+        # All three of them are agreegated in self.wiki_css
+        self._macro_styletmpl( self.wiki_css )
+        self._ext_styletmpl( self.wiki_css )
+
+        # Pre-process the text, massage them for prasing.
         self.pptext = self.wiki_preprocess( text )
 
         # parse and get the Translation Unit

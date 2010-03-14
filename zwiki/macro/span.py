@@ -41,6 +41,6 @@ class Span( ZWMacro ) :
 
     def tohtml( self ) :
         span      = et.Element( 'span', { 'style' : self.style } )
-        span.text = self.text
+        span.text = self.text or ' '    # Don't keep the text empty
         html      = ( self.text and et.tostring( span ) ) or ''
         return html

@@ -51,7 +51,7 @@ class Image( ZWMacro ) :
     def tohtml( self ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
-        img   = '<img %s %s src="%s" alt="%s" style="%s"></img>' % \
+        img   = '<img %s %s src="%s" alt="%s" style="%s"> </img>' % \
                     ( hattr, wattr, self.src, self.alt, self.style )
         # If the image is a link, enclose it with a 'anchor' dom-element.
         if self.href :

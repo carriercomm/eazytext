@@ -30,14 +30,15 @@ def split_style( style ) :
         s_style = inner_style
     return style, s_style
 
-def constructstyle( kwargs, defcss={} ) :
-    """From the different types of parameters construct a style string"""
+def constructstyle( kwargs, defcss={}, styles='' ) :
+    """Construct styles for macros and extensions based on the style passed
+    as function arguments, extension properties and defaults style dictionary"""
     d_style, s_style = split_style( kwargs.pop( 'style', {} ))
-    css    = {}
+    css    = {}             # A new dictionary instance
     css.update( defcss )
     css.update( d_style )
     css.update( kwargs )
 
-    style = '; '.join([ "%s: %s" % (k,  css[k]) for k in css ])
-    style = "%s; %s ; " % ( style, s_style )
+    style = '; '.join([ "%s: %s" % (k,v) for k,v in css.items() ])
+    style = "%s; %s ; %s;" % ( style, s_style, styles )
     return style

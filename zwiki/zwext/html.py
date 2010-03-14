@@ -36,8 +36,9 @@ class Html( ZWExtension ) :
         box_div = et.Element( 'div', { 'style' : style } )
         try :
             boxnode = et.fromstring( self.nowiki )
+            boxnode.text = ' '      # Don't keep the text empty
         except :
-            box_div.insert( 0, et.fromstring( '<div></div>' ) )
+            box_div.insert( 0, et.fromstring( '<div> </div>' ) )
         else :
             box_div.insert( 0, boxnode )
         html = ( self.nowiki and et.tostring( box_div ) ) or ''

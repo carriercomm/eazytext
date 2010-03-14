@@ -115,7 +115,7 @@ class ZWMacro( object ) :
         pass
 
 
-from zwiki                            import split_style
+from zwiki                            import split_style, constructstyle
 from zwiki.macro.span                 import Span
 from zwiki.macro.toc                  import Toc
 from zwiki.macro.clear                import Clear
@@ -151,20 +151,25 @@ def build_macro( macronode, macro ) :
     if not isinstance( o, ZWMacro ) :
         o = ZWMacro()
     zwparser = macronode.parser.zwparser
+
     # Setup templates and override them with computed macronode's 
-    # `style` and `css`
+    # `style`
     d_style, s_style = split_style( 
                         zwparser.macrostyles[o.__class__.__name__+'style'] )
     d_style.update( getattr( o, 'css', {} ) )
-    o.css = d_style
-    o.style = s_style + getattr( o, 'style', '' )
+    o.style = "%s ; %s ; %s" % ( s_style, 
+                                 getattr( o, 'style', '' ),
+                                 constructstyle( d_style )
+                               )
+              
+
     # Register macro-node
     o.macronode = macronode
     zwparser.regmacro( o )
     return o
 
 def macro_styles( d_style ) :
-    """Extract the macro styles and return them as a dictionary"""
+    """Extract macro-specific styles and return them as a dictionary"""
     mstyles = dict([ ( m+'style', d_style.pop( m+'style', {} ))
                      for m in macronames ])
     return mstyles

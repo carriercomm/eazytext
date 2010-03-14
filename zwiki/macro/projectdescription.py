@@ -47,7 +47,10 @@ class ProjectDescription( ZWMacro ) :
         self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        app = self.macronode.parser.zwparser.app
+        zwp = self.macronode.parser.zwparser
+        app = zwp.app
+        zwp.dynamictext = True
+
         try :   # To handle test cases.
             p   = getattr( app.c, 'project', None )
         except :

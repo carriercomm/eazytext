@@ -29,7 +29,7 @@ CSS styling accepted as optional keyword arguments
 """ % css
 
 ct_template = """
-<div><span style="font-weight: bold">%s</span> owned by <a href="%s">%s</a></div>
+<div><span style="font-weight: bold">%s </span> owned by <a href="%s">%s </a></div>
 """
 
 class ProjectComponents( ZWMacro ) :
@@ -39,7 +39,10 @@ class ProjectComponents( ZWMacro ) :
         self.style   = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        app = self.macronode.parser.zwparser.app
+        zwp = self.macronode.parser.zwparser
+        app = zwp.app
+        zwp.dynamictext = True
+
         try :   # To handle test cases.
             p   = getattr( app.c, 'project', None )
         except :
@@ -62,7 +65,7 @@ class ProjectComponents( ZWMacro ) :
             cntnr.append( e )
             e      = et.Element( 'blockquote', {} )
             try :
-                e.append( et.fromstring( getattr( c, 'descriptionhtml', '<div></div>' )))
+                e.append( et.fromstring( getattr( c, 'descriptionhtml', '<div> </div>' )))
             except :
                 pass
             cntnr.append( e )
