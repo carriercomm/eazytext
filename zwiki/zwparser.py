@@ -493,8 +493,8 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for textlines")
 
     def p_btablerows( self, p ):                        # BtableRows
-        """btablerows           : btablerow
-                                | btablerows btablerow"""
+        """btablerows       : btablerow
+                            | btablerows btablerow"""
         if len(p) == 2 and isinstance( p[1], BtableRow ) :
             p[0] = BtableRows( p.parser, p[1] )
         elif len(p) == 3 and isinstance( p[1], BtableRows ) \
@@ -504,14 +504,25 @@ class ZWParser( object ):
         else :
             raise ParseError( "unexpected rule-match for btablerows")
 
-    def p_btablerow_1( self, p ):                         # BtableRow
-        """btablerow            : BTABLE_START text_contents NEWLINE
-                                | BTABLE_START empty NEWLINE"""
+    def p_btablerow( self, p ):                  # BtableRow+newline+text
+        """btablerow        : btablerowbegin
+                            | btablerow text_contents NEWLINE"""
+        if len(p) == 2 :
+            p[0] = p[1]
+        elif len(p) == 4 :
+            p[1].contlist( p.parser, p[2], p[3] )
+            p[0] = p[1]
+        else :
+            raise ParseError( "unexpected rule-match for btablerow")
+
+    def p_btablerowbegin_1( self, p ):                         # BtableRow
+        """btablerowbegin   : BTABLE_START text_contents NEWLINE
+                            | BTABLE_START empty NEWLINE"""
         p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLE )
 
-    def p_btablerow_2( self, p ):                         # BtableRow
-        """btablerow            : BTABLESTYLE_START text_contents NEWLINE
-                                | BTABLESTYLE_START empty NEWLINE"""
+    def p_btablerowbegin_2( self, p ):                         # BtableRow
+        """btablerowbegin   : BTABLESTYLE_START text_contents NEWLINE
+                            | BTABLESTYLE_START empty NEWLINE"""
         p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLESTYLE )
 
     def p_table_rows_1( self, p ):

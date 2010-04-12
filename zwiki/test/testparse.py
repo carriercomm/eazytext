@@ -406,8 +406,15 @@ class TestDumpsValid( object ) :
         """Testing big tables"""
         print "\nTesting big tables"
         log.info( "Testing big tables" )
-        testlist = [ '\n'.join([ gen_btableline( words, links, macros, htmls )
-                                 for j in range(randint(0,10)) ]) +
+        def btablemultiline( firstline ) :
+            rem = '\n'.join([ gen_texts( words, links, macros, htmls,
+                                         tc=5, pc=1, ec=2, lc=1, mc=1, hc=1, fc=1,
+                                         nopipe=True
+                              ) for i in range(0,3) ])
+            return firstline + rem
+        testlist = [ '\n'.join([ btablemultiline( 
+                                    gen_btableline( words, links, macros, htmls )
+                                 ) for j in range(randint(0,10)) ]) +
                       gen_psep(randint(0,3)) for i in range(100) ]
         testcount = 1
         for t in testlist :

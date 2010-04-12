@@ -215,20 +215,24 @@ test for lock and unlock support
 * level 1 item 1 unordered
 * level 1 item 2 unordered
 {{ Html( '</td>' ) }}
+
 {{ Html( '<td>' ) }}
 ## level 2 item 1 ordered
 ## level 2 item 2 ordered
 {{ Html( '</td>' ) }}
-{{ Html( '</tr>' ) }}
-{{ Html( '<tr>' ) }}
+
+{{ Html( '</tr>' ) }} {{ Html( '<tr>' ) }}
+
 {{ Html( '<td>' ) }}
 *** level 3 item 1 unordered
 {{ Html( '</td>' ) }}
+
 {{ Html( '<td>' ) }}
 *** level 3 item 2 unordered
 [<</td>>]
-[<</tr>>]
-[<<tr>>]
+
+[<</tr>>] [<<tr>>]
+
 [<<td>>]
 ## level 2 item 1 ordered
 ## level 2 item 2 ordered
@@ -237,9 +241,11 @@ test for lock and unlock support
 ## level 2 item 1 ordered
 ## level 2 item 2 ordered
 {{ Html( '</td>' ) }}
+
 {{ Html( '<td>' ) }}
 * level 1 item 1 unordered
 * level 1 item 2 unordered
+
 [<              \
     </td>       \
     </tr>       \
@@ -371,6 +377,32 @@ And big tables are done, like this :
 || Butter
 || Ice cream 
 ||}
+
+h4. Multi-lined big tables
+||{
+||-
+|| A ''Char'' value represents a Unicode character. 6 comments
+|| A ''Bool'' value represents a value in Boolean logic. The
+   possible values of type Bool are //{b}True// and //{b}False//. 2
+   comments
+|| The ``{B}Int`` type is used for signed, fixed-width integer values. The exact range
+   Of values representable as Int depends on the system's longest "native"
+   Integer: on a 32-bit machine, an Int is usually 32 bits wide, while on a
+   64-bit machine, it is usually 64 bits wide. The Haskell standard only
+   Guarantees that an Int is wider than 28 bits. (There exist numeric types that
+   Are exactly 8, 16, and so on bits wide, in signed and unsigned
+   Flavours; we'll get to those later.) 6 comments
+|| An Integer value is a signed integer of unbounded size. Integers are not used
+   as often as Ints, because they are more expensive both in performance and
+   space consumption. On the other hand, Integer computations do not silently
+   overflow, so they give more reliably correct answers. 9 comments
+|| Values of type Double are used for floating point numbers. A Double value is
+   typically 64 bits wide, and uses the system's native floating point
+   representation. (A narrower type, Float, also exists, but its use is
+   discouraged; Haskell compiler writers concentrate more on making
+   Double efficient, so Float is much slower.) 2 comments
+||}
+   
 
 You can format an address by simply forcing linebreaks:
 

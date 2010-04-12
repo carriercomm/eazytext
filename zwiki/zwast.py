@@ -673,6 +673,17 @@ class BtableRow( Node ) :
             raise ZWASTError( "Unknown `rowitem` for BtableRow() node" )
         self.newline = Newline( parser, newline )
 
+        # The node handles the raw text dumping a little different, because of
+        # the support added for multiline listitem
+        self.dumptext = rowmarkup + rowitem.dump() + self.newline.dump()
+
+    def contlist( self, parser, textcontents, newline ) :
+        self.dumptext += textcontents.dump() + newline
+        if self.textcontents :
+            self.textcontents.extendtextcontents( textcontents )
+        else :
+            self.textcontents = textcontents
+
     def children( self ) :
         return ( self.rowmarkup, self.textcontents, self.newline )
 
@@ -696,11 +707,8 @@ class BtableRow( Node ) :
         return style
 
     def dump( self ) :
-        if self.textcontents :
-            text = self.rowmarkup + self.textcontents.dump() + \
-                   self.newline.dump()
-        elif self.empty :
-            text = self.rowmarkup + self.empty.dump() + self.newline.dump()
+        if self.textcontents or self.empty :
+            text = self.dumptext
         else :
             raise ZWASTError( "dump() : No item available for BtableRow() node" )
         return text
