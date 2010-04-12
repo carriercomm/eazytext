@@ -105,8 +105,6 @@ def styleparser( stylemarkups ) :
 
 
 def markup2html( type, mtext, steed ) :
-    tag_b  = ''
-    tag_e  = ''
     if type == TEXT_M_SPAN :
         
         tags = [ '<span style="%s">' % styleparser( mtext[2:] ), '</span>' ]
@@ -1336,8 +1334,9 @@ class Macro( Node ) :
         self.text        = macro
         self.macroobject = build_macro( self, macro )
         # Translate the macro object right here itself.
-        html             = self.macroobject.tohtml()
-        self.contents    = [ Content( parser, macro, TEXT_MACRO, html ) ]
+        html = self.macroobject.tohtml()
+        html = html or ' '  # Dont leave html empty !!
+        self.contents    = [ Content( parser, macro, TEXT_MACRO, html or ' ' ) ]
 
     def children( self ) :
         return self.contents

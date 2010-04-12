@@ -14,6 +14,7 @@
 [[ +http://code.google.com/images/code_logo.png | image ]]
 
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
+
 More formatting, __ underline __
 superscripting, x^^2^^
 subscripting, log,,2,,7

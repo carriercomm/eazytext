@@ -2,33 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html><head><script src="/home/pratap/dev/oss/dojo-release-1.2.3/dojo/dojo.js" 
-                         type="text/javascript"></script></head><body><div class="wikiblk"><div class="toc" style="padding: 3px; width: 20em; background: #f8f7bc; position: relative; float: right; margin: 10px; -moz-border-radius: 5px;  ; "><div style="margin-bottom : 5px;"><div style="color : blue; cursor : pointer; font-size : small;              position: relative; float: right;">close</div><div style="font-weight : bold;">Table of Contents</div></div><div><div style="margin-left : 2px; "><a href="#Top-level heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#'_Some text markup_'">'_Some text markup_'</a></div><div style="margin-left : 2em;"><a href="#Text with html special chars">Text with html special chars</a></div><div style="margin-left : 2em;"><a href="#Special HTML markups">Special HTML markups</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All possible list combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block quoted text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All possible list combinations in a table">All possible list combinations ...</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box Wiki extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#Images">Images</a></div><div style="margin-left : 1em;"><a href="#HTML wiki extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle">Top-level heading (1) A looooo ...</a></div><div style="margin-left : 1em;"><a href="#This a test for creole 0.1 (2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This is a Subheading (3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub (4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub (5)">Subsubsub (5)</a></div><div style="margin-left : 2em;"><a href="#Imporper Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper no-wiki blocks">Improper no-wiki blocks</a></div></div></div>
-<style type="text/css">
-    .dispnone { display : none; }
-</style>
-<script type="text/javascript">
-    dojo.addOnLoad(
-        function() {
-            var n_toc = dojo.query( 'div.toc' )[0];
-            var headdiv = n_toc.childNodes[0];
-            var toc_div = n_toc.childNodes[1];
-            dojo.connect( headdiv.childNodes[0], 'onclick',
-                function( e ) {
-                    if ( e.target.innerHTML == 'close' ) {
-                        dojo.toggleClass( toc_div, 'dispnone', true );
-                        e.target.innerHTML = 'show';
-                    } else if ( e.target.innerHTML == 'show' ) {
-                        dojo.toggleClass( toc_div, 'dispnone', false );
-                        e.target.innerHTML = 'close';
-                    }
-                    dojo.stopEvent( e );
-                }
-            );
-        }
-    );
-</script>
-<div style="white-space : normal; font-family : arial,sans-serif; ; ">
-<p>
+                         type="text/javascript"></script></head><body><div class="wikiblk">Unable to generate the TOC, Wiki page not properly formed ! <br></br><div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; ">
+<p> 
 </p>
 <p><h1 style=""><a style="visibility : hidden;" name="Top-level heading"></a>Top-level heading</h1>
 </p><p>    This sample markup is taken from creole and modified to zwiki markup.
@@ -42,7 +17,11 @@
 <p><img src="http://code.google.com/images/code_logo.png" alt="image" style=""></img>
 </p>
 <p>You can make things <strong style="">bold</strong> or <em style="">italic</em> or <strong style=""><em>both</em></strong> but <strong style=""><em>not this one</em></strong>.
-More formatting, <u style=""> underline </u>
+</p>
+<p>bold text can also be <strong style=""> enclosed with double star </strong>
+</p>
+<p><ul><ul><li> enclosed with double star *</li></ul></ul></p>
+<p>More formatting, <u style=""> underline </u>
 superscripting, x<sup style="">2</sup>
 subscripting, log<sub style="">2</sub>7
 <strong style=""><em><u> bold italic underline </u></em></strong>
@@ -59,12 +38,12 @@ This line is single line <br></br> but uses line break markup to split the line.
 <p>And, complex markups like <strong style=""> hello <em style=""> world </em> <br></br> is <u style="">treated</u> like this </strong>
 </p>
 <p>An example for indentation, <br></br> 
-<span style="color: gray; padding: 2px; margin-left: 2em;  ; ">First level</span> <br></br> 
-<span style="color: gray; padding: 2px; margin-left: 4em;  ; ">Second level</span> <br></br> 
+<span style=" ; color: gray; padding: 2px; margin-left: 2em;  ; ; ; ;  ; ;">First level</span> <br></br> 
+<span style=" ; color: gray; padding: 2px; margin-left: 4em;  ; ; ; ;  ; ;">Second level</span> <br></br> 
 </p>
 <p><h3 style=""><a style="visibility : hidden;" name="Text with html special chars"></a>Text with html special chars</h3>
 </p>
-<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> &gt;&gt; it = [ 1, 2, 3, ] <br></br>  &gt;&gt; print type(it)<blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px">    &lt; List  type ... &gt;</blockquote></blockquote></p>
+<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> &gt;&gt; it = [ 1, 2, 3, ] <br></br> <br></br> &gt;&gt; print type(it)<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px">    &lt; List  type ... &gt;</blockquote></blockquote></p>
 <p><h3 style=""><a style="visibility : hidden;" name="Special HTML markups"></a>Special HTML markups</h3>
 </p>
 <p><abbr title="World Health Organisation">WHO</abbr>
@@ -108,7 +87,7 @@ something like foo:</em>bar// should render as italic.
 </p>
 <p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style=""></img>
 </p>
-<p><div style="width : 100%; border-top : thin solid green; background : Aquamarine; border-left : thin solid #CEF2E0; color : blue; border-right : thin solid #CEF2E0; border-bottom : thin solid green"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0;  ;  ; width: 100%; border-top: thin solid green; background: Aquamarine; border-left: thin solid #CEF2E0; color: blue; border-right: thin solid #CEF2E0; border-bottom: thin solid green;  ; ;; "><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
@@ -125,16 +104,16 @@ adjustable and you can even position it.
 </p><p><ul><li> level 1</li><ul><li> level 2</li><ul><li> level 3</li><ul><li> level 4</li><ul><li> level 5</li></ul></ul></ul></ul></ul></p>
 <p><h3 style=""><a style="visibility : hidden;" name="All possible list combination"></a>All possible list combination</h3>
 </p>
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style="font-weight: bold;  ; ">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li><ul><li> level 3 item 1 unordered</li><li> level 3 item 2 unordered</li></ul><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>
+<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li><ul><li> level 3 item 1 unordered</li><li> level 3 item 2 unordered</li></ul><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>
 <p><ul><ul><ul><ul><li> Level 4 item 1 unordered</li><ol><li> Level 5 item 2 ordered</li></ol></ul><li> Level3 item 3 unordered</li></ul></ul></ul></p>
 <p><h2 style=""><a style="visibility : hidden;" name="Block quoted text"></a>Block quoted text</h2>
 </p>
-<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 1 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 2 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 3 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></p>
+<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 1 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 2 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 3 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></p>
 <p><blockquote><blockquote><blockquote><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 4 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></blockquote></p>
 <p><blockquote><blockquote><blockquote><blockquote><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 5 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></blockquote></blockquote></p>
 <p>This is normal text here.
 </p>
-<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> Indent me! The quick brown fox jumps over the lazy dog.  Now this the time for all good men to come to the aid of   their country. Notice how we can continue the block-quote  in the same &quot;paragraph&quot; by using a backslash at the end of the line. Another block, leading to...<blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> Second level of indenting. This second is indented even more than the previous one.</blockquote></blockquote></p>
+<p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> Indent me! The quick brown fox jumps over the lazy dog.  Now this the time for all good men to come to the aid of   their country. Notice how we can continue the block-quote  in the same &quot;paragraph&quot; by using a backslash at the end of the line.<br></br><br></br> Another block, leading to...<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> Second level of indenting. This second is indented even more than the previous one.</blockquote></blockquote></p>
 <p>Back to normal text.
 </p>
 <p><h2 style=""><a style="visibility : hidden;" name="Definition List"></a>Definition List</h2>
@@ -145,32 +124,15 @@ adjustable and you can even position it.
 <p><h3 style=""><a style="visibility : hidden;" name="All possible list combinations in a table"></a>All possible list combinations in a table</h3>
 </p>
  <table border="1" >    <tr>    <td>   
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style="font-weight: bold;  ; ">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p></td>
-<td>
-<p><ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol></ol></p></td>
-</tr>
-<tr>
-<td>
-<p><ul><ul><ul><li> level 3 item 1 unordered</li></ul></ul></ul></p></td>
-<td>
-<p><ul><ul><ul><li> level 3 item 2 unordered</li></ul></ul></ul></p></td>
-</tr>
-<tr>
-<td>
-<p><ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol></ol></p></td>
-<td>
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>                  </td>           </tr>           </table>    
-
+<ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</td><td></li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</td></tr><tr><td></li><ul><li> level 3 item 1 unordered</td><td></li><li> level 3 item 2 unordered</td></tr><tr><td></li></ul><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</td><td></li></ol><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered                  </td>           </tr>           </table>    </li></ul>
 <p>You cannot have
-</p><p><ul><li> multiline list,</li></ul></p><p>items
-</p>
+</p><p><ul><li> multiline list,items</li></ul></p>
 <p><h2 style=""><a style="visibility : hidden;" name="Macros"></a>Macros</h2>
 </p>
-<p>This line demonstrates the <span style="color: green; padding: 2px; border: thin solid red;  ; ">Span Macro</span>
+<p>This line demonstrates the <span style=" ; color: green; padding: 2px; border: thin solid red;  ; ; ; ;  ; ;">Span Macro</span>
 </p>
 <p><h2 style=""><a style="visibility : hidden;" name="Box Wiki extensions"></a>Box Wiki extensions</h2>
-</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; ">
-<p>The Joseph Priestley House was the American home of 18th-century British
+</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 2px 10px 5px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>The Joseph Priestley House was the American home of 18th-century British
 theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
 Located in Northumberland, Pennsylvania, the house, which was designed by
@@ -178,13 +140,11 @@ Priestley's wife Mary, is Georgian with Federalist accents. The
 <strong style="">Pennsylvania Historical</strong> and <strong style="">Museum Commission</strong> has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
-</p><p><ul><li> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li>In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.</li></ul></p><p>(more...)
-</p>
+</p><p><ul><li> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li>In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.(more...)</li></ul></p>
 <p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
 </div></div></div></p>
-<p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0"><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; ">
-<p>Four people associated with the torrent tracking website The Pirate Bay,
+<p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 5px 10px 2px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>Four people associated with the torrent tracking website The Pirate Bay,
 including co-founder Peter Sunde (pictured), are found guilty of promoting
 copyright infringements.
 The birth of Injaz, the world's first cloned camel, is announced in Dubai,
@@ -199,23 +159,23 @@ Bangkok and surrounding areas after anti-government protests forced the
 cancellation of the Fourth East Asia Summit.
 </p>
 </div></div></div></p>
-<p><div style="clear: both;  ; "></div>
+<p><div style=" ; clear: both;  ; ; ; ;  ; ;"></div>
 </p>
 <p><h2 style=""><a style="visibility : hidden;" name="Images"></a>Images</h2>
 </p>
 <p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : right;"></img>
 </p>
-<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style="padding: 0px; margin: 0px; border: 0px;  ; " /></a>
+<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style=" ; padding: 0px; margin: 0px; border: 0px;  ; ; ; ;  ; ;"> </img></a>
 </p>
-<p><img   src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style="padding: 0px; margin: 0px; float: right; border: 0px;  ; "></img>
+<p><img   src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style=" ; padding: 0px; margin: 0px; float: right; border: 0px;  ; ; ; ;  ; ;"> </img>
 </p>
-<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style="padding: 0px; margin: 0px; float: right; border: 0px;  ; " /></a>
+<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style=" ; padding: 0px; margin: 0px; float: right; border: 0px;  ; ; ; ;  ; ;"> </img></a>
 </p>
-<p><div style="display : table;"><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg" style="padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; " width="100px" /></div></div></div>
+<p><div style="display : table;"><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div></div>
 </p>
 <p><h2 style=""><a style="visibility : hidden;" name="HTML wiki extension"></a>HTML wiki extension</h2>
 </p>
-<p><div style="border : thin solid green"><div> Hello world </div></div></p>
+<p><div style="border : thin solid green;  ;  ; border: thin solid green;  ; ;; "><div> </div></div></p>
 <p><h1 style=""><a style="visibility : hidden;" name="Escapes"></a>Escapes</h1>
 </p><p>Normal Link: <a href="http://wikicreole.org/">http://wikicreole.org/</a> - now same link, but escaped: http://wikicreole.org/ 
 </p>
@@ -262,7 +222,7 @@ Mobile: abc
 </p><p><h4 style=""><a style="visibility : hidden;" name="Subsub (4)"></a>Subsub (4)</h4>
 </p><p><h5 style=""><a style="visibility : hidden;" name="Subsubsub (5)"></a>Subsubsub (5)</h5>
 </p>
-<p><div style="color : gray; border-left : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-right : thin solid #CEF2E0"><div class="wikiblk"><div style="padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0;  ;  ; color: gray; border-right: thin solid #CEF2E0; border-top: thin solid #CEF2E0; border-bottom: thin solid #CEF2E0; border-left: thin solid #CEF2E0;  ; ;; "><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
@@ -280,7 +240,7 @@ adjustable and you can even position it.
 </tr></table></p>
 <p><h3 style=""><a style="visibility : hidden;" name="Improper no-wiki blocks"></a>Improper no-wiki blocks</h3>
 </p>
-<p>hello world 
-
-
+<p>hello world  }
+ }
+ }
 </p><p></p><p></p><p></p></div></div></body></html>
