@@ -526,28 +526,32 @@ class ZWParser( object ):
         p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLESTYLE )
 
     def p_table_rows_1( self, p ):
-        """table_rows           : table_cells NEWLINE
-                                | table_cells TABLE_CELLSTART NEWLINE
-                                | table_rows table_cells NEWLINE
-                                | table_rows table_cells TABLE_CELLSTART NEWLINE"""
+        """table_rows       : table_cells NEWLINE
+                            | table_cells TABLE_CELLSTART NEWLINE
+                            | table_rows table_cells NEWLINE
+                            | table_rows table_cells TABLE_CELLSTART NEWLINE"""
         if len(p) == 3 and isinstance( p[1], TableCells ):
             p[0] = TableRows( p.parser, p[1], newline=p[2] )
+
         elif len(p) == 4 and isinstance( p[1], TableCells ):
             p[0] = TableRows( p.parser, p[1], p[2], p[3] )
+
         elif len(p) == 4 and isinstance( p[1], TableRows ) \
                          and isinstance( p[2], TableCells ) :
             p[1].appendrow( p[2], newline=p[3] )
             p[0] = p[1]
+
         elif len(p) == 5 and isinstance( p[1], TableRows ) \
                          and isinstance( p[2], TableCells ) :
             p[1].appendrow( p[2], p[3], p[4] )
             p[0] = p[1]
+
         else :
             raise ParseError( "unexpected rule-match for table_rows_1")
 
     def p_table_rows_2( self, p):
-        """table_rows           : TABLE_CELLSTART NEWLINE
-                                | table_rows TABLE_CELLSTART NEWLINE"""
+        """table_rows       : TABLE_CELLSTART NEWLINE
+                            | table_rows TABLE_CELLSTART NEWLINE"""
         if len(p) == 3 :
             p[0] = TableRows( p.parser,
                               TableCells( p.parser, p[1], Empty( p.parser ) ),
@@ -561,10 +565,10 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for table_rows_2")
 
     def p_table_cells( self, p ):                       # TableCells
-        """table_cells          : TABLE_CELLSTART text_contents
-                                | TABLE_CELLSTART empty
-                                | table_cells TABLE_CELLSTART empty
-                                | table_cells TABLE_CELLSTART text_contents"""
+        """table_cells      : TABLE_CELLSTART text_contents
+                            | TABLE_CELLSTART empty
+                            | table_cells TABLE_CELLSTART empty
+                            | table_cells TABLE_CELLSTART text_contents"""
         if len(p) == 3 and isinstance( p[2], Empty ) :
             p[0] = TableCells( p.parser, p[1], p[2] )
         elif len(p) == 3 :

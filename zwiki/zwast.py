@@ -804,9 +804,11 @@ class TableCells( Node ) :
         return ( self.cells, )
 
     def totalcells( self ) :
-        return sum([ 1
-                for markup, cell in self.cells if isinstance( cell, TextContents )
-               ])
+        return sum(
+                [ 1
+                  for markup, cell, colspan in self.cells 
+                  if isinstance( cell, TextContents )
+                ])
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
@@ -855,7 +857,7 @@ class TableCells( Node ) :
         buf.write('\n')
 
         cellcount = 1
-        for markup, cell in self.cells :
+        for markup, cell, colspan in self.cells :
             buf.write( lead + '(cell %s)\n' % cellcount )
             cellcount += 1
             cell.show( buf, offset + 2, attrnames, showcoord )
