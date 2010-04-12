@@ -14,7 +14,7 @@ return a translated HTML text. The general format while using a wiki extension
 is,
 
 > [<PRE
-{{{<b>extension-name</b> <em>comma seperated parameter-strings</em>
+{{{<b>extension-name</b> <em>space seperated parameter-strings</em>
 # { '<b>property-name</b>' : '<b>value</b>'
 #   '<b>property-name</b>' : '<b>value</b>'
 #   <b>...</b>
@@ -26,6 +26,7 @@ is,
 >]
 
 * ''extension-name'', should be one of the valid extensions.
+* ''parameter-strings'', string values that will be passed as parameters.
 * ''property-name'', property name can be a property accepted by the extension
   module or can be CSS property. Note that, the entire property block should
   be marked by a beginning ''hash (#)''
