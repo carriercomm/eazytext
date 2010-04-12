@@ -23,7 +23,7 @@ wikidoc = """
 class Nested( ZWExtension ) :
     """Implements Nested() wikix"""
 
-    def __init__( self, props, nowiki ) :
+    def __init__( self, props, nowiki, *args ) :
 
         self.nowiki = nowiki
         self.style  = constructstyle( props, defcss=css )

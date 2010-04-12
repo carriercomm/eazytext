@@ -88,21 +88,108 @@ something like foo:</em>bar// should render as italic.
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
+<p><div style=" ; margin-left: 5%; margin-right: 5%;  ; ; ; ;  ; ;">
+<style type="text/css">
+    .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #FF0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #808080 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #0040D0 } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #AA22FF } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0000FF } /* Name.Function */
+.highlight .nl { color: #A0A000 } /* Name.Label */
+.highlight .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+    .highlighttable td.linenos { padding : 3px }
+    .highlighttable td.code { padding : 3px }
+    .highlight { background-color : #FAFAFA; }
+</style>
+
+<div style="background : #FAFAFA; border : 1px dashed gray; -moz-border-radius: 4px;">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">struct</span> <span class="n">process</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">process</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+  <span class="n">PT_THREAD</span><span class="p">((</span><span class="o">*</span> <span class="kr">thread</span><span class="p">)(</span><span class="k">struct</span> <span class="n">pt</span> <span class="o">*</span><span class="p">,</span> <span class="n">process_event_t</span><span class="p">,</span> <span class="n">process_data_t</span><span class="p">));</span>
+  <span class="k">struct</span> <span class="n">pt</span> <span class="n">pt</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">state</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</td></tr></table>
+</div>
+</div></p>
 <p><h2 style=""><a style="visibility : hidden;" name="list"></a>list</h2>
 </p><p>You can use lists, start it at the first column for now, please...
 </p>
 <p>unnumbered lists are like
-</p><p><ul><li> item a</li><li> item b</li><li> <strong style="">bold item c</strong></li></ul></p>
+</p><p><ul><li style=""> item a</li><li style=""> item b</li><li style=""> <strong style="">bold item c</strong></li></ul></p>
 <p>blank space is also permitted before lists like:
-</p><p><ul><li>   item a</li><li> item b</li><li> item c</li><ul><li> item c.a</li></ul></ul></p>
+</p><p><ul><li style="">   item a</li><li style=""> item b</li><li style=""> item c</li><ul><li style=""> item c.a</li></ul></ul></p>
 <p>or you can number them
-</p><p><ol><li> <a href="item 1">item 1</a></li><li> item 2</li><li> <em style=""> italic item 3 </em></li><ol><li> item 3.1</li><li> item 3.2</li></ol></ol></p>
+</p><p><ol><li style=""> <a href="item 1">item 1</a></li><li style=""> item 2</li><li style=""> <em style=""> italic item 3 </em></li><ol><li style=""> item 3.1</li><li style=""> item 3.2</li></ol></ol></p>
 <p>up to five levels
-</p><p><ul><li> level 1</li><ul><li> level 2</li><ul><li> level 3</li><ul><li> level 4</li><ul><li> level 5</li></ul></ul></ul></ul></ul></p>
+</p><p><ul><li style=""> level 1</li><ul><li style=""> level 2</li><ul><li style=""> level 3</li><ul><li style=""> level 4</li><ul><li style=""> level 5</li></ul></ul></ul></ul></ul></p>
 <p><h3 style=""><a style="visibility : hidden;" name="All possible list combination"></a>All possible list combination</h3>
 </p>
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li><ul><li> level 3 item 1 unordered</li><li> level 3 item 2 unordered</li></ul><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>
-<p><ul><ul><ul><ul><li> Level 4 item 1 unordered</li><ol><li> Level 5 item 2 ordered</li></ol></ul><li> Level3 item 3 unordered</li></ul></ul></ul></p>
+<p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li style=""> level 2 item 2 unordered</li></ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li><ul><li style=""> level 3 item 1 unordered</li><li style=""> level 3 item 2 unordered</li></ul><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 ordered</li><li style=""> level 1 item 1 ordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li></ul></p>
+<p><ul><ul><ul><ul><li style=""> Level 4 item 1 unordered</li><ol><li style=""> Level 5 item 2 ordered</li></ol></ul><li style=""> Level3 item 3 unordered</li></ul></ul></ul></p>
 <p><h2 style=""><a style="visibility : hidden;" name="Block quoted text"></a>Block quoted text</h2>
 </p>
 <p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 1 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 2 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 3 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></p>
@@ -121,25 +208,25 @@ adjustable and you can even position it.
 <p><h3 style=""><a style="visibility : hidden;" name="All possible list combinations in a table"></a>All possible list combinations in a table</h3>
 </p>
  <table border="1" >    <tr>    <td>   
-<ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li><ul><li> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li> level 2 item 2 unordered</li></ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</td></li></ul>
+<ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li style=""> level 2 item 2 unordered</li></ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</td></li></ul>
 <td>
-<ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</td></li></ol></ol>
+<ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol>
 </tr> <tr>
 
 <td>
-<ul><ul><ul><li> level 3 item 1 unordered</td></li></ul></ul></ul>
+<ul><ul><ul><li style=""> level 3 item 1 unordered</td></li></ul></ul></ul>
 <td>
-<ul><ul><ul><li> level 3 item 2 unordered</td></li></ul></ul></ul>
+<ul><ul><ul><li style=""> level 3 item 2 unordered</td></li></ul></ul></ul>
 </tr> <tr>
 
 <td>
-<ol><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</li></ol><li> level 1 item 1 ordered</li><li> level 1 item 1 ordered</li><ol><li> level 2 item 1 ordered</li><li> level 2 item 2 ordered</td></li></ol></ol>
+<ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 ordered</li><li style=""> level 1 item 1 ordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol>
 <td>
-<p><ul><li> level 1 item 1 unordered</li><li> level 1 item 2 unordered</li></ul></p>
+<p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li></ul></p>
                   </td>           </tr>           </table>    
 
 <p>You cannot have
-</p><p><ul><li> multiline list,items</li></ul></p>
+</p><p><ul><li style=""> multiline list,items</li></ul></p>
 <p><h2 style=""><a style="visibility : hidden;" name="Macros"></a>Macros</h2>
 </p>
 <p>This line demonstrates the <span style=" ; color: green; padding: 2px; border: thin solid red;  ; ; ; ;  ; ;">Span Macro</span>
@@ -153,7 +240,7 @@ Priestley's wife Mary, is Georgian with Federalist accents. The
 <strong style="">Pennsylvania Historical</strong> and <strong style="">Museum Commission</strong> has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
-</p><p><ul><li> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li>In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.(more...)</li></ul></p>
+</p><p><ul><li style=""> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li style=""> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li style="">In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li style=""> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.(more...)</li></ul></p>
 <p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
 </div></div></div></p>

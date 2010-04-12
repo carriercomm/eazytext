@@ -418,11 +418,14 @@ class NoWiki( Node ) :
 
     def __init__( self, parser, opennowiki, opennl, nowikilines,
                   closenowiki=None, closenl=None, skip=False  ) :
-        self.parser       = parser
-        self.xwikiname    = opennowiki[3:].strip()
-        self.opennewline  = Newline( parser, opennl )
-        self.nowikilines  = nowikilines
-        self.skip         = skip
+        self.parser      = parser
+        self.xparams     = map( lambda x : x.strip(' \t'),
+                                opennowiki[3:].strip( ' \t' ).split(' ')
+                              )
+        self.xwikiname   = self.xparams and self.xparams.pop(0) or ''
+        self.opennewline = Newline( parser, opennl )
+        self.nowikilines = nowikilines
+        self.skip        = skip
         if self.skip :
             self.nowikitext   = opennowiki  + opennl + nowikilines
         else :

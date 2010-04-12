@@ -18,7 +18,7 @@ wikidoc = """
 class Html( ZWExtension ) :
     """Implements Html() wikix"""
 
-    def __init__( self, props, nowiki ) :
+    def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki
         
         d_style, s_style = split_style( props.pop( 'style', {} ))

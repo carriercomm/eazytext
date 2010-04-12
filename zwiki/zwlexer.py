@@ -131,12 +131,12 @@ class ZWLexer( object ):
         return t
 
     def t_NOWIKI_OPEN( self, t ) :
-        r'^{{{[ \t]*[a-zA-Z0-9_\-\.]*[ \t]*$'
+        r'^{{{[ \t]*[a-zA-Z0-9_\-\. ]*[ \t]*$'
         t.lexer.push_state('nowiki')
         return t
 
     def t_nowiki_NOWIKI_OPEN( self, t ):
-        r'^{{{[ \t]*[a-zA-Z0-9_\-\.]*[ \t]*$'
+        r'^{{{[ \t]*[a-zA-Z0-9_\-\. ]*[ \t]*$'
         return t
 
     def t_nowiki_NOWIKI_CLOSE( self, t ):

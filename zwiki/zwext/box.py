@@ -59,7 +59,7 @@ Default CSS styling for the entire extension,
 class Box( ZWExtension ) :
     """Implements Box() wikix"""
 
-    def __init__( self, props, nowiki ) :
+    def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki
         self.title   = props.pop( 'title', '' )
         boxstyle     = props.pop( 'style', {} )

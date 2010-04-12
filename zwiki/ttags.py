@@ -52,7 +52,7 @@ def tt_PRE( text ) :
     :Description::
         Generate a preformated element.
 
-    :syntax ::
+    :Syntax ::
         ~[<PRE //text// ~>]
 
     :Example ::
@@ -70,7 +70,7 @@ def tt_ABBR( text ) :
     :Description::
         Generate Abbreviation element
 
-    :syntax ::
+    :Syntax ::
         ~[<ABBR //text//, //title// ~>]
 
     :Example ::
@@ -91,7 +91,7 @@ def tt_FIXME() :
     :Description::
         Generate a FIXME label
 
-    :syntax ::
+    :Syntax ::
         ~[<FIXME~>]
 
     :Example ::
@@ -111,7 +111,7 @@ def tt_SMILEYSMILE() :
     :Description::
         Generate a happy smiley Glyph
 
-    :syntax ::
+    :Syntax ::
         ~[<:-)~>]
 
     :Example ::
@@ -131,7 +131,7 @@ def tt_SMILEYSAD() :
     :Description::
         Generate a SMILEYSAD label
 
-    :syntax ::
+    :Syntax ::
         ~[<:-(~>]
 
     :Example ::
@@ -151,7 +151,7 @@ def tt_ADDR( text ) :
     :Description::
         Generate `address` element
 
-    :syntax ::
+    :Syntax ::
         ~[<ADDR //field1//, //field2//, ... ~>]
 
     comma will be replaced with <br></br> element
@@ -165,4 +165,3 @@ def tt_ADDR( text ) :
     text = text.replace( ',', '<br></br>' )
     html  = '<address>%s</address>' % text
     return html
-

@@ -14,7 +14,7 @@ return a translated HTML text. The general format while using a wiki extension
 is,
 
 > [<PRE
-{{{<b>extension-name</b>
+{{{<b>extension-name</b> <em>comma seperated parameter-strings</em>
 # { '<b>property-name</b>' : '<b>value</b>'
 #   '<b>property-name</b>' : '<b>value</b>'
 #   <b>...</b>
@@ -73,10 +73,11 @@ class ZWExtension( object ) :
 
 from zwiki              import split_style, constructstyle
 from zwiki.zwext.box    import Box
+from zwiki.zwext.code   import Code
 from zwiki.zwext.html   import Html
 from zwiki.zwext.nested import Nested
 
-extnames = [ 'ZWExtension', 'Box', 'Html', 'Nested' ]
+extnames = [ 'ZWExtension', 'Box', 'Code', 'Html', 'Nested' ]
 
 def build_zwext( zwextnode, nowiki ) :
     """Parse the nowiki text, like,
@@ -97,8 +98,11 @@ def build_zwext( zwextnode, nowiki ) :
         break;
     nowiki = '\n'.join( nowikilines[i:] )
     try :
-        props = props and eval( ''.join( props ) ) or {}
-        o = globals()[zwextnode.xwikiname]( props, nowiki )
+        props   = props and eval( ''.join( props ) ) or {}
+        xwiki   = zwextnode.xwikiname
+        o       = globals()[zwextnode.xwikiname](
+                        *( [ props, nowiki ] + zwextnode.xparams )
+                  )
     except :
         o = ZWExtension( {}, nowiki )
         # if zwextnode.parser.zwparser.debug :

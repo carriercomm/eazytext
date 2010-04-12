@@ -92,6 +92,16 @@ This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 }}}
 
+{{{ Code C
+struct process {
+  struct process *next;
+  const char *name;
+  PT_THREAD((* thread)(struct pt *, process_event_t, process_data_t));
+  struct pt pt;
+  unsigned char state;
+};
+}}}
+
 == list ==
 You can use lists, start it at the first column for now, please...
 
