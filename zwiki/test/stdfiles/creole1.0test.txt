@@ -348,10 +348,10 @@ a tilde escapes itself: ~~xxx
 
 Tables are done like this:
 
-|= header col1 |= header col2 |=            |=     |
-| col1         |{y} col2      | ''{g}col3'' |      |
-| you          | can        $||            $|
-| also                       || align\\ it. | col4 |
+|= header col1 |= header col2 |=            |=       |
+| col1         |{y} col2      | ''{g}col3'' |        |
+| you          | can                      $|| hello $|
+| also                       || align\\ it. | col4   |
 
 === Big Tables ===
 
@@ -394,6 +394,13 @@ If interwiki links are setup in your wiki, this links to the WikiCreole page abo
 === This is a Subheading (3) ===
 ==== Subsub (4) ====
 ===== Subsubsub (5) =====
+
+h1.{r} First level
+h2. Second level
+H3. Third level
+h4. Fourth level
+H5.{5|} Fifth level
+H6. Sixth level oops !
 
 {{{ Box
 This is a sample box written using wiki extensions. Note that the width is

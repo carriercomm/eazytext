@@ -456,17 +456,30 @@ class NoWiki( Node ) :
 class Heading( Node ) :
     """class to handle `heading` grammar."""
 
-    def __init__( self, parser, headmarkup, headline, newline ) :
-        self.headmarkuptxt = headmarkup
-
+    def _parseheadmarkup( self, headmarkup ) :
+        """Convert the header markup into respective level. Note that, header
+        markup can be specified with as ={1,5} or h[1,2,3,,4,5]"""
         headmarkup = headmarkup.lstrip( ' \t' )
+
         off = headmarkup.find( '{' )
         if off > 0 :
-            self.headmarkup   = headmarkup[:off]
-            self.style        = styleparser( headmarkup[off:] )
+            style      = styleparser( headmarkup[off:] )
+            headmarkup = headmarkup[:off]
         else :
-            self.headmarkup   = headmarkup
-            self.style        = ''
+            headmarkup = headmarkup
+            style      = ''
+
+        if '=' in headmarkup :
+            level = len(headmarkup)
+        elif headmarkup[0] in 'hH' :
+            level = int(headmarkup[1])
+        else :
+            level = 5
+        return headmarkup, level, style
+
+    def __init__( self, parser, headmarkup, headline, newline ) :
+        self.headmarkuptxt = headmarkup
+        self.headmarkup, self.level, self.style = self._parseheadmarkup( headmarkup )
         self.parser       = parser
         self.textcontents = headline
         self.newline      = Newline( parser, newline )
@@ -475,7 +488,7 @@ class Heading( Node ) :
         return ( self.headmarkup, self.textcontents, self.newline )
 
     def tohtml( self ):
-        l    = len(self.headmarkup)
+        l    = self.level
         contents = []
         [ contents.extend( item.contents )
           for item in self.textcontents.textcontents ]

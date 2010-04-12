@@ -313,8 +313,11 @@ class TestDumpsValid( object ) :
         """Testing heading markup"""
         print "\nTesting heading markup"
         log.info( "Testing heading markup" )
-        headmarkup= [ '=' , '==', '===', '====', '=====' ]
-        testlist  = [ choice(headmarkup) + gen_headtext( words ) +
+        headmarkup= [ '=' , '==', '===', '====', '=====',
+                      'h1.', 'h2.', 'h3.', 'h4.', 'h5.' ]
+        stylesc   = [ '{c}', '{C}', '{|5}', '{5|}', '{\1,solid,gray}' ]
+        testlist  = [ choice(headmarkup) + choice(stylesc) +
+                      gen_headtext( words ) +
                       choice( headmarkup + [ '' ] ) + gen_psep(3)
                         for i in range(50) ]
         testcount = 1
