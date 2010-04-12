@@ -941,6 +941,12 @@ class List( Node ) :
         return ( self.listtype, self.listmarkup, self.textcontents,
                  self.newline )
 
+    def style( self ) :
+        markup = self.listmarkup.strip( ' \t' )
+        off    = markup.find('{')
+        style  = off > 0 and styleparser( markup[off:] ) or ''
+        return style
+
     def tohtml( self ) :
         # Process the text contents and convert them into html
         if self.textcontents :
@@ -948,9 +954,11 @@ class List( Node ) :
             [ contents.extend( item.contents )
               for item in self.textcontents.textcontents ]
             process_textcontent( contents )
-            html = '<li>' + self.textcontents.tohtml() + '</li>'
+            html = '<li style="%s">%s</li>' % \
+                        ( self.style(), self.textcontents.tohtml() )
         elif self.empty :
-            html = '<li>' + self.empty.tohtml() + '</li>'
+            html = '<li style="%s">%s</li>' % \
+                        ( self.style(), self.empty.tohtml() )
         else :
             raise ZWASTError( "tohtml() : No listitem available for List() node" )
         return html

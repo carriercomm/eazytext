@@ -22,6 +22,7 @@ ZWMARKUP     = [ "''", '//', '__', '^^', ',,', "'/", "'_", "/_'","'/_", '\\\\', 
 ZWMARKUP_RE  = [ r"''", r'//', r'__', r'\^\^', r',,', r"'/", "'_", "/_'", r"'/_", r'\\\\',
                  r'\[\[', r'\]\]', r'{{', r'}}' ]
 ORDMARKUP    = [ '*', '**', '***', '****', '*****' ]
+STYLESHORTS  = [ '{c}', '{C}', '{|5}', '{5|}', '{\1,solid,gray}' ]
 UNORDMARKUP  = [ '#', '##', '###', '####', '#####' ]
 BQMARKUP     = [ '>', '>>', '>>>', '>>>>', '>>>>>' ]
 TBMARKUP     = [ '||{', '||}', '||-', '||=', '|| ' ]
@@ -127,9 +128,12 @@ gen_words     = lambda wordlist, count=200, huri_c=10, wuri_c=10 : \
 # generate - page seperator
 gen_psep     = lambda n : ''.join([ '\n' for i in range(randint(0,n)) ])
 
+# Generate style shortcut
+gen_stylesh  = lambda : choice(STYLESHORTS)
+
 # generate - list markup
-gen_ordmark  = lambda : choice(ORDMARKUP)
-gen_unordmark= lambda : choice(UNORDMARKUP)
+gen_ordmark  = lambda : choice(ORDMARKUP) + choice(STYLESHORTS)
+gen_unordmark= lambda : choice(UNORDMARKUP) + choice(STYLESHORTS)
 gen_bqmark   = lambda : choice(BQMARKUP)
 gen_defnmark = lambda : ':' + \
                         ''.join([ choice(alltext) for i in range(50) ]) + \

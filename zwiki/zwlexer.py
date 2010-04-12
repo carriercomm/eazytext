@@ -232,11 +232,11 @@ class ZWLexer( object ):
         return t
 
     def t_ORDLIST_START( self, t ):
-        r'^[ \t]*\#{1,5}'
+        r'^[ \t]*\#{1,5}(\{[^{}\r\n]*\})?'
         return t
 
     def t_UNORDLIST_START( self, t ):
-        r'^[ \t]*\*{1,5}'
+        r'^[ \t]*\*{1,5}(\{[^{}\r\n]*\})?'
         return t
 
     def t_DEFINITION_START( self, t ):

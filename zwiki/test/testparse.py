@@ -15,7 +15,7 @@ from   zwiki.zwlexer        import ZWLexer
 from   zwiki.zwparser       import ZWParser
 import zwiki.test.testlib   as testlib
 from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
-                                   gen_psep, gen_ordmark, gen_unordmark, \
+                                   gen_psep, gen_stylesh, gen_ordmark, gen_unordmark, \
                                    gen_bqmark, gen_defnmark, gen_btableline, \
                                    gen_headtext, gen_texts, gen_row, \
                                    gen_wordlist, gen_words, gen_linkwords, gen_links,\
@@ -315,8 +315,7 @@ class TestDumpsValid( object ) :
         log.info( "Testing heading markup" )
         headmarkup= [ '=' , '==', '===', '====', '=====',
                       'h1.', 'h2.', 'h3.', 'h4.', 'h5.' ]
-        stylesc   = [ '{c}', '{C}', '{|5}', '{5|}', '{\1,solid,gray}' ]
-        testlist  = [ choice(headmarkup) + choice(stylesc) +
+        testlist  = [ choice(headmarkup) + gen_stylesh() +
                       gen_headtext( words ) +
                       choice( headmarkup + [ '' ] ) + gen_psep(3)
                         for i in range(50) ]
