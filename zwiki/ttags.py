@@ -31,6 +31,9 @@ def parsetag( text ) :
     elif keyword[:4] == 'ABBR' :
         html = tt_ABBR( text[4:] )
 
+    elif keyword[:4] == 'ADDR' :
+        html = tt_ADDR( text[4:] )
+
     elif keyword[:5] == 'FIXME' :
         html = tt_FIXME()
 
@@ -141,3 +144,25 @@ def tt_SMILEYSAD() :
             "color: orangeRed; padding: 1px; font-family : monospace;"
     html  = '<span style="%s">%s</span>' % (style, '&#9785;')
     return html
+
+def tt_ADDR( text ) :
+    """
+    === ADDRESS
+    :Description::
+        Generate `address` element
+
+    :syntax ::
+        ~[<ADDR //field1//, //field2//, ... ~>]
+
+    comma will be replaced with <br></br> element
+
+    :Example ::
+
+    > ~[<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 ~>]
+    
+    > [<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]
+    """
+    text = text.replace( ',', '<br></br>' )
+    html  = '<address>%s</address>' % text
+    return html
+
