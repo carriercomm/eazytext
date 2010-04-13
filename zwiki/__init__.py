@@ -42,3 +42,7 @@ def constructstyle( kwargs, defcss={}, styles='' ) :
     style = '; '.join([ "%s: %s" % (k,v) for k,v in css.items() ])
     style = "%s; %s ; %s;" % ( style, s_style, styles )
     return style
+
+def obfuscatemail( text ) :
+    """Obfuscate email id"""
+    return '@'.join([ n[:-3] + '...' for n in text.split( '@', 1 ) ])

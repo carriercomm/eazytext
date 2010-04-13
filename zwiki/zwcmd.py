@@ -46,7 +46,7 @@ def main() :
     # Bug in PLY ???
     #   Enabling optimize screws up the order of regex match (while lexing)
     # zwparser = ZWParser( yacc_debug=True )
-    zwparser = ZWParser()
+    zwparser = ZWParser( obfuscatemail=True )
     if args[0] == 'teststd' :
         stdfiles = get_stdfiles()
         for f in stdfiles :

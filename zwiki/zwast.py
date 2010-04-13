@@ -16,7 +16,7 @@ import cElementTree       as et
 
 from   zwiki.macro        import build_macro
 from   zwiki.zwext        import build_zwext
-from   zwiki              import escape_htmlchars, split_style
+from   zwiki              import escape_htmlchars, split_style, obfuscatemail
 from   zwiki.textlexer    import TextLexer
 from   zwiki.stylelookup  import *
 import zwiki.ttags        as tt
@@ -1336,6 +1336,11 @@ class Link( Node ) :
                         zwiki.zetawiki.parse_link( parser.zwparser, href, text )
                 html = '<a href="%s" title="%s">%s</a>' % \
                                 ( href, title, text.strip(' \t') )
+            elif href[:6] == "mailto" and self.parser.zwparser.obfuscatemail :
+                text = text or tup[0]
+                html = '<a href="%s">%s</a>' % ( obfuscatemail(href), 
+                                                 obfuscatemail(text.strip(' \t')) )
+
             else :
                 text = text or tup[0]
                 html = '<a href="%s">%s</a>' % ( href, text.strip(' \t') )

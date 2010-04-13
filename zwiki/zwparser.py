@@ -144,6 +144,7 @@ class ZWParser( object ):
                     yacctab='zwiki.yacctab',
                     yacc_debug=False,
                     outputdir='',
+                    obfuscatemail=False,
                 ):
         """Create a new ZWParser.
         
@@ -199,7 +200,11 @@ class ZWParser( object ):
                         
         yacc_debug:
             Generate a parser.out file that explains how yacc built the parsing
-            table from the grammar."""
+            table from the grammar.
+
+        obfuscatemail:
+            Obfuscate email ids written using link markup.
+            [[ mailto:<emailid> | text ]] """
         self.app      = app
         yacc_debug == False and logging.ERROR or logging.WARNING
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
@@ -220,6 +225,7 @@ class ZWParser( object ):
         # Specify whether the text needs dynamic translation
         self.dynamictext     = False
         self.debug           = lex_debug or yacc_debug
+        self.obfuscatemail   = obfuscatemail
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""

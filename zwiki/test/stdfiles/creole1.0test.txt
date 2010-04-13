@@ -76,6 +76,8 @@ Free links without braces should be rendered as well, like http://www.wikicreole
 Creole1.0 specifies that http://bar and ftp://bar should not render italic,
 something like foo://bar// should render as italic.
 
+[[ mailto:prataprc@gmail.com | prataprc@gmail.com ]]
+
 You can use this to draw a line to separate the page:
 ----
 
