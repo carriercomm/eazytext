@@ -1344,6 +1344,7 @@ class Link( Node ) :
             else :
                 text = text or tup[0]
                 html = '<a href="%s">%s</a>' % ( href, text.strip(' \t') )
+
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
     def children( self ) :

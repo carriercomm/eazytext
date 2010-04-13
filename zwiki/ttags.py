@@ -43,6 +43,9 @@ def parsetag( text ) :
     elif keyword[:3] == ':-(' :
         html = tt_SMILEYSAD()
 
+    elif keyword[:2] == 'FN' :
+        html = tt_FOOTNOTE( text[2:] )
+
     return html
 
 
@@ -164,4 +167,56 @@ def tt_ADDR( text ) :
     """
     text = text.replace( ',', '<br></br>' )
     html  = '<address>%s</address>' % text
+    return html
+
+def tt_FOOTNOTE( text ) :
+    """
+    === FOOTNOTE
+    :Description::
+        Generate footnote references.
+
+    :Syntax ::
+        ~[<FN text ~>]
+
+    where `text` will be super-scripted and hyper-linked to foot-note content.
+
+    :Example ::
+
+    > [<PRE ... mentioned by Richard Feynman ~[<FN 1 ~>], initially proposed by
+      Albert Einstein  ~[<FN 2 ~>] >]
+
+    And foot-note content can be specified using the Wiki-extension language,
+    like,
+
+    > [<PRE 
+      {{{ Footnote //footnote-title//
+      1 German-born Swiss-American theoretical physicist, philosopher and
+      author who is widely regarded as one of the most influential and best
+      known scientists and intellectuals of all time. He is often regarded as
+      the father of modern physics.
+
+      2 American physicist known for his work in the path integral
+      formulation of quantum mechanics, the theory of quantum electrodynamics.
+      }}}
+
+      Note that inside the ''Footnote'' extension block, each footnote should be
+      seperated by an empty line and each footnote's first word will be
+      interpreted as its anchor name.
+    
+    ... mentioned by Richard Feynman [<FN 1 >], initially proposed by
+      Albert Einstein  [<FN 2 >]
+    ...
+
+    {{{ Footnote //footnote-title//
+    1 German-born Swiss-American theoretical physicist, philosopher and
+    author who is widely regarded as one of the most influential and best
+    known scientists and intellectuals of all time. He is often regarded as
+    the father of modern physics.
+
+    2 American physicist known for his work in the path integral
+    formulation of quantum mechanics, the theory of quantum electrodynamics.
+    }}}
+    """
+    text = text.strip()
+    html = '<sup><a href="#%s" style="text-decoration: none;">%s</a></sup>' % (text, text)
     return html
