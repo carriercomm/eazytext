@@ -94,6 +94,7 @@ import logging
 import re
 import sys
 from   types    import StringType
+import copy
 
 import ply.yacc
 
@@ -302,7 +303,7 @@ class ZWParser( object ):
         self.macrostyles  = {}
         self.extstyles    = {}
         self.wikiprops    = {}
-        self.wiki_css     = wiki_css                    # Agreegate styles
+        self.wiki_css     = copy.deepcopy( wiki_css )   # Agreegate styles
         self.macroobjects = []  # ZWMacro objects detected while parsing
         self.zwextobjects = []  # ZWExtension objects detected while parsing
         self.predivs      = []  # <div> elements prepend before wikipage

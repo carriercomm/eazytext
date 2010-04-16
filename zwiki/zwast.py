@@ -313,7 +313,6 @@ class Wikipage( Node ):
         # Final html
         zwparser.html = '<div class="wikiblk">' + \
                         peerhtml_neg + zwparser.html + peerhtml_pos + '</div>'
-
         return zwparser.html
 
     def dump( self ) :
