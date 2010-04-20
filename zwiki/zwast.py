@@ -1310,16 +1310,19 @@ class Link( Node ) :
         prefix = href[:1]
 
         if prefix == '*' :              # Link - Open in new window
-            html = '<a target="_blank" href="%s">%s</a>' % ( href[1:], text )
+            html = '<a target="_blank" href="%s">%s</a>' % ( 
+                    href[1:], text or href[1:] )
 
         elif prefix == '$' :            # Link - Anchor 
-            html = '<a name="%s">%s</a>' % ( href[1:], text )
+            html = '<a name="%s">%s</a>' % ( 
+                    href[1:], text or href[1:] )
 
         elif prefix == '+' :            # Link - Image (actually no href)
             style = 'float: left;' if href[1:2] == '<' \
                                    else ( 'float: right;' if href[1:2] == '>' \
                                                           else '' )
             src   = href[1:].strip( '<>' )
+            text  = text or src
             html  = '<img src="%s" alt="%s" style="%s"></img>' % ( 
                      src, text, style )
 
@@ -1336,13 +1339,13 @@ class Link( Node ) :
         elif href[:6] == "mailto" :
                                         # Link - E-mail
             if self.parser.zwparser.obfuscatemail :
-                href = obfuscatemail(href)
-                text = obfuscatemail(text) 
+                href = "mailto" + obfuscatemail(href[:6])
+                text = obfuscatemail(text or href[:6]) 
 
             html = '<a href="%s">%s</a>' % (href, text)
 
         else :
-            html = '<a href="%s">%s</a>' % ( href, text )
+            html = '<a href="%s">%s</a>' % ( href, text or href )
 
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
