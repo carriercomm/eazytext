@@ -71,10 +71,10 @@ def parse_link( zwparser, markup, text='' ) :
     else :
         left   = markup
     if groups and groups[1] :                 # translate zetalink
-        ( href, title, style ) = parse_zetalink( zwparser.app, groups[1] )
+        (href, ztext, title, style) = parse_zetalink( zwparser.app, groups[1] )
 
     if href and groups[0] :                   # Found interzeta pattern
         interzeta = parse_interzeta( zwparser.app, groups[0] )
         href      = interzeta and '%s%s' % ( interzeta, href ) or href
-    text = text or markup
+    text = text or ztext or markup
     return ( href, title, text, style )
