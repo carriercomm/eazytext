@@ -1299,50 +1299,50 @@ class Link( Node ) :
 
     def __init__( self, parser, link ) :
         self.parser = parser
-        # parse the text
-        text   = ''
-        tup    = link[2:-2].split( '|', 1 )
-        if len(tup) == 2 :
-            text = escape_htmlchars( tup[1] )
-        # parse the href and for special notations
-        href = tup[0].strip(' \t')
-        html =''
-        if href :
-            # Link - Open in new window
-            if href[0] == '*' :
-                html   = '<a target="_blank" href="' + href[1:] + '">' + \
-                       text.strip(' \t') + '</a>'
-            # Link - Anchor 
-            elif href[0] == '$' :
-                html = '<a name="' + href[1:] + '">' + text.strip(' \t') + '</a>'
-            # Link - Image (actually no href)
-            elif href[0] == '+' :
-                style = ''
-                src   = href[1:]
-                if src and src[0] == '<' :
-                    style = 'float : left;'
-                    src   = src[1:]
-                elif src and src[0] == '>' :
-                    style = 'float : right;'
-                    src   = src[1:]
-                html  = '<img src="' + src + '" alt="' + text.strip( ' \t' ) + \
-                        '" style="' + style + '"></img>'
-            elif parser.zwparser.app and \
-                 (parser.zwparser.app.name == 'zeta' and href[0] == '@') :
-                # InterZeta or # ZetaLinks
-                import zwiki.zetawiki
-                href, title, text, _left = \
-                        zwiki.zetawiki.parse_link( parser.zwparser, href, text )
-                html = '<a href="%s" title="%s">%s</a>' % \
-                                ( href, title, text.strip(' \t') )
-            elif href[:6] == "mailto" and self.parser.zwparser.obfuscatemail :
-                text = text or tup[0]
-                html = '<a href="%s">%s</a>' % ( obfuscatemail(href), 
-                                                 obfuscatemail(text.strip(' \t')) )
 
-            else :
-                text = text or tup[0]
-                html = '<a href="%s">%s</a>' % ( href, text.strip(' \t') )
+        # parse the text
+        tup  = link[2:-2].split( '|', 1 )
+        href = tup and tup.pop(0).strip(' \t') or ''
+        text = tup and escape_htmlchars(tup.pop(0)).strip(' \t') or ''
+
+        # parse the href and for special notations
+        html   =''
+        prefix = href[:1]
+
+        if prefix == '*' :              # Link - Open in new window
+            html = '<a target="_blank" href="%s">%s</a>' % ( href[1:], text )
+
+        elif prefix == '$' :            # Link - Anchor 
+            html = '<a name="%s">%s</a>' % ( href[1:], text )
+
+        elif prefix == '+' :            # Link - Image (actually no href)
+            style = 'float: left;' if href[1:2] == '<' \
+                                   else ( 'float: right;' if href[1:2] == '>' \
+                                                          else '' )
+            src   = href[1:].strip( '<>' )
+            html  = '<img src="%s" alt="%s" style="%s"></img>' % ( 
+                     src, text, style )
+
+        elif parser.zwparser.app and \
+             (parser.zwparser.app.name == 'zeta' and prefix == '@') :
+                                        # Link - InterZeta or ZetaLinks
+            import zwiki.zetawiki
+            href, title, text, style = zwiki.zetawiki.parse_link(
+                                                parser.zwparser, href, text
+                                       )
+            html = '<a href="%s" title="%s" style="%s">%s</a>' % ( 
+                        href, title, style, text )
+
+        elif href[:6] == "mailto" :
+                                        # Link - E-mail
+            if self.parser.zwparser.obfuscatemail :
+                href = obfuscatemail(href)
+                text = obfuscatemail(text) 
+
+            html = '<a href="%s">%s</a>' % (href, text)
+
+        else :
+            html = '<a href="%s">%s</a>' % ( href, text )
 
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 

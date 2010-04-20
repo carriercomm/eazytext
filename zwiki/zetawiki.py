@@ -25,12 +25,12 @@ linkmap = {
         'g' : lambda val : ( 'tag', normalize(val) ),
         'l' : lambda val : ( 'license', normalize(val) ),
         'p' : lambda val : ( 'project', normalize(val) ),
-        'c' : lambda val : ( 'component', normalize(val) ),
         'm' : lambda val : ( 'milestone', normalize(val) ),
-        'v' : lambda val : ( 'version', normalize(val) ),
         't' : lambda val : ( 'ticket', normalize(val) ),
         'r' : lambda val : ( 'review', normalize(val) ),
         's' : lambda val : ( 'source', normalize(val) ),
+        'v' : lambda val : ( 'revision', normalize(val) ),
+        'w' : lambda val : ( 'wiki', normalize(val) ),
 }
 
 def normalize( val ) :
@@ -38,7 +38,7 @@ def normalize( val ) :
     try :
         val = int(val)
     except :
-        return unicode(val)
+        val = unicode(val)
     return val
 
 def parse_interzeta( app, name ) :
@@ -49,19 +49,18 @@ def parse_interzeta( app, name ) :
 def parse_zetalink( app, zlink ) :
     """Parse 'zlink' into zeta understandable notation and convert them into
     relative url"""
-    vals   = [ ( nm[0], nm[1:].lstrip(':') )
-               for nm in zlink.split( '@' )[1:] if nm and nm[0] in linkmap.keys() ]
-    kwargs = {}
-    kwargs.update([ linkmap[obj]( id ) for obj, id in vals  ])
-    
-    return app.h.url_forzetalink( **kwargs )
+    types  = linkmap.keys() 
+    kwargs = dict([ linkmap[ nm[0] ]( nm[1:].lstrip(':') )
+                    for nm in zlink.split( '@' )[1:] if nm and (nm[0] in types)
+                 ])
+    return app.h.url_forzetalink( app.c, **kwargs )
 
 def parse_link( zwparser, markup, text='' ) :
     """Parse markup for interzeta and zetalink. If text is NULL, construct text
     from markup.
     Return,
         (href, text, left) to be used in anchor element"""
-    markup = markup.strip( ' \t' )
+    markup = markup
     m      = tokenizer.match( markup )
     href   = ''
     title  = ''
@@ -71,13 +70,11 @@ def parse_link( zwparser, markup, text='' ) :
         left   = markup[m.start():m.end()]    # Left over string
     else :
         left   = markup
+    if groups and groups[1] :                 # translate zetalink
+        ( href, title, style ) = parse_zetalink( zwparser.app, groups[1] )
 
-    if groups and groups[1] :           # translate zetalink
-        ( href, title ) = parse_zetalink( zwparser.app, groups[1] )
-
-    if href and groups[0] :             # Found interzeta pattern
+    if href and groups[0] :                   # Found interzeta pattern
         interzeta = parse_interzeta( zwparser.app, groups[0] )
-        if interzeta :
-            href  = '%s/%s' % ( interzeta, href )
+        href      = interzeta and '%s%s' % ( interzeta, href ) or href
     text = text or markup
-    return ( href, title, text, left )
+    return ( href, title, text, style )
