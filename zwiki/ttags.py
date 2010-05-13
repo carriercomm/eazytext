@@ -37,6 +37,9 @@ def parsetag( text ) :
     elif keyword[:5] == 'FIXME' :
         html = tt_FIXME()
 
+    elif keyword[:1] == 'Q' :
+        html = tt_Q( text[1:] )
+
     elif keyword[:3] == ':-)' :
         html = tt_SMILEYSMILE()
 
@@ -106,6 +109,34 @@ def tt_FIXME() :
     style = "-moz-border-radius : 3px; border : 1px solid cadetBlue; " + \
             "color : red; padding: 1px; font-family : monospace;"
     html  = '<span style="%s">%s</span>' % (style, 'FIXME')
+    return html
+
+def tt_Q( text ) :
+    """
+    === Q
+    :Description::
+        Generate a quotable quotes
+
+    :Syntax ::
+        ~[<Q -quote-text- ~>]
+
+    :Example ::
+
+    > ~[<Q Emptying the heart of desires,
+           Filling the belly with food,
+           Weakening the ambitions,
+           Touchening the bones. ~>]
+
+    > [<Q Emptying the heart of desires,
+           Filling the belly with food,
+           Weakening the ambitions,
+           Touchening the bones. >]
+
+    ''html element generated is a div element with class attribute "qbq"''
+    """
+    style = 'font-style : italic; margin : 5px 0px 5px 0px; \
+             padding : 15px 0px 10px 40px; width: 70%; white-space: pre;'
+    html  = '<div class="qbq" style="%s">%s</div>' % (style, text )
     return html
 
 def tt_SMILEYSMILE() :
