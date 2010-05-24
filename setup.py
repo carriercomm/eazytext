@@ -23,7 +23,7 @@ setup(
     include_package_data=True,              # setuptools
     exclude_package_data={},                # setuptools
     zip_safe=True,                          # setuptools
-    enty_points={                           # setuptools
+    entry_points={                          # setuptools
         'console_scripts' : [
             'zw = zwiki.zwcmd:main'
         ],
@@ -36,7 +36,6 @@ setup(
     dependency_links=[],                    # setuptools
     namespace_packages=[],                  # setuptools
     test_suite='',                          # setuptools
-    tests_requires=[],                      # setuptools
     #test_loader='',                        # setuptools
     #eager_resources='',                    # setuptools
 
