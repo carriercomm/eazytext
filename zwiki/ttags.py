@@ -9,6 +9,8 @@
 import sys
 import re
 
+from   zwiki  import escape_htmlchars, split_style, obfuscatemail
+
 wikidoc = """
 == Templated Tags
 
@@ -67,7 +69,7 @@ def tt_PRE( text ) :
     
     > [<PRE sample text >]
     """
-    return '<pre>%s</pre>' % text
+    return '<pre>%s</pre>' % escape_htmlchars( text )
 
 
 def tt_ABBR( text ) :
@@ -123,14 +125,15 @@ def tt_Q( text ) :
     :Example ::
 
     > ~[<Q Emptying the heart of desires,
-           Filling the belly with food,
-           Weakening the ambitions,
-           Touchening the bones. ~>]
+    >  Filling the belly with food,
+    >  Weakening the ambitions,
+    >  Toughening the bones. ~>]
 
-    > [<Q Emptying the heart of desires,
-           Filling the belly with food,
-           Weakening the ambitions,
-           Touchening the bones. >]
+    > [<Q
+      Emptying the heart of desires,
+      Filling the belly with food,
+      Weakening the ambitions,
+      Toughening the bones. >]
 
     ''html element generated is a div element with class attribute "qbq"''
     """
@@ -213,8 +216,8 @@ def tt_FOOTNOTE( text ) :
 
     :Example ::
 
-    > [<PRE ... mentioned by Richard Feynman ~[<FN 1 ~>], initially proposed by
-      Albert Einstein  ~[<FN 2 ~>] >]
+    > ... mentioned by Richard Feynman ~[<FN 1 ~>], initially proposed by
+    > Albert Einstein  ~[<FN 2 ~>]
 
     And foot-note content can be specified using the Wiki-extension language,
     like,
@@ -232,7 +235,7 @@ def tt_FOOTNOTE( text ) :
 
       Note that inside the ''Footnote'' extension block, each footnote should be
       seperated by an empty line and each footnote's first word will be
-      interpreted as its anchor name.
+      interpreted as its anchor name. >]
     
     ... mentioned by Richard Feynman [<FN 1 >], initially proposed by
       Albert Einstein  [<FN 2 >]

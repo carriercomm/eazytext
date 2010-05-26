@@ -18,8 +18,7 @@ wikidoc = """
 :Example ::
 
 foot-note content can be specified like,
-> [<PRE 
-  {{{ Footnote //footnote-title//
+> [<PRE {{{ Footnote //footnote-title//
   1 German-born Swiss-American theoretical physicist, philosopher and
   author who is widely regarded as one of the most influential and best
   known scientists and intellectuals of all time. He is often regarded as
@@ -27,14 +26,13 @@ foot-note content can be specified like,
 
   2 American physicist known for his work in the path integral
   formulation of quantum mechanics, the theory of quantum electrodynamics.
-  }}}
+  }}} >]
 
 Note that inside the ''Footnote'' extension block, each footnote should be
 seperated by an empty line and each footnote's first word will be interpreted
 as its anchor name, which can be referenced else where like,
 
-> [<PRE ... mentioned by Richard Feynman ~[<FN 1 ~>], initially proposed by
-  Albert Einstein  ~[<FN 2 ~>] >]
+> ... mentioned by Richard Feynman ~[<FN 1 ~>], initially proposed by Albert Einstein  ~[<FN 2 ~>]
 
 ... mentioned by Richard Feynman [<FN 1 >], initially proposed by
   Albert Einstein  [<FN 2 >]
