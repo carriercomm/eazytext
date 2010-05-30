@@ -76,10 +76,13 @@ class Code( ZWExtension ) :
         self.args    = args[1:]
 
     def tohtml( self ) :
-        lexer = get_lexer_by_name( self.lexname )
-        scrpt = HtmlFormatter().get_style_defs('.highlight')
-        code  = highlight( self.nowiki, lexer, HtmlFormatter( linenos=True ) )
-        html  = '<div style="%s">%s%s</div>' % \
-                    ( self.style, (script_templ % scrpt), (code_templ % code) )
+        try :
+            lexer = get_lexer_by_name( self.lexname )
+            scrpt = HtmlFormatter().get_style_defs('.highlight')
+            code  = highlight( self.nowiki, lexer, HtmlFormatter( linenos=True ) )
+            html  = '<div style="%s">%s%s</div>' % \
+                        ( self.style, (script_templ % scrpt), (code_templ % code) )
+        except:
+            html  = self.nowiki
         return html
 

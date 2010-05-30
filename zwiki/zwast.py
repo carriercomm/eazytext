@@ -455,6 +455,14 @@ class NoWiki( Node ) :
         buf.write('\n')
 
 
+hdrtmpl = """
+<h%s style="%s">
+    %s
+    <a name="%s"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#%s" title="Link to this section">&#9875;</a>
+</h%s>
+"""
 class Heading( Node ) :
     """class to handle `heading` grammar."""
 
@@ -492,13 +500,13 @@ class Heading( Node ) :
     def tohtml( self ):
         l    = self.level
         contents = []
-        [ contents.extend( item.contents )
-          for item in self.textcontents.textcontents ]
+        if isinstance( self.textcontents, TextContents ) :
+            [ contents.extend( item.contents )
+              for item in self.textcontents.textcontents ]
         process_textcontent( contents )
-        text = self.textcontents.dump().strip(' \t=')
+        text = escape_htmlchars( self.textcontents.dump().strip(' \t=') )
         html = self.textcontents.tohtml().strip(' \t=')
-        html = '<h%s style="%s"><a style="visibility : hidden;" name="%s"></a>%s</h%s>' % \
-                        ( l, self.style, text, html, l ) + \
+        html = ( hdrtmpl % ( l, self.style, html, text, text, l )) + \
                self.newline.tohtml()
         return html
 

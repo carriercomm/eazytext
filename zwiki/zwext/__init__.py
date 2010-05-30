@@ -99,8 +99,13 @@ def build_zwext( zwextnode, nowiki ) :
             continue
         break;
     nowiki = '\n'.join( nowikilines[i:] )
+
     try :
         props   = props and eval( ''.join( props ) ) or {}
+    except :
+        props   = {}
+
+    try :
         xwiki   = zwextnode.xwikiname
         o       = globals()[zwextnode.xwikiname](
                         *( [ props, nowiki ] + zwextnode.xparams )
@@ -109,6 +114,7 @@ def build_zwext( zwextnode, nowiki ) :
         o = ZWExtension( {}, nowiki )
         # if zwextnode.parser.zwparser.debug :
         #     raise
+
     if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
     zwparser = zwextnode.parser.zwparser

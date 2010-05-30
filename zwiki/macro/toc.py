@@ -107,7 +107,10 @@ class Toc( ZWMacro ) :
         for n in node.getchildren() :
             if n.tag in self.htags :
                 item      = n.makeelement( 'div', { 'style' : self.htags[n.tag] } )
-                text      = n.getchildren()[0].get( 'name' ) # The anchor child
+                children  = n.getchildren()
+                text      = children[0].get('name') \
+                                    if len(children) == 2 \
+                                    else children[1].get( 'name' )
                 link      = item.makeelement( 'a', { 'href' : '#' + text } )
                 link.text = self.maxheadlen and \
                                 (  text[:self.maxheadlen] + \

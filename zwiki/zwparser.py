@@ -481,8 +481,14 @@ class ZWParser( object ):
             raise ParseError( "unexpected rule-match for nowikicontent")
 
     def p_heading( self, p ):                           # Heading
-        """heading              : HEADING text_contents NEWLINE"""
-        p[0] = Heading( p.parser, p[1], p[2], p[3] )
+        """heading              : HEADING text_contents NEWLINE
+                                | HEADING NEWLINE"""
+        if len(p) == 4 :
+            p[0] = Heading( p.parser, p[1], p[2], p[3] )
+        elif len(p) == 3 :
+            p[0] = Heading( p.parser, p[1], Empty( p.parser ), p[2] )
+        else :
+            raise ParseError( "unexpected rule-match for heading")
 
     def p_horizontalrule( self, p ):                    # HorizontalRule
         """horizontalrule       : HORIZONTALRULE NEWLINE"""

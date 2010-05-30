@@ -54,8 +54,8 @@ css = {
 
 tmpl = """
 <div style="">
-<h3>%s</h3>
-<table style="padding-left: %s; width: %s;">
+<b> %s </b>
+<table style="margin-left: %s">
 %s
 </table>
 </div>
@@ -63,8 +63,8 @@ tmpl = """
 
 rowtmpl = """
 <tr>
-    <td style="text-align: right; vertical-align: top;"><a name="%s">%s</a></td>
-    <td style="text-align: left;">%s</td>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="%s">%s</a></td>
+    <td style="padding: 5px; text-align: left;">%s</td>
 </tr>
 """
 
@@ -91,5 +91,5 @@ class Footnote( ZWExtension ) :
                 newrow = False
             elif not line :
                 newrow = True
-        html = tmpl % (self.title, "3%", "100%", html)
+        html = tmpl % (self.title, "3%", html)
         return html
