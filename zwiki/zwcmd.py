@@ -4,7 +4,7 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Module to execute the zwiki from command line"""
+"""Command line execution"""
 
 # -*- coding: utf-8 -*-
 

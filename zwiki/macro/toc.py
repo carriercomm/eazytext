@@ -10,7 +10,7 @@
 #   1. Add TOC with pos='inline'
 
 
-import cElementTree as et
+import xml.etree.cElementTree as et
 from   random       import choice
 from   copy         import copy, deepcopy
 

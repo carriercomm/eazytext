@@ -2,93 +2,38 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Module containing the parser for ZWiki"""
+"""Parser grammer for ZWiki text"""
 
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
 #   1. Do not enable optimize for yacc-er. It optimizes the rules and the
 #      rule handler fails.
+#
 # Notes  :
 #   1. Currently the parser does not check for html characters in the
 #      document.
 #   2. Endmarker is appender to the wiki text to facilitate the wiki parsing.
+#
 # Todo   : 
-#   ( Testing )
-#
-#   * Unit test case for the following function,
-#       split_style()
-#   * All the macros, zwext and ZWParser should be tested for style.
-#   * Test case for escaping new lines as '\\n'
-#   * Test case for style templating.
-#   * Test cases for project* MACROS
-#
-#   ( features - core ) 
-#   
-#   * The following html tags should be directly supported in the wiki text,
-#       <pre> <code> <tt>  <kbd> <var> <dfn> <samp> <acronym> <abbr> <address>
-#       <blockquote> <q> <cite> <ins> <del>
-#
-#   * Try to integrate markdown wiki features.
-#   * Should wiki text be line oriented or paragraph oriented ? Make an
-#     analysis and if possible provide a switch to enable it this way or the
-#     other way.
-#
-#   ( features - macros )
-#
-#   * Notes Macro
-#   * Footnote macro.
-#   * Bibliography macro.
-#   * How long ago Macro.
-#   * SVG macro.
-#
-#   ( features - extensions )
-#
-#   * Collapsible option for `box` zwextensions.
-#   * Code zwextensions.
-#   * Math zwextensions (and  macros).
-#   * Tab viewing wiki contents.
+#   ( The following lists needs be triaged )
 #   * Mako to be integrated with zwiki as an extension.
-#   * SVG macro.
-#
-#   ( features - zeta )
-#
-#   * Zeta tagging support.
-#   * Zeta Attachment support.
-#   * Links,
-#       * Zetalinks
-#
-#
 #   * Explore the possible addition of `indentation` feature, like,
 #       :some text          < one level indentation >
 #       ::some text         < two level indentation >
 #      while the indentation offset is configurable in the wiki style.
 #      NOTE : indentation is not a feature of html. But can/should be achieved
 #             via CSS
-#
-# Other features ( post 1.0v ) ,
-#
-#   ( features - core )
-#
 #   * Support merging table cells like (refer wiki-dot).
-#   * Backlinks, Pingbacks (Linkbacks )
-#   * Hide email-address feature.
-#   * Meta tagging support.
 #   * Printable pages.
 #   * Should we add the concept of variables and namespace ?
-#
 #   * Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
 #     macros
 #   * For Toc() macro add numbering feature.
 #   * Math Macro (and extensions).
 #   * Include macro to include pages from another wiki page.
 #   * Social bookmarking.
-#
 #   * Flash support.
-#
-#   * Automatic intrasite-user, intersite-project, intrasite-wiki linking.
-#   * Automatic intrasite-user, intersite-project, intersite-wiki linking.
-#
 #   * When an ENDMARKER is detected by any grammar other than `wikipage`, it
 #     can be indicated to the user, via translated HTML.
 #   * While documenting the wiki, also document the original wiki texts that

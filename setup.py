@@ -6,14 +6,41 @@ from setuptools import setup, find_packages
 
 long_description = """
 Wiki in general is a simple markup language to generate html pages
-that can be rendered in a browser. This helps in quick and neat way of
+that can be rendered in a browser. This is quick and neat way of 
 documentation.
-ZWiki is a markup language that is primarily developed for Zeta Project
-Collaboration and SCM web application.
-visit http://discoverzeta.com, to know more.
+
+ZWiki is a text markup that is primarily developed for Zeta Project
+Collaboration suite, visit http://discoverzeta.com, to know more.
+
+The Browser and its HTML are built for documentation. Wiki makes
+it accessible. As a newbie, get started with ZWiki in 5 minutes.  As a pro,
+never be limited by a wiki engine.
+Our philosophy of wiki -
+    "Make simple things easy and difficult things possible"
+
+Some interesting features in zwiki are,
+    * Text content can be emphasized, italicized, underlined, subscripted,
+      superscripted.
+    * Short cut for hyper links, several variants
+    * Short cut for referring to images source
+    * Short cut for e-email links
+    * Heading
+    * Horizontal line
+    * Ordered list
+    * Unordered list
+    * Block quoted text
+    * Small table
+    * Big table
+    * Definition list
+    * Style short cuts
+    * New line break
+    * Interspersing HTML text
+    * Templated tags for common html-tag usage patterns
+    * Pluggable macros
+    * Pluggable wiki-extensions
 """
 
-description='Wiki Parser and HTML translator'
+description='Wiki based documentation tool'
 
 classifiers="""
 Development Status :: 4 - Beta
@@ -45,7 +72,7 @@ Topic :: Utilities
 
 setup(
     name='zwiki',
-    version='0.84dev',
+    version='0.9beta',
     py_modules=[],
     package_dir={},
     packages=find_packages(),
@@ -63,6 +90,7 @@ setup(
     },
     install_requires=[                      # setuptools
         'ply>=3.0',
+        'pygments',
     ],
     extras_require={},                      # setuptools
     setup_requires={},                      # setuptools

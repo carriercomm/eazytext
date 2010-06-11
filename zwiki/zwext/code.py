@@ -9,7 +9,7 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-import cElementTree        as et
+import xml.etree.cElementTree as et
 from   pygments            import highlight
 from   pygments.formatters import HtmlFormatter
 from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \

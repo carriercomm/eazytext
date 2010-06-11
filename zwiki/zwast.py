@@ -2,7 +2,8 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Module containing the Nodes for all non-teminals"""
+"""Module containing Node definition for all non-teminals and translator
+functions for translating the text to HTML"""
 
 # -*- coding: utf-8 -*-
 
@@ -16,7 +17,7 @@
 
 import sys
 import re
-import cElementTree       as et
+import xml.etree.cElementTree       as et
 
 from   zwiki.macro        import build_macro
 from   zwiki.zwext        import build_zwext
@@ -68,7 +69,7 @@ def style_color( m ) :
     return 'color: %s;' % fgcolors[m]
 
 def style_background( m ) :
-    return 'background: %s;' % bgcolors[m]
+    return 'background-color: %s;' % bgcolors[m]
 
 def style_border( m ) :
     w, style, color = m[1:].split( ',' )

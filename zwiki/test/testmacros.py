@@ -2,30 +2,32 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
+# Note :
+#   1. Project*() macros cannot be test via unit-testing. It can be tested
+#      only in the context of zeta-app and a project under zeta-app
+
 import logging
 import unittest
 import os
-import difflib            as diff
+import difflib                as diff
 import random
-from   random             import choice, randint, shuffle
+from   random                 import choice, randint, shuffle
 
-from   nose.tools         import assert_equal, assert_raises, assert_true, \
-                                 assert_false
-import pylons.test
+from   nose.plugins.attrib    import attr
+from   nose.tools             import assert_equal, assert_raises, assert_true, \
+                                     assert_false
+from   zwiki.zwlexer          import ZWLexer
+from   zwiki.zwparser         import ZWParser
+import zwiki.test.testlib     as testlib
+from   zwiki.test.testlib     import ZWMARKUP, ZWMARKUP_RE, \
+                                     gen_psep, gen_ordmark, gen_unordmark, \
+                                     gen_headtext, gen_texts, gen_row, \
+                                     gen_wordlist, gen_words, gen_linkwords, gen_links,\
+                                     gen_macrowords, gen_macros, \
+                                     random_textformat, random_listformat, \
+                                     random_tableformat, random_wikitext, \
+                                     random_wiki, log_mheader,log_mfooter, genseed
 
-from   zwiki.zwlexer      import ZWLexer
-from   zwiki.zwparser     import ZWParser
-import zwiki.test.testlib as testlib
-from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
-                                 gen_psep, gen_ordmark, gen_unordmark, \
-                                 gen_headtext, gen_texts, gen_row, \
-                                 gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                 gen_macrowords, gen_macros, \
-                                 random_textformat, random_listformat, \
-                                 random_tableformat, random_wikitext, \
-                                 random_wiki, log_mheader,log_mfooter, genseed
-
-config          = pylons.test.pylonsapp.config
 log             = logging.getLogger(__name__)
 seed            = None
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
@@ -71,18 +73,12 @@ images_macro    = [
 )
 ]
 
-yearsbefore_macro   = [
-( """It happened {{ YearsBefore( '%s before', '2007', '2' ) }}""",
-  [ 'span', 'year', 'month' ]
-)
-]
-
 def setUpModule() :
     global words, seed
 
     testdir = os.path.basename( os.path.dirname( __file__ ))
     testfile= os.path.basename( __file__ )
-    seed    = config['seed'] and int(config['seed']) or genseed()
+    seed    = genseed()
     random.seed( seed )
     testlib.random.seed(  seed )
     log_mheader( log, testdir, testfile, seed )
@@ -104,6 +100,7 @@ class TestMacroDumpsRandom( object ) :
     def _test_execute( self, type, testcontent, count, ref='', cfunc=None  ) :
         # Initialising the parser
         zwparser     = ZWParser( lex_optimize=True, yacc_optimize=False )
+
         # The first character is forced to be a `A` to avoid having `@` as the
         # first character
         testcontent = 'A' + testcontent
@@ -325,18 +322,132 @@ class TestMacroDumpsRandom( object ) :
                   imgs_cfunc
             testcount += 1
 
-    def test_8_images( self ) :
+    @attr(type='yb')
+    def test_8_yearsbefore( self ) :
         """Testing the YearsBefore() macro"""
         print "\nTesting the YearsBefore() macro"
         log.info( "Testing the YearsBefore() macro" )
         
+        ybtext = [
+            ( """It happened {{ YearsBefore( '%s before', '2007', '2' ) }}""",
+              [ 'span', 'year', 'month' ]
+            )
+        ]
+
         def yb_cfunc( ref, tu ) :
             html = tu.tohtml()
             for r in ref :
                 assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
 
         testcount = 1
-        for t, r in yearsbefore_macro :
+        for t, r in ybtext :
             yield self._test_execute, 'macro_yearsbefore', t, testcount, r, \
                   yb_cfunc
+            testcount += 1
+
+    @attr(type='anchor')
+    def test_9_anchor( self ) :
+        """Testing the Anchor() macro"""
+        print "\nTesting the Anchor() macro"
+        log.info( "Testing the Anchor() macro" )
+        
+        anchortext = [
+            ( """ {{ Anchor( "Anchor name", "display text" ) }} """,
+              [ 'name="Anchor name"', 'display text' ]
+            )
+        ]
+        def anchor_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, r in anchortext :
+            yield self._test_execute, 'macro_anchor', t, testcount, r, \
+                  anchor_cfunc
+            testcount += 1
+
+    @attr(type='project')
+    def test_A_project( self ) :
+        """Testing the Project*() macros"""
+        print "\nTesting the Project*() macro"
+        log.info( "Testing the Project*() macro" )
+        
+        projecttext = [
+            ( """ {{ Projectattributes() }} """, [] ),
+            ( """ {{ Projectcompontents() }} """, [] ),
+            ( """ {{ Projectdescription() }} """, [] ),
+            ( """ {{ Projectteam() }} """, [] ),
+            ( """ {{ Projectversions() }} """, [] ),
+        ]
+        def project_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, r in projecttext :
+            yield self._test_execute, 'macro_project', t, testcount, r, \
+                  project_cfunc
+            testcount += 1
+
+    @attr(type='htmlinwiki')
+    def test_B_htmlinwiki( self ) :
+        """Testing wiki with html"""
+        print "\nTesting wiki with html"
+        log.info( "Testing wiki with html" )
+
+        testlist = [
+            ( """ <div>hello world</div>""", [ '&lt;', '&gt;' ] )
+        ]
+
+        def html_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, ref in testlist :
+            yield self._test_execute, 'htmlinwiki', t, testcount, ref, \
+                  html_cfunc
+            testcount += 1
+
+    @attr(type='stylesc')
+    def test_C_styleshortcut( self ) :
+        """Testing styleshortcut"""
+        print "\nTesting styleshortcut"
+        log.info( "Testing styleshortcut" )
+
+        testlist = [
+          ( """ ||{ {c;B;/1,solid,a;5|;|10} \n ||- \n || hello world \n ||}""",
+            [ 'color: crimson', 'background-color: blue', 'hello world',
+              'border : 1px solid aquamarine', 'margin : 5px', 'padding : 10px' ],
+          ),
+          ( """ ==={A;c;/2,dotted,b;|11;4|} hello world""",
+            [ 'color: aquamarine', 'background-color: crimson', 'hello world',
+              'border : 2px dotted blue', 'margin : 11px', 'padding : 4px' ],
+          ),
+          ( """ ''{/3,dashed,a;2|;|12;c;B} hello world ''""",
+            [ 'color: crimson', 'background-color: blue', 'hello world',
+              'border : 3px dashed aquamarine', 'margin : 2px', 'padding : 12px' ],
+          ),
+          ( """ |={c;B;/4,groove,a;5|;|10} heading1 |={c;B;/,solid,a;5|;|10} heading 2""",
+            [ 'color: crimson', 'background-color: blue', 'hello world',
+              'border : 4px groove aquamarine', 'margin : 5px', 'padding : 10px' ],
+          ),
+          ( """ *{5|;|10;c;B;/5,outset,a;} hello world""",
+            [ 'color: crimson', 'background-color: blue', 'hello world',
+              'border : 5px outset aquamarine', 'margin : 5px', 'padding : 10px' ],
+          ),
+        ]
+
+        def sc_cfunc( ref, tu ) :
+            html = tu.tohtml()
+            for r in ref :
+                assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html ) )
+
+        testcount = 1
+        for t, ref in testlist :
+            yield self._test_execute, 'styleshortcuts', t, testcount, \
+                  '', sc_cfunc
             testcount += 1

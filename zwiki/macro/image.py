@@ -8,7 +8,7 @@
 # Notes  : None
 # Todo   : None
 
-import cElementTree as et
+import xml.etree.cElementTree as et
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle

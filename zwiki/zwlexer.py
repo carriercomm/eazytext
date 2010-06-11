@@ -5,7 +5,7 @@
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
 
-"""Module containing the Lexer for ZWiki"""
+"""Lexing rules for ZWiki text"""
 
 # -*- coding: utf-8 -*-
 

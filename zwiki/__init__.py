@@ -4,7 +4,7 @@
 
 import re
 
-VERSION = '0.83dev'
+VERSION = '0.9beta'
 
 def escape_htmlchars( text ) :
     """If the text is not supposed to have html characters, escape them"""

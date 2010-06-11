@@ -2,7 +2,7 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Module providing templates for commonly used patterns of HTML tags"""
+"""Templates for commonly used patterns of HTML tags"""
 
 # -*- coding: utf-8 -*-
 

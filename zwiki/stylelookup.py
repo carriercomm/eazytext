@@ -2,6 +2,8 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
+"""Change the mapping if the style shortcut for color need to be customized"""
+
 fgcolors = {
     'a'     : 'aquamarine',
     'b'     : 'blue',

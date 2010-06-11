@@ -6,7 +6,6 @@
 
 """
 DEPRECATED !! Text markup parsing is merged into the main lexer-parser !!
-
 Module containing the Lexer for tokenizing text-markups"""
 
 # -*- coding: utf-8 -*-

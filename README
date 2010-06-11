@@ -1,9 +1,41 @@
 To build,
+---------
 
-    $ python setup.py build
+  $ python setup.py build
 
 To egg-package,
+---------------
 
-    $ ./bin/pkgzwiki.sh
+  $ ./bin/pkgzwiki.sh
+  Egg is availabe under dist/
 
-    Egg is availabe under dist/
+
+Uploading it to PyPi, Python package index
+------------------------------------------
+
+
+Command line usage
+------------------
+
+  Make sure that zwiki package is installed for your environment or available
+  via PYTHONPATH. Then create a link for 
+
+    <site-package>/zwiki/zwcmd.py
+
+  to your binary path, like,
+
+    ln -s <site-package>/zwiki/zwcmd.py $(HOME)/bin/zwcmd.py
+    or,
+    ln -s <site-package>/zwiki/zwcmd.py /usr/bin/zwcmd.py
+
+  Once `zwcmd.py` is available as an executable command and `zwiki` module 
+  in your python path, use the command in the following syntax
+  
+    zwcmd.py <wiki-file>
+
+  A corresponding `.html` file will be created under the same directory.
+   
+Using it as library
+-------------------
+  
+  check out http://zt.devwhiz.net/p/zwiki/wiki

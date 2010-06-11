@@ -2,7 +2,9 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Module containing the Nodes for all non-teminals"""
+"""Parse zeta-links short cuts, check whether the call is being made under
+zeta-app context, if so, use prescribed library functions provided by the app,
+to generate hyper links to site-resources."""
 
 # -*- coding: utf-8 -*-
 

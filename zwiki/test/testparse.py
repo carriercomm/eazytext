@@ -10,8 +10,7 @@ import random
 from   random               import choice, randint, shuffle
 
 from   nose.tools           import assert_equal, assert_true, assert_false
-import cElementTree         as et
-import pylons.test
+import xml.etree.cElementTree as et
 from   nose.plugins.attrib  import attr
 
 import zwiki
@@ -27,7 +26,6 @@ from   zwiki.test.testlib   import ZWMARKUP, ZWMARKUP_RE, UNICODE, \
                                    gen_htmlwords, gen_htmls, gen_xwikinames, \
                                    log_mheader, log_mfooter, genseed
 
-config          = pylons.test.pylonsapp.config
 log             = logging.getLogger(__name__)
 seed            = None
 stdfiles_dir    = os.path.join( os.path.split( __file__ )[0], 'stdfiles' )
@@ -131,7 +129,7 @@ def setUpModule() :
 
     testdir = os.path.basename( os.path.dirname( __file__ ))
     testfile= os.path.basename( __file__ )
-    seed    = config['seed'] and int(config['seed']) or genseed()
+    seed    = genseed()
     random.seed( seed )
     testlib.random.seed(  seed )
     log_mheader( log, testdir, testfile, seed )
@@ -556,7 +554,7 @@ class TestDumpsValid( object ) :
     def test_M_definitionwithnewline( self ) :
         """Testing definition item with new line"""
         print "\nTesting definition item with new line"
-        log.info( "Testing crooked big table syntax" )
+        log.info( "Testing definition item with new line" )
         testlist = [ definitionnewline ]
         testcount = 1
         for t in testlist :
