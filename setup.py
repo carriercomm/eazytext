@@ -5,20 +5,23 @@
 from setuptools import setup, find_packages
 
 long_description = """
-Wiki in general is a simple markup language to generate html pages
+ZWiki
+=====
+Wiki, in general is a simple markup language to generate html pages
 that can be rendered in a browser. This is quick and neat way of 
 documentation.
 
 ZWiki is a text markup that is primarily developed for Zeta Project
-Collaboration suite, visit http://discoverzeta.com, to know more.
+Collaboration suite, visit http://discoverzeta.com
 
 The Browser and its HTML are built for documentation. Wiki makes
 it accessible. As a newbie, get started with ZWiki in 5 minutes.  As a pro,
 never be limited by a wiki engine.
-Our philosophy of wiki -
+Our philosophy of wiki,
     "Make simple things easy and difficult things possible"
 
 Some interesting features in zwiki are,
+
     * Text content can be emphasized, italicized, underlined, subscripted,
       superscripted.
     * Short cut for hyper links, several variants
@@ -42,36 +45,36 @@ Some interesting features in zwiki are,
 
 description='Wiki based documentation tool'
 
-classifiers="""
-Development Status :: 4 - Beta
-Environment :: Console
-Environment :: Plugins
-Environment :: Web Environment
-Framework   :: Pylons
-Intended Audience :: Developers
-Intended Audience :: Education
-Intended Audience :: End Users/Desktop
-Intended Audience :: Information Technology
-Intended Audience :: Science/Research
-Intended Audience :: System Administrators
-License :: OSI Approved :: BSD License
-Natural Language :: English
-Operating System :: MacOS :: MacOS X
-Operating System :: Microsoft :: Windows :: Windows CE
-Operating System :: Microsoft :: Windows :: Windows NT/2000
-Operating System :: POSIX
-Operating System :: Unix
-Programming Language :: JavaScript
-Programming Language :: Python :: 2.5
-Programming Language :: Python :: 2.6
-Programming Language :: Python :: 2.7
-Topic :: Documentation
-Topic :: Internet
-Topic :: Utilities
-"""
+classifiers=[
+'Development Status :: 4 - Beta',
+'Environment :: Console',
+'Environment :: Plugins',
+'Environment :: Web Environment',
+'Framework :: Pylons',
+'Intended Audience :: Developers',
+'Intended Audience :: Education',
+'Intended Audience :: End Users/Desktop',
+'Intended Audience :: Information Technology',
+'Intended Audience :: Science/Research',
+'Intended Audience :: System Administrators',
+'License :: OSI Approved :: BSD License',
+'Natural Language :: English',
+'Operating System :: MacOS :: MacOS X',
+'Operating System :: Microsoft :: Windows :: Windows CE',
+'Operating System :: Microsoft :: Windows :: Windows NT/2000',
+'Operating System :: POSIX',
+'Operating System :: Unix',
+'Programming Language :: JavaScript',
+'Programming Language :: Python :: 2.5',
+'Programming Language :: Python :: 2.6',
+'Programming Language :: Python :: 2.7',
+'Topic :: Documentation',
+'Topic :: Internet',
+'Topic :: Utilities',
+]
 
 setup(
-    name='zwiki',
+    name='zwiki-zeta',
     version='0.9beta',
     py_modules=[],
     package_dir={},
@@ -98,7 +101,7 @@ setup(
     namespace_packages=[],                  # setuptools
     test_suite='',                          # setuptools
 
-    provides='zwiki',
+    provides=[ 'zwiki', ],
     requires='',
     obsoletes='',
 
