@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2010 SKR Farms (P) LTD.
+
 """
 DEPRECATED !! Text markup parsing is merged into the main lexer-parser !!
 
