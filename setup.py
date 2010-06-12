@@ -41,6 +41,9 @@ Some interesting features in zwiki are,
     * Templated tags for common html-tag usage patterns
     * Pluggable macros
     * Pluggable wiki-extensions
+
+If you have any queries discuss with us at,
+    http://groups.google.com/group/zeta-discuss
 """
 
 description='Wiki based documentation tool'
