@@ -114,3 +114,24 @@
 0.9beta :
 ---------
 
+- ZWiki features and enhancements
+    - Alternative markup for headers,
+        h1. h2. h3. h4. h5.
+    - Added tag template for `addr` tag-type.
+    - Wiki extension added for code blocks.
+    - Email obfuscation.
+    - Footnote feature.
+    - Added zeta-links for wiki and revision.
+    - Added tag template for `quotable quotes`
+
+- ZWiki bug fixes.
+    - Refined wiki styling in `wiki properties`, `style parameter` to macros
+    - When invalid macro text is present, instead of leaving the Content
+      object's text empty, fill it with empty space. Otherwise
+      processcontents() will try to process the macro object.
+    - Multi-line support added for big tables.
+    - Style shortcuts added for ordered and un-ordered lists
+    - Fixes to Heading anchor points
+    - Isolate errors in ZWiki extension property text and handle them
+      graciously
+

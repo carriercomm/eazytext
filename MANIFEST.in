@@ -1,1 +1,8 @@
+include AUTHORS
+include CHANGELOG
+include LICENSE
+include COPYING
+include README
+include RELEASE
+
 recursive-include docs *
