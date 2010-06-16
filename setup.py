@@ -12,38 +12,39 @@ that can be rendered in a browser. This is quick and neat way of
 documentation.
 
 ZWiki is a text markup that is primarily developed for Zeta Project
-Collaboration suite, visit http://discoverzeta.com
+Collaboration suite, visit `discoverzeta <http://www.discoverzeta.com/>`_
 
 The Browser and its HTML are built for documentation. Wiki makes
 it accessible. As a newbie, get started with ZWiki in 5 minutes.  As a pro,
 never be limited by a wiki engine.
 Our philosophy of wiki,
+
     "Make simple things easy and difficult things possible"
 
 Some interesting features in zwiki are,
 
-    * Text content can be emphasized, italicized, underlined, subscripted,
-      superscripted.
-    * Short cut for hyper links, several variants
-    * Short cut for referring to images source
-    * Short cut for e-email links
-    * Heading
-    * Horizontal line
-    * Ordered list
-    * Unordered list
-    * Block quoted text
-    * Small table
-    * Big table
-    * Definition list
-    * Style short cuts
-    * New line break
-    * Interspersing HTML text
-    * Templated tags for common html-tag usage patterns
-    * Pluggable macros
-    * Pluggable wiki-extensions
+* Text content can be emphasized, italicized, underlined, subscripted,
+  superscripted.
+* Short cut for hyper links, several variants
+* Short cut for referring to images source
+* Short cut for e-email links
+* Heading
+* Horizontal line
+* Ordered list
+* Unordered list
+* Block quoted text
+* Small table
+* Big table
+* Definition list
+* Style short cuts
+* New line break
+* Interspersing HTML text
+* Templated tags for common html-tag usage patterns
+* Pluggable macros
+* Pluggable wiki-extensions
 
-If you have any queries discuss with us at,
-    http://groups.google.com/group/zeta-discuss
+If you have any queries, suggestions
+`discuss with us <http://groups.google.com/group/zeta-discuss>`_
 """
 
 description='Wiki based documentation tool'
