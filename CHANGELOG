@@ -114,6 +114,9 @@
 0.9beta :
 ---------
 
+Making first public release, as open-source tool under BSD license. Available
+from python package index at, http://pypi.python.org/pypi/zwiki-zeta/0.9beta
+
 - ZWiki features and enhancements
     - Alternative markup for headers,
         h1. h2. h3. h4. h5.

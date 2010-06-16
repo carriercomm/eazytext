@@ -7,6 +7,7 @@ from setuptools import setup, find_packages
 long_description = """
 ZWiki
 =====
+
 Wiki, in general is a simple markup language to generate html pages
 that can be rendered in a browser. This is quick and neat way of 
 documentation.
@@ -43,8 +44,16 @@ Some interesting features in zwiki are,
 * Pluggable macros
 * Pluggable wiki-extensions
 
+Quicklinks
+==========
+
 If you have any queries, suggestions
 `discuss with us <http://groups.google.com/group/zeta-discuss>`_
+
+`Track Development <http://zt.devwhiz.net/p/zwiki>`_
+
+`README <http://zt.devwhiz.net/p/zwiki/wiki/README>`_
+
 """
 
 description='Wiki based documentation tool'

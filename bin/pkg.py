@@ -2,7 +2,15 @@
 
 """Release and package tool for ZWiki,
 execute this command from ZWiki repository root. Also make sure that
-cleanzwiki.sh is done before executing this script."""
+cleanzwiki.sh is done before executing this script.
+
+pkg.py egg,
+    to generate the distribution egg file
+
+pkg.py check,
+    to check whether zwiki works fine when distributed and installed from egg
+    package.
+"""
 
 import os
 from   os.path          import join, abspath, isdir
