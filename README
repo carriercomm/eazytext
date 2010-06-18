@@ -1,6 +1,44 @@
-h2. Packaging and distribution
+h3. Highlights
 
-h3. To build
+ZWiki engine is built using formal parser grammar, thus making it both robust and
+clean. It is available as,
+* Stand-alone command line tool
+* Library package usable by python programs
+* And built into Zeta web application
+
+Some of its features are,
+
+* Paragraph oriented wiki text.
+* Text markup for bold, italic, underline, super script, sub script and
+  different combinations of bold, italic, underline.
+* Text markups can be arbitrarily nested.
+* Line break markup.
+* Short-cuts to generate hyper links, that include,
+  ** Simple hyper-links with display text.
+  ** Opening the link in new window.
+  ** Creating anchor names.
+  ** Referring images.
+  ** Generating email-link.
+* Upto five levels of headings. Each heading also act as anchor name.
+* Ordered list, with numbered bullet points.
+* Un-ordered list, with normal bullet points.
+* Ordered and un-ordered lists can be arbitrarity nested.
+* Horizontal ruler.
+* Block-quoted text, upto 5 levels.
+* Small table
+* Big table
+* Definition list
+* Style short-cuts to generate CSS styling for text elements, table, lists and
+  heading.
+* Interspercing HTML with wiki text.
+* Templated tags for commonly used patterns of HTML tags.
+* Macros, that can be extended.
+* Extendable wiki engine using ZWiki-Extension framework.
+* Zetalinks, short-cuts for referring zeta-site resources
+
+h3. Packaging and distribution
+
+h4. To build
 
 {{{ Code bash
 
@@ -9,7 +47,7 @@ h3. To build
 }}}
 
 
-h3. To egg-package
+h4. To egg-package
 
 {{{ Code bash
 
@@ -20,7 +58,7 @@ h3. To egg-package
 The .egg package will be availabe under dist/ directory
 
 
-h3. To check and upload into pypi
+h4. To check and upload into pypi
 
 Simulate egg packaging, installation and usage.
 
@@ -40,7 +78,7 @@ Finally, Build the egg and upload it into pypi
 }}}
 
 
-h2. Installation
+h3. Installation
 
 The latest wiki package will be available in python package index under the
 name, ''zwiki-zeta'', install it, into your system or into virtual-environment
@@ -55,7 +93,7 @@ by,
 The reason for installing it in un-zipped form is to make use of the command
 line tool.
 
-h3. Command line usage
+h4. Command line usage
 
 Make sure that zwiki package is installed for your environment (using
 easy_install) or available via //PYTHONPATH//.
@@ -86,7 +124,7 @@ zwcmd.py <wiki-file>
 
 A corresponding `.html` file will be created under the same directory.
    
-h3. Using it as library
+h4. Using it as library
 
 {{{ Code python
 
