@@ -47,13 +47,12 @@ Some interesting features in zwiki are,
 Quicklinks
 ==========
 
-If you have any queries, suggestions
-`discuss with us <http://groups.google.com/group/zeta-discuss>`_
-
-`Track Development <http://zt.devwhiz.net/p/zwiki>`_
-
 `README <http://zt.devwhiz.net/p/zwiki/wiki/README>`_
 
+`Track ZWiki development <http://zt.devwhiz.net/p/zwiki>`_
+
+If you have any queries, suggestions
+`discuss with us <http://groups.google.com/group/zeta-discuss>`_
 """
 
 description='Wiki based documentation tool'
