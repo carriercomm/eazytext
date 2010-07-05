@@ -47,12 +47,19 @@ Some interesting features in zwiki are,
 Quicklinks
 ==========
 
-`README <http://zt.devwhiz.net/p/zwiki/wiki/README>`_
+* `README <http://zt.devwhiz.net/p/zwiki/wiki/README>`_
+* `Track ZWiki development <http://zt.devwhiz.net/p/zwiki>`_
+* If you have any queries, suggestions
+  `discuss with us <http://groups.google.com/group/zeta-discuss>`_
 
-`Track ZWiki development <http://zt.devwhiz.net/p/zwiki>`_
+Documentation
+=============
 
-If you have any queries, suggestions
-`discuss with us <http://groups.google.com/group/zeta-discuss>`_
+* `ZWiki reference <http://zt.devwhiz.net/help/zwiki/ZWiki>`_
+* `ZWiki Macors <http://zt.devwhiz.net/help/zwiki/ZWMacros>`_
+* `ZWiki Templated tags <http://zt.devwhiz.net/help/zwiki/ZWTemplateTags>`_
+* `ZWiki Extensions <http://zt.devwhiz.net/help/zwiki/ZWExtensions>`_
+
 """
 
 description='Wiki based documentation tool'
@@ -87,7 +94,7 @@ classifiers=[
 
 setup(
     name='zwiki-zeta',
-    version='0.9beta',
+    version='0.91beta',
     py_modules=[],
     package_dir={},
     packages=find_packages(),

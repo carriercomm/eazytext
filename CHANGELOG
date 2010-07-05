@@ -138,3 +138,5 @@ from python package index at, http://pypi.python.org/pypi/zwiki-zeta/0.9beta
     - Isolate errors in ZWiki extension property text and handle them
       graciously
 
+0.91beta :
+----------
