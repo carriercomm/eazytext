@@ -1072,7 +1072,7 @@ class Definition( Node ) :
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
-        html = '<dt><b>' + self.dt + '</b></dt>'
+        html = '<dt><b>' + escape_htmlchars( self.dt ) + '</b></dt>'
         if self.textcontents :
             contents = []
             [ contents.extend( item.contents )
