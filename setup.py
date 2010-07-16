@@ -47,18 +47,19 @@ Some interesting features in zwiki are,
 Quicklinks
 ==========
 
-* `README <http://zt.devwhiz.net/p/zwiki/wiki/README>`_
-* `Track ZWiki development <http://zt.devwhiz.net/p/zwiki>`_
+* `README <http://dev.discoverzeta.com/p/zwiki/wiki/README>`_
+* `Track ZWiki development <http://dev.discoverzeta.com/p/zwiki>`_
+* `CHANGELOG <http://dev.discoverzeta.com/p/zwiki/wiki/CHANGELOG>`_
 * If you have any queries, suggestions
   `discuss with us <http://groups.google.com/group/zeta-discuss>`_
 
 Documentation
 =============
 
-* `ZWiki reference <http://zt.devwhiz.net/help/zwiki/ZWiki>`_
-* `ZWiki Macors <http://zt.devwhiz.net/help/zwiki/ZWMacros>`_
-* `ZWiki Templated tags <http://zt.devwhiz.net/help/zwiki/ZWTemplateTags>`_
-* `ZWiki Extensions <http://zt.devwhiz.net/help/zwiki/ZWExtensions>`_
+* `ZWiki reference <http://dev.discoverzeta.com/help/zwiki/ZWiki>`_
+* `ZWiki Macors <http://dev.discoverzeta.com/help/zwiki/ZWMacros>`_
+* `ZWiki Templated tags <http://dev.discoverzeta.com/help/zwiki/ZWTemplateTags>`_
+* `ZWiki Extensions <http://dev.discoverzeta.com/help/zwiki/ZWExtensions>`_
 
 """
 
@@ -129,7 +130,7 @@ setup(
     maintainer='Pratap R Chakravarthy',
     maintainer_email='prataprc@gmail.com',
     url='http://discoverzeta.com',
-    download_url='http://zt.devwhiz.net/p/zwiki/downloads',
+    download_url='http://dev.discoverzeta.com/p/zwiki/downloads',
     license='Original BSD license',
     description=description,
     long_description=long_description,

@@ -1,142 +1,139 @@
-0.1dev1 :
----------
+{{ Toc( position='relative', float='right' ) }}
 
-- Basic ZWiki up.
-
-0.2dev1 :
----------
-
-
-0.3dev1 : 
----------
-
-- Feature Updates.
-- Integration with Zeta.
-
-0.4dev  :
----------
-
-- ZWiki features and enhancements
-    - Markups for heading and horizontal rule.
-    - Markups for text formatting.
-    - Markups for list formatting.
-    - Markups for blockquoting and definition lists.
-    - Markups for Tables, Big tables.
-    - Interspercing HTML within wiki text.
-    - Macros feature. Currently available macros,
-        Table of contents, Span, Html, Box, Redirect, Anchor, Image,
-        Images (image gallery)
-    - Extension feature. Currently availabl extensions,
-        Box, Html
-    - Styling for entire wiki page, macros, extensions and big tables.
-    - Generation hyper-links.
-
-0.5dev  :
----------
-
-- ZWiki features and enhancements
-    - Zetalinks supported.
-
-0.6dev  :
----------
-
-- ZWiki features and enhancements
-    - Restricting the width of TOC block to 20em
-    - Added YearsBefore macro.
-    - Changed the parser grammer to support free mix of ordered and un-ordered
-      markups across different levels.
-    - Better styling for small-table, big-table, subscript, superscript, wiki
-      page etc.
-
-- ZWiki bug fixes.
-    - All et.fromstring() calls are fixed under a try...except clause when
-      doubtful about html formation.
-    - 'htags' dictionary in TOC macro was globally updated, which will
-      get preserved across ZWParser() instanses.
-    - Refactored the try...except clasue into try...except...else clause in
-      TOC macro
-    - Refined EGG packaging.
-
-0.7dev :
---------
-
-- ZWiki features and enhancements
-    - Macros added : ProjectAttributes, ProjectTeam, ProjectDescription, ProjectComponents,
-      ProjectVersions
-
-- ZWiki bug fixes.
-    - Improved and intuitive Zetalink markup.
-
-0.8dev :
---------
-
-- ZWiki features and enhancements
-    - Stype-shortcut support for Text-markups, Big-table markups, Table-markup.
-    - Nested, Zwiki extension added.
-
-- ZWiki bug fixes.
-    - url for project-users not properly formed in Projectteams() macro.
-    - Text markup lexer merged with zwlexer.py
-    - YearsBefore() macro computes expired days in (years, months).
-    - Project*() macro templates changed.
-    - Blockquoted supports text-markups across newlines, but within the same
-      level of blockquoting.
-
-0.81dev :
----------
-
-    Added comments
-
-0.82dev :
----------
-
-- ZWiki features and enhancements
-    - Multiline support for list item.
-    - Multiline support for definition item.
-    - Multiline support for html text with HTML markup [< ... >]
-    - Templated tags.
-
-- ZWiki bug fixes.
-    - 'www' uri is automatically converted to http://www. ... form
-    - Documentation for macros, templated tags, zwiki-extensions
-    - Macro object is converted to html during parsing time, instead of in
-      tohtml() phase, since BQuotes object simply collects the html content.
-    - Toc() macro's tohtml() was returning an empty string. This leads the
-      framework to think that there was no html. All the post-html processing
-      macros should return a ' ' to avoid this anomaly.
-    - Optional spaces and tabs are allowed before head-markup
-
-0.83dev :
----------
-
-- Minor fixes.
-
-0.9beta :
----------
+h3. 0.9beta
 
 Making first public release, as open-source tool under BSD license. Available
 from python package index at, http://pypi.python.org/pypi/zwiki-zeta/0.9beta
 
-- ZWiki features and enhancements
-    - Alternative markup for headers,
-        h1. h2. h3. h4. h5.
-    - Added tag template for `addr` tag-type.
-    - Wiki extension added for code blocks.
-    - Email obfuscation.
-    - Footnote feature.
-    - Added zeta-links for wiki and revision.
-    - Added tag template for `quotable quotes`
+* ZWiki features and enhancements
+   ** Alternative markup for headers,
+      [<PRE     h1. h2. h3. h4. h5. >]
+   ** Added tag template for `addr` tag-type.
+   ** Wiki extension added for code blocks.
+   ** Email obfuscation.
+   ** Footnote feature.
+   ** Added zeta-links for wiki and revision.
+   ** Added tag template for `quotable quotes`
 
-- ZWiki bug fixes.
-    - Refined wiki styling in `wiki properties`, `style parameter` to macros
-    - When invalid macro text is present, instead of leaving the Content
+* ZWiki bug fixes
+   ** Refined wiki styling in `wiki properties`, `style parameter` to macros.
+   ** When invalid macro text is present, instead of leaving the Content
       object's text empty, fill it with empty space. Otherwise
       processcontents() will try to process the macro object.
-    - Multi-line support added for big tables.
-    - Style shortcuts added for ordered and un-ordered lists
-    - Fixes to Heading anchor points
-    - Isolate errors in ZWiki extension property text and handle them
-      graciously
+   ** Multi-line support added for big tables.
+   ** Style shortcuts added for ordered and un-ordered lists.
+   ** Fixes to Heading anchor points.
+   ** Isolate errors in ZWiki extension property text and handle them
+      graciously.
 
-0.91beta :
-----------
+h3. 0.83dev
+
+* Minor fixes.
+
+h3. 0.82dev
+
+* ZWiki features and enhancements
+   ** Multiline support for list item.
+   ** Multiline support for definition item.
+   ** Multiline support for html text with HTML markup [< ... >]
+   ** Templated tags.
+
+* ZWiki bug fixes
+   ** 'www' uri is automatically converted to http://www. ... form
+   ** Documentation for macros, templated tags, zwiki-extensions
+   ** Macro object is converted to html during parsing time, instead of in
+      tohtml() phase, since BQuotes object simply collects the html content.
+   ** Toc() macro's tohtml() was returning an empty string. This leads the
+      framework to think that there was no html. All the post-html processing
+      macros should return a ' ' to avoid this anomaly.
+   ** Optional spaces and tabs are allowed before head-markup
+
+h3. 0.81dev
+
+* Added comments
+
+h3. 0.8dev
+
+* ZWiki features and enhancements
+   ** Stype-shortcut support for Text-markups, Big-table markups, Table-markup.
+   ** Nested, Zwiki extension added.
+
+* ZWiki bug fixes.
+   ** url for project-users not properly formed in Projectteams() macro.
+   ** Text markup lexer merged with zwlexer.py.
+   ** YearsBefore() macro computes expired days in (years, months).
+   ** Project*() macro templates changed.
+   ** Blockquoted supports text-markups across newlines, but within the same
+      level of blockquoting.
+
+h3. 0.7dev
+
+* ZWiki features and enhancements
+   ** Macros added, 
+        *** ProjectAttributes
+        *** ProjectTeam
+        *** ProjectDescription
+        *** ProjectComponents
+        *** ProjectVersions
+
+* ZWiki bug fixes.
+   ** Improved and intuitive Zetalink markup.
+
+h3. 0.6dev
+
+* ZWiki features and enhancements
+   ** Restricting the width of TOC block to 20em
+   ** Added YearsBefore macro.
+   ** Changed the parser grammer to support free mix of ordered and un-ordered
+      markups across different levels.
+   ** Better styling for small-table, big-table, subscript, superscript, wiki
+      page etc.
+
+* ZWiki bug fixes.
+   ** All et.fromstring() calls are fixed under a try...except clause when
+      doubtful about html formation.
+   ** 'htags' dictionary in TOC macro was globally updated, which will
+      get preserved across ZWParser() instanses.
+   ** Refactored the try...except clasue into try...except...else clause in
+      TOC macro
+   ** Refined EGG packaging.
+
+h3. 0.5dev
+
+* ZWiki features and enhancements
+    * Zetalinks supported.
+
+h3. 0.4dev
+
+* ZWiki features and enhancements
+   ** Markups for heading and horizontal rule.
+   ** Markups for text formatting.
+   ** Markups for list formatting.
+   ** Markups for blockquoting and definition lists.
+   ** Markups for Tables, Big tables.
+   ** Interspercing HTML within wiki text.
+   ** Macros feature. Currently available macros,
+        *** Table of contents
+        *** Span
+        *** Html
+        *** Box
+        *** Redirect
+        *** Anchor
+        *** Image
+        *** Images (image gallery)
+   ** Extension feature. Currently available extensions,
+        *** Box
+        *** Html
+   ** Styling for entire wiki page, macros, extensions and big tables.
+   ** Generation hyper-links.
+
+h3. 0.3dev1
+
+* Feature Updates.
+* Integration with Zeta.
+
+h3. 0.1dev1
+
+* Basic ZWiki up.
+
+/* vim: set filetype=zwiki : */
