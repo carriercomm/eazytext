@@ -126,9 +126,9 @@ setup(
     obsoletes='',
 
     author='Pratap R Chakravarthy',
-    author_email='prataprc@gmail.com',
+    author_email='prataprc@discoverzeta.com',
     maintainer='Pratap R Chakravarthy',
-    maintainer_email='prataprc@gmail.com',
+    maintainer_email='prataprc@discoverzeta.com',
     url='http://discoverzeta.com',
     download_url='http://dev.discoverzeta.com/p/zwiki/downloads',
     license='Original BSD license',
