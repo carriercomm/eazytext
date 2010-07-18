@@ -48,8 +48,8 @@ Quicklinks
 ==========
 
 * `README <http://dev.discoverzeta.com/p/zwiki/wiki/README>`_
-* `Track ZWiki development <http://dev.discoverzeta.com/p/zwiki>`_
 * `CHANGELOG <http://dev.discoverzeta.com/p/zwiki/wiki/CHANGELOG>`_
+* `Track ZWiki development <http://dev.discoverzeta.com/p/zwiki>`_
 * If you have any queries, suggestions
   `discuss with us <http://groups.google.com/group/zeta-discuss>`_
 
