@@ -36,6 +36,19 @@ Some of its features are,
 * Extendable wiki engine using ZWiki-Extension framework.
 * Zetalinks, short-cuts for referring zeta-site resources
 
+h3. Get the source code
+
+Both source code and egg file is available at python package index,
+
+http://pypi.python.org/pypi/zwiki-zeta/0.9beta
+
+Using easy_install,
+
+{{{ Code sh
+    easy_install zwiki-zeta
+}}}
+
+
 h3. Packaging and distribution
 
 h4. To build
