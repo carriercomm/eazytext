@@ -10,7 +10,8 @@ import random
 from   random               import choice, randint, shuffle
 
 from   nose.tools           import assert_equal, assert_true, assert_false
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html            as lhtml
 from   nose.plugins.attrib  import attr
 
 import zwiki
@@ -186,7 +187,7 @@ class TestDumpsValid( object ) :
         # Test by translating to html
         #tu   = zwparser.parse( testcontent, debuglevel=0 )
         #html = tu.tohtml()
-        #et.fromstring( html ) 
+        #lhtml.fromstring( html ) 
 
     def test_0_file( self ) :
         """If file `ref` is available pick it and test it"""

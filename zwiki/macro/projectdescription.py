@@ -10,7 +10,8 @@
 # Notes  : None
 # Todo   : None
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -63,11 +64,11 @@ class ProjectDescription( ZWMacro ) :
             p = app.projcomp.get_project( unicode(self.project ))
 
         html= ''
-        cntnr = et.Element( 'div', { 'name' : 'projectdesc', 'style' : self.style } )
+        cntnr = lhtml.Element( 'div', { 'name' : 'projectdesc', 'style' : self.style } )
         if p :
             cntnr.append( 
-                et.fromstring( template % \
+                lhtml.fromstring( template % \
                                 ( p.summary, p.project_info.descriptionhtml )
                              )
             )
-        return et.tostring( cntnr )
+        return lhtml.tostring( cntnr )

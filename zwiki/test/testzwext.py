@@ -35,7 +35,7 @@ words           = None
 tmpl            = """
 {{{ %s
 # {  'clear' : 'both',
-#    'style' : 'border-bottom : 1px solid black; color : cyan;'
+#    'style' : 'border-bottom : 1px solid black; color : cyan;',
 %s
 %s
 }}}
@@ -110,12 +110,10 @@ class TestZWextDumpsRandom( object ) :
         """Testing the Box() extension"""
         print "\nTesting the Box() extension"
         log.info( "Testing the Box() extension" )
-        props = """
-            # 'title'        : 'unit-testing box title'
-            # 'titlestyle'   : 'color : magenta;'
-            # 'contentstyle' : 'padding : 53px;'
-            # }
-        """
+        props = '\n'.join([ """# 'title'        : 'unit-testing box title',""",
+                            """# 'titlestyle'   : 'color : magenta;',""",
+                            """# 'contentstyle' : 'padding : 53px;',""",
+                            """# }""" ])
         testlist = [
             ( tmpl % ( 'Box', props, 'Some wiki content' ),
               [ 'unit-testing box title', 'color : magenta', 'padding : 53', 
@@ -130,8 +128,8 @@ class TestZWextDumpsRandom( object ) :
                 assert_true( r in html, 'Fail Box extension : %s ' % html )
 
         testcount = 1
-        for t in testlist :
-            yield self._test_execute, 'box_ext', t, testcount, '', \
+        for t, r in testlist :
+            yield self._test_execute, 'box_ext', t, testcount, r, \
                   box_cfunc
             testcount += 1
 
@@ -139,13 +137,11 @@ class TestZWextDumpsRandom( object ) :
         """Testing the Code() extension"""
         print "\nTesting the Code() extension"
         log.info( "Testing the Code() extension" )
-        props = """
-            # }
-        """
+        props = """# }"""
         testlist = [
             ( tmpl % ( 'Code bash', props, 'ping google.com' ),
               [ 'both', 'border-bottom : 1px solid black; color : cyan;',
-                'ping' 'google.com' ]
+                'ping', 'google.com' ]
             ),
         ]
 
@@ -155,8 +151,8 @@ class TestZWextDumpsRandom( object ) :
                 assert_true( r in html, 'Fail Code extension : %s ' % html )
 
         testcount = 1
-        for t in testlist :
-            yield self._test_execute, 'code_ext', t, testcount, '', \
+        for t, r in testlist :
+            yield self._test_execute, 'code_ext', t, testcount, r, \
                   code_cfunc
             testcount += 1
 
@@ -164,9 +160,7 @@ class TestZWextDumpsRandom( object ) :
         """Testing the Footnote() extension"""
         print "\nTesting the Footnote() extension"
         log.info( "Testing the Footnote() extension" )
-        props = """
-            # }
-        """
+        props = """# }"""
         testlist = [
             ( tmpl % ( 'Footnote Footnotes', props,
                        '1 Foot-note-1\n2 Foot-note-2' ),
@@ -181,8 +175,8 @@ class TestZWextDumpsRandom( object ) :
                 assert_true( r in html, 'Fail Footnote extension : %s ' % html )
 
         testcount = 1
-        for t in testlist :
-            yield self._test_execute, 'footnote_ext', t, testcount, '', \
+        for t,r in testlist :
+            yield self._test_execute, 'footnote_ext', t, testcount, r, \
                   footnote_cfunc
             testcount += 1
 
@@ -190,13 +184,14 @@ class TestZWextDumpsRandom( object ) :
         """Testing the Html() extension"""
         print "\nTesting the Html() extension"
         log.info( "Testing the Html() extension" )
-        props = """
-            # }
-        """
+        props = """# }"""
         testlist = [
             ( tmpl % ( 'Html', props, '<div>sometext</div>' ),
               [ 'both', 'border-bottom : 1px solid black; color : cyan;',
                 '<div>sometext</div>' ]
+            ),
+            ( tmpl % ( 'Html', props, '' ),
+              [ 'both', 'border-bottom : 1px solid black; color : cyan;', ]
             ),
         ]
 
@@ -206,22 +201,20 @@ class TestZWextDumpsRandom( object ) :
                 assert_true( r in html, 'Fail Html extension : %s ' % html )
 
         testcount = 1
-        for t in testlist :
-            yield self._test_execute, 'html_ext', t, testcount, '', \
+        for t, r in testlist :
+            yield self._test_execute, 'html_ext', t, testcount, r, \
                   html_cfunc
             testcount += 1
 
-    def test_3_Nested( self ) :
+    def test_5_Nested( self ) :
         """Testing the Nested() extension"""
         print "\nTesting the Nested() extension"
         log.info( "Testing the Nested() extension" )
-        props = """
-            # }
-        """
+        props = """# }"""
         testlist = [
             ( tmpl % ( 'Nested', props, "''characters''" ),
               [ 'both', 'border-bottom : 1px solid black; color : cyan;',
-                '<b>', '</b>', 'characters' ]
+                '<strong', '</strong>', 'characters' ]
             ),
         ]
 
@@ -231,7 +224,7 @@ class TestZWextDumpsRandom( object ) :
                 assert_true( r in html, 'Fail Nested extension : %s ' % html )
 
         testcount = 1
-        for t in testlist :
-            yield self._test_execute, 'nested_ext', t, testcount, '', \
+        for t, r in testlist :
+            yield self._test_execute, 'nested_ext', t, testcount, r, \
                   nested_cfunc
             testcount += 1

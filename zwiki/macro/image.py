@@ -8,7 +8,8 @@
 # Notes  : None
 # Todo   : None
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -59,9 +60,9 @@ class Image( ZWMacro ) :
                     ( hattr, wattr, self.src, self.alt, self.style )
         # If the image is a link, enclose it with a 'anchor' dom-element.
         if self.href :
-            href = et.Element( 'a', { 'href' : self.href } )
-            href.append( et.fromstring( img ))
-            html = et.tostring( href )
+            href = lhtml.Element( 'a', { 'href' : self.href } )
+            href.append( lhtml.fromstring( img ))
+            html = lhtml.tostring( href )
         else :
             html = img
         return html

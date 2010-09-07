@@ -10,7 +10,8 @@
 # Notes  : None
 # Todo   : None
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -59,18 +60,18 @@ class Images( ZWMacro ) :
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
 
         imgsources = list(self.imgsources[:])
-        gallerydiv = et.Element( 'div', {'style' : 'display : table;'} )
+        gallerydiv = lhtml.Element( 'div', {'style' : 'display : table;'} )
         while imgsources :
-            rowdiv = et.Element( 'div', {'style' : 'display : table-row;'} )
+            rowdiv = lhtml.Element( 'div', {'style' : 'display : table-row;'} )
             for i in range( self.cols ) :
                 if not imgsources :
                     break
                 src    = imgsources.pop( 0 )
-                coldiv = et.Element('div', {'style' : 'display : table-cell;'})
+                coldiv = lhtml.Element('div', {'style' : 'display : table-cell;'})
                 img    = '<img %s %s src="%s" alt="%s" style="%s"> </img>' % \
                                 ( hattr, wattr, src, self.alt, self.style )
-                coldiv.append( et.fromstring( img ))
+                coldiv.append( lhtml.fromstring( img ))
                 rowdiv.append( coldiv )
             gallerydiv.append( rowdiv )
-        html = et.tostring( gallerydiv )
+        html = lhtml.tostring( gallerydiv )
         return html

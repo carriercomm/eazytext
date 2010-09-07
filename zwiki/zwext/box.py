@@ -9,7 +9,8 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html              as lhtml
 
 from   zwiki.zwext    import ZWExtension
 from   zwiki          import split_style
@@ -95,13 +96,14 @@ class Box( ZWExtension ) :
         style = '; '.join([k + ' : ' + self.css[k] for k in self.css])
         if self.style :
             style += '; ' + self.style + '; '
-        box_div       = et.Element( 'div', { 'style' : style } )
+        box_div       = lhtml.Element( 'div', { 'style' : style } )
 
-        titlestyle = '; '.join([ k + ' : ' + self.title_css[k] for k in self.title_css ])
+        titlestyle = '; '.join([ k + ' : ' + self.title_css[k]
+                                 for k in self.title_css ])
         if self.titlestyle  :
             titlestyle += '; ' + self.titlestyle + '; '
         if self.title :
-            title_div        = et.Element( 'div', { 'style' : titlestyle } )
+            title_div        = lhtml.Element( 'div', { 'style' : titlestyle } )
             title_div.text   = self.title or ' ' # Dont keep text empty
             box_div.insert( 0, title_div )
 
@@ -114,11 +116,11 @@ class Box( ZWExtension ) :
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()
             try :
-                cnode = et.fromstring( self.nowiki_h )
+                cnode = lhtml.fromstring( self.nowiki_h )
                 cnode.text = ' '                # Don't keep text empty
             except :
-                box_div.insert( 1, et.fromstring( '<div> </div>' ))
+                box_div.insert( 1, lhtml.fromstring( '<div> </div>' ))
             else :
                 box_div.insert( 1, cnode )
-        html = ( (self.title or self.nowiki) and et.tostring( box_div ) ) or ''
+        html = ( (self.title or self.nowiki) and lhtml.tostring( box_div ) ) or ''
         return html

@@ -10,7 +10,9 @@
 #   1. Add TOC with pos='inline'
 
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
+
 from   random       import choice
 from   copy         import copy, deepcopy
 
@@ -128,14 +130,14 @@ class Toc( ZWMacro ) :
 
     def on_posthtml( self ) :
         zwparser = self.macronode.parser.zwparser
-        contrdiv = et.Element( 'div', { 'class' : 'toc', 'style' : self.style, } )
-        headdiv  = et.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
-        toc_div  = et.Element( 'div', {} )
+        contrdiv = lhtml.Element( 'div', { 'class' : 'toc', 'style' : self.style, } )
+        headdiv  = lhtml.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
+        toc_div  = lhtml.Element( 'div', {} )
         id       = random_word()
         try :
-            htmltree = et.fromstring( zwparser.html )
-            topicdiv = et.fromstring( html_topic(self.topic) )
-            closediv = et.fromstring( html_close )
+            htmltree = lhtml.fromstring( zwparser.html )
+            topicdiv = lhtml.fromstring( html_topic(self.topic) )
+            closediv = lhtml.fromstring( html_close )
         except :
             self.posthtml = 'Unable to generate the TOC, ' +\
                             'Wiki page not properly formed ! <br></br>'
@@ -145,5 +147,5 @@ class Toc( ZWMacro ) :
             contrdiv.append( headdiv )
             contrdiv.append( toc_div )
             self._maketoc( htmltree, toc_div, self.numbered )
-            self.posthtml = et.tostring( contrdiv ) + script
+            self.posthtml = lhtml.tostring( contrdiv ) + script
         return

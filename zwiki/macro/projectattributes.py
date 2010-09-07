@@ -11,7 +11,8 @@
 # Todo   :
 #   CSS styling is currently using zeta.
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -77,10 +78,10 @@ class ProjectAttributes( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectattrs', 'style' : self.style } )
+        cntnr = lhtml.Element( 'div', { 'name' : 'projectattrs', 'style' : self.style } )
         if p :
             cntnr.append(
-                et.fromstring(
+                lhtml.fromstring(
                     template % \
                         ( p.admin_email, p.license and p.license.licensename,
                           ', '.join([ m.mailing_list for m in p.mailinglists ]),
@@ -88,4 +89,4 @@ class ProjectAttributes( ZWMacro ) :
                         )
                 )
             )
-        return et.tostring( cntnr )
+        return lhtml.tostring( cntnr )

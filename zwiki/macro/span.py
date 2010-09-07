@@ -11,7 +11,8 @@
 # Todo   : None
 
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -44,7 +45,7 @@ class Span( ZWMacro ) :
         self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        span      = et.Element( 'span', { 'style' : self.style } )
+        span      = lhtml.Element( 'span', { 'style' : self.style } )
         span.text = self.text or ' '    # Don't keep the text empty
-        html      = ( self.text and et.tostring( span ) ) or ''
+        html      = ( self.text and lhtml.tostring( span ) ) or ''
         return html

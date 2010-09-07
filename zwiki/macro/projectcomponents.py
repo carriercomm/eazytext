@@ -10,7 +10,8 @@
 # Notes  : None
 # Todo   : None
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -54,23 +55,23 @@ class ProjectComponents( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectcomps', 'class' : 'compdescr', 'style' : self.style } )
-        e     = et.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
+        cntnr = lhtml.Element( 'div', { 'name' : 'projectcomps', 'class' : 'compdescr', 'style' : self.style } )
+        e     = lhtml.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Components'
         cntnr.append( e )
         components = p and sorted( p.components, key=lambda c : c.created_on ) or []
         for c in components :
             owner  = c.owner.username
-            e      = et.fromstring( ct_template % ( c.componentname,
+            e      = lhtml.fromstring( ct_template % ( c.componentname,
                                                     app.h.url_foruser( owner ),
                                                     owner
                                                   )
                                   )
             cntnr.append( e )
-            e      = et.Element( 'blockquote', {} )
+            e      = lhtml.Element( 'blockquote', {} )
             try :
-                e.append( et.fromstring( getattr( c, 'descriptionhtml', '<div> </div>' )))
+                e.append( lhtml.fromstring( getattr( c, 'descriptionhtml', '<div> </div>' )))
             except :
                 pass
             cntnr.append( e )
-        return et.tostring( cntnr )
+        return lhtml.tostring( cntnr )

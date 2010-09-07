@@ -10,7 +10,8 @@
 # Notes  : None
 # Todo   : None
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle
@@ -71,7 +72,7 @@ class ProjectTeam( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = et.Element( 'div', { 'name' : 'projectteam', 'style' : self.style })
+        cntnr = lhtml.Element( 'div', { 'name' : 'projectteam', 'style' : self.style })
 
         if p :
             admin  = p.admin.username
@@ -86,5 +87,5 @@ class ProjectTeam( ZWMacro ) :
                           for id, u in value[0] ]
                 teams += team_template % \
                             ( team, users and ', '.join( users ) or '-' )
-            cntnr.append( et.fromstring( template % ( admin, teams )))
-        return et.tostring( cntnr )
+            cntnr.append( lhtml.fromstring( template % ( admin, teams )))
+        return lhtml.tostring( cntnr )

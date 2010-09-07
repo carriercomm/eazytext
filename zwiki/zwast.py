@@ -17,7 +17,8 @@ functions for translating the text to HTML"""
 
 import sys
 import re
-import xml.etree.cElementTree       as et
+#import xml.etree.cElementTree       as et
+import lxml.html                    as lhtml
 
 from   zwiki.macro        import build_macro
 from   zwiki.zwext        import build_zwext
@@ -393,7 +394,7 @@ class Paragraph( Node ) :
         # Before packging into a paragraph element check whether the html is
         # correctly formed.
         try : 
-            et.fromstring( '<div>' + html + '</div>' )
+            lhtml.fromstring( '<div>' + html + '</div>' )
         except :
             if self.parser.zwparser.debug :
                 raise

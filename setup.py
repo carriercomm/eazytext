@@ -95,7 +95,7 @@ classifiers=[
 
 setup(
     name='zwiki-zeta',
-    version='0.9beta',
+    version='0.91beta',
     py_modules=[],
     package_dir={},
     packages=find_packages(),

@@ -9,7 +9,8 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html      as lhtml
 
 from   zwiki.zwext    import ZWExtension
 from   zwiki          import split_style
@@ -37,14 +38,13 @@ class Html( ZWExtension ) :
         style   = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
         if self.style :
             style   += '; ' + self.style + '; '
-        box_div = et.Element( 'div', { 'style' : style } )
+        box_div = lhtml.Element( 'div', { 'style' : style } )
         try :
-            boxnode = et.fromstring( self.nowiki )
-            boxnode.text = ' '      # Don't keep the text empty
+            boxnode = lhtml.fromstring( self.nowiki )
         except :
-            box_div.insert( 0, et.fromstring( '<div> </div>' ) )
+            box_div.insert( 0, lhtml.fromstring( '<div> </div>' ) )
         else :
             box_div.insert( 0, boxnode )
-        html = ( self.nowiki and et.tostring( box_div ) ) or ''
+        html = ( self.nowiki and lhtml.tostring( box_div ) ) or ''
         return html
 

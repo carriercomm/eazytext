@@ -9,7 +9,8 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html    as lhtml
 
 from   zwiki.zwext  import ZWExtension
 from   zwiki        import split_style, constructstyle

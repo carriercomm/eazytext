@@ -9,7 +9,8 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-import xml.etree.cElementTree as et
+#import xml.etree.cElementTree as et
+import lxml.html           as lhtml
 from   pygments            import highlight
 from   pygments.formatters import HtmlFormatter
 from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
@@ -53,12 +54,23 @@ struct process {
 };
 }}}
 
+To highlight a different syntax, supply the syntax name as a parameter like,
+> [<PRE {{{ Code <syntax-name> >]
+
+To disable line numbers while highlighting add parameter 'noln'. The default
+is to list the line numbers.
+> [<PRE {{{ Code <syntax-name> nonl >]
+
 """
 
 script_templ = """
 <style type="text/css">
     %s
-    .highlighttable td.linenos { padding : 3px }
+    .highlighttable td.linenos {
+        padding : 3px;
+        color : brown;
+        background-color : activeborder;
+    }
     .highlighttable td.code { padding : 3px }
     .highlight { background-color : #FAFAFA; }
 </style>
@@ -77,13 +89,14 @@ class Code( ZWExtension ) :
         self.nowiki  = nowiki
         self.style   = constructstyle( props, defcss=css )
         self.lexname = args and args[0].lower() or 'text'
-        self.args    = args[1:]
+        self.linenos = 'noln' not in args
 
     def tohtml( self ) :
         try :
             lexer = get_lexer_by_name( self.lexname )
             scrpt = HtmlFormatter().get_style_defs('.highlight')
-            code  = highlight( self.nowiki, lexer, HtmlFormatter( linenos=True ) )
+            code  = highlight( self.nowiki, lexer,
+                               HtmlFormatter( linenos=self.linenos ) )
             html  = '<div style="%s">%s%s</div>' % \
                         ( self.style, (script_templ % scrpt), (code_templ % code) )
         except:
