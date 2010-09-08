@@ -18,7 +18,7 @@ from   zwiki        import split_style, constructstyle
 wikidoc = """
 === Footnote
 :Description::
-    Generate footnotes that can be referenced. Note that each foot not block
+    Generate footnotes that can be referenced. Note that each foot note block
     should be aligned at the left side after the foot-note anchor name,
     even if it is a multiline foot-note. And the foot-note anchor name should
     be aligned with the begining of the line.
@@ -26,15 +26,16 @@ wikidoc = """
 :Example ::
 
 foot-note content can be specified like,
-> [<PRE {{{ Footnote footnote-title
-  1 German-born Swiss-American theoretical physicist, philosopher and
+> [<PRE
+{{{ Footnote footnote-title
+1 German-born Swiss-American theoretical physicist, philosopher and
   author who is widely regarded as one of the most influential and best
   known scientists and intellectuals of all time. He is often regarded as
   the father of modern physics.
 
-  2 American physicist known for his work in the path integral
+2 American physicist known for his work in the path integral
   formulation of quantum mechanics, the theory of quantum electrodynamics.
-  }}} >]
+}}} >]
 
 Note that inside the ''Footnote'' extension block, each footnote should be
 seperated by an empty line and each footnote's first word will be interpreted

@@ -6,7 +6,7 @@
 == ZWiki Extensions
 
 ZWiki Extension is a plugin like framework to extend wiki engine itself. One
-can define markups, text formats etc ... and integrate it with ZWiki as an
+can define new markups, text formats etc ... and integrate it with ZWiki as an
 extension.
 
 === Extension Framework
@@ -17,17 +17,15 @@ are passed directly to the extension module, which, in most of the cases will
 return a translated HTML text. The general format while using a wiki extension
 is,
 
-> [<PRE
-{{{<b>extension-name</b> <em>space seperated parameter-strings</em>
-# { '<b>property-name</b>' : '<b>value</b>'
-#   '<b>property-name</b>' : '<b>value</b>'
-#   <b>...</b>
-# }
-
-<b>wiki-text ...</b>
-
-}}}
->]
+> ~{~{~{''extension-name'' //space seperated parameter-strings//
+> # {
+> # ''property-name'' : //value//
+> # ''property-name'' : //value//
+> # ...
+> # }
+> 
+> ''wiki-text ...''
+> ~}~}~}
 
 * ''extension-name'', should be one of the valid extensions.
 * ''parameter-strings'', string values that will be passed as parameters.

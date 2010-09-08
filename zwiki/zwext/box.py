@@ -17,15 +17,14 @@ from   zwiki          import split_style
 
 box_css = {
     'color'         : 'gray',
-    'border-top'    : 'thin solid #CEF2E0',
-    'border-right'  : 'thin solid #CEF2E0',
-    'border-bottom' : 'thin solid #CEF2E0',
-    'border-left'   : 'thin solid #CEF2E0',
+    'border-top'    : 'thin solid gray',
+    'border-right'  : 'thin solid gray',
+    'border-bottom' : 'thin solid gray',
+    'border-left'   : 'thin solid gray',
 }
 title_css = {
-    'color'          : '',
-    'background'     : '#CEF2E0',
-    'margin-bottom'  : '5px',
+    'color'          : 'black',
+    'background'     : '#EEEEEE',
     'font-weight'    : 'bold',
     'padding-top'    : '3px',
     'padding-right'  : '3px',
@@ -44,9 +43,53 @@ wikidoc = """
 
 : Description ::
     Generate a box with title and content. Text within the curly braces will be
-    interpreted as the content and can contain ZWiki text as well.
+    interpreted as the content and can contain ZWiki text as well. If title
+    text is provided, then the extension can take parameter ''hide'' which
+    can be used to shrink/expand box content.
 
-keyword argument,
+:Example ::
+
+> [<PRE
+{{{ Box hide
+#{
+# 'title' : 'Building A Mnesia Database',
+# 'style' : { 'margin-left' : '%s', 'margin-right' : '%s' },
+# 'titlestyle' : 'color: brown;',
+# 'contentstyle' : 'color: gray;',
+#}
+
+This chapter details the basic steps involved when designing a Mnesia database
+and the programming constructs which make different solutions available to the
+programmer. The chapter includes the following sections,
+
+* defining a schema
+* the datamodel
+* starting Mnesia
+* creating new tables.
+
+}}} >]
+
+{{{ Box hide
+#{
+# 'title' : 'Building A Mnesia Database',
+# 'style' : { 'margin-left' : '%s', 'margin-right' : '%s' },
+# 'titlestyle' : 'color: brown;',
+# 'contentstyle' : 'color: gray;',
+#}
+
+This chapter details the basic steps involved when designing a Mnesia database
+and the programming constructs which make different solutions available to the
+programmer. The chapter includes the following sections:
+
+* defining a schema
+* the datamodel
+* starting Mnesia
+* creating new tables.
+
+}}}
+
+special property key-value pairs,
+
 |= title        | optional, title string
 |= titlestyle   | optional, title style string in CSS style format
 |= contentstyle | optional, content style string in CSS style format
@@ -59,7 +102,25 @@ Default CSS styling for content,
 
 Default CSS styling for the entire extension,
 > [<PRE %s >]
-""" % ( title_css, cont_css, box_css )
+""" % ( '5%', '5%', '5%', '5%', title_css, cont_css, box_css )
+
+tmpl = """
+<div class="boxext" style="%s">
+    <div class="boxtitle" style="%s">
+    %s %s
+    </div>
+    <div class="boxcont" style="%s">%s</div>
+</div>
+"""
+
+spantmpl = """
+<span class="boxhide"
+      style="display: none; float: right; font-size : xx-small; color: blue; cursor: pointer">
+    hide</span>
+<span class="boxshow"
+      style="float: right; font-size : xx-small; color: blue; cursor: pointer">
+    show</span>
+"""
 
 class Box( ZWExtension ) :
     """Implements Box() wikix"""
@@ -90,23 +151,22 @@ class Box( ZWExtension ) :
         self.cont_css.update( cont_css )
         self.cont_css.update( d_style )
 
+        self.hide = 'hide' in args
+
     def tohtml( self ) :
         from   zwiki.zwparser import ZWParser
 
-        style = '; '.join([k + ' : ' + self.css[k] for k in self.css])
+        boxstyle = '; '.join([k + ' : ' + self.css[k] for k in self.css])
         if self.style :
-            style += '; ' + self.style + '; '
-        box_div       = lhtml.Element( 'div', { 'style' : style } )
+            boxstyle += '; ' + self.style + '; '
 
         titlestyle = '; '.join([ k + ' : ' + self.title_css[k]
                                  for k in self.title_css ])
         if self.titlestyle  :
             titlestyle += '; ' + self.titlestyle + '; '
-        if self.title :
-            title_div        = lhtml.Element( 'div', { 'style' : titlestyle } )
-            title_div.text   = self.title or ' ' # Dont keep text empty
-            box_div.insert( 0, title_div )
 
+
+        self.nowiki_h = ''
         if self.nowiki :
             self.contentstyle \
                 and self.cont_css.setdefault( 'style', self.contentstyle )
@@ -116,12 +176,11 @@ class Box( ZWExtension ) :
                                         style=self.cont_css )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()
-            try :
-                cnode = lhtml.fromstring( self.nowiki_h )
-                cnode.text = ' '                # Don't keep text empty
-            except :
-                box_div.insert( 1, lhtml.fromstring( '<div> </div>' ))
-            else :
-                box_div.insert( 1, cnode )
-        html = ( (self.title or self.nowiki) and lhtml.tostring( box_div ) ) or ''
+
+        if self.title and self.hide :
+            html = tmpl % ( boxstyle, titlestyle, self.title, spantmpl,
+                            "display: none;", self.nowiki_h )
+        else :
+            html = tmpl % ( boxstyle, titlestyle, self.title, '', '',
+                            self.nowiki_h)
         return html

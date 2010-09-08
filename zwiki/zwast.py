@@ -319,13 +319,15 @@ class Wikipage( Node ):
             elif o.postindex > 0 :
                 peerhtml_pos += o.posthtml
 
-        # Append table sorting code snippet (only for root invocation)
+        # Append JS scripts from templates
         js_tablesort = open( join(templtdir, 'tablesorter.html')).read() \
+                       if zwparser.nested == False else ''
+        js_boxext = open( join(templtdir, 'zwextbox.html')).read() \
                        if zwparser.nested == False else ''
 
         zwparser.html = '<div class="wikiblk">' + \
                         peerhtml_neg + zwparser.html + peerhtml_pos + \
-                        js_tablesort + \
+                        js_tablesort + js_boxext + \
                         '</div>'
         return zwparser.html
 

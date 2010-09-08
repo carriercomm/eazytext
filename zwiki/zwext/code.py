@@ -28,9 +28,9 @@ wikidoc = """
 === Code
 
 : Description ::
-    Enclose code-snippet within a box and syntax-highlight text, where
-    highlighting is available for [[ /help/pygments | several-dozen formats ]].
-    To invoke the correct highligher, use the // Alias // field.
+    Syntax highlighting for code-snippet. Highlighting is available for
+    [[ /help/pygments | several-dozen formats ]], refer to the //Alias// field
+    to invoke the correct highligher.
 
 '' Example ''
 
