@@ -201,17 +201,19 @@ Back to normal text.
 
 == Definition List ==
 
-: Definition 1 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
+: Definition 1 : :: The recommended way to test for a feature is to use the
+python hasattr() builtin. Working out what is and is not support from the 
+version number information is quite complex and unnessesary. For example to
 test for lock and unlock support
-: Definition 2 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
+: Definition 2 : :: The recommended way to test for a feature is to use the
+python hasattr() builtin. Working out what is and is not support from the 
+version number information is quite complex and unnessesary. For example to
 test for lock and unlock support
-: Definition 3 : :: The recommended way to test for a feature is to use the \
-python hasattr() builtin. Working out what is and is not support from the   \
-version number information is quite complex and unnessesary. For example to \
+: Definition 3 : ::
+The recommended
+way to test for a feature is to use the
+python hasattr() builtin. Working out what is and is not support from the 
+version number information is quite complex and unnessesary. For example to
 test for lock and unlock support
 
 : Definition 4 : :: Not part of the list
@@ -397,9 +399,9 @@ h4. Multi-lined big tables
 ||{
 ||-
 || A ''Char'' value represents a Unicode character. 6 comments
-|| A ''Bool'' value represents a value in Boolean logic. The
-   possible values of type Bool are //{b}True// and //{b}False//. 2
-   comments
+|| A ''Bool'' {{ YearsBefore("%s before", 1999) }}, value represents a value
+   in Boolean logic. The possible values of type Bool are //{b}True// and
+   //{b}False//. 2 comments
 || The ``{B}Int`` type is used for signed, fixed-width integer values. The exact range
    Of values representable as Int depends on the system's longest "native"
    Integer: on a 32-bit machine, an Int is usually 32 bits wide, while on a
@@ -464,6 +466,23 @@ the father of modern physics.
 formulation of quantum mechanics, the theory of quantum electrodynamics.
 }}}
 
+>heloo
+>world
+>>how are
+>>you
+
+||{
+||-
+||  heloo
+world
+|| how are
+you
+||}
+
+:definition1 ::
+hold one buddy
+hold to live.
+
 === Imporper Tables ===
 
 |=|=|=
@@ -490,4 +509,5 @@ hello world {{{ }}}
             }}}
 {{{
     Leaving it open
+
 

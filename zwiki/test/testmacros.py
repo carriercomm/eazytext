@@ -281,7 +281,7 @@ class TestMacroDumpsRandom( object ) :
 
         def toc_cfunc( ref, tu ) :
             html= tu.tohtml()
-            assert_true( 'class="toc"' in html,
+            assert_true( 'class="br5 toc"' in html,
                          'Fail Toc Macro : %s ' % html )
 
         for t in testlist :

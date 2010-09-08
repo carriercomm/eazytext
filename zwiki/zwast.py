@@ -687,39 +687,29 @@ class BtableRow( Node ) :
         self.parser    = parser
         self.rowtype   = type
         self.rowmarkup = rowmarkup
-        if isinstance( rowitem, Empty ) :
-            self.empty        = rowitem
-            self.textcontents = None
-        elif isinstance( rowitem, TextContents ) :
-            self.textcontents = rowitem
-            self.empty        = None
-        else :
-            raise ZWASTError( "Unknown `rowitem` for BtableRow() node" )
-        self.newline = Newline( parser, newline )
-
-        # The node handles the raw text dumping a little different, because of
-        # the support added for multiline listitem
-        self.dumptext = rowmarkup + rowitem.dump() + self.newline.dump()
+        self.textlines = [( rowitem, Newline(parser, newline) )]
 
     def contlist( self, parser, textcontents, newline ) :
-        self.dumptext += textcontents.dump() + newline
-        if self.textcontents :
-            self.textcontents.extendtextcontents( textcontents )
-        else :
-            self.textcontents = textcontents
+        self.textlines.append( (textcontents, Newline( self.parser, newline )) )
 
     def children( self ) :
-        return ( self.rowmarkup, self.textcontents, self.newline )
+        return ( self.rowmarkup, self.textlines )
 
     def tohtml( self ) :
         html = ''
         mrkup = self.rowmarkup.lstrip( ' \t' )[:3]
-        if mrkup in [ '|| ', '||=' ] and self.textcontents:
+        if mrkup in [ '|| ', '||=' ] and self.textlines:
             contents = []
             [ contents.extend( item.contents )
-              for item in self.textcontents.textcontents ]
+              for textcontents, nl, in self.textlines
+              if isinstance( textcontents, TextContents )
+              for item in textcontents.textcontents ]
             process_textcontent( contents )
-            html += self.textcontents.tohtml()
+            celltext = ''
+            for textcontents, newline in self.textlines :
+                celltext += textcontents.tohtml()
+                celltext += newline.tohtml()
+            html += celltext
         return html
 
     def style( self ) :
@@ -731,10 +721,9 @@ class BtableRow( Node ) :
         return style
 
     def dump( self ) :
-        if self.textcontents or self.empty :
-            text = self.dumptext
-        else :
-            raise ZWASTError( "dump() : No item available for BtableRow() node" )
+        text = self.rowmarkup
+        for textcontents, nl in self.textlines :
+            text += textcontents.dump() + nl.dump()
         return text
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -942,32 +931,15 @@ class List( Node ) :
         self.parser = parser
         self.listtype     = listtype
         self.listmarkup   = listmarkup
-        if isinstance( listitem, Empty ) :
-            self.empty        = listitem
-            self.textcontents = None
-        elif isinstance( listitem, TextContents ) :
-            self.empty        = None
-            self.textcontents = listitem
-        else :
-            raise ZWASTError( "Unknown `listitem` for List() node" )
-        self.newline  = Newline( parser, newline )
-
-        # The node handles the raw text dumping a little different, because of
-        # the support added for multiline listitem
-        self.dumptext = listmarkup + listitem.dump() + self.newline.dump()
+        self.textlines    = [ (listitem, Newline( parser, newline )) ]
 
     def contlist( self, parser, textcontents, newline ) :
-        self.dumptext += textcontents.dump() + newline
-        if self.textcontents :
-            self.textcontents.extendtextcontents( textcontents )
-        else :
-            self.textcontents = textcontents
+        self.textlines.append( (textcontents, Newline(parser, newline)) )
 
     def children( self ) :
-        return ( self.listtype, self.listmarkup, self.textcontents,
-                 self.newline )
+        return ( self.listtype, self.listmarkup, self.textlines )
 
-    def style( self ) :
+    def _style( self ) :
         markup = self.listmarkup.strip( ' \t' )
         off    = markup.find('{')
         style  = off > 0 and styleparser( markup[off:] ) or ''
@@ -975,25 +947,25 @@ class List( Node ) :
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
-        if self.textcontents :
-            contents = []
-            [ contents.extend( item.contents )
-              for item in self.textcontents.textcontents ]
-            process_textcontent( contents )
-            html = '<li style="%s">%s</li>' % \
-                        ( self.style(), self.textcontents.tohtml() )
-        elif self.empty :
-            html = '<li style="%s">%s</li>' % \
-                        ( self.style(), self.empty.tohtml() )
-        else :
-            raise ZWASTError( "tohtml() : No listitem available for List() node" )
+        contents = []
+        [ contents.extend(item.contents)
+          for textcontents, nl in self.textlines
+          if isinstance( textcontents, TextContents )
+          for item in textcontents.textcontents ]
+        process_textcontent( contents )
+
+        li = ''
+        for textcontents, newline in self.textlines :
+            li += textcontents.tohtml()
+            li += newline.tohtml()
+
+        html = '<li style="%s">%s</li>' % ( self._style(), li )
         return html
 
     def dump( self ) :
-        if self.textcontents or self.empty :
-            text = self.dumptext
-        else :
-            raise ZWASTError( "dump() : No listitem available for List() node" )
+        text = self.listmarkup
+        for textcontents, nl in self.textlines :
+            text += textcontents.dump() + nl.dump()
         return text
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
@@ -1053,55 +1025,38 @@ class Definition( Node ) :
     def __init__( self, parser, defnmarkup, defnitem, newline ) :
         self.parser     = parser
         self.defnmarkup = defnmarkup
-        defnmarkup      = defnmarkup.strip( ' \t' )
-        self.dt         = defnmarkup[1:-2]
-        if isinstance( defnitem, Empty ) :
-            self.empty        = defnitem
-            self.textcontents = None
-        elif isinstance( defnitem, TextContents ) :
-            self.empty        = None
-            self.textcontents = defnitem
-        else :
-            raise ZWASTError( "Unknown `defnitem` for Definition() node" )
-        self.newline      = Newline( parser, newline )
-
-        # The node handles the raw text dumping a little different, because of
-        # the support added for multiline listitem
-        self.dumptext = defnmarkup + defnitem.dump() + self.newline.dump()
+        self.dt         = defnmarkup.strip( ' \t' )[1:-2]
+        self.textlines  = [ (defnitem, Newline(parser, newline )) ]
 
     def contlist( self, parser, textcontents, newline ) :
-        self.dumptext += textcontents.dump() + newline
-        if self.textcontents :
-            self.textcontents.extendtextcontents( textcontents )
-        else :
-            self.textcontents = textcontents
+        self.textlines.append( (textcontents, Newline(parser, newline)) )
 
     def children( self ) :
-        return ( self.defnmarkup, self.textcontents, self.newline )
+        return ( self.defnmarkup, self.textlines )
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
         html = '<dt><b>' + escape_htmlchars( self.dt ) + '</b></dt>'
-        if self.textcontents :
-            contents = []
-            [ contents.extend( item.contents )
-              for item in self.textcontents.textcontents ]
-            process_textcontent( contents )
-            dd = self.textcontents.tohtml()
-        elif self.empty :
-            dd = self.empty.tohtml()
-        else :
-            raise ZWASTError( 
-                    "tohtml() : No defnitem available for Definition() node" )
+
+        contents = []
+        [ contents.extend(item.contents)
+          for textcontents, nl in self.textlines
+          if isinstance( textcontents, TextContents )
+          for item in textcontents.textcontents ]
+        process_textcontent( contents )
+
+        dd   = ''
+        for textcontents, newline in self.textlines :
+            dd += textcontents.tohtml()
+            dd += newline.tohtml()
+
         html += '<dd>' + dd + '</dd>'
         return html
 
     def dump( self ) :
-        if self.textcontents or self.empty :
-            text = self.dumptext
-        else :
-            raise ZWASTError(
-                    "dump() : No defnitem available for Definition() node" )
+        text = self.defnmarkup
+        for textcontents, nl in self.textlines :
+            text += textcontents.dump() + nl.dump()
         return text
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
