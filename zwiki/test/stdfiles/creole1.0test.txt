@@ -11,7 +11,7 @@
 
 =={c;/1,solid,c;A} '_Some text markup_'
 
-[[ +http://code.google.com/images/code_logo.png | image ]]
+[[ +https://code.google.com/images/code_logo.png | image ]]
 
 You can make things ''bold'' or //italic// or '/both'/ but /'not this one'/.
 
@@ -61,13 +61,13 @@ os.mkdir), others will import fine but not work (tempfile.mkstemp).
 
 == Links ==
 
-You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
+You can use [[internal links]] or [[https://www.wikicreole.org|external links]],
 give the link a [[internal links|different]] name.
 
 Here's another sentence: This wisdom is taken from [[Ward Cunningham's]]
 [[http://www.c2.com/doc/wikisym/WikiSym2006.pdf|Presentation at the Wikisym 06]].
 
-Here's a external link without a description: [[http://www.wikicreole.org]]
+Here's a external link without a description: https://www.wikicreole.org
 
 Be careful that italic links are rendered properly:  //[[http://my.book.example/|My Book Title]]// 
 

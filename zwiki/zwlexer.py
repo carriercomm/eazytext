@@ -95,8 +95,8 @@ class ZWLexer( object ):
     tokens = (
         # RegEx tokens.
         'PIPE', 'ALPHANUM',  'SPECIALCHAR', 'SQR_OPEN', 'SQR_CLOSE',
-        'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI', 'WWW_URI',
-        'TEXTMARKUPCHAR',
+        'PARAN_OPEN', 'PARAN_CLOSE', 'ANGLE_OPEN', 'ANGLE_CLOSE', 'HTTP_URI',
+        'HTTPS_URI', 'WWW_URI', 'TEXTMARKUPCHAR',
 
         # Line markups
         'HORIZONTALRULE', 'HEADING', 'BTABLE_START', 'BTABLESTYLE_START', 
@@ -124,7 +124,7 @@ class ZWLexer( object ):
         return t
 
     def t_HEADING( self, t ):
-        r'^(([ \t]*={1,5})|([hH][12345]\.))(\{[^{}\r\n]*\})?'
+        r'^(([ \t]*={1,5})|([ \t]*[hH][12345]\.))(\{[^{}\r\n]*\})?'
         return t
 
     def t_BTABLESTYLE_START( self, t ) :
@@ -319,15 +319,21 @@ class ZWLexer( object ):
 
     # Tokenize Complex regex
     http_schema    = r'http://'
+    https_schema   = r'https://'
     www_domain     = r'www\.'
     uri_reserved   = r':;/@&=,\?\#\+\$'
     uri_mark       = r"_!'\(\)\*\.\-"
     uri_escape     = r'%'
     http_uri       = http_schema + r'[a-zA-Z0-9' + uri_escape + uri_reserved + uri_mark + r']+'
+    https_uri      = https_schema + r'[a-zA-Z0-9' + uri_escape + uri_reserved + uri_mark + r']+'
     www_uri        = www_domain + r'[a-zA-Z0-9' + uri_escape + uri_reserved + uri_mark + r']+'
 
     @TOKEN(http_uri)
     def t_HTTP_URI( self, t ):
+        return t
+
+    @TOKEN(https_uri)
+    def t_HTTPS_URI( self, t ):
         return t
 
     @TOKEN(www_uri)
@@ -336,6 +342,10 @@ class ZWLexer( object ):
 
     @TOKEN(http_uri)
     def t_table_HTTP_URI( self, t ):
+        return t
+
+    @TOKEN(https_uri)
+    def t_table_HTTPS_URI( self, t ):
         return t
 
     @TOKEN(www_uri)

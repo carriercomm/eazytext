@@ -40,6 +40,7 @@ class Nested( ZWExtension ) :
         if self.nowiki :
             zwparser        = ZWParser( lex_optimize=False,
                                         yacc_optimize=False,
+                                        nested=True,
                                         style=self.style )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             try :

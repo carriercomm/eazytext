@@ -95,6 +95,7 @@ class ZWParser( object ):
                     yacc_debug=False,
                     outputdir='',
                     obfuscatemail=False,
+                    nested=False,
                 ):
         """Create a new ZWParser.
         
@@ -154,7 +155,13 @@ class ZWParser( object ):
 
         obfuscatemail:
             Obfuscate email ids written using link markup.
-            [[ mailto:<emailid> | text ]] """
+            [[ mailto:<emailid> | text ]]
+
+        nested:
+            Extensions like Nested, and Box can another level of zwiki parsing.
+            If that is the case then `nested` is set to True. Default is
+            set to `False` which means this is the root invocation to parse
+            wiki document."""
         self.app      = app
         yacc_debug == False and logging.ERROR or logging.WARNING
         self.zwlex    = ZWLexer( error_func=self._lex_error_func )
@@ -176,6 +183,7 @@ class ZWParser( object ):
         self.dynamictext     = False
         self.debug           = lex_debug or yacc_debug
         self.obfuscatemail   = obfuscatemail
+        self.nested          = nested
     
     def is_matchinghtml( self, text ) :
         """Check whether html special characters are present in the document."""
@@ -697,7 +705,8 @@ class ZWParser( object ):
         p[0] = BasicText( p.parser, TEXT_SPECIALCHAR, p[1] )
 
     def p_basictext_4( self, p ):
-        """basictext            : HTTP_URI"""
+        """basictext            : HTTP_URI
+                                | HTTPS_URI"""
         p[0] = BasicText( p.parser, TEXT_HTTPURI, p[1] )
 
     def p_basictext_5( self, p ):

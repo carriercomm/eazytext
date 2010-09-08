@@ -20,7 +20,6 @@ from   zwiki        import split_style, constructstyle
 css = {
     'padding'            : '5px',
     'background'         : '#e5ecf9',
-    '-moz-border-radius' : '5px',
     'margin'             : '10px 0px 10px 5px'
 }
 

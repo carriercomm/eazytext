@@ -2,19 +2,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html><head><script src="/home/pratap/dev/oss/dojo-release-1.2.3/dojo/dojo.js" 
-                         type="text/javascript"></script></head><body><div class="wikiblk">Unable to generate the TOC, Wiki page not properly formed ! <br></br><div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; ">
+                         type="text/javascript"></script></head><body><div class="wikiblk"><div style=" ; float: right; border-bottom: 1px solid gray; padding: 3px; width: 20em; background: #f8f7bc; border-right: 1px solid gray; position: relative; margin: 10px;  ; ; ; ;  ; ;" class="br5 toc"><div style="margin-bottom : 5px;"><div style="color : blue; cursor : pointer; font-size : small; 
+            position: relative; float: right;">close</div><div style="font-weight : bold;">Table of Contents </div></div><div><div style="margin-left : 2px; "><a href="#Top-level%20heading">Top-level heading</a></div><div style="margin-left : 1em;"><a href="#'_Some%20text%20markup_'">'_Some text markup_'</a></div><div style="margin-left : 2em;"><a href="#Text%20with%20html%20special%20chars">Text with html special chars</a></div><div style="margin-left : 2em;"><a href="#Special%20HTML%20markups">Special HTML markups</a></div><div style="margin-left : 1em;"><a href="#Links">Links</a></div><div style="margin-left : 1em;"><a href="#wiki%20extension">wiki extension</a></div><div style="margin-left : 1em;"><a href="#list">list</a></div><div style="margin-left : 2em;"><a href="#All%20possible%20list%20combination">All possible list combination</a></div><div style="margin-left : 1em;"><a href="#Block%20quoted%20text">Block quoted text</a></div><div style="margin-left : 1em;"><a href="#Definition%20List">Definition List</a></div><div style="margin-left : 2em;"><a href="#All%20possible%20list%20combinations%20in%20a%20table">All possible list combinations ...</a></div><div style="margin-left : 1em;"><a href="#Macros">Macros</a></div><div style="margin-left : 1em;"><a href="#Box%20Wiki%20extensions">Box Wiki extensions</a></div><div style="margin-left : 1em;"><a href="#Images">Images</a></div><div style="margin-left : 1em;"><a href="#HTML%20wiki%20extension">HTML wiki extension</a></div><div style="margin-left : 2px; "><a href="#Escapes">Escapes</a></div><div style="margin-left : 2em;"><a href="#Tables">Tables</a></div><div style="margin-left : 2em;"><a href="#Big%20Tables">Big Tables</a></div><div style="margin-left : 3em;"><a href="#Multi-lined%20big%20tables">Multi-lined big tables</a></div><div style="margin-left : 3em;"><a href="#Subsub">Subsub</a></div><div style="margin-left : 4em;"><a href="#Subsubsub">Subsubsub</a></div><div style="margin-left : 2px; "><a href="#Top-level%20heading%20(1)%20A%20loooooooooooooog%20tiiiiiiiiiiiiitttttttttle">Top-level heading (1) A looooo ...</a></div><div style="margin-left : 1em;"><a href="#This%20a%20test%20for%20creole%200.1%20(2)">This a test for creole 0.1 (2)</a></div><div style="margin-left : 2em;"><a href="#This%20is%20a%20Subheading%20(3)">This is a Subheading (3)</a></div><div style="margin-left : 3em;"><a href="#Subsub%20(4)">Subsub (4)</a></div><div style="margin-left : 4em;"><a href="#Subsubsub%20(5)">Subsubsub (5)</a></div><div style="margin-left : 2px; "><a href="#First%20level">First level</a></div><div style="margin-left : 1em;"><a href="#Second%20level">Second level</a></div><div style="margin-left : 2em;"><a href="#Third%20level">Third level</a></div><div style="margin-left : 3em;"><a href="#Fourth%20level">Fourth level</a></div><div style="margin-left : 4em;"><a href="#Fifth%20level">Fifth level</a></div><div style="margin-left : 2em;"><a href="#Imporper%20Tables">Imporper Tables</a></div><div style="margin-left : 2em;"><a href="#Improper%20no-wiki%20blocks">Improper no-wiki blocks</a></div></div></div>
+<style type="text/css">
+    .dispnone { display : none; }
+</style>
+<script type="text/javascript">
+    dojo.addOnLoad(
+        function() {
+            var n_toc = dojo.query( 'div.toc' )[0];
+            var headdiv = n_toc.childNodes[0];
+            var toc_div = n_toc.childNodes[1];
+            dojo.connect( headdiv.childNodes[0], 'onclick',
+                function( e ) {
+                    if ( e.target.innerHTML == 'close' ) {
+                        dojo.toggleClass( toc_div, 'dispnone', true );
+                        e.target.innerHTML = 'show';
+                    } else if ( e.target.innerHTML == 'show' ) {
+                        dojo.toggleClass( toc_div, 'dispnone', false );
+                        e.target.innerHTML = 'close';
+                    }
+                    dojo.stopEvent( e );
+                }
+            );
+        }
+    );
+</script>
+<div style="white-space : normal; font-family : arial,sans-serif; ; ">
 <p> 
 </p>
-<p><h1 style=""><a style="visibility : hidden;" name="Top-level heading"></a>Top-level heading</h1>
+<p>
+<h1 style="">
+    Top-level heading
+    <a name="Top-level heading"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Top-level heading" title="Link to this section">&#9875;</a>
+</h1>
+
 </p><p>    This sample markup is taken from creole and modified to zwiki markup.
 </p>
 <p>    Goto <a href="#Subsub">other heading markups</a> for more ... <br></br> 
     Goto <a href="#anchor in list">anchor created using anchor macro</a> <br></br> 
     Open the <a target="_blank" href="#contacts">contacts</a> in a new window
 </p>
-<p><h2 style="color: crimson;; border : 1px solid crimson;; background: aquamarine;"><a style="visibility : hidden;" name="'_Some text markup_'"></a><strong style=""><u>Some text markup</u></strong></h2>
+<p>
+<h2 style="color: crimson;; border : 1px solid crimson;; background-color: aquamarine;">
+    <strong style=""><u>Some text markup</u></strong>
+    <a name="'_Some text markup_'"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#'_Some text markup_'" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
-<p><img src="http://code.google.com/images/code_logo.png" alt="image" style=""></img>
+<p><img src="https://code.google.com/images/code_logo.png" alt="image" style=""></img>
 </p>
 <p>You can make things <strong style="">bold</strong> or <em style="">italic</em> or <strong style=""><em>both</em></strong> but <strong style=""><em>not this one</em></strong>.
 </p>
@@ -38,14 +78,28 @@ This line is single line <br></br> but uses line break markup to split the line.
 <span style=" ; color: gray; padding: 2px; margin-left: 2em;  ; ; ; ;  ; ;">First level</span> <br></br> 
 <span style=" ; color: gray; padding: 2px; margin-left: 4em;  ; ; ; ;  ; ;">Second level</span> <br></br> 
 </p>
-<p><h3 style=""><a style="visibility : hidden;" name="Text with html special chars"></a>Text with html special chars</h3>
+<p>
+<h3 style="">
+    Text with html special chars
+    <a name="Text with html special chars"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Text with html special chars" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> &gt;&gt; it = [ 1, 2, 3, ] <br></br> <br></br> &gt;&gt; print type(it)<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px">    &lt; List  type ... &gt;</blockquote></blockquote></p>
-<p><h3 style=""><a style="visibility : hidden;" name="Special HTML markups"></a>Special HTML markups</h3>
+<p>
+<h3 style="">
+    Special HTML markups
+    <a name="Special HTML markups"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Special HTML markups" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p><abbr title="World Health Organisation">WHO</abbr>
 </p>
-<p>Here is a problem that needs to be explored, <span style="-moz-border-radius : 3px; border : 1px solid cadetBlue; color : red; padding: 1px; font-family : monospace;">FIXME</span>
+<p>Here is a problem that needs to be explored, <span class="br2" style="border : 1px solid cadetBlue; color : red; padding: 1px; font-family : monospace;">FIXME</span>
 </p>
 <p>As for what will raise errors, the GAE Python runtime docs make the oh-
 so-helpful statement that &quot;the os module is available, but with
@@ -59,15 +113,22 @@ os.mkdir), others will import fine but not work (tempfile.mkstemp).
 <p><table style="border-top : 1px solid gray; border-left : 1px solid gray; " cellspacing="0" cellpadding="5px" ><tr><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> :-) </td><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> <span style="font-size: x-large; color: darkOrchid; padding: 1px; font-family : monospace;">&#9786;</span></td>
 </tr><tr><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> :-( </td><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> <span style="font-size: x-large; color: orangeRed; padding: 1px; font-family : monospace;">&#9785;</span></td>
 </tr></table></p>
-<p><h2 style=""><a style="visibility : hidden;" name="Links"></a>Links</h2>
+<p>
+<h2 style="">
+    Links
+    <a name="Links"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Links" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
-<p>You can use <a href="internal links">internal links</a> or <a href="http://www.wikicreole.org">external links</a>,
+<p>You can use <a href="internal links">internal links</a> or <a href="https://www.wikicreole.org">external links</a>,
 give the link a <a href="internal links">different</a> name.
 </p>
 <p>Here's another sentence: This wisdom is taken from <a href="Ward Cunningham's">Ward Cunningham's</a>
 <a href="http://www.c2.com/doc/wikisym/WikiSym2006.pdf">Presentation at the Wikisym 06</a>.
 </p>
-<p>Here's a external link without a description: <a href="http://www.wikicreole.org">http://www.wikicreole.org</a>
+<p>Here's a external link without a description: <a href="https://www.wikicreole.org">https://www.wikicreole.org</a>
 </p>
 <p>Be careful that italic links are rendered properly:  <em style=""><a href="http://my.book.example/">My Book Title</a></em> 
 </p>
@@ -76,17 +137,24 @@ give the link a <a href="internal links">different</a> name.
 <p>Creole1.0 specifies that <a href="http://bar">http://bar</a> and ftp:<em style="">bar should not render italic,
 something like foo:</em>bar// should render as italic.
 </p>
-<p><a href="mailto:prata...@gmail....">prata...@gmail....</a>
+<p><a href="mailtomai...">prata...@gmail....</a>
 </p>
 <p>You can use this to draw a line to separate the page:
 </p><p><hr></hr></p>
-<p><h2 style=""><a style="visibility : hidden;" name="wiki extension"></a>wiki extension</h2>
+<p>
+<h2 style="">
+    wiki extension
+    <a name="wiki extension"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#wiki extension" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
 <p>You can use nowiki syntax if you would like do stuff like this:
 </p>
 <p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style=""></img>
 </p>
-<p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0;  ;  ; width: 100%; border-top: thin solid green; background: Aquamarine; border-left: thin solid #CEF2E0; color: blue; border-right: thin solid #CEF2E0; border-bottom: thin solid green;  ; ;; "><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0;  ;  ; width: 100%; border-top: thin solid green; background: Aquamarine; border-left: thin solid #CEF2E0; color: blue; border-right: thin solid #CEF2E0; border-bottom: thin solid green;  ; ;; "><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
@@ -154,12 +222,16 @@ adjustable and you can even position it.
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-    .highlighttable td.linenos { padding : 3px }
+    .highlighttable td.linenos {
+        padding : 3px;
+        color : brown;
+        background-color : activeborder;
+    }
     .highlighttable td.code { padding : 3px }
     .highlight { background-color : #FAFAFA; }
 </style>
 
-<div style="background : #FAFAFA; border : 1px dashed gray; -moz-border-radius: 4px;">
+<div class="br4" style="background : #FAFAFA; border : 1px dashed gray;">
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -180,7 +252,14 @@ adjustable and you can even position it.
 <p>... mentioned by Richard Feynman <sup><a href="#1" style="text-decoration: none;">1</a></sup>, initially proposed by
 Albert Einstein  <sup><a href="#2" style="text-decoration: none;">2</a></sup>
 </p>
-<p><h2 style=""><a style="visibility : hidden;" name="list"></a>list</h2>
+<p>
+<h2 style="">
+    list
+    <a name="list"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#list" title="Link to this section">&#9875;</a>
+</h2>
+
 </p><p>You can use lists, start it at the first column for now, please...
 </p>
 <p>unnumbered lists are like
@@ -191,11 +270,25 @@ Albert Einstein  <sup><a href="#2" style="text-decoration: none;">2</a></sup>
 </p><p><ol><li style=""> <a href="item 1">item 1</a></li><li style=""> item 2</li><li style=""> <em style=""> italic item 3 </em></li><ol><li style=""> item 3.1</li><li style=""> item 3.2</li></ol></ol></p>
 <p>up to five levels
 </p><p><ul><li style=""> level 1</li><ul><li style=""> level 2</li><ul><li style=""> level 3</li><ul><li style=""> level 4</li><ul><li style=""> level 5</li></ul></ul></ul></ul></ul></p>
-<p><h3 style=""><a style="visibility : hidden;" name="All possible list combination"></a>All possible list combination</h3>
+<p>
+<h3 style="">
+    All possible list combination
+    <a name="All possible list combination"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#All possible list combination" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li style=""> level 2 item 2 unordered</li></ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li><ul><li style=""> level 3 item 1 unordered</li><li style=""> level 3 item 2 unordered</li></ul><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 ordered</li><li style=""> level 1 item 1 ordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li></ul></p>
 <p><ul><ul><ul><ul><li style=""> Level 4 item 1 unordered</li><ol><li style=""> Level 5 item 2 ordered</li></ol></ul><li style=""> Level3 item 3 unordered</li></ul></ul></ul></p>
-<p><h2 style=""><a style="visibility : hidden;" name="Block quoted text"></a>Block quoted text</h2>
+<p>
+<h2 style="">
+    Block quoted text
+    <a name="Block quoted text"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Block quoted text" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
 <p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 1 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 2 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 3 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></p>
 <p><blockquote><blockquote><blockquote><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> <strong style="">Level 4 block quote : </strong>Here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation  here is a long quotation here is a long quotation here is a long quotation.</blockquote></blockquote></blockquote></blockquote></p>
@@ -205,39 +298,67 @@ Albert Einstein  <sup><a href="#2" style="text-decoration: none;">2</a></sup>
 <p><blockquote style="border-left : 2px solid #d6d6d6; padding-left : 5px"> Indent me! The quick brown fox jumps over the lazy dog.  Now this the time for all good men to come to the aid of   their country. Notice how we can continue the block-quote  in the same &quot;paragraph&quot; by using a backslash at the end of the line.<br></br><br></br> Another block, leading to...<br></br><blockquote style="margin-left : 0px; border-left : 2px solid #d6d6d6; padding-left : 5px"> Second level of indenting. This second is indented even more than the previous one.</blockquote></blockquote></p>
 <p>Back to normal text.
 </p>
-<p><h2 style=""><a style="visibility : hidden;" name="Definition List"></a>Definition List</h2>
+<p>
+<h2 style="">
+    Definition List
+    <a name="Definition List"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Definition List" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
 <p><dl><dt><b> Definition 1 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd><dt><b> Definition 2 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd><dt><b> Definition 3 : </b></dt><dd> The recommended way to test for a feature is to use the python hasattr() builtin. Working out what is and is not support from the   version number information is quite complex and unnessesary. For example to test for lock and unlock support</dd></dl></p>
 <p><dl><dt><b> Definition 4 : </b></dt><dd> Not part of the list</dd></dl></p>
 
-<p><h3 style=""><a style="visibility : hidden;" name="All possible list combinations in a table"></a>All possible list combinations in a table</h3>
+<p>
+<h3 style="">
+    All possible list combinations in a table
+    <a name="All possible list combinations in a table"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#All possible list combinations in a table" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
- <table border="1" >    <tr>    <td>   
-<ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li style=""> level 2 item 2 unordered</li></ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</td></li></ul>
-<td>
-<ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol>
-</tr> <tr>
-
-<td>
-<ul><ul><ul><li style=""> level 3 item 1 unordered</td></li></ul></ul></ul>
-<td>
-<ul><ul><ul><li style=""> level 3 item 2 unordered</td></li></ul></ul></ul>
-</tr> <tr>
-
-<td>
-<ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 ordered</li><li style=""> level 1 item 1 ordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol>
-<td>
-<p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li></ul></p>
-                  </td>           </tr>           </table>    
-
+<p> <table border="1" >    <tr>    <td>   
+</p><p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a></li><li style=""> level 2 item 2 unordered</li></ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</td></li></ul></p>
+<p><td>
+</p><p><ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol></p>
+<p></tr> <tr>
+</p>
+<p><td>
+</p><p><ul><ul><ul><li style=""> level 3 item 1 unordered</td></li></ul></ul></ul></p>
+<p><td>
+</p><p><ul><ul><ul><li style=""> level 3 item 2 unordered</td></li></ul></ul></ul></p>
+<p></tr> <tr>
+</p>
+<p><td>
+</p><p><ol><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</li></ol><li style=""> level 1 item 1 ordered</li><li style=""> level 1 item 1 ordered</li><ol><li style=""> level 2 item 1 ordered</li><li style=""> level 2 item 2 ordered</td></li></ol></ol></p>
+<p><td>
+</p><p><ul><li style=""> level 1 item 1 unordered</li><li style=""> level 1 item 2 unordered</li></ul></p>
+<p>                  </td>           </tr>           </table>    
+</p>
 <p>You cannot have
 </p><p><ul><li style=""> multiline list,items</li></ul></p>
-<p><h2 style=""><a style="visibility : hidden;" name="Macros"></a>Macros</h2>
+<p>
+<h2 style="">
+    Macros
+    <a name="Macros"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Macros" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
 <p>This line demonstrates the <span style=" ; color: green; padding: 2px; border: thin solid red;  ; ; ; ;  ; ;">Span Macro</span>
 </p>
-<p><h2 style=""><a style="visibility : hidden;" name="Box Wiki extensions"></a>Box Wiki extensions</h2>
-</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 2px 10px 5px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>The Joseph Priestley House was the American home of 18th-century British
+<p>
+<h2 style="">
+    Box Wiki extensions
+    <a name="Box Wiki extensions"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Box Wiki extensions" title="Link to this section">&#9875;</a>
+</h2>
+
+</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 2px 10px 5px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>The Joseph Priestley House was the American home of 18th-century British
 theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
 Located in Northumberland, Pennsylvania, the house, which was designed by
@@ -245,11 +366,10 @@ Priestley's wife Mary, is Georgian with Federalist accents. The
 <strong style="">Pennsylvania Historical</strong> and <strong style="">Museum Commission</strong> has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
-</p><p><ul><li style=""> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li style=""> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li style="">In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li style=""> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.(more...)</li></ul></p>
-<p>Recently featured: Retiarius - Niobium - Emma Watson
+</p><p></p><ul><li style=""> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.</li><li style=""> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.</li><li style="">In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.</li><li style=""> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.(more...)</li></ul><p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
 </div></div></div></p>
-<p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 5px 10px 2px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>Four people associated with the torrent tracking website The Pirate Bay,
+<p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 5px 10px 2px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>Four people associated with the torrent tracking website The Pirate Bay,
 including co-founder Peter Sunde (pictured), are found guilty of promoting
 copyright infringements.
 The birth of Injaz, the world's first cloned camel, is announced in Dubai,
@@ -266,22 +386,43 @@ cancellation of the Fourth East Asia Summit.
 </div></div></div></p>
 <p><div style=" ; clear: both;  ; ; ; ;  ; ;"></div>
 </p>
-<p><h2 style=""><a style="visibility : hidden;" name="Images"></a>Images</h2>
+<p>
+<h2 style="">
+    Images
+    <a name="Images"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Images" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
-<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float : right;"></img>
+<p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style="float: right;"></img>
 </p>
-<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style=" ; padding: 0px; margin: 0px; border: 0px;  ; ; ; ;  ; ;"> </img></a>
+<p><a href="http://www.google.com"><img src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style=" ; padding: 0px; margin: 0px; border: 0px;  ; ; ; ;  ; ;"></a>
 </p>
 <p><img   src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style=" ; padding: 0px; margin: 0px; float: right; border: 0px;  ; ; ; ;  ; ;"> </img>
 </p>
-<p><a href="http://www.google.com"><img alt="alternative text" src="http://assets0.twitter.com/images/twitter_logo_header.png" style=" ; padding: 0px; margin: 0px; float: right; border: 0px;  ; ; ; ;  ; ;"> </img></a>
+<p><a href="http://www.google.com"><img src="http://assets0.twitter.com/images/twitter_logo_header.png" alt="alternative text" style=" ; padding: 0px; margin: 0px; float: right; border: 0px;  ; ; ; ;  ; ;"></a>
 </p>
-<p><div style="display : table;"><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div><div style="display : table-row;"><div style="display : table-cell;"><img alt="alternate text" height="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;" width="100px"> </img></div></div></div>
+<p><div style="display : table;"><div style="display : table-row;"><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore%20History/petra-pharaohs-treasure-377742-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div></div><div style="display : table-row;"><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div></div><div style="display : table-row;"><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div></div><div style="display : table-row;"><div style="display : table-cell;"><img height="100px" width="100px" src="http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg" alt="alternate text" style=" ; padding: 0px; margin: 10px; border: 0px; border : 3px solid gray; ; ; ; ;  ; ;"></div></div></div>
 </p>
-<p><h2 style=""><a style="visibility : hidden;" name="HTML wiki extension"></a>HTML wiki extension</h2>
+<p>
+<h2 style="">
+    HTML wiki extension
+    <a name="HTML wiki extension"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#HTML wiki extension" title="Link to this section">&#9875;</a>
+</h2>
+
 </p>
-<p><div style="border : thin solid green;  ;  ; border: thin solid green;  ; ;; "><div> </div></div></p>
-<p><h1 style=""><a style="visibility : hidden;" name="Escapes"></a>Escapes</h1>
+<p><div style="border : thin solid green;  ;  ; border: thin solid green;  ; ;; "><div> Hello world </div></div></p>
+<p>
+<h1 style="">
+    Escapes
+    <a name="Escapes"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Escapes" title="Link to this section">&#9875;</a>
+</h1>
+
 </p><p>Normal Link: <a href="http://wikicreole.org/">http://wikicreole.org/</a> - now same link, but escaped: http://wikicreole.org/ 
 </p>
 <p>Normal asterisks: ''not bold''
@@ -290,7 +431,14 @@ cancellation of the Fourth East Asia Summit.
 </p>
 <p>a tilde escapes itself: ~xxx
 </p>
-<p><h3 style=""><a style="visibility : hidden;" name="Tables"></a>Tables</h3>
+<p>
+<h3 style="">
+    Tables
+    <a name="Tables"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Tables" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p>Tables are done like this:
 </p>
@@ -299,16 +447,30 @@ cancellation of the Fourth East Asia Summit.
 </tr><tr><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> you</td><td colspan="2" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ;text-align : right; "> can</td><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ;text-align : right;  ;text-align : right; |"> hello</td>
 </tr><tr><td colspan="2" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> also</td><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;|"> align<br></br> it. </td><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"> col4</td>
 </tr></table></p>
-<p><h3 style=""><a style="visibility : hidden;" name="Big Tables"></a>Big Tables</h3>
+<p>
+<h3 style="">
+    Big Tables
+    <a name="Big Tables"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Big Tables" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p>And big tables are done, like this :
 </p>
-<p><table cellspacing="0px" cellpadding="5px" style="border-left : 1px solid gray; border-top : 1px solid gray; color: green;; background-color:#ffffcc; cellpadding : 20; cellspacing : 0; /5,solid,gray"><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; color: yellow;"> Fruits </td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Icecreams</td></tr><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">                                       Orange</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; background: green;"> Apple</td></tr><tr style="font-weight : bold; color: maroon;"><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; "><em style="color: maroon;"> Bread </em></td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Pie</td></tr><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Butter</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Ice cream </td></tr></table></p>
-<p><h4 style=""><a style="visibility : hidden;" name="Multi-lined big tables"></a>Multi-lined big tables</h4>
-</p><p><table cellspacing="0px" cellpadding="5px" style="border-left : 1px solid gray; border-top : 1px solid gray; "><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">A <strong style="">Char</strong> value represents a Unicode character. 6 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">A <strong style="">Bool</strong> value represents a value in Boolean logic. The   possible values of type Bool are <em style="color: blue;">True</em> and <em style="color: blue;">False</em>. 2   comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">The <span style="background: blue;">Int</span> type is used for signed, fixed-width integer values. The exact range   Of values representable as Int depends on the system's longest &quot;native&quot;   Integer: on a 32-bit machine, an Int is usually 32 bits wide, while on a   64-bit machine, it is usually 64 bits wide. The Haskell standard only   Guarantees that an Int is wider than 28 bits. (There exist numeric types that   Are exactly 8, 16, and so on bits wide, in signed and unsigned   Flavours; we'll get to those later.) 6 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">An Integer value is a signed integer of unbounded size. Integers are not used   as often as Ints, because they are more expensive both in performance and   space consumption. On the other hand, Integer computations do not silently   overflow, so they give more reliably correct answers. 9 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Values of type Double are used for floating point numbers. A Double value is   typically 64 bits wide, and uses the system's native floating point   representation. (A narrower type, Float, also exists, but its use is   discouraged; Haskell compiler writers concentrate more on making   Double efficient, so Float is much slower.) 2 comments</td></tr></table></p>
+<p><table cellspacing="0px" cellpadding="5px" style="border-left : 1px solid gray; border-top : 1px solid gray; color: green;; background-color:#ffffcc; cellpadding : 20; cellspacing : 0; /5,solid,gray"><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; color: yellow;"> Fruits </td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Icecreams</td></tr><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">                                       Orange</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; background-color: green;"> Apple</td></tr><tr style="font-weight : bold; color: maroon;"><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; "><em style="color: maroon;"> Bread </em></td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Pie</td></tr><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Butter</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Ice cream </td></tr></table></p>
+<p>
+<h4 style="">
+    Multi-lined big tables
+    <a name="Multi-lined big tables"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Multi-lined big tables" title="Link to this section">&#9875;</a>
+</h4>
+
+</p><p><table cellspacing="0px" cellpadding="5px" style="border-left : 1px solid gray; border-top : 1px solid gray; "><tr style=""><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">A <strong style="">Char</strong> value represents a Unicode character. 6 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">A <strong style="">Bool</strong> value represents a value in Boolean logic. The   possible values of type Bool are <em style="color: blue;">True</em> and <em style="color: blue;">False</em>. 2   comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">The <span style="background-color: blue;">Int</span> type is used for signed, fixed-width integer values. The exact range   Of values representable as Int depends on the system's longest &quot;native&quot;   Integer: on a 32-bit machine, an Int is usually 32 bits wide, while on a   64-bit machine, it is usually 64 bits wide. The Haskell standard only   Guarantees that an Int is wider than 28 bits. (There exist numeric types that   Are exactly 8, 16, and so on bits wide, in signed and unsigned   Flavours; we'll get to those later.) 6 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">An Integer value is a signed integer of unbounded size. Integers are not used   as often as Ints, because they are more expensive both in performance and   space consumption. On the other hand, Integer computations do not silently   overflow, so they give more reliably correct answers. 9 comments</td><td style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray; ">Values of type Double are used for floating point numbers. A Double value is   typically 64 bits wide, and uses the system's native floating point   representation. (A narrower type, Float, also exists, but its use is   discouraged; Haskell compiler writers concentrate more on making   Double efficient, so Float is much slower.) 2 comments</td></tr></table></p>
 <p>You can format an address by simply forcing linebreaks:
 </p>
-<p><a name="contacts"></a>
+<p><a name="contacts">contacts</a>
 My contact dates:<br></br> 
 Pone: xyz<br></br> 
 Fax: +45<br></br> 
@@ -319,46 +481,157 @@ Mobile: abc
 </tr></table></p>
 <p>If interwiki links are setup in your wiki, this links to the WikiCreole page about Creole 1.0 test cases: <a href="WikiCreole:Creole1.0TestCases">WikiCreole:Creole1.0TestCases</a>.
 </p>
-<p><h4 style=""><a style="visibility : hidden;" name="Subsub"></a>Subsub</h4>
+<p>
+<h4 style="">
+    Subsub
+    <a name="Subsub"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Subsub" title="Link to this section">&#9875;</a>
+</h4>
+
 </p>
-<p><h5 style=""><a style="visibility : hidden;" name="Subsubsub"></a>Subsubsub</h5>
+<p>
+<h5 style="">
+    Subsubsub
+    <a name="Subsubsub"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Subsubsub" title="Link to this section">&#9875;</a>
+</h5>
+
 </p>
-<p><h1 style=""><a style="visibility : hidden;" name="Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle"></a>Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle</h1>
-</p><p><h2 style=""><a style="visibility : hidden;" name="This a test for creole 0.1 (2)"></a>This a test for creole 0.1 (2)</h2>
-</p><p><h3 style=""><a style="visibility : hidden;" name="This is a Subheading (3)"></a>This is a Subheading (3)</h3>
-</p><p><h4 style=""><a style="visibility : hidden;" name="Subsub (4)"></a>Subsub (4)</h4>
-</p><p><h5 style=""><a style="visibility : hidden;" name="Subsubsub (5)"></a>Subsubsub (5)</h5>
+<p>
+<h1 style="">
+    Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle
+    <a name="Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Top-level heading (1) A loooooooooooooog tiiiiiiiiiiiiitttttttttle" title="Link to this section">&#9875;</a>
+</h1>
+
+</p><p>
+<h2 style="">
+    This a test for creole 0.1 (2)
+    <a name="This a test for creole 0.1 (2)"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#This a test for creole 0.1 (2)" title="Link to this section">&#9875;</a>
+</h2>
+
+</p><p>
+<h3 style="">
+    This is a Subheading (3)
+    <a name="This is a Subheading (3)"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#This is a Subheading (3)" title="Link to this section">&#9875;</a>
+</h3>
+
+</p><p>
+<h4 style="">
+    Subsub (4)
+    <a name="Subsub (4)"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Subsub (4)" title="Link to this section">&#9875;</a>
+</h4>
+
+</p><p>
+<h5 style="">
+    Subsubsub (5)
+    <a name="Subsubsub (5)"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Subsubsub (5)" title="Link to this section">&#9875;</a>
+</h5>
+
 </p>
-<p><h1 style="color: red;"><a style="visibility : hidden;" name="First level"></a>First level</h1>
-</p><p><h2 style=""><a style="visibility : hidden;" name="Second level"></a>Second level</h2>
-</p><p><h3 style=""><a style="visibility : hidden;" name="Third level"></a>Third level</h3>
-</p><p><h4 style=""><a style="visibility : hidden;" name="Fourth level"></a>Fourth level</h4>
-</p><p><h5 style="margin : 5px"><a style="visibility : hidden;" name="Fifth level"></a>Fifth level</h5>
+<p>
+<h1 style="color: red;">
+    First level
+    <a name="First level"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#First level" title="Link to this section">&#9875;</a>
+</h1>
+
+</p><p>
+<h2 style="">
+    Second level
+    <a name="Second level"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Second level" title="Link to this section">&#9875;</a>
+</h2>
+
+</p><p>
+<h3 style="">
+    Third level
+    <a name="Third level"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Third level" title="Link to this section">&#9875;</a>
+</h3>
+
+</p><p>
+<h4 style="">
+    Fourth level
+    <a name="Fourth level"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Fourth level" title="Link to this section">&#9875;</a>
+</h4>
+
+</p><p>
+<h5 style="margin : 5px">
+    Fifth level
+    <a name="Fifth level"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Fifth level" title="Link to this section">&#9875;</a>
+</h5>
+
 </p><p>H6. Sixth level oops !
 </p>
-<p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0;  ;  ; color: gray; border-right: thin solid #CEF2E0; border-top: thin solid #CEF2E0; border-bottom: thin solid #CEF2E0; border-left: thin solid #CEF2E0;  ; ;; "><div class="wikiblk"> <div style="padding-right : 3px; padding-bottom : 3px; white-space : normal; padding-top : 3px; font-family : arial,sans-serif; padding-left : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0;  ;  ; color: gray; border-right: thin solid #CEF2E0; border-top: thin solid #CEF2E0; border-bottom: thin solid #CEF2E0; border-left: thin solid #CEF2E0;  ; ;; "><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
 </div></div></div></p>
 <p>
 <div style="">
-<h3>References</h3>
-<table style="padding-left: 3%; width: 100%;">
+<b> References </b>
+<table style="margin-left:  ; ;  ; ; ; ;  ; ;">
 
 <tr>
-    <td style="text-align: right; vertical-align: top;"><a name="1">1</a></td>
-    <td style="text-align: left;">German-born Swiss-American theoretical physicist, philosopher and</td>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="1">1</a></td>
+    <td style="padding: 5px; text-align: left;">German-born Swiss-American theoretical physicist, philosopher and</td>
 </tr>
 
 <tr>
-    <td style="text-align: right; vertical-align: top;"><a name="2">2</a></td>
-    <td style="text-align: left;">American physicist known for his work in the path integral</td>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="author">author</a></td>
+    <td style="padding: 5px; text-align: left;">who is widely regarded as one of the most influential and best</td>
+</tr>
+
+<tr>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="known">known</a></td>
+    <td style="padding: 5px; text-align: left;">scientists and intellectuals of all time. He is often regarded as</td>
+</tr>
+
+<tr>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="the">the</a></td>
+    <td style="padding: 5px; text-align: left;">father of modern physics.</td>
+</tr>
+
+<tr>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="2">2</a></td>
+    <td style="padding: 5px; text-align: left;">American physicist known for his work in the path integral</td>
+</tr>
+
+<tr>
+    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="formulation">formulation</a></td>
+    <td style="padding: 5px; text-align: left;">of quantum mechanics, the theory of quantum electrodynamics.</td>
 </tr>
 
 </table>
 </div>
 </p>
-<p><h3 style=""><a style="visibility : hidden;" name="Imporper Tables"></a>Imporper Tables</h3>
+<p>
+<h3 style="">
+    Imporper Tables
+    <a name="Imporper Tables"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Imporper Tables" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p><table style="border-top : 1px solid gray; border-left : 1px solid gray; " cellspacing="0" cellpadding="5px" ><tr><th colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"></th><th colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"></th>
 </tr></table></p>
@@ -370,7 +643,14 @@ adjustable and you can even position it.
 </tr></table></p>
 <p><table style="border-top : 1px solid gray; border-left : 1px solid gray; " cellspacing="0" cellpadding="5px" ><tr><td colspan="1" style="padding : 5px; border-right : 1px solid gray; border-bottom : 1px solid gray;"></td>
 </tr></table></p>
-<p><h3 style=""><a style="visibility : hidden;" name="Improper no-wiki blocks"></a>Improper no-wiki blocks</h3>
+<p>
+<h3 style="">
+    Improper no-wiki blocks
+    <a name="Improper no-wiki blocks"></a>
+    <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
+       href="#Improper no-wiki blocks" title="Link to this section">&#9875;</a>
+</h3>
+
 </p>
 <p>hello world  }
  }

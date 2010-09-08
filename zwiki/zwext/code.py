@@ -77,7 +77,7 @@ script_templ = """
 """
 
 code_templ = """
-<div style="background : #FAFAFA; border : 1px dashed gray; -moz-border-radius: 4px;">
+<div class="br4" style="background : #FAFAFA; border : 1px dashed gray;">
 %s
 </div>
 """

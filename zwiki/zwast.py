@@ -17,8 +17,9 @@ functions for translating the text to HTML"""
 
 import sys
 import re
+from   os.path      import basename, abspath, dirname, join, isdir, isfile
 #import xml.etree.cElementTree       as et
-import lxml.html                    as lhtml
+import lxml.html    as lhtml
 
 from   zwiki.macro        import build_macro
 from   zwiki.zwext        import build_zwext
@@ -63,6 +64,8 @@ FORMAT_NON          = 'fmt_non'
 FORMAT_EMPTY        = 'fmt_empty'
 FORMAT_BTABLE       = 'fmt_bt'
 FORMAT_BTABLESTYLE  = 'fmt_btstyle'
+
+templtdir = join( dirname(__file__), 'templates' )
 
 # ---------------------- Helper Class objects --------------
 
@@ -316,9 +319,14 @@ class Wikipage( Node ):
             elif o.postindex > 0 :
                 peerhtml_pos += o.posthtml
 
-        # Final html
+        # Append table sorting code snippet (only for root invocation)
+        js_tablesort = open( join(templtdir, 'tablesorter.html')).read() \
+                       if zwparser.nested == False else ''
+
         zwparser.html = '<div class="wikiblk">' + \
-                        peerhtml_neg + zwparser.html + peerhtml_pos + '</div>'
+                        peerhtml_neg + zwparser.html + peerhtml_pos + \
+                        js_tablesort + \
+                        '</div>'
         return zwparser.html
 
     def dump( self ) :
@@ -634,8 +642,8 @@ class BtableRows( Node ) :
                 if closetable : continue
                 style       = 'border-left : 1px solid gray; ' + \
                               'border-top : 1px solid gray; ' + style
-                html  += '<table cellspacing="0px" cellpadding="5px" style="%s">' % \
-                            ( style )
+                html  += """<table class="sortable" cellspacing="0px" \
+                                   cellpadding="5px" style="%s">""" % ( style )
                 closetable.append( '</table>' )
             elif mrkup == '||-' : # Row
                 if closerow :
@@ -757,8 +765,8 @@ class TableRows( Node ) :
 
     def tohtml( self ) :
         style   = 'border-top : 1px solid gray; border-left : 1px solid gray; '
-        html    = '<table style="%s" cellspacing="0" cellpadding="5px" >' % \
-                  style
+        html    = """<table class="sortable" style="%s" cellspacing="0"
+                            cellpadding="5px">""" % style
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \

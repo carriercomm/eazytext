@@ -112,6 +112,7 @@ class Box( ZWExtension ) :
                 and self.cont_css.setdefault( 'style', self.contentstyle )
             zwparser        = ZWParser( lex_optimize=False,
                                         yacc_optimize=False,
+                                        nested=True,
                                         style=self.cont_css )
             tu              = zwparser.parse( self.nowiki, debuglevel=0 )
             self.nowiki_h   = tu.tohtml()

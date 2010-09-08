@@ -29,7 +29,8 @@ css = {
     'margin'             : '10px',
     'padding'            : '3px',
     'width'              : '20em',
-    '-moz-border-radius' : '5px'
+    'border-right'       : '1px solid gray',
+    'border-bottom'      : '1px solid gray',
 }
 
 wikidoc = """
@@ -130,7 +131,7 @@ class Toc( ZWMacro ) :
 
     def on_posthtml( self ) :
         zwparser = self.macronode.parser.zwparser
-        contrdiv = lhtml.Element( 'div', { 'class' : 'toc', 'style' : self.style, } )
+        contrdiv = lhtml.Element( 'div', { 'class' : 'br5 toc', 'style' : self.style, } )
         headdiv  = lhtml.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
         toc_div  = lhtml.Element( 'div', {} )
         id       = random_word()

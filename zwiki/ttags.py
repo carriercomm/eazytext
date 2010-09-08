@@ -112,9 +112,9 @@ def tt_FIXME() :
     
     > [<FIXME>]
     """
-    style = "-moz-border-radius : 3px; border : 1px solid cadetBlue; " + \
+    style = "border : 1px solid cadetBlue; " + \
             "color : red; padding: 1px; font-family : monospace;"
-    html  = '<span style="%s">%s</span>' % (style, 'FIXME')
+    html  = '<span class="br2" style="%s">%s</span>' % (style, 'FIXME')
     return html
 
 def tt_Q( text ) :
