@@ -121,7 +121,7 @@ setup(
     namespace_packages=[],                  # setuptools
     test_suite='',                          # setuptools
 
-    provides=[ 'zwiki', ],
+    provides=[ 'zwiki-zeta', ],
     requires='',
     obsoletes='',
 

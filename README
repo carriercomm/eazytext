@@ -1,3 +1,5 @@
+{{ Toc( float='right' ) }}
+
 h3. Highlights
 
 ZWiki engine is built using formal parser grammar, thus making it both robust and
