@@ -17,6 +17,7 @@ functions for translating the text to HTML"""
 
 import sys
 import re
+from   random       import randint
 from   os.path      import basename, abspath, dirname, join, isdir, isfile
 #import xml.etree.cElementTree       as et
 import lxml.html    as lhtml
@@ -891,8 +892,9 @@ class Lists( Node ) :
     def tohtml( self ) :
         html         = ''
         closemarkups = []   # Stack to manage nested list.
-        markups      = { '#' : ('<ol>', '</ol>'),
-                         '*' : ('<ul>', '</ul>') }
+        liststyle    = ['decimal', 'lower-roman', 'lower-alpha']
+        markups      = { '#' : ('<ol style="list-style-type: %s;">', '</ol>'),
+                         '*' : ('<ul style="list-style-type: %s;">', '</ul>') }
         pm   = ''
         cm   = ''
         for l in self.listitems :
@@ -906,7 +908,7 @@ class Lists( Node ) :
             elif cmpmark < 0 :
                 # current list markup (cm) is one level deeper, open a new list
                 for i in range(diffmark) :
-                    html += markups[cm[0]][0]
+                    html += markups[cm[0]][0] % liststyle[randint(0,2)]
                     closemarkups.append( markups[cm[0]][1] )
             html += l.tohtml()
             pm = cm

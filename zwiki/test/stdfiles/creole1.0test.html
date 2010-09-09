@@ -155,10 +155,17 @@ something like foo:</em>bar// should render as italic.
 </p>
 <p><img src="http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif" alt="text" style=""></img>
 </p>
-<p><div style="color : blue; border-left : thin solid #CEF2E0; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid #CEF2E0;  ;  ; width: 100%; border-top: thin solid green; background: Aquamarine; border-left: thin solid #CEF2E0; color: blue; border-right: thin solid #CEF2E0; border-bottom: thin solid green;  ; ;; "><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p>
+<div class="boxext" style="color : blue; border-left : thin solid gray; border-bottom : thin solid green; width : 100%; border-top : thin solid green; background : Aquamarine; border-right : thin solid gray;  ;  ; width: 100%; border-top: thin solid green; background: Aquamarine; border-left: thin solid gray; color: blue; border-right: thin solid gray; border-bottom: thin solid green;  ; ;; ">
+    <div class="boxtitle" style="padding-right : 3px; background : #EEEEEE; padding-bottom : 3px; color : black; padding-top : 3px; font-weight : bold; padding-left : 3px">
+     
+    </div>
+    <div class="boxcont" style=""><div class="wikiblk"><div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
-</div></div></div></p>
+</div></div></div>
+</div>
+</p>
 <p><div style=" ; margin-left: 5%; margin-right: 5%;  ; ; ; ;  ; ;">
 <style type="text/css">
     .highlight .hll { background-color: #ffffcc }
@@ -264,29 +271,29 @@ Albert Einstein  <sup><a href="#2" style="text-decoration: none;">2</a></sup>
 </p><p>You can use lists, start it at the first column for now, please...
 </p>
 <p>unnumbered lists are like
-</p><p><ul><li style=""> item a
+</p><p><ul style="list-style-type: lower-alpha;"><li style=""> item a
 </li><li style=""> item b
 </li><li style=""> <strong style="">bold item c</strong>
 </li></ul></p>
 <p>blank space is also permitted before lists like:
-</p><p><ul><li style="">   item a
+</p><p><ul style="list-style-type: lower-alpha;"><li style="">   item a
 </li><li style=""> item b
 </li><li style=""> item c
-</li><ul><li style=""> item c.a
+</li><ul style="list-style-type: decimal;"><li style=""> item c.a
 </li></ul></ul></p>
 <p>or you can number them
-</p><p><ol><li style=""> <a href="item 1">item 1</a>
+</p><p><ol style="list-style-type: lower-roman;"><li style=""> <a href="item 1">item 1</a>
 </li><li style=""> item 2
 </li><li style=""> <em style=""> italic item 3 </em>
-</li><ol><li style=""> item 3.1
+</li><ol style="list-style-type: lower-alpha;"><li style=""> item 3.1
 </li><li style=""> item 3.2
 </li></ol></ol></p>
 <p>up to five levels
-</p><p><ul><li style=""> level 1
-</li><ul><li style=""> level 2
-</li><ul><li style=""> level 3
-</li><ul><li style=""> level 4
-</li><ul><li style=""> level 5
+</p><p><ul style="list-style-type: decimal;"><li style=""> level 1
+</li><ul style="list-style-type: lower-alpha;"><li style=""> level 2
+</li><ul style="list-style-type: decimal;"><li style=""> level 3
+</li><ul style="list-style-type: lower-alpha;"><li style=""> level 4
+</li><ul style="list-style-type: lower-alpha;"><li style=""> level 5
 </li></ul></ul></ul></ul></ul></p>
 <p>
 <h3 style="">
@@ -297,27 +304,27 @@ Albert Einstein  <sup><a href="#2" style="text-decoration: none;">2</a></sup>
 </h3>
 
 </p>
-<p><ul><li style=""> level 1 item 1 unordered
+<p><ul style="list-style-type: lower-roman;"><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
-</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a>
+</li><ul style="list-style-type: lower-alpha;"><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a>
 </li><li style=""> level 2 item 2 unordered
 </li></ul><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
-</li><ol><li style=""> level 2 item 1 ordered
+</li><ol style="list-style-type: decimal;"><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
-</li><ul><li style=""> level 3 item 1 unordered
+</li><ul style="list-style-type: lower-roman;"><li style=""> level 3 item 1 unordered
 </li><li style=""> level 3 item 2 unordered
 </li></ul><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
 </li></ol><li style=""> level 1 item 1 ordered
 </li><li style=""> level 1 item 1 ordered
-</li><ol><li style=""> level 2 item 1 ordered
+</li><ol style="list-style-type: lower-alpha;"><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
 </li></ol><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
 </li></ul></p>
-<p><ul><ul><ul><ul><li style=""> Level 4 item 1 unordered
-</li><ol><li style=""> Level 5 item 2 ordered
+<p><ul style="list-style-type: decimal;"><ul style="list-style-type: lower-roman;"><ul style="list-style-type: lower-roman;"><ul style="list-style-type: decimal;"><li style=""> Level 4 item 1 unordered
+</li><ol style="list-style-type: decimal;"><li style=""> Level 5 item 2 ordered
 </li></ol></ul><li style=""> Level3 item 3 unordered
 </li></ul></ul></ul></p>
 <p>
@@ -374,48 +381,48 @@ test for lock and unlock support
 
 </p>
 <p> <table border="1" >    <tr>    <td>   
-</p><p><ul><li style=""> level 1 item 1 unordered
+</p><p><ul style="list-style-type: lower-roman;"><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
-</li><ul><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a>
+</li><ul style="list-style-type: lower-alpha;"><li style=""> level 2 item 1 unordered <a name="anchor in list" style=" ; font-weight: bold;  ; ; ; ;  ; ;">Anchored here</a>
 </li><li style=""> level 2 item 2 unordered
 </li></ul><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
 </td>
 </li></ul></p>
 <p><td>
-</p><p><ol><ol><li style=""> level 2 item 1 ordered
+</p><p><ol style="list-style-type: lower-roman;"><ol style="list-style-type: lower-alpha;"><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
 </td>
 </li></ol></ol></p>
 <p></tr> <tr>
 </p>
 <p><td>
-</p><p><ul><ul><ul><li style=""> level 3 item 1 unordered
+</p><p><ul style="list-style-type: lower-alpha;"><ul style="list-style-type: lower-roman;"><ul style="list-style-type: lower-alpha;"><li style=""> level 3 item 1 unordered
 </td>
 </li></ul></ul></ul></p>
 <p><td>
-</p><p><ul><ul><ul><li style=""> level 3 item 2 unordered
+</p><p><ul style="list-style-type: decimal;"><ul style="list-style-type: lower-alpha;"><ul style="list-style-type: decimal;"><li style=""> level 3 item 2 unordered
 </td>
 </li></ul></ul></ul></p>
 <p></tr> <tr>
 </p>
 <p><td>
-</p><p><ol><ol><li style=""> level 2 item 1 ordered
+</p><p><ol style="list-style-type: lower-alpha;"><ol style="list-style-type: decimal;"><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
 </li></ol><li style=""> level 1 item 1 ordered
 </li><li style=""> level 1 item 1 ordered
-</li><ol><li style=""> level 2 item 1 ordered
+</li><ol style="list-style-type: lower-alpha;"><li style=""> level 2 item 1 ordered
 </li><li style=""> level 2 item 2 ordered
 </td>
 </li></ol></ol></p>
 <p><td>
-</p><p><ul><li style=""> level 1 item 1 unordered
+</p><p><ul style="list-style-type: decimal;"><li style=""> level 1 item 1 unordered
 </li><li style=""> level 1 item 2 unordered
 </li></ul></p>
 <p>                  </td>           </tr>           </table>    
 </p>
 <p>You cannot have
-</p><p><ul><li style=""> multiline list,
+</p><p><ul style="list-style-type: lower-roman;"><li style=""> multiline list,
 items
 </li></ul></p>
 <p>
@@ -437,7 +444,12 @@ items
        href="#Box Wiki extensions" title="Link to this section">&#9875;</a>
 </h2>
 
-</p><p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 2px 10px 5px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 2px 10px 5px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">Priestley Avenue side of the Joseph Priestley House in 2007</div><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>The Joseph Priestley House was the American home of 18th-century British
+</p><p>
+<div class="boxext" style="width : 48%; border-top : thin solid gray; border-right : thin solid gray; color : gray; border-left : thin solid gray; margin : 10px 2px 10px 5px;; border-bottom : thin solid gray;  ;  ; width: 48%; border-top: thin solid gray; border-right: thin solid gray; color: gray; border-left: thin solid gray; margin: 10px 2px 10px 5px;; border-bottom: thin solid gray;  ; ;; ">
+    <div class="boxtitle" style="padding-right : 3px; background : #EEEEEE; padding-bottom : 3px; color : black; padding-top : 3px; font-weight : bold; padding-left : 3px">
+    Priestley Avenue side of the Joseph Priestley House in 2007 
+    </div>
+    <div class="boxcont" style=""><div class="wikiblk"><div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>The Joseph Priestley House was the American home of 18th-century British
 theologian, dissenting clergyman, natural philosopher, educator, and
 political theorist Joseph Priestley from 1798 until his death in 1804.
 Located in Northumberland, Pennsylvania, the house, which was designed by
@@ -445,15 +457,23 @@ Priestley's wife Mary, is Georgian with Federalist accents. The
 <strong style="">Pennsylvania Historical</strong> and <strong style="">Museum Commission</strong> has operated it as a museum
 dedicated to Joseph Priestley since 1970, but may close it by July 2009
 due to low visitation and budget cuts. 
-</p><p></p><ul><li style=""> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.
+</p><p><ul style="list-style-type: lower-roman;"><li style=""> Fleeing religious persecution and political turmoil in Britain, the Priestleys emigrated to the United States in 1794 seeking a peaceful life.
 </li><li style=""> Hoping to avoid the political troubles that had plagued them in Britain and the problems of urban life they saw in the United States, the Priestleys built a house in rural Pennsylvania; nevertheless, political disputes and family troubles dogged Priestley during the last ten years of his life.
 </li><li style="">In the 1960s, the house was carefully restored by the Pennsylvania Historical and Museum Commission and designated a National Historic Landmark.
 </li><li style=""> A second renovation was undertaken in the 1990s to return the home to the way it looked during Priestley's time.
 (more...)
-</li></ul><p>Recently featured: Retiarius - Niobium - Emma Watson
+</li></ul></p>
+<p>Recently featured: Retiarius - Niobium - Emma Watson
 </p>
-</div></div></div></p>
-<p><div style="width : 48%; border-top : thin solid #CEF2E0; border-right : thin solid #CEF2E0; color : gray; border-left : thin solid #CEF2E0; margin : 10px 5px 10px 2px;; border-bottom : thin solid #CEF2E0;  ;  ; width: 48%; border-top: thin solid #CEF2E0; border-right: thin solid #CEF2E0; color: gray; border-left: thin solid #CEF2E0; margin: 10px 5px 10px 2px;; border-bottom: thin solid #CEF2E0;  ; ;; "><div style="color : ; margin-bottom : 5px; padding-right : 3px; background : #CEF2E0; padding-bottom : 3px; padding-top : 3px; font-weight : bold; padding-left : 3px">In the News</div><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>Four people associated with the torrent tracking website The Pirate Bay,
+</div></div></div>
+</div>
+</p>
+<p>
+<div class="boxext" style="width : 48%; border-top : thin solid gray; border-right : thin solid gray; color : gray; border-left : thin solid gray; margin : 10px 5px 10px 2px;; border-bottom : thin solid gray;  ;  ; width: 48%; border-top: thin solid gray; border-right: thin solid gray; color: gray; border-left: thin solid gray; margin: 10px 5px 10px 2px;; border-bottom: thin solid gray;  ; ;; ">
+    <div class="boxtitle" style="padding-right : 3px; background : #EEEEEE; padding-bottom : 3px; color : black; padding-top : 3px; font-weight : bold; padding-left : 3px">
+    In the News 
+    </div>
+    <div class="boxcont" style=""><div class="wikiblk"><div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>Four people associated with the torrent tracking website The Pirate Bay,
 including co-founder Peter Sunde (pictured), are found guilty of promoting
 copyright infringements.
 The birth of Injaz, the world's first cloned camel, is announced in Dubai,
@@ -467,7 +487,9 @@ Thai Prime Minister Abhisit Vejjajiva declares a state of emergency in
 Bangkok and surrounding areas after anti-government protests forced the
 cancellation of the Fourth East Asia Summit.
 </p>
-</div></div></div></p>
+</div></div></div>
+</div>
+</p>
 <p><div style=" ; clear: both;  ; ; ; ;  ; ;"></div>
 </p>
 <p>
@@ -696,10 +718,17 @@ Mobile: abc
 
 </p><p>H6. Sixth level oops !
 </p>
-<p><div style="color : gray; border-right : thin solid #CEF2E0; border-top : thin solid #CEF2E0; border-bottom : thin solid #CEF2E0; border-left : thin solid #CEF2E0;  ;  ; color: gray; border-right: thin solid #CEF2E0; border-top: thin solid #CEF2E0; border-bottom: thin solid #CEF2E0; border-left: thin solid #CEF2E0;  ; ;; "><div class="wikiblk"> <div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
+<p>
+<div class="boxext" style="color : gray; border-right : thin solid gray; border-top : thin solid gray; border-bottom : thin solid gray; border-left : thin solid gray;  ;  ; color: gray; border-right: thin solid gray; border-top: thin solid gray; border-bottom: thin solid gray; border-left: thin solid gray;  ; ;; ">
+    <div class="boxtitle" style="padding-right : 3px; background : #EEEEEE; padding-bottom : 3px; color : black; padding-top : 3px; font-weight : bold; padding-left : 3px">
+     
+    </div>
+    <div class="boxcont" style=""><div class="wikiblk"><div style="white-space : normal; padding-top : 3px; padding-right : 3px; padding-left : 3px; padding-bottom : 3px; ; "><p>This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 </p>
-</div></div></div></p>
+</div></div></div>
+</div>
+</p>
 <p>
 <div style="">
 <b> References </b>
@@ -825,7 +854,7 @@ hold to live.
         };
     };
 
-    function sortby(n_th, cols) {
+    function sortby(n_th, cols, e) {
         var zwikidesc = dojo.attr(n_th, "zwikidesc");
         var n_parent = n_th;
         var n_trth = null;
@@ -903,4 +932,38 @@ hold to live.
         dojo.addOnLoad(tablesorter);
     }
 </script>
+<script type="text/javascript">
+    function boxhide(n_hide, n_show, n_cont, e) {
+        dojo.style(n_hide, { display : "none" });
+        dojo.style(n_show, { display : "inherit" });
+        dojo.style(n_cont, { display : "none" });
+    }
+
+    function boxshow(n_hide, n_show, n_cont, e) {
+        dojo.style(n_hide, { display : "inherit" });
+        dojo.style(n_show, { display : "none" });
+        dojo.style(n_cont, { display : "inherit" });
+    }
+
+    function togglebox() {
+        console.log("helo");
+        dojo.forEach(
+            dojo.query("div.wikiblk div.boxext"),
+            function(n) {
+                var n_hide = dojo.query(".boxhide", n)[0];
+                var n_show = dojo.query(".boxshow", n)[0];
+                var n_cont = dojo.query(".boxcont", n)[0];
+                console.log(n);
+                dojo.connect( n_hide, "onclick",
+                              dojo.partial(boxhide, n_hide, n_show, n_cont) );
+                dojo.connect( n_show, "onclick",
+                              dojo.partial(boxshow, n_hide, n_show, n_cont) );
+            }
+        );
+    }
+    if( dojo ) { 
+        dojo.addOnLoad(togglebox);
+    }
+</script>
+
 </div></body></html>
