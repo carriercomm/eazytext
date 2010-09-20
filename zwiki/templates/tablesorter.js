@@ -1,11 +1,33 @@
-<script type="text/javascript">
-    function swap(cols, i, j) {
-        var tmp = cols[j];
-        cols[j] = cols[i];
-        cols[i] = tmp;
-    }
+function swap(cols, i, j) {
+    var tmp = cols[j];
+    cols[j] = cols[i];
+    cols[i] = tmp;
+}
 
-    function parent_tr(n) {
+function bubblesort(cols, desc) { // Bubble sort
+    var swapped = true;
+    var j = 0;
+    var l = cols.length;
+    while(swapped) {
+        swapped = false;
+        j++;
+        for(i = 0; i < (l-j); i++) {
+            // Note that this is the reverse comparision for
+            // descending and ascending, since while placing the rows are
+            // placed in the reverse order
+            if( desc && cols[i].innerHTML > cols[i+1].innerHTML ) {
+                swap(cols, i, i+1);
+                swapped = true;
+            } else if( cols[i].innerHTML < cols[i+1].innerHTML) {
+                swap(cols, i, i+1);
+                swapped = true;
+            }
+        };
+    };
+};
+
+function tablesorter() {
+    var parent_tr = function(n) {
         var n_parent = n;
         var n_tr = null;
         while(n_parent && (! n_tr)) {
@@ -18,29 +40,7 @@
         return n_tr;
     };
 
-    function bubblesort(cols, desc) { // Bubble sort
-        var swapped = true;
-        var j = 0;
-        var l = cols.length;
-        while(swapped) {
-            swapped = false;
-            j++;
-            for(i = 0; i < (l-j); i++) {
-                // Note that this is the reverse comparision for
-                // descending and ascending, since while placing the rows are
-                // placed in the reverse order
-                if( desc && cols[i].innerHTML > cols[i+1].innerHTML ) {
-                    swap(cols, i, i+1);
-                    swapped = true;
-                } else if( cols[i].innerHTML < cols[i+1].innerHTML) {
-                    swap(cols, i, i+1);
-                    swapped = true;
-                }
-            };
-        };
-    };
-
-    function sortby(n_th, cols, e) {
+    var sortby = function(n_th, cols, e) {
         var zwikidesc = dojo.attr(n_th, "zwikidesc");
         var n_parent = n_th;
         var n_trth = null;
@@ -72,7 +72,7 @@
 
     };
 
-    function fortable(n_table) {
+    var fortable = function(n_table) {
         var n_rows = dojo.query("tr", n_table);
         var n_trth = [];
         var n_trtd = [];
@@ -92,7 +92,9 @@
             dojo.map(
                 dojo.filter( n_trtd, function(n) { return n.length == l }),
                 function(nc) {
-                    for(j = 0; j < l; j++) { cols[j][cols[j].length] = nc[j] };
+                    for(j = 0; j < l; j++) {
+                        cols[j][cols[j].length] = nc[j]
+                    };
                 }
             );
             for(j = 0; j < l; j++) {
@@ -100,21 +102,19 @@
                 dojo.style(n_th, { cursor : "pointer" });
                 dojo.addClass(n_th, "hoverhighlight");
                 dojo.attr(n_th, "zwikidesc", "none");
-                dojo.connect( n_th, "onclick", dojo.partial(sortby, n_th, cols[j]));
-                dojo.create( "div", { innerHTML: "&#9660;&#9650;",
-                                      style: { float: "right", fontSize: "xx-small" }
-                                    },
+                dojo.connect( n_th, "onclick",
+                              dojo.partial(sortby, n_th, cols[j]));
+                dojo.create( "div",
+                             { innerHTML: "&#9660;&#9650;",
+                               style: { float: "right", fontSize: "xx-small" }
+                             },
                              n_th, "last"
                           );
             };
         };
     };
 
-    function tablesorter() {
-        dojo.forEach(dojo.query("div.wikiblk table.sortable"), fortable);
-    };
+    dojo.forEach(dojo.query("div.wikiblk table.sortable"), fortable);
+};
 
-    if( dojo ) { 
-        dojo.addOnLoad(tablesorter);
-    }
-</script>
+dojo.addOnLoad(tablesorter);

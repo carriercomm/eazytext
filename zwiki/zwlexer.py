@@ -171,7 +171,7 @@ class ZWLexer( object ):
         return t
 
     def t_table_TABLE_CELLSTART( self, t ):
-        r'[ \t]*\|{1,10}=?(\{[^{}\r\n]*\})?'
+        r'[ \t]*\|=?(\{[^{}\r\n]*\})?'
         return t
 
     def t_table_NEWLINE( self, t ):

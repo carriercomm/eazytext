@@ -321,14 +321,13 @@ class Wikipage( Node ):
                 peerhtml_pos += o.posthtml
 
         # Append JS scripts from templates
-        js_tablesort = open( join(templtdir, 'tablesorter.html')).read() \
-                       if zwparser.nested == False else ''
-        js_boxext = open( join(templtdir, 'zwextbox.html')).read() \
-                       if zwparser.nested == False else ''
+        #js_tablesort = open( join(templtdir, 'tablesorter.html')).read() \
+        #               if zwparser.nested == False else ''
+        #js_boxext = open( join(templtdir, 'zwextbox.html')).read() \
+        #               if zwparser.nested == False else ''
 
         zwparser.html = '<div class="wikiblk">' + \
                         peerhtml_neg + zwparser.html + peerhtml_pos + \
-                        js_tablesort + js_boxext + \
                         '</div>'
         return zwparser.html
 
@@ -756,9 +755,8 @@ class TableRows( Node ) :
         self.rows.append( (row, pipe, Newline( self.parser, newline )) )
 
     def tohtml( self ) :
-        style   = 'border-top : 1px solid gray; border-left : 1px solid gray; '
-        html    = """<table class="sortable" style="%s" cellspacing="0"
-                            cellpadding="5px">""" % style
+        html = """<table class="sortable" style="border-collapse: collapse;"
+                         cellspacing="0" cellpadding="5px">"""
         for row, pipe, newline in self.rows :
             html += '<tr>' + row.tohtml() + \
                     ( ( newline and newline.tohtml() ) or '' ) + \
@@ -802,15 +800,11 @@ class TableCells( Node ) :
         self.cells  = [ [markup, cell, 1] ]
 
     def appendcell( self, markup, cell ) :
-        # `markup` captures the cell markup - pipe+style
-        strippedmarkup  = markup.strip()
-        colspan         = len(strippedmarkup) - len(strippedmarkup.lstrip( M_PIPE ))
-        if colspan == 1 :
-            self.cells.append([ markup, cell, 1 ])
-        elif colspan > 1 :
+        if isinstance(cell, Empty) :
             # If no content for this cell, then merge the cell with the
             # previous cell
-            self.cells[-1][2] += colspan - 1 # By incrementing the colspan
+            self.cells[-1][2] += 1 # By incrementing the colspan
+        else :
             self.cells.append([ markup, cell, 1 ])
 
     def children( self ) :
@@ -825,8 +819,7 @@ class TableCells( Node ) :
 
     def tohtml( self ) :
         # Process the text contents and convert them into html
-        style     = 'padding : 5px; border-right : 1px solid gray; ' + \
-                    'border-bottom : 1px solid gray;'
+        style     = 'padding : 5px; border: 1px solid gray;'
         htmlcells = []
 
         for markup, cell, colspan in self.cells :
@@ -892,7 +885,8 @@ class Lists( Node ) :
     def tohtml( self ) :
         html         = ''
         closemarkups = []   # Stack to manage nested list.
-        liststyle    = ['decimal', 'lower-roman', 'lower-alpha']
+        liststyle    = { '#' : ['decimal', 'lower-roman', 'lower-alpha'],
+                         '*' : ['disc', 'disc', 'disc' ] }
         markups      = { '#' : ('<ol style="list-style-type: %s;">', '</ol>'),
                          '*' : ('<ul style="list-style-type: %s;">', '</ul>') }
         pm   = ''
@@ -908,7 +902,8 @@ class Lists( Node ) :
             elif cmpmark < 0 :
                 # current list markup (cm) is one level deeper, open a new list
                 for i in range(diffmark) :
-                    html += markups[cm[0]][0] % liststyle[randint(0,2)]
+                    html += markups[cm[0]][0] % \
+                                liststyle[cm[0]][len(l.listmarkup)%3]
                     closemarkups.append( markups[cm[0]][1] )
             html += l.tohtml()
             pm = cm
