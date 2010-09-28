@@ -371,8 +371,8 @@ a tilde escapes itself: ~~xxx
 
 Tables are done like this:
 
-||= header col1 |= header col2 |=|=|
-| col1         |{y} col2      | ''{g}col3'' ||
+|= header col1 |=|= header col2 |=|=
+|= col1   ||{y} col2      | ''{g}col3'' ||
 | you          | can                       $|| hello $|
 | you                        ||              | hello $|
 | you                        |              | hello $|
