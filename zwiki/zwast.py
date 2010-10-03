@@ -1142,12 +1142,12 @@ class BQuotes( Node ) :
                 closemarkups.append( '</blockquote>' )
 
             self._extendcontents( bq, contents )
-            contents.append( Content( self.parser, '\n', TEXT_NEWLINE, '<br></br>' ))
+            contents.append( Content( self.parser, '\n', TEXT_NEWLINE, '<br/>' ))
             # html += bq.tohtml()
             pm    = cm
 
-        # Pop-out the last new-line (<br></br>)
-        if contents[-1].html == '<br></br>' :
+        # Pop-out the last new-line (<br/>)
+        if contents[-1].html == '<br/>' :
             contents.pop( -1 )
 
         html += self._processcontents( contents )
@@ -1422,7 +1422,7 @@ class BasicText( Node ) :
             )
             for line in virtuallines[1:] :
                 self.contents.append(
-                    Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br></br>' )
+                    Content( parser, '\\\\', TEXT_SPECIALCHAR_LB, '<br/>' )
                 )
                 self.contents.append( Content( parser, line, TEXT_SPECIALCHAR,
                                                escape_htmlchars(line) ))
