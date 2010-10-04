@@ -30,7 +30,7 @@ generated using ''PRE'' template, like,
 
 def parsetag( text ) :
     html    = text
-    keyword = text[:5]
+    keyword = text[:5].upper()
     if keyword[:3] == 'PRE' :
         html = tt_PRE( text[3:] )
 
@@ -39,6 +39,9 @@ def parsetag( text ) :
 
     elif keyword[:4] == 'ADDR' :
         html = tt_ADDR( text[4:] )
+
+    elif keyword[:3] == 'FNT' :
+        html = tt_FNT( text[3:] )
 
     elif keyword[:5] == 'FIXME' :
         html = tt_FIXME()
@@ -205,6 +208,29 @@ def tt_ADDR( text ) :
     """
     text = text.replace( ',', '<br></br>' )
     html  = '<address>%s</address>' % text
+    return html
+
+def tt_FNT( text ) :
+    """
+    === FONT
+    :Description::
+        Generate a span element with specified font styling.
+
+    :Syntax ::
+        ~[<FNT <CSS font style> ; <text> ~>]
+
+    :Example ::
+
+    > ~[<FNT italic bold 12px/30px Georgia, serif ; This text is specially fonted ~>]
+
+    > [<FNT italic bold 12px/30px Georgia, serif ; This text is specially fonted >]
+    """
+    try :
+        style, innerHTML = text.split( ';', 1 )
+    except :
+        style = ''
+        innerHTML = text
+    html  = '<span style="font: %s">%s</span>' % (style, innerHTML)
     return html
 
 def tt_FOOTNOTE( text ) :
