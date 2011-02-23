@@ -15,6 +15,7 @@ import lxml.html            as lhtml
 from   nose.plugins.attrib  import attr
 
 import zwiki
+from   zwiki                import wiki_properties
 from   zwiki.zwlexer        import ZWLexer
 from   zwiki.zwparser       import ZWParser
 import zwiki.test.testlib   as testlib
@@ -113,10 +114,9 @@ hello world
 """
 
 aggr_wikiprop = """
-@ { 'margin-top' : '5',
+@ { 'margin-top' : '5px',
 @   'style' : { 'font-style' : 'italic',
 @               'style' : 'color : brown' },
-@   'Boxstyle' : { 'text-align' : 'right' },
 @ }
 hello world
 """
@@ -167,7 +167,7 @@ class TestDumpsValid( object ) :
 
         # Prepare the reference.
         ref        = ref or testcontent
-        props, ref = zwparser._wiki_properties( ref )
+        props, ref = wiki_properties( ref )
         ref        = zwparser.wiki_preprocess( ref )
 
         # Test by comparing the dumps
@@ -255,62 +255,37 @@ class TestDumpsValid( object ) :
         """Testing methods provided by parsers"""
         log.info( "Testing methods provided by parsers" )
 
-        ref_wikicss = { 'white-space' : 'normal' }
-
-        # wiki_css
-        zwp = ZWParser( lex_optimize=True, yacc_optimize=False, yacc_debug=False )
-        zwp.parse( "wiki-text" )
-        assert_equal( zwp.wiki_css, ref_wikicss, 'Mismatch in wiki_css' )
-
-        # _wiki_properties()
+        # wiki_properties()
         refprop = { 'a': 1, 'b': 2 }
         zwp = ZWParser( lex_optimize=True, yacc_optimize=False, yacc_debug=False )
-        prop, text = zwp._wiki_properties( wikiproptext1 )
+        prop, text = wiki_properties( wikiproptext1 )
         assert_equal( prop, {}, 'Mismatch in `prop` for `wikiproptext1`' )
         assert_equal( text, 'hello world\n',
                       'Mismatch in `text` for `wikiproptext1`' )
 
-        prop, text = zwp._wiki_properties( wikiproptext2 )
+        prop, text = wiki_properties( wikiproptext2 )
         assert_equal( prop, refprop, 'Mismatch in `prop` for `wikiproptext2`' )
         assert_equal( text, '\nhello world\n', 
                       'Mismatch in `text` for `wikiproptext1`' )
 
-        prop, text = zwp._wiki_properties( wikiproptext3 )
+        prop, text = wiki_properties( wikiproptext3 )
         assert_equal( prop, refprop, 'Mismatch in `prop` for `wikiproptext3`' )
         assert_equal( text, 'hello world\n', 
                       'Mismatch in `text` for `wikiproptext3`' )
 
         # Check style agreegation
         zwp = ZWParser( style={ 'border' : '1px solid gray',
+                                'margin-top' : '10px',
                                 'style' : { 'display' : 'block',
                                             'style' : 'margin-left : 10px' },
-                                'Tocstyle' : { 'padding-left' : '20px' },
                               },
                         lex_optimize=True, yacc_optimize=False, yacc_debug=False )
         zwp.parse( aggr_wikiprop )
-        ref_wikicss.update({ 'border' : '1px solid gray',
-                             'display' : 'block',
-                             'margin-top' : '5',
-                             'font-style' : 'italic',
-                          })
-        refstyle = 'margin-left : 10px; color : brown; '
-        assert_equal( zwp.wiki_css, ref_wikicss,
-                      'Mismatch in style aggregation')
-        assert_equal( zwp.style, refstyle, 'Mismatch in style aggregation' )
-        assert_equal( zwp.macrostyles.pop( 'Tocstyle' ),
-                      { 'padding-left' : '20px' },
-                      'Mismatch in macrostyles, Tocstyle'
-                    )
-        assert_false( [ (k,v) for k,v in zwp.macrostyles.items() if v ],
-                      'Mismatch in macrostyles, rest of the macros'
-                    )
-        assert_equal( zwp.extstyles.pop( 'Boxstyle' ),
-                      { 'text-align' : 'right' },
-                      'Mismatch in extstyles, Boxstyle'
-                    )
-        assert_false( [ (k,v) for k,v in zwp.extstyles.items() if v ],
-                      'Mismatch in extstyles, rest of the extensions'
-                    )
+        refstyle = 'border : 1px solid gray; display : block; ' + \
+                   'margin-left : 10px; color : brown; font-style : italic; ' +\
+                   'margin-top : 5px'
+        assert_equal( sorted(zwp.styleattr), sorted(refstyle),
+                      'Mismatch in style aggregation' )
 
     def test_5_heading( self ) :
         """Testing heading markup"""

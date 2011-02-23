@@ -61,7 +61,8 @@ def parse_zetalink( app, zlink ) :
                  ])
     return app.h.url_forzetalink( app.c, **kwargs )
 
-def parse_link( zwparser, markup, text='' ) :
+template = '<a class="zwzeta" href="%s" title="%s" style="%s">%s</a>'
+def parse_link2html( zwparser, markup, text='' ) :
     """Parse markup for interzeta and zetalink. If text is NULL, construct text
     from markup.
     Return,
@@ -83,4 +84,5 @@ def parse_link( zwparser, markup, text='' ) :
         interzeta = parse_interzeta( zwparser.app, groups[0] )
         href      = interzeta and '%s%s' % ( interzeta, href ) or href
     text = text or ztext or markup
-    return ( href, title, text, style )
+    html = template % ( href, title, style, text )
+    return html

@@ -9,15 +9,13 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-#import xml.etree.cElementTree as et
-import lxml.html           as lhtml
 from   pygments            import highlight
 from   pygments.formatters import HtmlFormatter
 from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
                                   get_lexer_by_name
 
 from   zwiki.zwext  import ZWExtension
-from   zwiki        import split_style, constructstyle
+from   zwiki        import split_style, constructstyle, lhtml
 
 css = { 
     'margin-left'  : '5%',

@@ -11,14 +11,16 @@ from   random             import choice, randint, shuffle
 
 from   nose.tools         import assert_equal
 
+from   zwiki              import wiki_properties
+import zwiki
 from   zwiki.zwlexer      import ZWLexer
 from   zwiki.zwparser     import ZWParser
 import zwiki.test.testlib as testlib
 from   zwiki.test.testlib import ZWMARKUP, ZWMARKUP_RE, \
                                  gen_psep, gen_ordmark, gen_unordmark, \
                                  gen_headtext, gen_texts, gen_row, \
-                                 gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                 gen_macrowords, gen_macros, \
+                                 gen_wordlist, gen_words, gen_linkwords, \
+                                 gen_links,gen_macrowords, gen_macros, \
                                  gen_htmlwords, gen_htmls, \
                                  random_textformat, random_listformat, \
                                  random_bqformat, random_defnformat, \
@@ -79,7 +81,7 @@ class TestWikiDumpsRandom( object ) :
         # Prepare the reference.
         ref        = ref or testcontent
         ref        = zwparser.wiki_preprocess( ref )
-        props, ref = zwparser._wiki_properties( ref )
+        props, ref = wiki_properties( ref )
 
         # Characterize the generated testcontent set the wikiproperties
         wikiprops   = {}

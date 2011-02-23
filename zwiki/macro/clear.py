@@ -8,12 +8,8 @@
 # Notes  : None
 # Todo   : None
 
-
-#import xml.etree.cElementTree as et
-import lxml.html    as lhtml
-
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style, constructstyle
+from   zwiki        import split_style, constructstyle, lhtml
 
 css = {
     'clear' : 'both',
@@ -36,9 +32,11 @@ CSS styling accepted as optional keyword arguments
 
 class Clear( ZWMacro ) :
 
+    template = '<div style="%s"></div>'
+
     def __init__( self, *args, **kwargs ) :
-        self.style  = constructstyle( kwargs, defcss=css )
+        self.style = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
-        html  = '<div style="%s"></div>' % self.style
+        html  = self.template % self.style
         return html

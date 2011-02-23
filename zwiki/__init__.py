@@ -2,9 +2,14 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-import re
+import re, logging, sys
+import lxml.html            as lhtml
 
-VERSION = '0.91beta'
+log = logging.getLogger( __name__ )
+
+VERSION = '0.91b'
+HTML_CHARS = [ '"', "'", '&', '<', '>' ]
+ENDMARKER  = '<{<{}>}>'
 
 def escape_htmlchars( text ) :
     """If the text is not supposed to have html characters, escape them"""
@@ -18,8 +23,8 @@ def escape_htmlchars( text ) :
 def split_style( style ) :
     """`style` can be a CSS style dictionary or string. If dictionary, it can
     have one non-CSS key 'style'. This key can contain the CSS property as a
-    string or as another dictionary, in which case the dictionary can once again
-    be treated as `style`"""
+    string or as another dictionary, in which case the dictionary can once
+    again be treated as `style`"""
     style   = style or {}
     s_style = ''
     if isinstance( style, dict ) :
@@ -35,8 +40,8 @@ def split_style( style ) :
     return style, s_style
 
 def constructstyle( kwargs, defcss={}, styles='' ) :
-    """Construct styles for macros and extensions based on the style passed
-    as function arguments, extension properties and defaults style dictionary"""
+    """Construct styles for macros and extensions based on the style passed as
+    function arguments, extension properties and defaults style dictionary"""
     d_style, s_style = split_style( kwargs.pop( 'style', {} ))
     css    = {}             # A new dictionary instance
     css.update( defcss )
@@ -50,3 +55,42 @@ def constructstyle( kwargs, defcss={}, styles='' ) :
 def obfuscatemail( text ) :
     """Obfuscate email id"""
     return '@'.join([ n[:-3] + '...' for n in text.split( '@', 1 ) ])
+
+def is_matchinghtml( text ) :
+    """Check whether html special characters are present in the document."""
+    return [ ch for ch in HTML_CHARS if ch in text ]
+
+def getlogger( name, level=None, handler=None, fmt=None ) :
+    log = logging.getLogger( name )
+    level = level or logging.INFO
+    log.setLevel( level )
+    fmt = fmt or ( '%(levelname)s, %(module)s:%(funcName)s:%(lineno)s ' +
+                   '%(message)s' )
+    ch = handler or logging.StreamHandler( sys.stdout )
+    ch.setFormatter(logging.Formatter(fmt) )
+    log.addHandler( ch )
+    return log
+
+def wiki_properties( text ) :
+    """Parse wiki properties, in the begining of the text,
+        @ .....
+        @ .....
+    Should be a python consumable dictionary.
+    Return property, remaining-text.
+    """
+    props = []
+    # Strip off leading newlines
+    textlines = text.lstrip( '\n\r' ).split('\n')
+    for i in range(len( textlines )) :
+        l = textlines[i].lstrip(' \t')
+        if len(l) and l[0] == '@' :
+            props.append( l[1:] )
+            continue
+        break;
+    text = '\n'.join( textlines[i:] )
+    try :
+        props = eval( ''.join( props ) )
+    except :
+        log.error( sys.exc_info() )
+        props = {}
+    return props, text

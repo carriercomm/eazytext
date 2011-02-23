@@ -11,11 +11,8 @@
 # Todo   :
 #   CSS styling is currently using zeta.
 
-#import xml.etree.cElementTree as et
-import lxml.html    as lhtml
-
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style, constructstyle
+from   zwiki        import split_style, constructstyle, lhtml
 
 css = {
     'padding'            : '5px',

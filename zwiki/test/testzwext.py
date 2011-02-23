@@ -10,17 +10,19 @@ import random
 from   random                 import choice, randint, shuffle
 
 from   nose.plugins.attrib    import attr
-from   nose.tools             import assert_equal, assert_raises, assert_true, \
+from   nose.tools             import assert_equal, assert_raises, assert_true,\
                                      assert_false
 
+from   zwiki                  import wiki_properties
+from   zwiki.zwlexer          import ZWLexer
 from   zwiki.zwlexer          import ZWLexer
 from   zwiki.zwparser         import ZWParser
 import zwiki.test.testlib     as testlib
 from   zwiki.test.testlib     import ZWMARKUP, ZWMARKUP_RE, \
                                      gen_psep, gen_ordmark, gen_unordmark, \
                                      gen_headtext, gen_texts, gen_row, \
-                                     gen_wordlist, gen_words, gen_linkwords, gen_links,\
-                                     gen_macrowords, gen_macros, \
+                                     gen_wordlist, gen_words, gen_linkwords, \
+                                     gen_links,gen_macrowords, gen_macros, \
                                      random_textformat, random_listformat, \
                                      random_tableformat, random_wikitext, \
                                      random_wiki, log_mheader,log_mfooter, genseed
@@ -91,7 +93,7 @@ class TestZWextDumpsRandom( object ) :
         else :
             ref        = ref or testcontent
             ref        = zwparser.wiki_preprocess( ref )
-            props, ref = zwparser._wiki_properties( ref )
+            props, ref = wiki_properties( ref )
             if result != ref :
                 print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))
             assert result == ref, type+'... testcount %s'%count

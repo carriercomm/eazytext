@@ -44,6 +44,8 @@ is,
 # Notes  : None
 # Todo   : None
 
+import os, sys
+from   os.path     import splitext, dirname
 
 class ZWExtension( object ) :
     """Base Extension class that should be used to derive
@@ -81,7 +83,23 @@ from zwiki.zwext.footnote import Footnote
 from zwiki.zwext.html     import Html
 from zwiki.zwext.nested   import Nested
 
-extnames = [ 'ZWExtension', 'Box', 'Code', 'Footnote', 'Html', 'Nested' ]
+extnames = []
+def loadextensions( dirname ) :
+    sys.path.insert( 0, dirname )
+    extnames = []
+    plugin_files = list(set([ 
+                        splitext(f)[0]
+                        for f in os.listdir(dirname)
+                        if f[0] != '.' and f != '__init__.py' 
+                   ]))
+    for p in plugin_files :
+        m = __import__( p )
+        for attr in dir(m) :
+            obj = getattr(m, attr)
+            if not isinstance( obj, ZWExtension ) : continue
+            globals()[obj.__name__] = obj
+            extnames.append( obj.__name__ )
+    sys.path.remove(dirname)
 
 def build_zwext( zwextnode, nowiki ) :
     """Parse the nowiki text, like,
@@ -94,8 +112,8 @@ def build_zwext( zwextnode, nowiki ) :
     To function name, *args and **kwargs
     """
     props = []
-    nowikilines = nowiki.split('\n')
-    for i in range(len(nowikilines)) :
+    nowikilines = nowiki.split( '\n' )
+    for i in range( len(nowikilines) ) :
         if len(nowikilines[i]) and nowikilines[i][0] == '#' :
             props.append( nowikilines[i][1:] )
             continue
@@ -120,23 +138,7 @@ def build_zwext( zwextnode, nowiki ) :
     if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
     zwparser = zwextnode.parser.zwparser
-    # Setup templates and override them with computed extension's
-    # `style`
-    d_style, s_style = split_style( 
-                        zwparser.extstyles[o.__class__.__name__+'style'] )
-    d_style.update( getattr( o, 'css', {} ) )
-    o.style = "%s ; %s ; %s" % ( s_style, 
-                                 getattr( o, 'style', '' ),
-                                 constructstyle( d_style )
-                               )
-
     # Register extension
     o.zwextnode = zwextnode
     zwextnode.parser.zwparser.regzwext( o )
     return o
-
-def extension_styles( d_style ) :
-    """Extract the extension styles and return them as a dictionary"""
-    mstyles = dict([ ( e+'style', d_style.pop( e+'style', {} ))
-                     for e in extnames ])
-    return mstyles

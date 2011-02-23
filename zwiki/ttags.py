@@ -76,7 +76,8 @@ def tt_PRE( text ) :
     
     > [<PRE sample text >]
     """
-    return '<pre>%s</pre>' % escape_htmlchars( text )
+    template = '<pre class="zwttag">%s</pre>'
+    return  template % escape_htmlchars( text )
 
 
 def tt_ABBR( text ) :
@@ -94,10 +95,11 @@ def tt_ABBR( text ) :
     
     > [<ABBR WTO, World Trade organisation >]
     """
-    args  = text.split(',')
-    cont  = args and args.pop(0).strip() or ''
+    args = text.split(',')
+    cont = args and args.pop(0).strip() or ''
     title = args and args.pop(0).strip() or ''
-    html  = '<abbr title="%s">%s</abbr>' % ( title, cont )
+    template = '<abbr class="zwttag" title="%s"> %s </abbr>'
+    html =  template % ( title, cont )
     return html
 
 def tt_FIXME() :
@@ -117,7 +119,8 @@ def tt_FIXME() :
     """
     style = "border : 1px solid cadetBlue; " + \
             "color : red; padding: 1px; font-family : monospace;"
-    html  = '<span class="br2" style="%s">%s</span>' % (style, 'FIXME')
+    template = '<span class="zwttag fixme br2" style="%s"> %s </span>'
+    html = template % ( style, 'FIXME' )
     return html
 
 def tt_Q( text ) :
@@ -146,7 +149,8 @@ def tt_Q( text ) :
     """
     style = 'font-style : italic; margin : 5px 0px 5px 0px; \
              padding : 15px 0px 10px 40px; width: 70%; white-space: pre;'
-    html  = '<div class="qbq" style="%s">%s</div>' % (style, text )
+    template = '<div class="zwttag qbq" style="%s"> %s </div>'
+    html = template % (style, text )
     return html
 
 def tt_SMILEYSMILE() :
@@ -166,7 +170,8 @@ def tt_SMILEYSMILE() :
     """
     style = "font-size: x-large; " + \
             "color: darkOrchid; padding: 1px; font-family : monospace;"
-    html  = '<span style="%s">%s</span>' % (style, '&#9786;')
+    template = '<span class="zwttag smile" style="%s"> %s </span>'
+    html = template % ( style, '&#9786;' )
     return html
 
 def tt_SMILEYSAD() :
@@ -186,7 +191,8 @@ def tt_SMILEYSAD() :
     """
     style = "font-size: x-large; " + \
             "color: orangeRed; padding: 1px; font-family : monospace;"
-    html  = '<span style="%s">%s</span>' % (style, '&#9785;')
+    template = '<span class="zwttag sad" style="%s"> %s </span>'
+    html = template % ( style, '&#9785;' )
     return html
 
 def tt_ADDR( text ) :
@@ -207,7 +213,8 @@ def tt_ADDR( text ) :
     > [<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]
     """
     text = text.replace( ',', '<br></br>' )
-    html  = '<address>%s</address>' % text
+    template = '<address class="zwttag"> %s </address>'
+    html = template % text
     return html
 
 def tt_FNT( text ) :
@@ -221,16 +228,18 @@ def tt_FNT( text ) :
 
     :Example ::
 
-    > ~[<FNT italic bold 12px/30px Georgia, serif ; This text is specially fonted ~>]
-
-    > [<FNT italic bold 12px/30px Georgia, serif ; This text is specially fonted >]
+    > ~[<FNT italic bold 12px/30px Georgia, serif ;
+      This text is specially fonted ~>]
+    > [<FNT italic bold 12px/30px Georgia, serif ;
+      This text is specially fonted >]
     """
     try :
         style, innerHTML = text.split( ';', 1 )
     except :
         style = ''
         innerHTML = text
-    html  = '<span style="font: %s">%s</span>' % (style, innerHTML)
+    temlate = '<span class="zwttag fnt" style="font: %s"> %s </span>'
+    html = template % ( style, innerHTML )
     return html
 
 def tt_FOOTNOTE( text ) :
@@ -263,8 +272,8 @@ def tt_FOOTNOTE( text ) :
       formulation of quantum mechanics, the theory of quantum electrodynamics.
       }}}
 
-      Note that inside the ''Footnote'' extension block, each footnote should be
-      seperated by an empty line and each footnote's first word will be
+      Note that inside the ''Footnote'' extension block, each footnote should
+      be seperated by an empty line and each footnote's first word will be
       interpreted as its anchor name. >]
     
     ... mentioned by Richard Feynman [<FN 1 >], initially proposed by
@@ -282,5 +291,8 @@ def tt_FOOTNOTE( text ) :
     }}}
     """
     text = text.strip()
-    html = '<sup><a href="#%s" style="text-decoration: none;">%s</a></sup>' % (text, text)
+    template = '<sup class="zwttag footnot">' + \
+               '<a href="#%s" style="text-decoration: none;"> %s ' + \
+               '</a></sup>'
+    html = template % ( text, text )
     return html

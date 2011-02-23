@@ -9,10 +9,8 @@
 # Todo   : None
 
 
-#import xml.etree.cElementTree as et
-import lxml.html    as lhtml
-
 from   zwiki.macro  import ZWMacro
+from   zwiki        import lhtml
 
 wikidoc = """
 === Html

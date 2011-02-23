@@ -10,7 +10,6 @@
 # Notes  : None
 # Todo   : None
 
-
 from   zwiki.macro  import ZWMacro
 
 class Redirect( ZWMacro ) :

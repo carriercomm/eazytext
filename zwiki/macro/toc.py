@@ -9,15 +9,11 @@
 # Todo   :
 #   1. Add TOC with pos='inline'
 
-
-#import xml.etree.cElementTree as et
-import lxml.html    as lhtml
-
 from   random       import choice
 from   copy         import copy, deepcopy
 
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style, constructstyle
+from   zwiki        import split_style, constructstyle, lhtml
 
 alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])

@@ -49,65 +49,34 @@ import ply.yacc
 
 from   zwiki.zwlexer  import ZWLexer
 from   zwiki.zwast    import *
-from   zwiki          import escape_htmlchars, split_style
-from   zwiki.macro    import macro_styles
-from   zwiki.zwext    import extension_styles
+from   zwiki          import escape_htmlchars, split_style, wiki_properties, \
+                             ENDMARKER
+from   zwiki.macro    import loadmacros
+from   zwiki.zwext    import loadextensions
 
-HTML_CHARS = [ '"', "'", '&', '<', '>' ]
-ENDMARKER  = '<{<{}>}>'
+log = logging.getLogger( __name__ )
 
 # Default Wiki page properties
-wiki_css = {
-    'white-space' : 'normal',
-}
-
-class Coord( object ):
-    """ Coordinates of a syntactic element. Consists of:
-        - File name
-        - Line number
-        - (optional) column number, for the Lexer
-    """
-    def __init__( self, file, line, column=None ):
-        self.file   = file
-        self.line   = line
-        self.column = column
-
-    def __str__( self ):
-        str = "%s:%s" % (self.file, self.line)
-        if self.column :
-            str += ":%s" % self.column
-        return str
-
-
-class ParseError( Exception ):
-    pass
-
-
 class ZWParser( object ):
-    def __init__(   self, 
+    def __init__(   self,
                     app=None,
+                    skin='default.css',
                     style={},
+                    outputdir='',
+                    obfuscatemail=False,
+                    nested=False,
+                    macrodir=None,
+                    zwextdir=None,
                     lex_optimize=False,
                     lextab='zwiki.lextab',
                     lex_debug=False,
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
                     yacc_debug=False,
-                    outputdir='',
-                    obfuscatemail=False,
-                    nested=False,
                 ):
         """Create a new ZWParser.
         
-        Some arguments for controlling the debug/optimization level of the
-        parser are provided. The defaults are tuned for release/performance
-        mode.
-           
-        The simple rules for using them are:
-            *) When tweaking ZWParser/ZWLexer, set these to False
-            *) When releasing a stable parser, set to True
-
-        app:
+        app :
             Application object that provides the standard objects to be used
             by ZWiki.
                 name    should indicate the application name. Supported
@@ -118,10 +87,35 @@ class ZWParser( object ):
                 c       Context in which to handle the wiki page.
             For more information refer to the ZWiki documentation.
 
-        style:
-            A dictionary containing CSS styling properties. When available,
-            it will be used instead of the default `wiki_css` property.
+        skin :
+            Either, CSS file (in which case the file name must end with '.css'
+            extension) to be included in the generated HTML page.
+            Or, HTML snippet to be included in the generated HTML page.
+            If specified None, then no styling will be included inside the
+            HTML file.
             
+        outputdir:
+            To change the directory in which the parsetab.py file (and other
+            output files) are written.
+                        
+        obfuscatemail:
+            Obfuscate email ids written using link markup.
+            [[ mailto:<emailid> | text ]]
+
+        nested :
+            Extensions like Nested, and Box will do another level of
+            zwiki parsing for its content.  If that is the case, then `nested`
+            is set to True. Default is set to `False` which means this is the
+            root invocation to parse wiki document.
+
+        macrodir :
+            List of directories to look for macro plugins. Each module is
+            considered as a macro plugin.
+
+        zwextdir :
+            List of directories to look for wiki extension plugins. Each module
+            is considered as an extension plugin.
+
         lex_optimize:
             Set to False when you're modifying the lexer. Otherwise, changes
             in the lexer won't be used, if some lextab.py file exists.
@@ -134,6 +128,10 @@ class ZWParser( object ):
             re-generating the table, make this point to a local lex table file
             (that's been earlier generated with lex_optimize=True)
             
+        yacc_debug:
+            Generate a parser.out file that explains how yacc built the parsing
+            table from the grammar.
+
         yacc_optimize:
             Set to False when you're modifying the parser. Otherwise, changes
             in the parser won't be used, if some parsetab.py file exists.
@@ -145,50 +143,38 @@ class ZWParser( object ):
             you're modifying the parser, make this point to a local yacc table
             file.
                         
-        outputdir:
-            To change the directory in which the parsetab.py file (and other
-            output files) are written.
-                        
         yacc_debug:
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar.
+        """
+        self.app = app
+        self.zwlex = ZWLexer( error_func=self._lex_error_func )
+        self.zwlex.build(
+            optimize=lex_optimize, lextab=lextab, debug=lex_debug
+        )
+        self.tokens = self.zwlex.tokens
+        self.parser = ply.yacc.yacc( module=self, 
+                                     debug=yacc_debug,
+                                     optimize=yacc_optimize,
+                                     tabmodule=yacctab,
+                                     outputdir=outputdir
+                                     # debuglog=log
+                                   )
+        self.parser.zwparser = self     # For AST nodes to access `this`
+        self.skin = skin
+        self.style = list(split_style( style ))
+        self.wikiprops = {}
+        self.dynamictext = False
+        self.debug = lex_debug or yacc_debug
+        self.obfuscatemail = obfuscatemail
+        self.nested = nested
+        self.text = ''
 
-        obfuscatemail:
-            Obfuscate email ids written using link markup.
-            [[ mailto:<emailid> | text ]]
-
-        nested:
-            Extensions like Nested, and Box can another level of zwiki parsing.
-            If that is the case then `nested` is set to True. Default is
-            set to `False` which means this is the root invocation to parse
-            wiki document."""
-        self.app      = app
-        yacc_debug == False and logging.ERROR or logging.WARNING
-        self.zwlex    = ZWLexer( error_func=self._lex_error_func )
-        self.zwlex.build( optimize=lex_optimize, lextab=lextab, debug=lex_debug )
-        self.tokens   = self.zwlex.tokens
-        self.parser   = ply.yacc.yacc( module=self, 
-                                       debug=yacc_debug,
-                                       optimize=yacc_optimize,
-                                       tabmodule=yacctab,
-                                       outputdir=outputdir
-                                       # debuglog=log
-                                     )
-        self.parser.zwparser = self
-        self.style           = style
-        self.macrostyles     = {}
-        self.extstyles       = {}
-        self.wikiprops       = {}
-        # Specify whether the text needs dynamic translation
-        self.dynamictext     = False
-        self.debug           = lex_debug or yacc_debug
-        self.obfuscatemail   = obfuscatemail
-        self.nested          = nested
+        macrodir = [ macrodir ] if isinstance(macrodir,basestring) else macrodir
+        zwextdir = [ zwextdir ] if isinstance(zwextdir,basestring) else zwextdir
+        macrodir and map( loadmacros, macrodir )
+        zwextdir and map( loadextensions, zwextdir )
     
-    def is_matchinghtml( self, text ) :
-        """Check whether html special characters are present in the document."""
-        return [ ch for ch in HTML_CHARS if ch in text ]
-
     def wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove and fix unwanted
         side effects in the parser.
@@ -200,98 +186,38 @@ class ZWParser( object ):
         text = text.replace( '\\\n', '' )
         return text
 
-    def _wiki_properties( self, text ) :
-        """Parse wiki properties, in the begining of the text,
-            @ .....
-            @ .....
-        Should be a python consumable dictionary.
-        Return property, remainint-text.
-        """
-        props = []
-        # Strip off leading newlines
-        textlines = text.lstrip( '\n\r' ).split('\n')
-        for i in range(len( textlines )) :
-            strippedline = textlines[i].lstrip(' \t')
-            if len(strippedline) and strippedline[0] == '@' :
-                props.append( strippedline[1:] )
-                continue
-            break;
-        text = '\n'.join( textlines[i:] )
-        try :
-            props = eval( ''.join( props ) )
-        except :
-            props = {}
-
-        # If there are any special properties to be remembered while parsing
-        # the wiki text, update them in `wikiprops`
-        self.wikiprops.update( {} )
-        return props, text
-
-    def _macro_styletmpl( self, d_style ) :
-        """Parse the macro style templates provided to the ZWparser() and / or
-        in the wiki page."""
-        [ self.macrostyles.setdefault( key, {} ).update( value )
-          for key, value in macro_styles( d_style ).items() ]
-
-    def _ext_styletmpl( self, d_style ) :
-        """Parse the exten. style templates provided to the ZWparser() and / or
-        in the wiki page."""
-
-        [ self.extstyles.setdefault( key, {} ).update( value )
-          for key, value in extension_styles( d_style ).items() ]
-
     def parse( self, text, filename='', debuglevel=0 ):
         """Parses C code and returns an AST.
         
         text:
             A string containing the Wiki text
-        
         filename:
             Name of the file being parsed (for meaningful error messages)
-        
         debuglevel:
-            Debug level to yacc"""
+            Debug level to yacc
+        """
 
         # Initialize
         self.zwlex.filename = filename
         self.zwlex.reset_lineno()
-        self.redirect     = None
-        self.text         = text
-        self.macrostyles  = {}
-        self.extstyles    = {}
-        self.wikiprops    = {}
-        self.wiki_css     = copy.deepcopy( wiki_css )   # Agreegate styles
+        self.text = text
+        self.wikiprops = {}
         self.macroobjects = []  # ZWMacro objects detected while parsing
         self.zwextobjects = []  # ZWExtension objects detected while parsing
-        self.predivs      = []  # <div> elements prepend before wikipage
-        self.postdivs     = []  # <div> elements append after wikipage
-
-        # On top of default wiki css, update it with `style` argument passed
-        # while instantiating this object.
-        d_style, s_style = split_style( self.style )
-        d_style and self.wiki_css.update( d_style )     # Agreegate styles
-        self.style       = s_style or ''
-
-        # Confirm and remove !!
-        #if not d_style and not s_style :
-        #    self.wiki_css.update( wiki_css )
+        self.predivs = []       # <div> elements prepend before wikipage
+        self.postdivs = []      # <div> elements append after wikipage
+        self.styleattr = ''
 
         # Parse wiki properties, returned `props` contains only styling
         # (key,value) pairs
-        props, text      = self._wiki_properties( text )
+        props, text = wiki_properties( text )
         d_style, s_style = split_style( props )
-        d_style and self.wiki_css.update( d_style )     # Aggregate styles
-        if s_style :
-            self.style += '; ' + s_style + '; '
-
-        # Pop out styling for macros and extensions, which could come from
-        # three places,
-        #   1. default wiki_css
-        #   2. `style` argument passed while instantiating this object
-        #   3. wiki-properties
-        # All three of them are agreegated in self.wiki_css
-        self._macro_styletmpl( self.wiki_css )
-        self._ext_styletmpl( self.wiki_css )
+        style = copy.deepcopy( self.style )
+        style[0].update( d_style )
+        style[1] += ('; ' + s_style) if s_style else ''
+        fn = lambda x  : '%s : %s' % (x[0], x[1])
+        self.styleattr = '; '.join( map( fn, style[0].items() ))
+        self.styleattr += ('; ' + style[1]) if self.style[1] else ''
 
         # Pre-process the text, massage them for prasing.
         self.pptext = self.wiki_preprocess( text )
@@ -299,10 +225,11 @@ class ZWParser( object ):
         # parse and get the Translation Unit
         self.pptext += '\n' + ENDMARKER
         self.tu = self.parser.parse( self.pptext,
-                                     lexer=self.zwlex, debug=debuglevel )
+                                     lexer=self.zwlex,
+                                     debug=debuglevel )
         return self.tu
 
-    # ---------------------- Interfacing with Core ----------------------
+    # ---------------------- Interfacing with Macro Core ----------------------
 
     def regmacro( self, macroobject ) :
         """Register the Macro node with the parser, so that pre and post html
@@ -399,8 +326,8 @@ class ZWParser( object ):
         p[0] = Paragraph( p.parser, p[1] )
 
     def p_nowiki( self, p ):                            # NoWiki
-        """nowikiblock          : NOWIKI_OPEN NEWLINE nowikilines NOWIKI_CLOSE NEWLINE
-                                | NOWIKI_OPEN NEWLINE nowikilines ENDMARKER"""
+        """nowikiblock  : NOWIKI_OPEN NEWLINE nowikilines NOWIKI_CLOSE NEWLINE
+                        | NOWIKI_OPEN NEWLINE nowikilines ENDMARKER"""
         if len(p) == 6 :
             p[0] = NoWiki( p.parser, p[1], p[2], p[3], p[4], p[5] )
         elif len(p) == 5 : 
@@ -757,7 +684,7 @@ class ZWParser( object ):
         """basictext            : ESCAPED"""
         p[0] = BasicText( p.parser, TEXT_ESCAPED, p[1] )
 
-    def p_paragraph_seperator( self, p ):                   # ParagraphSeparator
+    def p_paragraph_seperator( self, p ) :  # ParagraphSeparator
         """paragraph_separator  : NEWLINE
                                 | paragraph_separator NEWLINE
                                 | empty"""
@@ -775,9 +702,32 @@ class ZWParser( object ):
     def p_error( self, p ):
         if p:
             column = self.zwlex._find_tok_column( p )
-            self._parse_error( 'before: %s ' % p.value, self._coord(p.lineno, column) )
+            self._parse_error( 'before: %s ' % p.value,
+                               self._coord(p.lineno, column) )
         else:
             self._parse_error( 'At end of input', '' )
+
+class Coord( object ):
+    """ Coordinates of a syntactic element. Consists of:
+        - File name
+        - Line number
+        - (optional) column number, for the Lexer
+    """
+    def __init__( self, file, line, column=None ):
+        self.file   = file
+        self.line   = line
+        self.column = column
+
+    def __str__( self ):
+        str = "%s:%s" % (self.file, self.line)
+        if self.column :
+            str += ":%s" % self.column
+        return str
+
+
+class ParseError( Exception ):
+    pass
+
 
 
 if __name__ == "__main__":
@@ -785,7 +735,9 @@ if __name__ == "__main__":
     import time
     
     t1     = time.time()
-    parser = ZWParser( lex_optimize=True, yacc_debug=True, yacc_optimize=False )
+    parser = ZWParser(
+                lex_optimize=True, yacc_debug=True, yacc_optimize=False
+             )
     print time.time() - t1
     
     buf = ''' 

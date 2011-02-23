@@ -21,11 +21,15 @@
 
 import re
 import sys
+import logging
 
 import ply.lex
 from   ply.lex import TOKEN
+from   zwiki   import getlogger
 
-class ZWLexer( object ):
+log = logging.getLogger( __name__ )
+
+class ZWLexer( object ) :
     """A lexer for the ZWiki markup.
         build() To build   
         input() Set the input text
@@ -37,9 +41,9 @@ class ZWLexer( object ):
 
     def _error( self, msg, token ):
         location = self._make_tok_location( token )
-        self.error_func and self.error_func( msg, location[0], location[1] )
+        self.error_func and self.error_func(self, msg, location[0])
         self.lexer.skip( 1 )
-        print "error: %s %s" % (msg, token)
+        log.error( "%s %s" % (msg, token) )
     
     def _find_tok_column( self, token ):
         i = token.lexpos
@@ -53,15 +57,17 @@ class ZWLexer( object ):
     
     ## --------------- Interface methods ------------------------------
 
-    def __init__( self, error_func=None ):
+    def __init__( self, error_func=None, conf={} ):
         """ Create a new Lexer.
-        error_func:
+        error_func :
             An error function. Will be called with an error message, line
-            and column as arguments, in case of an error during lexing."""
+            and column as arguments, in case of an error during lexing.
+        """
         self.error_func = error_func
         self.filename = ''
+        self.conf = conf
 
-    def build( self, **kwargs ):
+    def build( self, **kwargs ) :
         """ Builds the lexer from the specification. Must be called after the
         lexer object is created. 
             
@@ -72,15 +78,15 @@ class ZWLexer( object ):
                                   **kwargs
                                 )
 
-    def reset_lineno( self ):
+    def reset_lineno( self ) :
         """ Resets the internal line number counter of the lexer."""
         self.lexer.lineno = 1
 
-    def input( self, text ):
+    def input( self, text ) :
         """`text` to tokenise"""
         self.lexer.input( text )
     
-    def token( self ):
+    def token( self ) :
         """Get the next token"""
         tok = self.lexer.token()
         return tok 
@@ -388,14 +394,14 @@ class ZWLexer( object ):
 
 
 if __name__ == "__main__":
-    def errfoo(msg, a, b):
-        print msg
+    def errfoo(lex, msg, a, b):
+        print msg, a, b
         sys.exit()
     
     text = "hello"
     zwlex = ZWLexer( errfoo )
     zwlex.build()
-    zwlex.input(text)
+    zwlex.input( text )
     
     while 1:
         tok = zwlex.token()

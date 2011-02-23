@@ -8,11 +8,8 @@
 # Notes  : None
 # Todo   : None
 
-#import xml.etree.cElementTree as et
-import lxml.html    as lhtml
-
 from   zwiki.macro  import ZWMacro
-from   zwiki        import split_style, constructstyle
+from   zwiki        import split_style, constructstyle, lhtml
 
 css = {
     'margin'    : '0px',
@@ -44,20 +41,20 @@ CSS styling accepted as optional keyword arguments
 
 class Image( ZWMacro ) :
 
-    def __init__( self, src, alt, **kwargs ) :
-        self.src    = src
-        self.alt    = alt
-        self.height = kwargs.pop( 'height', None )
-        self.width  = kwargs.pop( 'width', None )
-        self.href   = kwargs.pop( 'href', '' )
+    template = '<img %s %s src="%s" alt="%s" style="%s"> </img>'
 
-        self.style  = constructstyle( kwargs, defcss=css )
+    def __init__( self, src, alt, **kwargs ) :
+        self.src = src
+        self.alt = alt
+        self.height = kwargs.pop( 'height', None )
+        self.width = kwargs.pop( 'width', None )
+        self.href = kwargs.pop( 'href', '' )
+        self.style = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
-        img   = '<img %s %s src="%s" alt="%s" style="%s"> </img>' % \
-                    ( hattr, wattr, self.src, self.alt, self.style )
+        img = self.template % ( hattr, wattr, self.src, self.alt, self.style )
         # If the image is a link, enclose it with a 'anchor' dom-element.
         if self.href :
             href = lhtml.Element( 'a', { 'href' : self.href } )

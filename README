@@ -2,8 +2,8 @@
 
 h3. Highlights
 
-ZWiki engine is built using formal parser grammar, thus making it both robust and
-clean. It is available as,
+ZWiki engine is built using formal parser grammar, thus making it both
+robust and clean. It is available as,
 * Stand-alone command line tool
 * Library package usable by python programs
 * And built into Zeta web application
@@ -38,70 +38,20 @@ Some of its features are,
 * Extendable wiki engine using ZWiki-Extension framework.
 * Zetalinks, short-cuts for referring zeta-site resources
 
-h3. Get the source code
-
-Both source code and egg file is available at python package index,
-
-http://pypi.python.org/pypi/zwiki-zeta/0.9beta
-
-Using easy_install,
-
-{{{ Code sh
-    easy_install zwiki-zeta
-}}}
-
-
-h3. Packaging and distribution
-
-h4. To build
-
-{{{ Code bash
-
-  python setup.py build
-
-}}}
-
-
-h4. To egg-package
-
-{{{ Code bash
-
-  ./bin/pkg.py egg
-
-}}}
-
-The .egg package will be availabe under dist/ directory
-
-
-h4. To check and upload into pypi
-
-Simulate egg packaging, installation and usage.
-
-{{{ Code bash
-
-  ./bin/cleanzwiki.sh
-  ./bin/pkg.py check
-
-}}}
-
-Finally, Build the egg and upload it into pypi
-
-{{{ Code bash
-
-  python ./setup.py bdist_egg --exclude-source-files register upload --show-response 
-
-}}}
-
-
 h3. Installation
 
 The latest wiki package will be available in python package index under the
-name, ''zwiki-zeta'', install it, into your system or into virtual-environment
+name, ''zwiki_zeta'', install it, into your system or into virtual-environment
 by,
 
 {{{ Code bash
 
-  easy_install -Z -U zwiki-zeta
+  # Install system packages for debian and ubuntu machines.
+  sudo apt-get install python-dev libxml2 libxml2-dev libxslt1.1 libxslt1-dev
+
+  # -Z to do unzipped install
+  # -U to upgrade install
+  easy_install -Z -U zwiki_zeta
 
 }}}
 
@@ -133,7 +83,7 @@ in your python path, use the command-line tool, like,
 
 {{{ Code bash
 
-zwcmd.py <wiki-file>
+zwcmd.py -o <out-file> <wiki-file>
 
 }}}
 
@@ -152,4 +102,84 @@ h4. Using it as library
 
 }}}
   
+h3. Getting the source code
+
+Both source code and egg file are available from python package index,
+
+http://pypi.python.org/pypi/zwiki_zeta/0.9beta
+
+Using easy_install,
+
+{{{ Code sh
+    easy_install zwiki_zeta
+}}}
+
+From launchpad,
+
+{{{ Code sh
+    bzr branch lp:zwiki_zeta
+}}}
+
+h4. Development
+
+It is always better to setup the development tree under a virtual environemnt.
+To begin with, first checkout the source tree from the latest repository tree
+and then use the ''make'' command to create a development environment.
+{{{ Code sh
+  # Install system packages for debian and ubuntu machines.
+  sudo apt-get install python-dev libxml2 libxml2-dev libxslt1.1 libxslt1-dev
+
+  # Fetch a repository branch
+  bzr branch lp:zwiki_zeta zwiki
+
+  # Setup development environment
+  cd zwiki
+  make develop
+}}}
+which,
+* sets-up a virtual environment under // zwiki-env/ // directory.
+* Installs zwiki under the virtual environment in development mode
+  [<PRE python ./setup.py develop >]
+* To start using the zwiki package, enter the virtual environment by doing,
+  [<PRE source ./zwiki-env/bin/activate >]
+
+To build the source tree,
+
+{{{ Code bash
+
+  python setup.py build
+
+}}}
+
+To create an egg package,
+
+{{{ Code bash
+
+  make clean
+  ./bin/pkg.py egg
+
+}}}
+
+The .egg package will be availabe under dist/ directory
+
+h4. Distribution via PyPi
+
+h4. To check and upload into pypi
+
+{{{ Code bash
+
+  make clean
+  ./bin/pkg.py check
+
+}}}
+
+Finally, Build the egg and upload it into pypi
+
+{{{ Code bash
+
+  python ./setup.py bdist_egg --exclude-source-files register upload --show-response 
+
+}}}
+
+
 /* vim: set filetype=zwiki : */

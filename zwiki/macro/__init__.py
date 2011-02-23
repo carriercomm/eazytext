@@ -90,6 +90,8 @@ Now let us move on to available macros,
 # Todo   : 
 #   1. Test case for yearsbefore macro
 
+import os, sys
+from   os.path     import splitext, dirname
 
 class ZWMacro( object ) :
     """Base Macro class that should be used to derive ZWiki Macro classes
@@ -119,27 +121,22 @@ class ZWMacro( object ) :
         pass
 
 
-from zwiki                            import split_style, constructstyle
-from zwiki.macro.span                 import Span
-from zwiki.macro.toc                  import Toc
-from zwiki.macro.clear                import Clear
-from zwiki.macro.anchor               import Anchor
-from zwiki.macro.html                 import Html  
-from zwiki.macro.redirect             import Redirect  
-from zwiki.macro.image                import Image
-from zwiki.macro.images               import Images
-from zwiki.macro.yearsbefore          import YearsBefore
-from zwiki.macro.projectdescription   import ProjectDescription
-from zwiki.macro.projectattributes    import ProjectAttributes
-from zwiki.macro.projectteam          import ProjectTeam
-from zwiki.macro.projectcomponents    import ProjectComponents
-from zwiki.macro.projectversions      import ProjectVersions
-
-macronames = [ 'ZWMacro', 'Span', 'Toc', 'Clear', 'Anchor', 'Html', 'Redirect',
-               'Image', 'Images', 'YearsBefore', 'ProjectDescription',
-               'ProjectAttributes', 'ProjectTeam', 'ProjectComponents',
-               'ProjectVersions' ]
-
+macronames = []
+def loadmacros( dirname ) :
+    sys.path.insert( 0, dirname )
+    plugin_files = list(set([ 
+                        splitext(f)[0]
+                        for f in os.listdir(dirname)
+                        if f[0] != '.' and f != '__init__.py' 
+                   ]))
+    for p in plugin_files :
+        m = __import__( p )
+        for attr in dir(m) :
+            obj = getattr(m, attr)
+            if not isinstance( obj, ZWMacro ) : continue
+            globals()[obj.__name__] = obj
+            macronames.append( obj.__name__ )
+    sys.path.remove(dirname)
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,
@@ -150,30 +147,16 @@ def build_macro( macronode, macro ) :
         o = eval( macro[2:-2] )
     except :
         o = ZWMacro()
-        # if macronode.parser.zwparser.debug :
-        #     raise
+        if macronode.parser.zwparser.debug : raise
+
     if not isinstance( o, ZWMacro ) :
         o = ZWMacro()
-    zwparser = macronode.parser.zwparser
 
-    # Setup templates and override them with computed macronode's 
-    # `style`
-    d_style, s_style = split_style( 
-                        zwparser.macrostyles[o.__class__.__name__+'style'] )
-    d_style.update( getattr( o, 'css', {} ) )
-    o.style = "%s ; %s ; %s" % ( s_style, 
-                                 getattr( o, 'style', '' ),
-                                 constructstyle( d_style )
-                               )
-              
+    zwparser = macronode.parser.zwparser
 
     # Register macro-node
     o.macronode = macronode
     zwparser.regmacro( o )
     return o
 
-def macro_styles( d_style ) :
-    """Extract macro-specific styles and return them as a dictionary"""
-    mstyles = dict([ ( m+'style', d_style.pop( m+'style', {} ))
-                     for m in macronames ])
-    return mstyles
+loadmacros( dirname( __file__ ) )

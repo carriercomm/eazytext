@@ -94,8 +94,8 @@ classifiers=[
 ]
 
 setup(
-    name='zwiki-zeta',
-    version='0.91beta',
+    name='zwiki_zeta',
+    version='0.91b',
     py_modules=[],
     package_dir={},
     packages=find_packages(),
@@ -112,16 +112,18 @@ setup(
         ],
     },
     install_requires=[                      # setuptools
-        'ply>=3.0',
-        'pygments',
+        'ply==3.4',
+        'lxml==2.3',
+        'pygments==1.4',
+        'nose==1.0.0',
     ],
     extras_require={},                      # setuptools
     setup_requires={},                      # setuptools
     dependency_links=[],                    # setuptools
     namespace_packages=[],                  # setuptools
-    test_suite='',                          # setuptools
+    test_suite='zwiki.test',                # setuptools
 
-    provides=[ 'zwiki-zeta', ],
+    provides=[ 'zwiki_zeta', ],
     requires='',
     obsoletes='',
 
