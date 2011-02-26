@@ -12,29 +12,6 @@
 from   zwiki.zwext    import ZWExtension
 from   zwiki          import split_style, lhtml
 
-box_css = {
-    'color'         : 'gray',
-    'border-top'    : 'thin solid gray',
-    'border-right'  : 'thin solid gray',
-    'border-bottom' : 'thin solid gray',
-    'border-left'   : 'thin solid gray',
-}
-title_css = {
-    'color'          : 'black',
-    'background'     : '#EEEEEE',
-    'font-weight'    : 'bold',
-    'padding-top'    : '3px',
-    'padding-right'  : '3px',
-    'padding-bottom' : '3px',
-    'padding-left'   : '3px'
-}
-cont_css = {
-    'padding-top'    : '3px',
-    'padding-right'  : '3px',
-    'padding-bottom' : '3px',
-    'padding-left'   : '3px',
-}
-
 wikidoc = """
 === Box
 
@@ -90,19 +67,10 @@ special property key-value pairs,
 |= title        | optional, title string
 |= titlestyle   | optional, title style string in CSS style format
 |= contentstyle | optional, content style string in CSS style format
-
-Default CSS styling for title,
-> [<PRE %s >]
-
-Default CSS styling for content,
-> [<PRE %s >]
-
-Default CSS styling for the entire extension,
-> [<PRE %s >]
-""" % ( '5%', '5%', '5%', '5%', title_css, cont_css, box_css )
+""" % ( '5%', '5%', '5%', '5%' )
 
 tmpl = """
-<div class="boxext" style="%s">
+<div class="box" style="%s">
     <div class="boxtitle" style="%s">
     %s %s
     </div>
@@ -123,29 +91,26 @@ class Box( ZWExtension ) :
     """Implements Box() wikix"""
 
     def __init__( self, props, nowiki, *args ) :
-        self.nowiki  = nowiki
-        self.title   = props.pop( 'title', '' )
-        boxstyle     = props.pop( 'style', {} )
-        titlestyle   = props.pop( 'titlestyle', {} )
+        self.nowiki = nowiki
+        self.title = props.pop( 'title', '' )
+        boxstyle = props.pop( 'style', {} )
+        titlestyle = props.pop( 'titlestyle', {} )
         contentstyle = props.pop( 'contentstyle', '' )
 
         d_style, s_style = split_style( boxstyle )
-        self.style     = s_style
-        self.css   = {}
-        self.css.update( box_css )
+        self.style = s_style
+        self.css = {}
         self.css.update( props )
         self.css.update( d_style )
 
         d_style, s_style = split_style( titlestyle )
-        self.titlestyle  = s_style
-        self.title_css   = {}
-        self.title_css.update( title_css )
+        self.titlestyle = s_style
+        self.title_css = {}
         self.title_css.update( d_style )
 
         d_style, s_style  = split_style( contentstyle )
         self.contentstyle = s_style
-        self.cont_css     = {}
-        self.cont_css.update( cont_css )
+        self.cont_css = {}
         self.cont_css.update( d_style )
 
         self.hide = 'hide' in args
@@ -153,31 +118,35 @@ class Box( ZWExtension ) :
     def tohtml( self ) :
         from   zwiki.zwparser import ZWParser
 
-        boxstyle = '; '.join([k + ' : ' + self.css[k] for k in self.css])
+        fn = lambda (k, v) : '%s : %s' % (k,v)
+
+        boxstyle = '; '.join(map( fn, self.css.items() ))
         if self.style :
-            boxstyle += '; ' + self.style + '; '
+            boxstyle += '; %s ;' % self.style
 
-        titlestyle = '; '.join([ k + ' : ' + self.title_css[k]
-                                 for k in self.title_css ])
+        titlestyle = '; '.join(map( fn, self.title_css.items() ))
         if self.titlestyle  :
-            titlestyle += '; ' + self.titlestyle + '; '
+            titlestyle += '; %s ;' % self.titlestyle
 
+        contstyle = '; '.join(map( fn, self.cont_css.items() ))
+        if self.contentstyle :
+            contstyle += '; %s ;' % self.contentstyle
 
         self.nowiki_h = ''
         if self.nowiki :
-            self.contentstyle \
-                and self.cont_css.setdefault( 'style', self.contentstyle )
-            zwparser        = ZWParser( lex_optimize=False,
-                                        yacc_optimize=False,
-                                        nested=True,
-                                        style=self.cont_css )
-            tu              = zwparser.parse( self.nowiki, debuglevel=0 )
-            self.nowiki_h   = tu.tohtml()
+            zwparser = ZWParser(
+                             skin=None,
+                             nested=True,
+                             lex_optimize=False,
+                             yacc_optimize=False,
+                       )
+            tu = zwparser.parse( self.nowiki, debuglevel=0 )
+            self.nowiki_h = tu.tohtml()
 
         if self.title and self.hide :
             html = tmpl % ( boxstyle, titlestyle, self.title, spantmpl,
-                            "display: none;", self.nowiki_h )
+                            contstyle, self.nowiki_h )
         else :
-            html = tmpl % ( boxstyle, titlestyle, self.title, '', '',
-                            self.nowiki_h)
+            html = tmpl % ( boxstyle, titlestyle, self.title, '',
+                            contstyle, self.nowiki_h )
         return html

@@ -20,8 +20,7 @@ css = {
 }
 
 wikidoc = """
-=== ProjectTeam
-
+=== ProjectTeam 
 : Description ::
     Meant to be used in project front page, displays project team-members
 
@@ -68,7 +67,13 @@ class ProjectTeam( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = lhtml.Element( 'div', { 'name' : 'projectteam', 'style' : self.style })
+        cntnr = lhtml.Element(
+                    'div',
+                    { 'name' : 'projectteam',
+                      'class' : 'projectteam',
+                      'style' : self.style
+                    }
+                )
 
         if p :
             admin  = p.admin.username

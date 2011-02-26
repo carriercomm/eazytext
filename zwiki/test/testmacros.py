@@ -13,6 +13,9 @@ import difflib                as diff
 import random
 from   random                 import choice, randint, shuffle
 
+from   nose.plugins.attrib    import attr
+from   nose.tools             import assert_equal, assert_raises, assert_true, \
+                                     assert_false
 from   zwiki                  import wiki_properties
 from   zwiki.zwlexer          import ZWLexer
 from   zwiki.zwparser         import ZWParser
@@ -71,29 +74,29 @@ images_macro    = [
 )
 ]
 
+def setUpModule( self ) :
+    global words, seed
+
+    testdir = os.path.basename( os.path.dirname( __file__ ))
+    testfile= os.path.basename( __file__ )
+    seed    = genseed()
+    random.seed( seed )
+    testlib.random.seed(  seed )
+    log_mheader( log, testdir, testfile, seed )
+    info    = "Initialising wiki ..."
+    log.info( info )
+    print info
+    alphanum= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    words   = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
+                 for j in range( 1000 ) ]
+    
+def tearDownModule( self ) :
+    testdir  = os.path.basename( os.path.dirname( __file__ ))
+    testfile = os.path.basename( __file__ )
+    log_mfooter( log, testdir, testfile )
+
 class TestMacroDumpsRandom( object ) :
     """Test cases to validate Macro random"""
-
-    def setUp( self ) :
-        global words, seed
-
-        testdir = os.path.basename( os.path.dirname( __file__ ))
-        testfile= os.path.basename( __file__ )
-        seed    = genseed()
-        random.seed( seed )
-        testlib.random.seed(  seed )
-        log_mheader( log, testdir, testfile, seed )
-        info    = "Initialising wiki ..."
-        log.info( info )
-        print info
-        alphanum= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        words   = [ ''.join([ choice( alphanum ) for i in range(randint(0, 20)) ])
-                     for j in range( 1000 ) ]
-        
-    def tearDown( self ) :
-        testdir  = os.path.basename( os.path.dirname( __file__ ))
-        testfile = os.path.basename( __file__ )
-        log_mfooter( log, testdir, testfile )
 
     def _test_execute( self, type, testcontent, count, ref='', cfunc=None  ) :
         # Initialising the parser
@@ -150,8 +153,8 @@ class TestMacroDumpsRandom( object ) :
 
         def clear_cfunc( ref, tu ) :
             html= tu.tohtml()
-            self.assertTrue( 'clear: both' in html,
-                             'Fail Clear Macro : %s ' % html )
+            assert_true( 'class="zwm-clear"' in html,
+                         'Fail Clear Macro : %s ' % html )
 
         testcount = 1
         for t in testlist :
@@ -186,8 +189,9 @@ class TestMacroDumpsRandom( object ) :
         def span_cfunc( macro_ref ) :
             def cfunc( ref, tu ) :
                 html= tu.tohtml()
-                [ self.assertTrue( r in html, 'Fail Span Macro : %s ' % html )
-                  for r in macro_ref ]
+                [ assert_true( r in html and 'class="zwm-span"' in html,
+                               'Fail Span Macro : %s ' % html
+                  ) for r in macro_ref ]
             return cfunc
 
         testcount = 1
@@ -220,7 +224,7 @@ class TestMacroDumpsRandom( object ) :
         def redirect_cfunc( macro_ref ) :
             def cfunc( ref, tu ) :
                 tu.tohtml()
-                [ self.assertTrue(
+                [ assert_true(
                     r == tu.parser.zwparser.redirect, 'Fail Redirect Macro'
                   ) for r in macro_ref ]
             return cfunc
@@ -250,7 +254,7 @@ class TestMacroDumpsRandom( object ) :
         def html_cfunc( macro_ref ) :
             def cfunc( ref, tu ) :
                 html= tu.tohtml()
-                [ self.assertTrue( r in html, 'Fail Html Macro : %s ' % html )
+                [ assert_true( r in html, 'Fail Html Macro : %s ' % html )
                   for r in macro_ref ]
             return cfunc
 
@@ -279,8 +283,8 @@ class TestMacroDumpsRandom( object ) :
 
         def toc_cfunc( ref, tu ) :
             html= tu.tohtml()
-            self.assertTrue( 'class="br5 toc"' in html,
-                             'Fail Toc Macro : %s ' % html )
+            assert_true( 'class="toc"' in html,
+                         'Fail Toc Macro : %s ' % html )
 
         for t in testlist :
             t   = choice( toc_macros ) + t
@@ -295,7 +299,7 @@ class TestMacroDumpsRandom( object ) :
 
         def img_cfunc( ref, tu ) :
             html= tu.tohtml()
-            [ self.assertTrue(
+            [ assert_true(
                     r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
@@ -312,7 +316,7 @@ class TestMacroDumpsRandom( object ) :
         
         def imgs_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ assertTrue( r in html, 'Fail not found `%s` : %s ' % ( r, html )
+            [ assert_true( r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
         testcount = 1
@@ -321,20 +325,21 @@ class TestMacroDumpsRandom( object ) :
                   imgs_cfunc
             testcount += 1
 
+    @attr(type='yb')
     def test_8_yearsbefore( self ) :
         """Testing the YearsBefore() macro"""
         print "\nTesting the YearsBefore() macro"
         log.info( "Testing the YearsBefore() macro" )
         
         ybtext = [
-            ( """It happened {{ YearsBefore( '%s before', '2007', '2' ) }}""",
+            ( """It happened {{ YearsBefore( '%s before', '2007', '9' ) }}""",
               [ 'span', 'year', 'month' ]
             )
         ]
 
         def yb_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ self.assertTrue(
+            [ assert_true(
                     r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
@@ -344,6 +349,7 @@ class TestMacroDumpsRandom( object ) :
                   yb_cfunc
             testcount += 1
 
+    @attr(type='anchor')
     def test_9_anchor( self ) :
         """Testing the Anchor() macro"""
         print "\nTesting the Anchor() macro"
@@ -356,7 +362,7 @@ class TestMacroDumpsRandom( object ) :
         ]
         def anchor_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ assertTrue(
+            [ assert_true(
                     r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
@@ -366,6 +372,7 @@ class TestMacroDumpsRandom( object ) :
                   anchor_cfunc
             testcount += 1
 
+    @attr(type='project')
     def test_A_project( self ) :
         """Testing the Project*() macros"""
         print "\nTesting the Project*() macro"
@@ -380,7 +387,7 @@ class TestMacroDumpsRandom( object ) :
         ]
         def project_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ assertTrue(
+            [ assert_true(
                     r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
@@ -390,6 +397,7 @@ class TestMacroDumpsRandom( object ) :
                   project_cfunc
             testcount += 1
 
+    @attr(type='htmlinwiki')
     def test_B_htmlinwiki( self ) :
         """Testing wiki with html"""
         print "\nTesting wiki with html"
@@ -401,7 +409,7 @@ class TestMacroDumpsRandom( object ) :
 
         def html_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ self.assertTrue(
+            [ assert_true(
                 r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 
@@ -411,6 +419,7 @@ class TestMacroDumpsRandom( object ) :
                   html_cfunc
             testcount += 1
 
+    @attr(type='stylesc')
     def test_C_styleshortcut( self ) :
         """Testing styleshortcut"""
         print "\nTesting styleshortcut"
@@ -441,7 +450,7 @@ class TestMacroDumpsRandom( object ) :
 
         def sc_cfunc( ref, tu ) :
             html = tu.tohtml()
-            [ self.assertTrue(
+            [ assert_true(
                     r in html, 'Fail not found `%s` : %s ' % ( r, html )
               ) for r in ref ]
 

@@ -12,8 +12,6 @@
 from   zwiki.zwext  import ZWExtension
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = { }
-
 wikidoc = """
 === Nested
 
@@ -22,26 +20,29 @@ wikidoc = """
     document.
 """
 
+tmpl = '<div class="nested"> %s </div>'
+
 class Nested( ZWExtension ) :
     """Implements Nested() wikix"""
 
     def __init__( self, props, nowiki, *args ) :
-
         self.nowiki = nowiki
-        self.style  = constructstyle( props, defcss=css )
+        self.style = constructstyle( props )
 
     def tohtml( self ) :
         from   zwiki.zwparser import ZWParser
 
-        self.nowiki_h = '<div></div>'
         if self.nowiki :
-            zwparser        = ZWParser( lex_optimize=False,
-                                        yacc_optimize=False,
-                                        nested=True,
-                                        style=self.style )
-            tu              = zwparser.parse( self.nowiki, debuglevel=0 )
+            zwparser = ZWParser(
+                            nested=True,
+                            style=self.style,
+                            skin=None,
+                            lex_optimize=False,
+                            yacc_optimize=False,
+                       )
+            tu = zwparser.parse( self.nowiki, debuglevel=0 )
             try :
-                self.nowiki_h = tu.tohtml()
+                html = tmpl % ( tu.tohtml() )
             except :
-                pass
-        return self.nowiki_h
+                html = tmpl % ''
+        return html

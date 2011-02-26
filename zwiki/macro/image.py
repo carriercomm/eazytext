@@ -11,12 +11,6 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = {
-    'margin'    : '0px',
-    'padding'   : '0px',
-    'border'    : '0px',
-}
-
 wikidoc = """
 === Image
 
@@ -32,16 +26,12 @@ keyword argument,
 |= height | optional, image height, goes into @height attribute
 |= width  | optional, image width, goes into @width attribute
 |= href   | optional, href, to convert the image into a hyper-link
-
-Default CSS styling,
-> [<PRE %s >]
-
-CSS styling accepted as optional keyword arguments
-""" % css
+"""
 
 class Image( ZWMacro ) :
 
-    template = '<img %s %s src="%s" alt="%s" style="%s"> </img>'
+    template = '<img class="zwm-image" ' + \
+               '%s %s src="%s" alt="%s" style="%s"> </img>'
 
     def __init__( self, src, alt, **kwargs ) :
         self.src = src
@@ -49,7 +39,7 @@ class Image( ZWMacro ) :
         self.height = kwargs.pop( 'height', None )
         self.width = kwargs.pop( 'width', None )
         self.href = kwargs.pop( 'href', '' )
-        self.style = constructstyle( kwargs, defcss=css )
+        self.style = constructstyle( kwargs )
 
     def tohtml( self ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''

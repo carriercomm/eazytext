@@ -13,11 +13,6 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = {
-    'color'   : 'gray',
-    'padding' : '2px',
-}
-
 wikidoc = """
 === Span
 
@@ -27,21 +22,16 @@ wikidoc = """
 
 Positional arguments,
 |= text   | optional, text for the span element
-
-Default CSS styling,
-> [<PRE %s >]
-
-CSS styling accepted as optional keyword arguments
-""" % css
+"""
 
 class Span( ZWMacro ) :
 
+    tmpl = '<span class="zwm-span" style="%s"> %s </span>'
+
     def __init__( self, *args, **kwargs ) :
-        self.text  = len(args) > 0 and args[0] or ''
-        self.style  = constructstyle( kwargs, defcss=css )
+        self.text = len(args) > 0 and args[0] or ''
+        self.style = constructstyle( kwargs )
 
     def tohtml( self ) :
-        span      = lhtml.Element( 'span', { 'style' : self.style } )
-        span.text = self.text or ' '    # Don't keep the text empty
-        html      = ( self.text and lhtml.tostring( span ) ) or ''
+        html = self.tmpl % ( self.style, self.text )
         return html

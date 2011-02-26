@@ -17,6 +17,8 @@ wikidoc = """
 : Description :: Raw html text.
 """
 
+tmpl = 'div class="html" style="%s"> %s </div>'
+
 class Html( ZWExtension ) :
     """Implements Html() wikix"""
 
@@ -25,23 +27,21 @@ class Html( ZWExtension ) :
         
         d_style, s_style = split_style( props.pop( 'style', {} ))
         self.style  = s_style
-        self.css    = {}
+        self.css = {}
         self.css.update( d_style )
         self.css.update( props )
 
     def tohtml( self ) :
-        from   zwiki.zwparser import ZWParser
-
-        style   = '; '.join([ k + ' : ' + self.css[k] for k in self.css ])
+        fn = lambda (k, v) : '%s : %s' % (k,v)
+        style = '; '.join(map( fn, self.css.items() ))
         if self.style :
-            style   += '; ' + self.style + '; '
-        box_div = lhtml.Element( 'div', { 'style' : style } )
+            style += '; ' + self.style + '; '
+
         try :
             boxnode = lhtml.fromstring( self.nowiki )
         except :
-            box_div.insert( 0, lhtml.fromstring( '<div> </div>' ) )
+            html = tmpl % (style, '')
         else :
-            box_div.insert( 0, boxnode )
-        html = ( self.nowiki and lhtml.tostring( box_div ) ) or ''
+            html = tmpl % (style, lhtml.tostring(boxnode) )
         return html
 

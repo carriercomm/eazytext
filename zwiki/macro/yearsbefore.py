@@ -29,12 +29,12 @@ Positional arguments,
 keyword argument,
 |= frommonth | from month
 |= fromday   | from day
-
-CSS styling accepted as optional keyword arguments
 """
 
 class YearsBefore( ZWMacro ) :
     """Implements YearsBefore() Macro"""
+
+    tmpl = '<span class="zwm-yearsbefore" style="%s">%s</span>'
 
     def __init__( self, template, fromyear, frommonth=1, fromday=1, **kwargs ) :
         utc = dt.datetime.utcnow()
@@ -47,7 +47,7 @@ class YearsBefore( ZWMacro ) :
             self.fromyear  = utc.year
             self.frommonth = utc.month
             self.fromday   = utc.day
-        self.style     = constructstyle( kwargs )
+        self.style = constructstyle( kwargs )
 
     def tohtml( self ) :
         utc   = dt.datetime.utcnow()
@@ -59,25 +59,15 @@ class YearsBefore( ZWMacro ) :
             years  = days/365
             months = (days%365) / 30
 
-            if years == 0 :
-                years = ''
-            elif years == 1 :
-                years = '1 year'
-            else :
-                years = '%s years' % years
-
-            if months == 0 :
-                months = ''
-            elif months == 1 :
-                months = '1 month'
-            else :
-                months = '%s months' % months
-
-            text  = "%s, %s" % ( years, months )
+            years  = '' if years == 0 \
+                     else ( '1 year' if years == 1 else '%s years' % years )
+            months = '' if months == 0 \
+                     else ( '1 month' if months == 1 else '%s months' % months )
+            text   = "%s, %s" % ( years, months )
 
         else :
             text = 'sometime'
 
         string = self.template % text
 
-        return '<span style="%s">%s</span>' % (self.style, string)
+        return self.tmpl % (self.style, string)

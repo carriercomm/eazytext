@@ -22,8 +22,6 @@ wikidoc = """
 
 Positional arguments,
 |= html | HTML text
-
-CSS styling accepted as optional keyword arguments
 """
 
 class Html( ZWMacro ) :
@@ -31,7 +29,6 @@ class Html( ZWMacro ) :
     def __init__( self, html='' ) :
         self.html  = html
         self.style = ''
-        self.css   = {}
 
     def tohtml( self ) :
         return self.html

@@ -89,7 +89,7 @@ def wiki_properties( text ) :
         break;
     text = '\n'.join( textlines[i:] )
     try :
-        props = eval( ''.join( props ) )
+        props = eval( ''.join( props ) ) if props else {}
     except :
         log.error( sys.exc_info() )
         props = {}

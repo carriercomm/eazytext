@@ -11,10 +11,6 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = {
-    'clear' : 'both',
-}
-
 wikidoc = """
 === Clear
 
@@ -23,20 +19,15 @@ wikidoc = """
     floating effects
 
 Positional arguments, None
-
-Default CSS styling,
-> [<PRE %s >]
-
-CSS styling accepted as optional keyword arguments
-""" % css
+"""
 
 class Clear( ZWMacro ) :
 
-    template = '<div style="%s"></div>'
+    template = '<div class="zwm-clear" style="%s"></div>'
 
     def __init__( self, *args, **kwargs ) :
-        self.style = constructstyle( kwargs, defcss=css )
+        self.style = constructstyle( kwargs )
 
     def tohtml( self ) :
-        html  = self.template % self.style
+        html = self.template % self.style
         return html

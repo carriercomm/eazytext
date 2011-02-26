@@ -70,7 +70,7 @@ templtdir = join( dirname(__file__), 'templates' )
 
 html_templates = {
     TEXT_M_SPAN : [
-        '<span clas="zwmark" style="%s">',
+        '<span class="zwmark" style="%s">',
         '</span>', ],
     TEXT_M_BOLD : [
         '<strong class="zwmark" style="%s">',
@@ -88,16 +88,16 @@ html_templates = {
         '<sub class="zwmark" style="%s">',
         '</sub>', ],
     TEXT_M_BOLDITALIC : [
-        '<strong class="zwmark" style="%s"><em>',
+        '<strong class="zwmark" style="%s"><em class="zwmark">',
         '</em></strong>', ],
     TEXT_M_BOLDUNDERLINE : [
-        '<strong class="zwmark" style="%s"><u>',
+        '<strong class="zwmark" style="%s"><u class="zwmark">',
         '</u></strong>', ],
     TEXT_M_ITALICUNDERLINE : [
-        '<em class="zwmark" style="%s"><u>',
+        '<em class="zwmark" style="%s"><u class="zwmark">',
         '</u></em>', ],
     TEXT_M_BOLDITALICUNDERLINE : [
-        '<strong class="zwmark" style="%s"><em><u>',
+        '<strong class="zwmark" style="%s"><em class="zwmark"><u class="zwmark">',
         '</u></em></strong>' ]
 }
 def markup2html( type_, mtext, steed ) :
@@ -201,7 +201,12 @@ class Wikipage( Node ):
     """class to handle `wikipage` grammar."""
 
     # Class zwpage or zwblk
-    template = '<div class="%s" style="%s">  %s  %s  %s </div>'
+    template = """<div class="%s" style="%s">
+                    %s
+                    %s
+                    %s
+                    %s
+                </div>"""
 
     def __init__( self, parser, paragraphs ) :
         self.parser     = parser
@@ -216,7 +221,7 @@ class Wikipage( Node ):
         zwparser.onprehtml_macro()
         zwparser.onprehtml_zwext()
         # Generate HTML from childrens
-        html  = ''.join([ c.tohtml() for c in self.children() ])
+        zwparser.html  = ''.join([ c.tohtml() for c in self.children() ])
         # Call the registered posthtml methods.
         zwparser.onposthtml_macro()
         zwparser.onposthtml_zwext()
@@ -225,17 +230,19 @@ class Wikipage( Node ):
         objs = [ o for o in zwparser.macroobjects + zwparser.zwextobjects
                    if getattr( o, 'posthtml', None ) and
                       getattr( o, 'postindex', None ) ]
-        peerhtml_neg = peerhtml_pos = []
-        [ peerhtml_neg.append( o.posthtml
-          ) if o.postindex < 0 else peerhtml_pos.append( o.posthtml
-          ) for o in sorted( objs, key=lambda x : x.postindex ) ]
+        peerhtml_neg = []
+        peerhtml_pos = []
+        for o in sorted( objs, key=lambda x : x.postindex ) :
+            peerhtml_neg.append( o.posthtml
+            ) if o.postindex < 0 else peerhtml_pos.append( o.posthtml )
 
         # Final html
         zwparser.html = self.template % (
                             'zwblk' if zwparser.nested else 'zwpage',
-                            parser.zwparser.styleattr,
+                            zwparser.styleattr,
+                            zwparser.skin,
                             '\n'.join( peerhtml_neg ),
-                            html,
+                            zwparser.html,
                             '\n'.join( peerhtml_pos )
                         )
         return zwparser.html
@@ -310,7 +317,7 @@ class Paragraph( Node ) :
         return ( self.paragraph, )
 
     def tohtml( self ):
-        return lhtml.fromstring( self.paragraph.tohtml() )
+        return self.paragraph.tohtml()
 
     def dump( self ) :
         return self.paragraph.dump()
@@ -331,7 +338,7 @@ class Paragraph( Node ) :
 class NoWiki( Node ) :
     """class to handle `nowikiblock` grammar."""
 
-    template = '<p class="zwext %s"> %s </p>'
+    template = '<p class="zwext-%s"> %s </p>'
 
     def __init__( self, parser, opennowiki, opennl, nowikilines,
                   closenowiki=None, closenl=None, skip=False  ) :
@@ -353,7 +360,8 @@ class NoWiki( Node ) :
 
     def tohtml( self ):
         return '' if self.skip else \
-               self.template % ( self.xwikiname, self.wikixobject.tohtml() )
+               self.template % (
+                        self.xwikiname.lower(), self.wikixobject.tohtml() )
 
     def dump( self ) :
         return self.nowikitext
@@ -376,8 +384,7 @@ class Heading( Node ) :
     <h%s class="zwsec" style="%s">
         %s
         <a name="%s"></a>
-        <a style="color: #CCCCCC; font-size: medium; text-decoration: none"
-           href="#%s" title="Link to this section">&#9875;</a>
+        <a class="zwseclink" href="#%s" title="Link to this section">&#9875;</a>
     </h%s>
     """
 
@@ -528,15 +535,10 @@ class TextLines( Node ) :
 class BtableRows( Node ) :
     """class to handle `btablerows` grammar"""
 
-    # 'border-left : 1px solid gray; border-top : 1px solid gray; '
     tbl_template = '<table class="zwbtbl sortable" cellspacing="0px" ' + \
                    ' cellpadding="5px" style="%s">'
     row_template = '  <tr class="zwbtbl" style="%s">'
-    # 'padding : 5px; border-right : 1px solid gray; '
-    # 'border-bottom : 1px solid gray; '
     hdrcell_template = '<th class="zwbtbl" style="%s"> %s </th>'
-    # 'padding : 5px; border-right : 1px solid gray; '
-    # 'border-bottom : 1px solid gray; '
     cell_template = '<td class="zwbtbl" style="%s"> %s </td>'
 
     def __init__( self, parser, row ) :
@@ -660,7 +662,6 @@ class BtableRow( Node ) :
 
 class TableRows( Node ) :
     """class to handle `table_rows` grammar."""
-    # "border-collapse: collapse;"
     tbl_template = '<table class="zwtbl sortable" cellspacing="0" ' + \
                    ' cellpadding="5px"> %s </table>'
     tr_template = '<tr class="zwtbl"> %s </tr>'
@@ -710,7 +711,6 @@ class TableRows( Node ) :
 class TableCells( Node ) :
     """class to handle `table_cells` grammar."""
 
-    # 'padding : 5px; border: 1px solid gray;'
     hdrcell_template = '<th class="zwtbl" colspan="%s" style="%s"> %s </th>'
     cell_template = '<td class="zwtbl" colspan="%s" style="%s"> %s </td>'
 
@@ -754,12 +754,13 @@ class TableCells( Node ) :
                     style +=  'text-align : right; '
                     contents[-1].html = chtml[-1][:-1]
             process_textcontent( contents )
-            style, template = ( styleparser( markup[2:] ),
+            style_, template = ( styleparser( markup[2:] ),
                                 self.hdrcell_template 
                               ) if markup[:2] == M_PIPEHEAD else (
                                 styleparser( markup[1:] ),
                                 self.cell_template  )
-            htmlcells.append( template % (colspan, cell.tohtml(), style) )
+            style += style_
+            htmlcells.append( template % (colspan, style, cell.tohtml()) )
         return ''.join( htmlcells )
 
     def dump( self ) :
@@ -871,9 +872,9 @@ class List( Node ) :
           for item in textcontents.textcontents ]
         process_textcontent( contents )
 
-        ''.join([ textcontents.tohtml() + newline.tohtml()
-                  for textcontents, newline in self.textlines ])
-        html = self.template % ( self._style(), li )
+        text = ''.join([ textcontents.tohtml() + newline.tohtml()
+                         for textcontents, newline in self.textlines ])
+        html = self.template % ( self._style(), text )
         return html
 
     def dump( self ) :
@@ -905,7 +906,7 @@ class List( Node ) :
 class Definitions( Node ) :
     """class to handle `definitionlists` grammar."""
 
-    template = '<dl> %s </dl>' 
+    template = '<dl class="zw"> %s </dl>' 
 
     def __init__( self, parser, definition ) :
         self.parser = parser
@@ -935,7 +936,7 @@ class Definitions( Node ) :
 
 class Definition( Node ) :
     """class to handle `definitionlist` grammar."""
-    template = '<dt><b> %s </b></dt> <dd> %s </dd>'
+    template = '<dt class="zw"><b> %s </b></dt> <dd class="zw"> %s </dd>'
 
     def __init__( self, parser, defnmarkup, defnitem, newline ) :
         self.parser = parser
@@ -990,10 +991,7 @@ class Definition( Node ) :
 class BQuotes( Node ) :
     """class to handle `blockquotes` grammar."""
     patt = re.compile( r'[\>]{1,5}$', re.MULTILINE | re.UNICODE )
-    stylefirst = 'border-left : 2px solid #d6d6d6; padding-left : 5px'
-    stylerest = 'margin-left : 0px; border-left : 2px solid #d6d6d6; ' +\
-                ' padding-left : 5px'
-    template = '<blockquote class="zw" style="%s">'
+    template = '<blockquote class="zw %s">'
 
     def __init__( self, parser, bq ) :
         self.parser = parser
@@ -1024,7 +1022,7 @@ class BQuotes( Node ) :
         closemarkups = []   # Stack to manage nested list.
         contents = []
         for i in range(len(self.listitems)) :
-            style = (i == 0) and self.stylefirst or self.stylerest
+            cls = (i == 0) and 'firstlevel' or 'innerlevel'
             bq = self.listitems[i]
             cm = re.search( self.patt, bq.bqmarkup ).group()
             cmpmark = cmp( len(pm), len(cm) )  # -1 or 0 or 1
@@ -1048,7 +1046,7 @@ class BQuotes( Node ) :
                 for j in range(diffmark-1) :
                     html += self.template % ''
                     closemarkups.append( '</blockquote>' )
-                html += self.template % style
+                html += self.template % cls
                 closemarkups.append( '</blockquote>' )
             self._extendcontents( bq, contents )
             contents.append(Content(self.parser, '\n', TEXT_NEWLINE, '<br/>'))
@@ -1183,11 +1181,12 @@ class Link( Node ) :
     """class to handle `link` grammer.
     There are special links, 
         * - Open in new window,
-        $ - Create an anchor
+        # - Create an anchor
         + - Image
     """
 
-    a_template = '<a class="zwlink" target="%s" href="%s"> %s </a>'
+    l_template = '<a class="zwlink" target="%s" href="%s">%s</a>'
+    a_template = '<a class="zwlink anchor" name="%s">%s</a>'
     img_template = '<img class="zw" src="%s" alt="%s" style="%s"/>'
 
     def __init__( self, parser, link ) :
@@ -1204,10 +1203,11 @@ class Link( Node ) :
         prefix = href[:1]
 
         if prefix == '*' :              # Link - Open in new window
-            html = self.a_template % ( '_blank', href[1:], text or href[1:] )
+            html = self.l_template % ( '_blank', href[1:], text or href[1:] )
 
-        elif prefix == '$' :            # Link - Anchor 
-            html = self.a_template % ( '', href[1:], text or href[1:] )
+        elif href[:1] == '#' :          # Link - Anchor 
+            n = 'name="%s"' % href[1:]
+            html = self.a_template % (n, text or href[1:] )
 
         elif prefix == '+' :            # Link - Image (actually no href)
             style = 'float: left;' if href[1:2] == '<' else (
@@ -1225,10 +1225,10 @@ class Link( Node ) :
             if self.parser.zwparser.obfuscatemail :
                 href = "mailto" + obfuscatemail(href[:6])
                 text = obfuscatemail(text or href[:6]) 
-            html = self.a_template % ( '', href, text )
+            html = self.l_template % ( '', href, text )
 
         else :
-            html = self.a_template % ( '', href, text or href )
+            html = self.l_template % ( '', href, text or href )
 
         self.contents = [ Content( parser, link, TEXT_LINK, html ) ]
 
@@ -1298,7 +1298,15 @@ class Html( Node ) :
         return self.contents
 
     def tohtml( self ) :
-        return ''.join([ c.html for c in self.contents ])
+        html = ''.join([ c.html for c in self.contents ])
+        try :
+            if html and self.parser.zwparser.stripscript :
+                e = lhtml.fromstring( html )
+                [ es.getparent().remove(es) for es in e.xpath( '//script' ) ]
+                html = lhtml.tostring(e)
+        except :
+            html = escape_htmlchars( html )
+        return html
 
     def dump( self ) :
         return ''.join([ c.text for c in self.contents ])
@@ -1316,8 +1324,8 @@ class Html( Node ) :
 class BasicText( Node ) :
     """class to handle `basictext` grammar."""
 
-    httpuri_template = '<a href="%s"> %s </a>'
-    wwwuri_template = '<a href="http://%s"> %s </a>'
+    httpuri_template = '<a class="zwhttpuri" href="%s"> %s </a>'
+    wwwuri_template = '<a class="zwwwwuri" href="http://%s"> %s </a>'
 
     def __init__( self, parser, type, text  ) :
         self.parser = parser

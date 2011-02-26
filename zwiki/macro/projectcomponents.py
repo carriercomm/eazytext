@@ -31,7 +31,11 @@ CSS styling accepted as optional keyword arguments
 """ % css
 
 ct_template = """
-<div><span style="font-weight: bold">%s </span> owned by <a href="%s">%s </a></div>
+<div>
+    <span style="font-weight: bold">%s </span>
+    owned by
+    <a href="%s">%s </a>
+</div>
 """
 
 class ProjectComponents( ZWMacro ) :
@@ -52,8 +56,14 @@ class ProjectComponents( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = lhtml.Element( 'div', { 'name' : 'projectcomps', 'class' : 'compdescr', 'style' : self.style } )
-        e     = lhtml.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
+        cntnr = lhtml.Element(
+                    'div',
+                    { 'name' : 'projectcomps',
+                      'class' : 'zwmacro-projectcomponents compdescr',
+                      'style' : self.style
+                    }
+                )
+        e = lhtml.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Components'
         cntnr.append( e )
         components = p and sorted( p.components, key=lambda c : c.created_on ) or []

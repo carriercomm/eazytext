@@ -93,6 +93,8 @@ Now let us move on to available macros,
 import os, sys
 from   os.path     import splitext, dirname
 
+from   paste.util.import_string  import import_module, eval_import
+
 class ZWMacro( object ) :
     """Base Macro class that should be used to derive ZWiki Macro classes
     The following attributes are available for the ZWMacro() object.
@@ -130,12 +132,15 @@ def loadmacros( dirname ) :
                         if f[0] != '.' and f != '__init__.py' 
                    ]))
     for p in plugin_files :
-        m = __import__( p )
+        m = eval_import( p )
         for attr in dir(m) :
-            obj = getattr(m, attr)
-            if not isinstance( obj, ZWMacro ) : continue
-            globals()[obj.__name__] = obj
-            macronames.append( obj.__name__ )
+            obj = m.__dict__[attr]
+            try :
+                if issubclass( obj, ZWMacro ) :
+                    globals()[obj.__name__] = obj
+                    macronames.append( obj.__name__ )
+            except:
+                pass
     sys.path.remove(dirname)
 
 def build_macro( macronode, macro ) :

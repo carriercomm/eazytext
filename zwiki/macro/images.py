@@ -13,12 +13,6 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = {
-    'margin'    : '10px',
-    'padding'   : '0px',
-    'border'    : '0px',
-}
-
 wikidoc = """
 === Images
 
@@ -33,14 +27,14 @@ keyword argument,
 |= height | optional, image height, applicable to all image's @height attribute
 |= width  | optional, image width, applicable to all image's @width attribute
 |= cols   | optional, number of image columns in the gallery, default is 3.
-
-Default CSS styling,
-> [<PRE %s >]
-
-CSS styling accepted as optional keyword arguments
-""" % css
+"""
 
 class Images( ZWMacro ) :
+
+    tmpl = '<table class="zwm-images"> %s </table>'
+    row_tmpl = '<tr> %s </tr>'
+    cell_tmpl = '<td> %s </td>'
+    img_tmpl = '<img %s %s src="%s" alt="%s" style="%s"> </img>'
 
     def __init__( self, *args, **kwargs ) :
         self.imgsources = args
@@ -50,25 +44,24 @@ class Images( ZWMacro ) :
         self.width  = kwargs.pop( 'width', None )
         self.cols   = int( kwargs.pop( 'cols', '3' ))
         
-        self.style  = constructstyle( kwargs, defcss=css )
+        self.style  = constructstyle( kwargs )
 
     def tohtml( self ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
 
         imgsources = list(self.imgsources[:])
-        gallerydiv = lhtml.Element( 'div', {'style' : 'display : table;'} )
+        rows = []
         while imgsources :
-            rowdiv = lhtml.Element( 'div', {'style' : 'display : table-row;'} )
+            cells = []
             for i in range( self.cols ) :
                 if not imgsources :
                     break
-                src    = imgsources.pop( 0 )
-                coldiv = lhtml.Element('div', {'style' : 'display : table-cell;'})
-                img    = '<img %s %s src="%s" alt="%s" style="%s"> </img>' % \
-                                ( hattr, wattr, src, self.alt, self.style )
-                coldiv.append( lhtml.fromstring( img ))
-                rowdiv.append( coldiv )
-            gallerydiv.append( rowdiv )
-        html = lhtml.tostring( gallerydiv )
+                src = imgsources.pop( 0 )
+                img = self.img_tmpl % ( hattr, wattr, src, self.alt, self.style )
+                cell = self.cell_tmpl % img
+                cells.append( cell )
+            row = self.row_tmpl % '\n'.join( cells )
+            rows.append( row )
+        html = self.tmpl % '\n'.join( rows )
         return html

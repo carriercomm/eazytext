@@ -17,11 +17,6 @@ from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
 from   zwiki.zwext  import ZWExtension
 from   zwiki        import split_style, constructstyle, lhtml
 
-css = { 
-    'margin-left'  : '5%',
-    'margin-right' : '5%',
-}
-
 wikidoc = """
 === Code
 
@@ -61,31 +56,17 @@ is to list the line numbers.
 
 """
 
-script_templ = """
-<style type="text/css">
-    %s
-    .highlighttable td.linenos {
-        padding : 3px;
-        color : brown;
-        background-color : activeborder;
-    }
-    .highlighttable td.code { padding : 3px }
-    .highlight { background-color : #FAFAFA; }
-</style>
-"""
-
-code_templ = """
-<div class="br4" style="background : #FAFAFA; border : 1px dashed gray;">
-%s
-</div>
-"""
 
 class Code( ZWExtension ) :
     """Implements Code() wikix"""
 
+    tmpl = '<div class="code" style="%s"> %s %s </div>'
+    script_tmpl = '<style type="text/css"> %s </style>'
+    code_tmpl = '<div class="codecont"> %s </div>'
+
     def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki
-        self.style   = constructstyle( props, defcss=css )
+        self.style   = constructstyle( props )
         self.lexname = args and args[0].lower() or 'text'
         self.linenos = 'noln' not in args
 
@@ -95,8 +76,10 @@ class Code( ZWExtension ) :
             scrpt = HtmlFormatter().get_style_defs('.highlight')
             code  = highlight( self.nowiki, lexer,
                                HtmlFormatter( linenos=self.linenos ) )
-            html  = '<div style="%s">%s%s</div>' % \
-                        ( self.style, (script_templ % scrpt), (code_templ % code) )
+            html  = self.tmpl % ( self.style,
+                                  (self.script_tmpl % scrpt),
+                                  (self.code_tmpl % code)
+                                )
         except:
             html  = self.nowiki
         return html

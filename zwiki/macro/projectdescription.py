@@ -61,7 +61,13 @@ class ProjectDescription( ZWMacro ) :
             p = app.projcomp.get_project( unicode(self.project ))
 
         html= ''
-        cntnr = lhtml.Element( 'div', { 'name' : 'projectdesc', 'style' : self.style } )
+        cntnr = lhtml.Element(
+                    'div',
+                    { 'name' : 'projectdesc',
+                      'class' : 'projectdescription',
+                      'style' : self.style
+                    }
+                )
         if p :
             cntnr.append( 
                 lhtml.fromstring( template % \

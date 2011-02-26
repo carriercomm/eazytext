@@ -44,6 +44,7 @@ import re
 import sys
 from   types    import StringType
 import copy
+from   os.path  import splitext, dirname
 
 import ply.yacc
 
@@ -55,9 +56,12 @@ from   zwiki.macro    import loadmacros
 from   zwiki.zwext    import loadextensions
 
 log = logging.getLogger( __name__ )
+rootdir = dirname( __file__ )
 
 # Default Wiki page properties
 class ZWParser( object ):
+    skin_tmpl = '<style type="text/css"> %s </style>'
+
     def __init__(   self,
                     app=None,
                     skin='default.css',
@@ -67,6 +71,7 @@ class ZWParser( object ):
                     nested=False,
                     macrodir=None,
                     zwextdir=None,
+                    stripscript=True,
                     lex_optimize=False,
                     lextab='zwiki.lextab',
                     lex_debug=False,
@@ -116,6 +121,12 @@ class ZWParser( object ):
             List of directories to look for wiki extension plugins. Each module
             is considered as an extension plugin.
 
+        stripscript :
+            HTML markup allows raw html to be interspeced with wiki text.
+            Malicious users can inject use this to CSRF attacks. By setting
+            this key word argument to True, all script tags found within HTML
+            markup will be pruned away.
+
         lex_optimize:
             Set to False when you're modifying the lexer. Otherwise, changes
             in the lexer won't be used, if some lextab.py file exists.
@@ -161,14 +172,19 @@ class ZWParser( object ):
                                      # debuglog=log
                                    )
         self.parser.zwparser = self     # For AST nodes to access `this`
-        self.skin = skin
         self.style = list(split_style( style ))
         self.wikiprops = {}
         self.dynamictext = False
         self.debug = lex_debug or yacc_debug
         self.obfuscatemail = obfuscatemail
         self.nested = nested
-        self.text = ''
+        self.stripscript = stripscript
+        if skin == None :
+            self.skin = ''
+        elif splitext( skin )[-1] == '.css' :
+            self.skin = self.skin_tmpl%open(join(rootdir, 'skins', skin)).read()
+        else :
+            self.skin = skin
 
         macrodir = [ macrodir ] if isinstance(macrodir,basestring) else macrodir
         zwextdir = [ zwextdir ] if isinstance(zwextdir,basestring) else zwextdir

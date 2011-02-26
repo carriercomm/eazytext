@@ -22,13 +22,11 @@ Positional arguments,
 
 |= anchor | anchor name as fragment, goes under @name attribute
 |= text   | optional, text to be display at the anchor
-
-CSS styling accepted as optional keyword arguments
 """
 
 class Anchor( ZWMacro ) :
 
-    template = '<a name="%s" style="%s"> %s </a>'
+    template = '<a class="zwm-anchor" name="%s" style="%s"> %s </a>'
 
     def __init__( self, *args, **kwargs ) :
         args = list( args )

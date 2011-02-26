@@ -68,13 +68,19 @@ class ProjectAttributes( ZWMacro ) :
         zwp.dynamictext = True
 
         try :   # To handle test cases.
-            p   = getattr( app.c, 'project', None )
+            p = getattr( app.c, 'project', None )
         except :
-            p   = None
+            p = None
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = lhtml.Element( 'div', { 'name' : 'projectattrs', 'style' : self.style } )
+        cntnr = lhtml.Element(
+                    'div',
+                    { 'name' : 'projectattrs',
+                      'style' : self.style,
+                      'class' : 'zwmacro-projectattributes'
+                    }
+                )
         if p :
             cntnr.append(
                 lhtml.fromstring(

@@ -48,8 +48,13 @@ class ProjectVersions( ZWMacro ) :
         if self.project :
             p = app.projcomp.get_project( unicode(self.project ))
 
-        cntnr = lhtml.Element( 'div', { 'name' : 'projectvers', 'class': 'verdescr',
-                                     'style' : self.style } )
+        cntnr = lhtml.Element(
+                    'div',
+                    { 'name' : 'projectvers',
+                      'class': 'verdescr zwmacro-projectversions',
+                      'style' : self.style
+                    }
+                )
         e     = lhtml.Element( 'h3', { 'style' : "border-bottom : 1px solid cadetBlue; color: cadetBlue" })
         e.text= 'Versions'
         cntnr.append( e )

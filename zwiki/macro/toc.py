@@ -15,19 +15,8 @@ from   copy         import copy, deepcopy
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-alphanum    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
-
-css = {
-    'background'         : '#f8f7bc',
-    'position'           : 'relative',
-    'float'              : 'left',
-    'margin'             : '10px',
-    'padding'            : '3px',
-    'width'              : '20em',
-    'border-right'       : '1px solid gray',
-    'border-bottom'      : '1px solid gray',
-}
 
 wikidoc = """
 === Toc
@@ -39,64 +28,57 @@ Default CSS styling,
 > [<PRE %s >]
 
 CSS styling accepted as optional keyword arguments
-""" % css
-
-htags = {
-    'h1' : 'margin-left : 2px; ',
-    'h2' : 'margin-left : ',
-    'h3' : 'margin-left : ',
-    'h4' : 'margin-left : ',
-    'h5' : 'margin-left : ',
-}
-
-html_close = """
-<div style="color : blue; cursor : pointer; font-size : small; 
-            position: relative; float: right;">close</div>"""
-
-html_topic = lambda topic : '<div style="font-weight : bold;">%s </div>' % topic
-
-script = """
-<style type="text/css">
-    .dispnone { display : none; }
-</style>
-<script type="text/javascript">
-    dojo.addOnLoad(
-        function() {
-            var n_toc = dojo.query( 'div.toc' )[0];
-            var headdiv = n_toc.childNodes[0];
-            var toc_div = n_toc.childNodes[1];
-            dojo.connect( headdiv.childNodes[0], 'onclick',
-                function( e ) {
-                    if ( e.target.innerHTML == 'close' ) {
-                        dojo.toggleClass( toc_div, 'dispnone', true );
-                        e.target.innerHTML = 'show';
-                    } else if ( e.target.innerHTML == 'show' ) {
-                        dojo.toggleClass( toc_div, 'dispnone', false );
-                        e.target.innerHTML = 'close';
-                    }
-                    dojo.stopEvent( e );
-                }
-            );
-        }
-    );
-</script>
 """
+
+#script = """
+#<style type="text/css">
+#    .dispnone { display : none; }
+#</style>
+#<script type="text/javascript">
+#    dojo.addOnLoad(
+#        function() {
+#            var n_toc = dojo.query( 'div.toc' )[0];
+#            var headdiv = n_toc.childNodes[0];
+#            var toc_div = n_toc.childNodes[1];
+#            dojo.connect( headdiv.childNodes[0], 'onclick',
+#                function( e ) {
+#                    if ( e.target.innerHTML == 'close' ) {
+#                        dojo.toggleClass( toc_div, 'dispnone', true );
+#                        e.target.innerHTML = 'show';
+#                    } else if ( e.target.innerHTML == 'show' ) {
+#                        dojo.toggleClass( toc_div, 'dispnone', false );
+#                        e.target.innerHTML = 'close';
+#                    }
+#                    dojo.stopEvent( e );
+#                }
+#            );
+#        }
+#    );
+#</script>
+#"""
+
+shorten = lambda s, m : s[:m] + (s[m:] and ' ...' or '' )
 
 class Toc( ZWMacro ) :
 
+    tmpl = '<div class="zwm-toc" style="%s"> %s %s </div>'
+    head_tmpl = '<div class="head"> %s %s </div>'
+    topic_tmpl = '<div class="topic"> %s </div>'
+    close_tmpl = '<div class="close">close</div>'
+    tocul_tmpl = '<div class="toc"> %s </div>'
+
+    tocli_tmpl = '<div class="%s"> %s </div>'
+    toca_tmpl = '<a href="%s"> %s </a>'
+
+    htags = [ 'h1', 'h2', 'h3', 'h4', 'h5', ]
+
     def __init__( self, *args, **kwargs ) :
-        indent         = int( kwargs.pop( 'indent', '1' ))
-        index          = int( kwargs.pop( 'index', '-1' ))
+        indent = int( kwargs.pop( 'indent', '1' ))
+        index = int( kwargs.pop( 'index', '-1' ))
         self.maxheadlen = int(kwargs.pop( 'maxheadlen', 30 ))
-        self.topic     = kwargs.pop( 'topic', 'Table of Contents' )
-        self.numbered  = kwargs.pop( 'numbered', False )
+        self.topic = kwargs.pop( 'topic', 'Table of Contents' )
+        self.style  = constructstyle( kwargs )
         self.postindex = index == 0 and -1 or index
-        self.htags     = deepcopy( htags )
-        self.htags.update(
-            [ ( h, htags[h] + str(indent * n) + 'em;' )
-              for h, n in [ ('h2', 1), ('h3', 2), ('h4', 3), ('h5', 4) ]]
-        )
-        self.style  = constructstyle( kwargs, defcss=css )
 
     def tohtml( self ) :
         # Gotcha : cannot return a empty string since process_textcontent()
@@ -104,45 +86,33 @@ class Toc( ZWMacro ) :
         # post html macro.
         return ' '
 
-    def _maketoc( self, node, toc_div, numbered=False, level='' ) :
-        count     = 1
-        level     = level[:-1]
+    def _maketoc( self, node ) :
+        entries = []
         for n in node.getchildren() :
             if n.tag in self.htags :
-                item      = n.makeelement( 'div', { 'style' : self.htags[n.tag] } )
                 children  = n.getchildren()
-                text      = children[0].get('name') \
-                                    if len(children) == 2 \
-                                    else children[1].get( 'name' )
-                link      = item.makeelement( 'a', { 'href' : '#' + text } )
-                link.text = self.maxheadlen and \
-                                (  text[:self.maxheadlen] + \
-                                  (text[self.maxheadlen:] and ' ...' or '' ) ) \
-                            or text or ' '
-                item.append( link )
-                toc_div.append( item )
-                count     += 1
-            self._maketoc( n, toc_div, numbered )
-        return
+                text = children[0].get('name'
+                       ) if len(children) == 2 else children[1].get( 'name' )
+                linktext = shorten( text, self.maxheadlen
+                           ) if self.maxheadlen else text or ' '
+                link = self.toca_tmpl % ( '#' + text, linktext )
+                e = self.tocli_tmpl % ( n.tag, link )
+                entries.append( e )
+            entries.extend( self._maketoc( n ))
+        return entries
 
     def on_posthtml( self ) :
         zwparser = self.macronode.parser.zwparser
-        contrdiv = lhtml.Element( 'div', { 'class' : 'br5 toc', 'style' : self.style, } )
-        headdiv  = lhtml.Element( 'div', { 'style' : 'margin-bottom : 5px;' } )
-        toc_div  = lhtml.Element( 'div', {} )
-        id       = random_word()
         try :
             htmltree = lhtml.fromstring( zwparser.html )
-            topicdiv = lhtml.fromstring( html_topic(self.topic) )
-            closediv = lhtml.fromstring( html_close )
+            topicdiv = self.topic_tmpl % self.topic
+            closediv = self.close_tmpl
+            headdiv = self.head_tmpl % ( closediv, topicdiv )
+            entries = self._maketoc( htmltree )
+            toc_div = self.tocul_tmpl % ''.join( entries )
+            self.posthtml = self.tmpl % (self.style, headdiv, toc_div)
         except :
-            self.posthtml = 'Unable to generate the TOC, ' +\
+            self.posthtml = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
-        else :
-            headdiv.append( closediv )
-            headdiv.append( topicdiv )
-            contrdiv.append( headdiv )
-            contrdiv.append( toc_div )
-            self._maketoc( htmltree, toc_div, self.numbered )
-            self.posthtml = lhtml.tostring( contrdiv ) + script
+            raise
         return

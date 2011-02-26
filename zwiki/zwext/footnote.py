@@ -55,13 +55,10 @@ as its anchor name, which can be referenced else where like,
 }}}
 """
 
-css = {
-}
-
 tmpl = """
-<div style="">
+<div class="footnote" style="%s">
 <b> %s </b>
-<table style="margin-left: %s">
+<table>
 %s
 </table>
 </div>
@@ -69,8 +66,8 @@ tmpl = """
 
 rowtmpl = """
 <tr>
-    <td style="padding: 5px; color: blue; vertical-align: top;"><a name="%s">%s</a></td>
-    <td style="padding: 5px; text-align: left;">%s</td>
+    <td class="anchor"> <a name="%s">%s</a> </td>
+    <td class="notes"> %s </td>
 </tr>
 """
 
@@ -78,23 +75,23 @@ class Footnote( ZWExtension ) :
     """Implements Footnote() wikix"""
 
     def _compose(self, lines) :
-        html = ''
+        row = ''
         if lines :
             splits = lines[0].split(' ', 1)
-            name   = splits and splits.pop(0) or ''
-            text   = ' '.join( [splits and splits.pop(0) or '' ] + lines[1:] )
-            html   = rowtmpl % (name, name, text)
-        return html
+            name = splits and splits.pop(0) or ''
+            text = ' '.join( [splits and splits.pop(0) or '' ] + lines[1:] )
+            row = rowtmpl % (name, name, text)
+        return row
 
     def __init__( self, props, nowiki, *args ) :
         self.nowiki = nowiki
-        self.style  = constructstyle( props, defcss=css )
+        self.style  = constructstyle( props )
         self.title  = args and args[0] or 'Footnotes :'
         self.args   = args[1:]
 
     def tohtml( self ) :
-        html  = []
-        curr  = []
+        rows = []
+        curr = []
         lines = self.nowiki.splitlines()
         while lines :
             line = lines.pop(0)
@@ -102,10 +99,10 @@ class Footnote( ZWExtension ) :
             if curr and line and line[0] in [ ' ', '\t' ] :
                 curr.append(stripped)
             elif line and line[0] not in [ ' ', '\t' ] :
-                curr and html.append( self._compose(curr) )
+                curr and rows.append( self._compose(curr) )
                 curr = [line]
             elif not stripped :
                 continue
-        curr and html.append(self._compose(curr))
-        html = tmpl % (self.title, self.style, ''.join(html))
+        curr and rows.append(self._compose(curr))
+        html = tmpl % (self.title, self.style, ''.join(rows))
         return html
