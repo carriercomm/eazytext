@@ -1,0 +1,992 @@
+<html><body><div class="zwpage" style="">
+                    <style type="text/css"> .zwpage {
+    'white-space' : 'normal',
+}
+.zwblk {
+}
+
+/* Text styling */
+span.zwmark {
+}
+strong.zwmark {
+}
+em.zwmark {
+}
+u.zwmark {
+}
+sup.zwmark {
+}
+sub.zwmark {
+}
+strong.zwmark > em.zwmark {
+}
+strong.zwmark > u.zwmark {
+}
+em.zwmark > u.zwmark {
+}
+strong.zwmark > em.zwmark > u.zwmark {
+}
+p.zwtext {
+}
+
+/* Sections */
+h1.zwsec {
+}
+h2.zwsec {
+}
+h3.zwsec {
+}
+h4.zwsec {
+}
+h5.zwsec {
+}
+h1 a.zwseclink, h2 a.zwseclink, h3 a.zwseclink, h4 a.zwseclink, h5 a.zwseclink {
+  color: #CCCCCC;
+  font-size: medium;
+  text-decoration: none
+}
+
+/* Small table */
+table.zwtbl {
+  border-collapse: collapse;
+}
+tr.zwtbl {
+}
+th.zwtbl {
+  padding : 5px; border: 1px solid gray;
+}
+td.zwtbl {
+  padding : 5px; border: 1px solid gray;
+}
+
+/* Big table */
+table.zwbtbl {
+  border-left : 1px solid gray;
+  border-top : 1px solid gray;
+}
+tr.zwbtbl {
+}
+th.zwbtbl {
+  padding : 5px;
+  border-right : 1px solid gray;
+  border-bottom : 1px solid gray;
+}
+td.zwbtbl {
+  padding : 5px;
+  border-right : 1px solid gray;
+  border-bottom : 1px solid gray;
+}
+
+/* Horizontal rule */
+hr.zwhorz {
+}
+
+/* List */
+ul.zw {
+}
+ol.zw {
+}
+li.zw {
+}
+
+/* Definitions */
+dl.zw {
+}
+dt.zw {
+}
+dd.zw {
+}
+
+/* Blockquote */
+blockquote.zw.firstlevel {
+  border-left : 2px solid #d6d6d6;
+  padding-left : 5px
+}
+blockquote.zw.innerlevel {
+  margin-left : 0px;
+  border-left : 2px solid #d6d6d6;
+  padding-left : 5px;
+}
+
+/* Links */
+img.zw {
+}
+a.zwlink {
+}
+a.zwlink.anchor {
+}
+a.zwhttpuri {
+}
+a.zwwwwuri {
+}
+
+/* macro-anchor */
+a.zwm-anchor {
+}
+
+/* macro-clear */
+div.zwm-clear {
+  clear : both;
+}
+
+/* macro-image */
+div.zwm-image {
+  margin    : 0px;
+  padding   : 0px;
+  border    : 0px;
+}
+
+/* macro-images */
+table.zwm-images {
+  margin    : 10px;
+  padding   : 0px;
+  border    : 0px;
+}
+table.zwm-images tr {
+}
+table.zwm-images td {
+}
+table.zwm-images img {
+}
+
+/* macro-span */
+span.zwm-span {
+  color   : gray;
+  padding : 2px;
+}
+
+/* macro-toc */
+div.zwm-toc {
+  background    : #f8f7bc;
+  position      : relative;
+  float         : left;
+  margin        : 10px;
+  padding       : 3px;
+  width         : 20em;
+  border-right  : 1px solid gray;
+  border-bottom : 1px solid gray;
+}
+div.zwm-toc .head {
+  margin-bottom : 5px;
+}
+div.zwm-toc .head .topic {
+  font-weight : bold;
+}
+div.zwm-toc .head .close {
+  color : blue;
+  cursor : pointer;
+  font-size : small;
+  position: relative;
+  float: right;
+}
+div.zwm-toc div.toc {
+}
+div.zwm-toc div.h1 {
+  margin-left : 0em;
+}
+div.zwm-toc div.h2 {
+  margin-left : 0.7em;
+}
+div.zwm-toc div.h3 {
+  margin-left : 1.4em;
+}
+div.zwm-toc div.h4 {
+  margin-left : 2.1em;
+}
+div.zwm-toc div.h5 {
+  margin-left : 2.8em;
+}
+div.zwm-toc a {
+}
+
+/* extension-box */
+p.zwext-box .box {
+  color         : gray;
+  border-top    : thin solid gray;
+  border-right  : thin solid gray;
+  border-bottom : thin solid gray;
+  border-left   : thin solid gray;
+}
+p.zwext-box .boxtitle = {
+  color          : black;
+  background     : #EEEEEE;
+  font-weight    : bold;
+  padding-top    : 3px;
+  padding-right  : 3px;
+  padding-bottom : 3px;
+  padding-left   : 3px;
+}
+p.zwext-box .boxcont = {
+  padding-top    : 3px;
+  padding-right  : 3px;
+  padding-bottom : 3px;
+  padding-left   : 3px;
+}
+
+
+
+/* extension-code */
+p.zwext-code .code {
+  margin-left  : 5%;
+  margin-right : 5%;
+}
+p.zwext-code .highlighttable td.linenos {
+  padding : 3px;
+  color : brown;
+  background-color : activeborder;
+}
+p.zwext-code .highlighttable td.code {
+  padding : 3px
+}
+p.zwext-code .highlight {
+  background-color : #FAFAFA;
+}
+p.zwext-code .codecont {
+  background : #FAFAFA;
+  border : 1px dashed gray;
+}
+
+/* extension-footnote */
+p.zwext-footnote .footnote {
+}
+p.zwext-footnote table {
+  margin-left: 5px;
+}
+p.zwext-footnote td.anchor {
+  padding: 5px;
+  color: blue;
+  vertical-align: top;
+}
+p.zwext-footnote td.notes {
+  padding: 5px;
+  text-align: left;
+}
+
+/* extension-html */
+p.zwext-html .html {
+}
+
+/* extension-nested */
+p.zwext-nested .nested {
+}
+ </style>
+                    <div class="zwm-toc" style="float: right;  ; ;"> <div class="head"> <div class="close">close</div> <div class="topic"> Table of Contents </div> </div> <div class="toc"> <div class="h2"> <a href="#Tutorial on zwiki syntax"> Tutorial on zwiki syntax </a> </div><div class="h3"> <a href="#Why ZWiki"> Why ZWiki </a> </div><div class="h3"> <a href="#Text markup"> Text markup </a> </div><div class="h4"> <a href="#Line Break"> Line Break </a> </div><div class="h4"> <a href="#Escaping markups"> Escaping markups </a> </div><div class="h3"> <a href="#Links"> Links </a> </div><div class="h4"> <a href="#Simple hyper links"> Simple hyper links </a> </div><div class="h4"> <a href="#Opening a link in new browser window"> Opening a link in new browser  ... </a> </div><div class="h4"> <a href="#Anchors"> Anchors </a> </div><div class="h4"> <a href="#Images and email links"> Images and email links </a> </div><div class="h3"> <a href="#Block level markup"> Block level markup </a> </div><div class="h4"> <a href="#Headings"> Headings </a> </div><div class="h4"> <a href="#Horizontal rule"> Horizontal rule </a> </div><div class="h4"> <a href="#Ordered and un-ordered list"> Ordered and un-ordered list </a> </div><div class="h4"> <a href="#Blockquoted text"> Blockquoted text </a> </div><div class="h4"> <a href="#Small table"> Small table </a> </div><div class="h4"> <a href="#Big table"> Big table </a> </div><div class="h4"> <a href="#Sortable tables"> Sortable tables </a> </div><div class="h4"> <a href="#Definition list"> Definition list </a> </div><div class="h3"> <a href="#Style shortcuts"> Style shortcuts </a> </div><div class="h3"> <a href="#Intersperse HTML text"> Intersperse HTML text </a> </div><div class="h4"> <a href="#Templated Tags"> Templated Tags </a> </div><div class="h3"> <a href="#Macros"> Macros </a> </div><div class="h3"> <a href="#Extensions"> Extensions </a> </div><div class="h3"> <a href="#Wiki properties"> Wiki properties </a> </div> </div> </div>
+                    <p class="zwtext">  
+ </p>
+
+    <h2 class="zwsec" style="">
+        Tutorial on zwiki syntax
+        <a name="Tutorial on zwiki syntax"></a>
+        <a class="zwseclink" href="#Tutorial on zwiki syntax" title="Link to this section">&#9875;</a>
+    </h2>
+    
+
+
+    <h3 class="zwsec" style="">
+        Why ZWiki
+        <a name="Why ZWiki"></a>
+        <a class="zwseclink" href="#Why ZWiki" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Wiki in general has gained good acceptance in writing well formatted
+documents with rich text, and that is without cluttering the document source
+with criptic markup. While, wiki based document / publishing  applications have
+cropped-up in several segmets, ZWiki attempts to address the needs of
+programmers, encouraging them to use ZWiki for their documentation.
+ </p>
+
+    <h3 class="zwsec" style="">
+        Text markup
+        <a name="Text markup"></a>
+        <a class="zwseclink" href="#Text markup" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwext-nested"> <div class="nested"> <div class="zwblk" style="; margin-left: 40px;  ; ;">
+                    
+                    
+                    <table class="zwtbl sortable" cellspacing="0"  cellpadding="5px"> <tr class="zwtbl"> <th class="zwtbl" colspan="1" style="">  Markup syntax </th><th class="zwtbl" colspan="1" style="">  Rendered as </th>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  `` just a span element `` </td><td class="zwtbl" colspan="1" style="">  <span class="zwmark" style=""> just a span element </span> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '' bold '' </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style=""> bold </strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  // italic // </td><td class="zwtbl" colspan="1" style="">  <em class="zwmark" style=""> italic</em> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  __ underline __ </td><td class="zwtbl" colspan="1" style="">  <u class="zwmark" style=""> underline </u> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  x^^2^^ </td><td class="zwtbl" colspan="1" style="">  x<sup class="zwmark" style="">2</sup> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  log,,2,,10 </td><td class="zwtbl" colspan="1" style="">  log<sub class="zwmark" style="">2</sub>10 </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '/ bold and italic '/ </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style=""><em class="zwmark"> bold and italic </em></strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '/ bold and italic /' </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style=""><em class="zwmark"> bold and italic </em></strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '_ bold and underline '_ </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style=""><u class="zwmark"> bold and underline </u></strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '_ bold and underline _' </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style=""><u class="zwmark"> bold and underline </u></strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  /_ italic and underline /_ </td><td class="zwtbl" colspan="1" style="">  <em class="zwmark" style=""><u class="zwmark"> italic and underline </u></em> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  /_ italic and underline _/ </td><td class="zwtbl" colspan="1" style="">  <em class="zwmark" style=""><u class="zwmark"> italic and underline </u></em> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '/_ bold, italic and underline '/_ </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style="_"><em class="zwmark"><u class="zwmark"> bold, italic and underline </u></em></strong> </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  '/_ bold, italic and underline _/' </td><td class="zwtbl" colspan="1" style="">  <strong class="zwmark" style="_"><em class="zwmark"><u class="zwmark"> bold, italic and underline </u></em></strong> </td>
+ </tr> </table>
+
+
+                    
+                </div> </div> </p>
+<p class="zwtext"> <strong class="zwmark" style=""> And feel free to nest text formatting, </strong>
+ </p>
+<blockquote class="zw firstlevel"> In <em class="zwmark" style=""> 1862 </em>, <strong class="zwmark" style="">Charles Lutwidge Dodgson</strong>, a shy Oxford mathematician<br/> with a stammer, created a story about a little girl tubling down a rabbit<br/> hole. Thus geban the immortal adventures of Alice, perhaps the most popular<br/> heroine in English literature. Countless scholars have tried to define the<br/> charm of the Alice  books-with those wonderfully eccentric characters the<br/> <strong class="zwmark" style=""> Queen of Hearts, <em class="zwmark" style="">Tweedledum</em> and <em class="zwmark" style="">Tweedledee</em>, the <em class="zwmark" style="">Cheshire Cat</em>,<br/> the <em class="zwmark" style="">Mock Turtle</em> , the Mad Hatter, <u class="zwmark" style="">et al</u> </strong>, by proclaiming that they<br/> really comprise a satire on<br/> language, a political allegory, a parody of Victorian children's<br/> literature, even a reflection of contemporary ecclesiastical history.<br/> Perhaps, as Dodgson might have said, Alice is no more than a dream, a<br/> fairy tale about the trials and tribulations of growing up-or down, or all<br/> turned around-as seen through the expert eyes of a child.</blockquote>
+
+    <h4 class="zwsec" style="">
+        Line Break
+        <a name="Line Break"></a>
+        <a class="zwseclink" href="#Line Break" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> To insert a line break any where in the text, use <strong class="zwmark" style="">double backslash (\\)</strong>.
+Line break can be freely mixed with text markups as well. For example,
+ </p>
+
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+''Monsoon is a ``{g} blessing `` in disguise. \\ It's hard to describe ``{b} emotions `` it brings to life.
+// When there is ``{r} rainfall `` at night \\ I find in the morning, ``{c} dews `` alight. // </pre></blockquote>
+<blockquote class="zw firstlevel"> <strong class="zwmark" style="">Monsoon is a <span class="zwmark" style="color: green;"> blessing </span> in disguise.<br/> It's hard to describe <span class="zwmark" style="color: blue;"> emotions </span> it brings to life. </strong><br/> <em class="zwmark" style=""> When there is <span class="zwmark" style="color: red;"> rainfall </span> at night<br/> I find in the morning, <span class="zwmark" style="color: crimson;"> dews </span> alight.</em></blockquote>
+<dl class="zw"> <dt class="zw"><b>  Note  </b></dt> <dd class="zw">  
+    A <strong class="zwmark" style="">new line (\n)</strong> should not immediately follow a new-line
+    markup <strong class="zwmark" style="">\\</strong>
+ </dd> </dl>
+
+    <h4 class="zwsec" style="">
+        Escaping markups
+        <a name="Escaping markups"></a>
+        <a class="zwseclink" href="#Escaping markups" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> There are two ways to escape wiki characters,
+ </p><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  Use <strong class="zwmark" style="">backslash (\)</strong> to escape new lines.
+ </li><li class="zw" style="">  Use <strong class="zwmark" style="">tilda (~)</strong> to escape wiki markups
+ </li></ul>
+
+    <h3 class="zwsec" style="">
+        Links
+        <a name="Links"></a>
+        <a class="zwseclink" href="#Links" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Hyper linking documents is one of the strengths in HTML documentation. There
+are few ways to generate hyper links in a wiki text.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Simple hyper links
+        <a name="Simple hyper links"></a>
+        <a class="zwseclink" href="#Simple hyper links" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Generate a simple hyper reference over arbitrary text by enclosing them in
+<strong class="zwmark" style="">double-square bracket ([[...]])</strong>. The enclosed text is composed of two parts,
+the <strong class="zwmark" style="">href</strong> part and <strong class="zwmark" style="">text</strong> part. In the following example 
+<em class="zwmark" style=""> <a class="zwhttpuri" href="http://www.google.com"> http://www.google.com </a> </em> is <strong class="zwmark" style="">href</strong>, while <em class="zwmark" style="">Google site</em> is the <strong class="zwmark" style="">text</strong>
+part,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+a simple reference link to [[ http://www.google.com | Google site ]] </pre></blockquote>
+<blockquote class="zw firstlevel"> a simple reference link to <a class="zwlink" target="" href="http://www.google.com">Google site</a>.</blockquote>
+<p class="zwtext"> You might have also noticed that hyper links are automatically generated for
+text words starting with <strong class="zwmark" style="">http:</strong> or <strong class="zwmark" style="">www</strong>
+ </p>
+
+    <h4 class="zwsec" style="">
+        Opening a link in new browser window
+        <a name="Opening a link in new browser window"></a>
+        <a class="zwseclink" href="#Opening a link in new browser window" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+open [[ *http://www.google.com | this ]] hyper reference in a new browser window
+</pre></blockquote>
+<blockquote class="zw firstlevel"> open <a class="zwlink" target="_blank" href="http://www.google.com">this</a> hyper reference in a new browser window </blockquote>
+<p class="zwtext"> notice the <strong class="zwmark" style="">start (*)</strong>character that is prepended to <strong class="zwmark" style="">href</strong>,
+ </p>
+
+    <h4 class="zwsec" style="">
+        Anchors
+        <a name="Anchors"></a>
+        <a class="zwseclink" href="#Anchors" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> It is also possible to create anchors inside a document that can be referenced
+elsewhere, only that <strong class="zwmark" style="">href</strong> is interpreted as <strong class="zwmark" style="">anchor name</strong>. Notice the
+<strong class="zwmark" style="">Pound (#)</strong> that is prepended to <strong class="zwmark" style="">anchor name</strong>
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> Creating an [[ #anchor-here | anchor-here ]] </pre></blockquote>
+<blockquote class="zw firstlevel"> Creating an <a class="zwlink anchor" name="name="anchor-here"">anchor-here</a></blockquote>
+
+    <h4 class="zwsec" style="">
+        Images and email links
+        <a name="Images and email links"></a>
+        <a class="zwseclink" href="#Images and email links" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> The link markup also provides a short cut for Image() macro to embed images
+in the document. In this case <strong class="zwmark" style="">href</strong> is interpreted as url to fetch the
+image. Notice the <strong class="zwmark" style="">plus (+)</strong> prepended to the image-url.
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+Image (not a link) [[ +http://www.w3.org/2008/site/images/logo-w3c-mobile-lg | w3c]]
+</pre></blockquote>
+<blockquote class="zw firstlevel"> Image (not a link) <img class="zw" src="http://www.w3.org/2008/site/images/logo-w3c-mobile-lg" alt="w3c" style=""/></blockquote>
+<p class="zwtext"> Instead of using <strong class="zwmark" style="">http:</strong>, prepend the <em class="zwmark" style="">email-id</em> with <strong class="zwmark" style="">mailto:</strong> and use
+it as <strong class="zwmark" style="">href</strong>
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> mail to [[ mailto:hello.world@gmail.com | me ]] </pre></blockquote>
+<blockquote class="zw firstlevel"> mail to <a class="zwlink" target="" href="mailtomai...">...</a></blockquote>
+<p class="zwtext"> Feel free to intermix link markup with text markup, only rule being that, the
+link text [[...]] must be fully contained within text markups, like,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> `` www.google.com ``, //{c;20|} [[ www.google.com | google ]] // </pre></blockquote>
+<blockquote class="zw firstlevel"> <span class="zwmark" style=""> <a class="zwwwwuri" href="http://www.google.com"> www.google.com </a> </span>, <em class="zwmark" style="color: crimson;; margin : 20px"> <a class="zwlink" target="" href="www.google.com">google</a> with-in span</em></blockquote>
+
+    <h3 class="zwsec" style="">
+        Block level markup
+        <a name="Block level markup"></a>
+        <a class="zwseclink" href="#Block level markup" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+
+    <h4 class="zwsec" style="">
+        Headings
+        <a name="Headings"></a>
+        <a class="zwseclink" href="#Headings" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Headings are synonymous to sections, and are contained within a single line
+(ofcourse one can use <strong class="zwmark" style="">backslash (\)</strong> to escape new lines). ZWiki provides
+two forms of heading markup, first one, using one or more (upto five) <strong class="zwmark" style="">equal
+(=) </strong> characters, second one, using, <strong class="zwmark" style=""> h1. h2. h3. h4. h5. </strong>
+ </p>
+<p class="zwtext"> 1<sup class="zwmark" style="">st</sup> level heading can be written as,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> = section1
+ (or)
+ h1. secion1 </pre></blockquote>
+<p class="zwtext"> 2<sup class="zwmark" style="">nd</sup> level heading can be written as,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> == section2
+ (or)
+ h2. secion2 </pre></blockquote>
+<p class="zwtext"> 3<sup class="zwmark" style="">rd</sup> level heading can be written as,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> === section3
+ (or)
+ h3. secion3 </pre></blockquote>
+<p class="zwtext"> 4<sup class="zwmark" style="">th</sup> level heading can be written as,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ==== section4
+ (or)
+ h4. secion4 </pre></blockquote>
+<p class="zwtext"> 5<sup class="zwmark" style="">th</sup> level heading can be written as,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ===== section5
+ (or)
+ h5. secion5 </pre></blockquote>
+<p class="zwtext"> Header markup begins from a new line and can accept <em class="zwmark" style="">text markups</em>,
+<em class="zwmark" style="">link markup</em>, <em class="zwmark" style="">URLs</em>, <em class="zwmark" style="">line-break</em> as heading text.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Horizontal rule
+        <a name="Horizontal rule"></a>
+        <a class="zwseclink" href="#Horizontal rule" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> To divide portions of text, try,
+   
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ---- </pre></blockquote>
+<p class="zwtext"> Like header markup, the horizontal rule markup too begins from a new line and
+ends with a new line.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Ordered and un-ordered list
+        <a name="Ordered and un-ordered list"></a>
+        <a class="zwseclink" href="#Ordered and un-ordered list" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Ordered lists are bullet point list <em class="zwmark" style="">with numbering</em>, while un-ordered lists are
+bullet point list <em class="zwmark" style="">with-out numbering</em>. 
+ </p>
+<p class="zwtext"> <strong class="zwmark" style="">Ordered lists</strong> can be formed, by starting the line with one or more (upto 5)
+<strong class="zwmark" style=""> pound (#) </strong> characters, where, each <strong class="zwmark" style="">#</strong> denotes an inner level list.
+For example,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> # item one 
+ ## level 2 item one
+ ## level 2 item two
+ # item two </pre></blockquote>
+<p class="zwtext"> will be translated as 
+ </p><p class="zwext-nested"> <div class="nested"> <div class="zwblk" style="; margin-left: 20px;  ; ;">
+                    
+                    
+                    <ol class="zw" style="list-style-type: lower-roman;"><li class="zw" style="">  item one 
+ </li><ol class="zw" style="list-style-type: lower-alpha;"><li class="zw" style="">  level 2 item one
+ </li><li class="zw" style="">  level 2 item two
+ </li></ol><li class="zw" style="">  item two 
+ </li></ol>
+
+                    
+                </div> </div> </p>
+<p class="zwtext"> <strong class="zwmark" style="">UnOrdered lists</strong> can be formed, by starting the line with one or more (upto 5)
+<strong class="zwmark" style=""> star (*) </strong> characters, where, each <strong class="zwmark" style="">*</strong> denotes an inner level list.
+For example,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> * item one 
+ ** level 2 item one
+ ** level 2 item two
+ * item two </pre></blockquote>
+<p class="zwtext"> will be translated as 
+ </p><p class="zwext-nested"> <div class="nested"> <div class="zwblk" style="; margin-left: 20px;  ; ;">
+                    
+                    
+                    <ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  item one 
+ </li><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  level 2 item one
+ </li><li class="zw" style="">  level 2 item two
+ </li></ul><li class="zw" style="">  item two 
+ </li></ul>
+
+                    
+                </div> </div> </p>
+<p class="zwtext"> It is also possible to arbitrarily nest both (ordered and unordered) type of
+list items.
+ </p>
+<ol class="zw" style="list-style-type: lower-roman;"><li class="zw" style="">  item <span class="zwmark" style="color: crimson;"> one </span>
+ </li><ol class="zw" style="list-style-type: lower-alpha;"><li class="zw" style="">  Sub <em class="zwmark" style=""> <strong class="zwmark" style="">item</strong> one </em>
+ </li><li class="zw" style="">  Visit <a class="zwwwwuri" href="http://www.google.com"> www.google.com </a> to access a peta <br/> flop computer.
+ </li></ol><li class="zw" style="">  <a class="zwlink" target="" href="mailtomai...">M...</a> with gmail.
+ </li><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  Sub item one
+ </li><li class="zw" style="">  Sub item 
+    two
+ </li></ul><li class="zw" style="">  item three
+ </li><li class="zw" style="">  item four
+ </li><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  Sub item one
+ </li><li class="zw" style="">  Sub item two
+ </li><li class="zw" style="">  Sub item three
+ </li><li class="zw" style="">  Sub item four
+ </li></ul></ol>
+<p class="zwtext"> Lists can be nested all the way upto 5 levels, while freely mixing the ordered
+and un-ordered markups across the levels. Note, that within the same level,
+mixing the ordered and un-ordered markup does not have any effect. List items
+can contain <em class="zwmark" style="">text markups</em>, <em class="zwmark" style="">link markup</em>, <em class="zwmark" style="">URLs</em>, <em class="zwmark" style="">line-break</em> in its
+text.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Blockquoted text
+        <a name="Blockquoted text"></a>
+        <a class="zwseclink" href="#Blockquoted text" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Block quoted text are written like,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> &gt; That which doesnt kill you makes you stronger - Nietzsche.
+ &gt; That which doesnt kill you make you stranger  - Joker.  </pre></blockquote>
+<p class="zwtext"> Rendered as,
+ </p><blockquote class="zw firstlevel"> That which doesnt kill you makes you stronger - Nietzsche <br/> That which doesnt kill you make you stranger - Joker.</blockquote>
+<p class="zwtext"> Block quoted text can be nested as well.
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> &gt;  ``{b} ''Nietzsche '' `` That which doesnt kill you makes you stronger.
+ &gt;&gt; ``{t} ''Joker     '' `` That which doesnt kill you make you a stranger.
+
+ &gt; Visit ''{t} [[ +http://thedarkknight.warnerbros.com/dvdsite/ | Joker ]] ''
+ &gt; to know more him and search yourself at
+ &gt; http://www.quotationspage.com/quotes/Friedrich_Nietzsche/ </pre></blockquote>
+<p class="zwtext"> Rendered as,
+ </p>
+<blockquote class="zw firstlevel">  <span class="zwmark" style="color: blue;"> Nietzsche</span> That which doesnt kill you makes you stronger.<br/><blockquote class="zw innerlevel"> <span class="zwmark" style="color: teal;"> Joker </span> That which doesnt kill you make you a stranger.</blockquote></blockquote>
+<blockquote class="zw firstlevel"> Visit <strong class="zwmark" style="color: teal;"> <a class="zwlink" target="_blank" href="http://thedarkknight.warnerbros.com/dvdsite/">Joker</a> </strong><br/> to know more about him and search yourself in<br/> <a class="zwhttpuri" href="http://www.quotationspage.com/quotes/Friedrich_Nietzsche/"> http://www.quotationspage.com/quotes/Friedrich_Nietzsche/ </a></blockquote>
+<p class="zwtext"> And like this, block quoted text can nest all the way up to five levels. You
+might have also noted that blockquoted text can have <em class="zwmark" style="">text markups</em>,
+<em class="zwmark" style="">link markup</em>, <em class="zwmark" style="">URLs</em> and <em class="zwmark" style="">line-break</em>.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Small table
+        <a name="Small table"></a>
+        <a class="zwseclink" href="#Small table" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Tables are composed of rows and columns, where every intersecting row and
+column is a cell. Simple tables can be generated like,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+|= fruits     |= icecreams   
+| oranges     | vanilla     $|
+| grapes      | chocolate   
+| mango       | butterscotch
+</pre></blockquote>
+<p class="zwtext"> Rendered as,
+ </p>
+<p class="zwext-nested"> <div class="nested"> <div class="zwblk" style="; margin-left: 40px;  ; ;">
+                    
+                    
+                    <table class="zwtbl sortable" cellspacing="0"  cellpadding="5px"> <tr class="zwtbl"> <th class="zwtbl" colspan="1" style="">  fruit </th><th class="zwtbl" colspan="1" style="">  color </th>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  oranges </td><td class="zwtbl" colspan="1" style="text-align : right; ">  vanilla </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  grapes </td><td class="zwtbl" colspan="1" style="">  chocolate </td>
+ </tr><tr class="zwtbl"> <td class="zwtbl" colspan="1" style="">  mango </td><td class="zwtbl" colspan="1" style="">  butterscotch </td>
+ </tr> </table>
+
+
+                    
+                </div> </div> </p>
+<ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  <strong class="zwmark" style="">|=</strong> generates a table header cell, while <strong class="zwmark" style="">|</strong> generate a cell. Each line
+  is interpreted as a table-row, and each line can have multiple cells
+  separated by <strong class="zwmark" style="">|</strong> or <strong class="zwmark" style="">|=</strong>.
+ </li><li class="zw" style="">  <span class="zwmark" style="color: red;"> There is a limitation in small tables, that each table-row should
+  be contained within a single line.</span> Ofcourse, you can overcome this limitation
+  by escaping the new line with a <strong class="zwmark" style="">backslash (\)</strong>.
+ </li><li class="zw" style="">  By now you should have taken it for granted that, <em class="zwmark" style="">text markups</em>,
+  <em class="zwmark" style="">link markup</em>, <em class="zwmark" style="">URLs</em>, <em class="zwmark" style="">line-break</em> can be used in table-text. You are
+  right.
+ </li><li class="zw" style="">  To <em class="zwmark" style=""> right-align </em> text in a given cell, close the cell with <strong class="zwmark" style="">$|</strong>
+  instead of closing it with <strong class="zwmark" style="">|</strong> alone. Like, in the above example,
+  <em class="zwmark" style="">vanilla</em> is right-aligned.
+ </li></ul>
+
+    <h4 class="zwsec" style="">
+        Big table
+        <a name="Big table"></a>
+        <a class="zwseclink" href="#Big table" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Unlike small tables, where every line is treated as a table-row, in a big
+table every line is treated as a table-cell. So,
+ </p>
+<p class="zwtext"> Open the table,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ||{ </pre></blockquote><p class="zwtext"> Close the table,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ||} </pre></blockquote><p class="zwtext"> Open a table row,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ||- </pre></blockquote><p class="zwtext"> Open a table header cell,
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> ||=  </pre></blockquote><p class="zwtext"> Open a table cell, and don't miss the space that immediately follows <strong class="zwmark" style=""> double
+pipe (&quot;&quot;) </strong>
+ </p><blockquote class="zw firstlevel"> <pre class="zwttag"> || orange </pre></blockquote>
+<p class="zwtext"> To generate the previous table using big-table markup, write it as,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+||{           
+||-           
+||= fruit     
+||= color     
+||-           
+|| orange     
+|| orange     
+||-           
+|| grape      
+|| light green
+||-           
+|| mango      
+|| yellow     
+||}           
+</pre></blockquote>
+<p class="zwtext"> which will be translated as,
+ </p>
+<p class="zwext-nested"> <div class="nested"> <div class="zwblk" style="; margin-left: 40px;  ; ;">
+                    
+                    
+                    <table class="zwbtbl sortable" cellspacing="0px"  cellpadding="5px" style="">  <tr class="zwbtbl" style=""><th class="zwbtbl" style="">  fruit      
+ </th><th class="zwbtbl" style="">  color      
+ </th></tr>  <tr class="zwbtbl" style=""><td class="zwbtbl" style=""> orange      
+ </td><td class="zwbtbl" style=""> orange      
+ </td></tr>  <tr class="zwbtbl" style=""><td class="zwbtbl" style=""> grape       
+ </td><td class="zwbtbl" style=""> light green 
+ </td></tr>  <tr class="zwbtbl" style=""><td class="zwbtbl" style=""> mango       
+ </td><td class="zwbtbl" style=""> yellow      
+ </td></tr></table>
+
+
+                    
+                </div> </div> </p>
+
+
+    <h4 class="zwsec" style="">
+        Sortable tables
+        <a name="Sortable tables"></a>
+        <a class="zwseclink" href="#Sortable tables" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> When tables are created using small-table or big-table markup, column-wise
+sorting is automatically enabled. To make it generic, we have made any table
+created / composed in a wiki page, as column-wise sortable, provided, the
+tables are marked as <strong class="zwmark" style="">sortable</strong> <em class="zwmark" style="">class</em>.
+ </p>
+
+    <h4 class="zwsec" style="">
+        Definition list
+        <a name="Definition list"></a>
+        <a class="zwseclink" href="#Definition list" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> Define terms using definition list,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+: dojo :: JavaScript tool-kit supporting classes, widgets, data stored etc.
+</pre></blockquote>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+: minix3 :: Supposedly a next generation operating system aimed at distributed
+computing and fault-tolerance.
+</pre></blockquote>
+<p class="zwtext"> which will be translated as,
+ </p>
+<dl class="zw"> <dt class="zw"><b>  dojo  </b></dt> <dd class="zw">  JavaScript tool-kit supporting classes, widgets, data stored etc.
+ </dd> </dl>
+<dl class="zw"> <dt class="zw"><b>  minix3  </b></dt> <dd class="zw">  Supposedly a next generation operating system aimed at distributed computing and fault-tolerance.
+ </dd> </dl>
+<p class="zwtext"> <strong class="zwmark" style="">double colon (::)</strong> should not be present in the term-text except where it delimits
+definition-term from its definition.
+ </p>
+
+    <h3 class="zwsec" style="">
+        Style shortcuts
+        <a name="Style shortcuts"></a>
+        <a class="zwseclink" href="#Style shortcuts" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Starting from zwiki version 0.8dev style shortcuts are introduced, augmenting
+text-markups, table markups (both small tables and big tables), heading,
+ordered and un-ordered lists . Play around in style.
+ </p>
+<p class="zwtext"> For example, the following text markup with style shortcuts is converted to,
+ </p>
+<blockquote class="zw firstlevel"> <pre class="zwttag">
+&gt; ''{r} this text is colored ''
+&gt; ''{|5} text with padding 5 pixels ''
+&gt; ''{b;5|;|5} text with padding 5 pixels, margin 5 pixels and colored blue ''
+&gt; ''{\1,solid,gray} bordered and padded with 2px ''
+</pre></blockquote>
+<p class="zwtext"> translated as,
+ </p>
+<blockquote class="zw firstlevel"> <strong class="zwmark" style="color: red;"> this text is colored</strong><br/> <strong class="zwmark" style="padding : 5px"> text with padding 5 pixels</strong><br/> <strong class="zwmark" style="color: blue;; margin : 5px; padding : 5px"> text with padding 5 pixels, margin 5 pixels and colored blue</strong><br/> <strong class="zwmark" style="border : 1px solid green;; padding : 2px"> bordered and padded with 2px</strong></blockquote>
+<p class="zwtext"> Style shortcuts are enclosed in <strong class="zwmark" style=""> { ... } </strong>, and immediately follows
+wiki-markup that it augments. Within the curly braces, each style shortcut is
+seperated by a <strong class="zwmark" style="">semicolon (;)</strong>,
+ </p>
+<dl class="zw"> <dt class="zw"><b>  Foreground color  </b></dt> <dd class="zw"> 
+    A single <em class="zwmark" style="">small case alphabet</em>, ranging from a-z
+ </dd><dt class="zw"><b>  Background color  </b></dt> <dd class="zw"> 
+    A single <em class="zwmark" style="">capital case alphabet</em>, ranging from A-Z
+ </dd><dt class="zw"><b>  Margin  </b></dt> <dd class="zw"> 
+    A <em class="zwmark" style="">numerical value</em> followed immediately by a <em class="zwmark" style="">pipe (|)</em>, like <em class="zwmark" style="">5|</em>
+ </dd><dt class="zw"><b>  Padding  </b></dt> <dd class="zw"> 
+    A <em class="zwmark" style="">numerical value</em> immediately following a <em class="zwmark" style="">pipe (|)</em>, like <em class="zwmark" style="">|5</em>
+ </dd><dt class="zw"><b>  Border  </b></dt> <dd class="zw"> 
+    Comma seperated width, style, color (color being a small letter alphabet),
+    immediately following a <em class="zwmark" style="">backslash (\)</em>. Bordered text elements are
+    automatically padded with 2 pixels.
+ </dd> </dl>
+<dl class="zw"> <dt class="zw"><b>  Colormapping  </b></dt> <dd class="zw">  <a class="zwlink" target="" href="/help/ColorValue">Know</a> the mapping between color-alphabet and its color value.
+ </dd> </dl>
+
+    <h3 class="zwsec" style="">
+        Intersperse HTML text
+        <a name="Intersperse HTML text"></a>
+        <a class="zwseclink" href="#Intersperse HTML text" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Sometimes using just the wiki markup can be quite limiting in creating rich
+documents. Those who are HTML/CSS experts, can directly document with HTML and
+CSS, interspersed along with the rest of the wiki text. Just open the html
+text with <strong class="zwmark" style=""> [&lt; </strong> and close them with <strong class="zwmark" style=""> >]</strong>. For example, the following
+styling is directly used in all the help documents that you see here.
+ </p>
+<p class="zwext-code"> <div class="code" style=";  ; ;"> <style type="text/css"> .highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #FF0000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #808080 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #0040D0 } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #AA22FF } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #0000FF } /* Name.Function */
+.highlight .nl { color: #A0A000 } /* Name.Label */
+.highlight .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */ </style> <div class="codecont"> <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre>[&lt;
+   &lt;style type=&quot;text/css&quot;&gt;
+      Enter your styling attributes     
+   &lt;/style&gt;
+   &lt;script&gt;
+      Danger could be a malicious script
+   &lt;/script&gt;
+   &lt;pre&gt;
+     pre-formatted text
+   &lt;/pre&gt;
+&gt;]
+</pre></div>
+</td></tr></table> </div> </div> </p>
+<p class="zwtext"> Gets rendered as,
+ </p>
+<p class="zwtext"> <html><head><style type="text/css">
+      Enter your styling attributes     
+   </style></head><body><pre>
+     pre-formatted text
+   </pre></body></html>
+ </p>
+<p class="zwtext"> Note that the script tag within HTML markups are pruned away to avoid 
+<a class="zwlink" target="" href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a> attacks.
+ </p>
+<p class="zwtext"> HTML text can be Interspersed in the following blocks,
+ </p><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  Text Paragraphs
+ </li><li class="zw" style="">  Within List Items
+ </li><li class="zw" style="">  BlockQuoted text
+ </li><li class="zw" style="">  Tables, both in small table and big table
+ </li><li class="zw" style="">  Definitions
+ </li></ul>
+
+    <h4 class="zwsec" style="">
+        Templated Tags
+        <a name="Templated Tags"></a>
+        <a class="zwseclink" href="#Templated Tags" title="Link to this section">&#9875;</a>
+    </h4>
+    
+
+<p class="zwtext"> HTML tags with common usage pattern are pre-templated and can be used by
+attaching the template name with beginning markup
+<strong class="zwmark" style="">[&lt;</strong>. And the text contained within <strong class="zwmark" style=""> [&lt; .... &gt;] </strong> are interpreted by
+the template. For example, most of the pre-formatted text in this page are
+generated using <strong class="zwmark" style="">PRE</strong> template, like,
+ </p><blockquote class="zw firstlevel"> [&lt;PRE preformatted text >]</blockquote>
+<blockquote class="zw firstlevel"> <pre class="zwttag"> preformatted text </pre></blockquote>
+<p class="zwtext"> <a class="zwlink" target="" href="/help/zwiki/ZWTemplateTags">Explore</a> more about the available templates.
+ </p>
+
+    <h3 class="zwsec" style="">
+        Macros
+        <a name="Macros"></a>
+        <a class="zwseclink" href="#Macros" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Macros are direct function calls that can be made from wiki text into the wiki
+engine, provided, there is a macro my that name available. Most probably the
+macro will return a html content, which will be used to replace the macro
+call. <a class="zwlink" target="" href="/help/zwiki/ZWMacros">List of available macros</a>.
+ </p>
+
+    <h3 class="zwsec" style="">
+        Extensions
+        <a name="Extensions"></a>
+        <a class="zwseclink" href="#Extensions" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Wiki extensions are like plugins, and provide a way to extend the wiki engine
+for new markups, each one addressing a specific requirements, like math,
+graphs, code-highlighter etc ... and most probably the extension will be
+translated into html text which will be used to replace the extension-block.
+ </p>
+<p class="zwtext"> <pre style="margin-left:50px">
+{{{ Box
+    ....
+    ....
+}}}
+</pre>
+ </p>
+<p class="zwtext"> In the above case Box extension will be invoked and the lines in-between the triple
+braces will be interpreted by the Box extension.
+<a class="zwlink" target="" href="/help/zwiki/ZWExtensions">List of ZWiki-extension</a>.
+ </p>
+
+    <h3 class="zwsec" style="">
+        Wiki properties
+        <a name="Wiki properties"></a>
+        <a class="zwseclink" href="#Wiki properties" title="Link to this section">&#9875;</a>
+    </h3>
+    
+
+<p class="zwtext"> Wiki properties are key,value pairs, where key and value are seperated by a
+<strong class="zwmark" style="">colon (:)</strong> and the entire block is enclosed inside <strong class="zwmark" style=""> { ... } </strong>. They are
+either interpreted by wiki engine or passed into html elements as
+styling-attributes. Both key and value should be of literal types 
+(like string, int, float etc ...). Wiki properties are specified at two places,
+ </p><ul class="zw" style="list-style-type: disc;"><li class="zw" style="">  At the beginning of the wiki text, where the entire property block
+  <strong class="zwmark" style=""> { ... } </strong> is marked by a beginning <strong class="zwmark" style="">@</strong>, <pre class="zwttag">
+  @ { 'background' : '#00ff00 url('smiley.gif') no-repeat fixed center',
+  @   'padding'    : '2cm 4cm 3cm 4cm',
+  @   'style'      : 'font-family:"Times New Roman",Georgia,Serif;'
+  @ } </pre>
+ </li><li class="zw" style="">  At the beginning of wiki extension block (immediately following open triple
+  brace), where the entire property block is marked by a beginning
+  <strong class="zwmark" style="">#</strong>, <pre class="zwttag">
+  # { 'background' : '#00ff00 url('smiley.gif') no-repeat fixed center',
+  #   'padding'    : '2cm 4cm 3cm 4cm',
+  #   'style'      : 'font-family:"Times New Roman",Georgia,Serif;'
+  # } </pre>
+ </li></ul>
+<p class="zwtext"> /* vim: set filetype=zwiki : */
+ </p>
+
+                    
+                </div></body></html>
