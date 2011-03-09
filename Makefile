@@ -13,6 +13,9 @@ testall :
 bdist_egg :
 	python ./setup.py bdist_egg
 
+upload : 
+	python ./setup.py bdist_egg register upload --show-response 
+	
 sdist :
 	python ./setup.py sdist
 

@@ -12,43 +12,49 @@
 from   zwiki.zwext    import ZWExtension
 from   zwiki          import split_style, lhtml
 
-wikidoc = """
-=== Box
+doc = """
+h3. Box
 
 : Description ::
-    Generate a box with title and content. Text within the curly braces will be
-    interpreted as the content and can contain ZWiki text as well. If title
-    text is provided, then the extension can take parameter ''hide'' which
-    can be used to shrink/expand box content.
+    Generate a box with title and content. Text within the curly braces
+    will be interpreted as the content and can contain ZWiki text as well.
+    If title text is provided, then the extension can take parameter
+    ''hide'' which can be used to shrink/expand box content.
 
-:Example ::
+Property key-value pairs accepts CSS styling attributes and other special
+attributes like,
 
-> [<PRE
-{{{ Box hide
-#{
-# 'title' : 'Building A Mnesia Database',
-# 'style' : { 'margin-left' : '%s', 'margin-right' : '%s' },
-# 'titlestyle' : 'color: brown;',
-# 'contentstyle' : 'color: gray;',
-#}
+|= title        | optional, title string
+|= titlestyle   | optional, title style string in CSS style format
+|= contentstyle | optional, content style string in CSS style format
 
-This chapter details the basic steps involved when designing a Mnesia database
-and the programming constructs which make different solutions available to the
-programmer. The chapter includes the following sections,
+''Example''
 
-* defining a schema
-* the datamodel
-* starting Mnesia
-* creating new tables.
-
+> [<PRE{{{ Box hide
+ #{
+ # 'title' : 'Building A Mnesia Database',
+ # 'titlestyle' : 'color: brown;',
+ # 'contentstyle' : 'color: gray;',
+ # 'border' : '1px solid gray',
+ # 'style' : { 'margin' : '10px', 'padding' : '10px' },
+ #}
+ This chapter details the basic steps involved when designing a Mnesia
+ database and the programming constructs which make different solutions
+ available to the programmer. The chapter includes the following sections,
+ 
+ * defining a schema
+ * the datamodel
+ * starting Mnesia
+ * creating new tables.
 }}} >]
 
 {{{ Box hide
 #{
 # 'title' : 'Building A Mnesia Database',
-# 'style' : { 'margin-left' : '%s', 'margin-right' : '%s' },
 # 'titlestyle' : 'color: brown;',
 # 'contentstyle' : 'color: gray;',
+# 'border' : '1px solid gray',
+# 'style' : { 'margin' : '10px', 'padding' : '10px' },
 #}
 
 This chapter details the basic steps involved when designing a Mnesia database
@@ -62,15 +68,10 @@ programmer. The chapter includes the following sections:
 
 }}}
 
-special property key-value pairs,
-
-|= title        | optional, title string
-|= titlestyle   | optional, title style string in CSS style format
-|= contentstyle | optional, content style string in CSS style format
-""" % ( '5%', '5%', '5%', '5%' )
+"""
 
 tmpl = """
-<div class="box" style="%s">
+<div class="zwext-box" style="%s">
     <div class="boxtitle" style="%s">
     %s %s
     </div>
@@ -79,16 +80,12 @@ tmpl = """
 """
 
 spantmpl = """
-<span class="boxhide"
-      style="display: none; float: right; font-size : xx-small; color: blue; cursor: pointer">
-    hide</span>
-<span class="boxshow"
-      style="float: right; font-size : xx-small; color: blue; cursor: pointer">
-    show</span>
+<span class="boxhide"> hide</span>
+<span class="boxshow"> show</span>
 """
 
 class Box( ZWExtension ) :
-    """Implements Box() wikix"""
+    _doc = doc
 
     def __init__( self, props, nowiki, *args ) :
         self.nowiki = nowiki
@@ -150,3 +147,4 @@ class Box( ZWExtension ) :
             html = tmpl % ( boxstyle, titlestyle, self.title, '',
                             contstyle, self.nowiki_h )
         return html
+

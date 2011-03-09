@@ -12,19 +12,21 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Anchor
-
-: Description ::
-    Create an anchor in the document which can be referenced else-wehere.
-
-Positional arguments,
-
-|= anchor | anchor name as fragment, goes under @name attribute
-|= text   | optional, text to be display at the anchor
-"""
-
 class Anchor( ZWMacro ) :
+    """
+    h3. Anchor
+
+    : Description ::
+        Create an anchor in the document which can be referenced else-wehere.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Anchor( 'anchorname', 'display-text' ) }} >]
+
+    Positional arguments,
+
+    |= anchor | anchor name as fragment, goes under @name attribute
+    |= text   | optional, text to be display at the anchor
+    """
 
     template = '<a class="zwm-anchor" name="%s" style="%s"> %s </a>'
 

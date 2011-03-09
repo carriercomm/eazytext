@@ -1,21 +1,12 @@
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2010 SKR Farms (P) LTD.
-
 """
-== ZWiki Macro framework
+h3. ZWiki Macro framework
 
 Macros are direct function calls that can be made from wiki text into the wiki
-engine, provided, there is a macro my that name available. Most probably the
+engine, provided, there is a macro by that name available. Most probably the
 macro will return a html content, which will be used to replace the macro
-call.
-
-=== Interfacing with a Macro
-
-As mentioned before, macros are direct function calls into wiki engine and so
-it looks like a function call. More specifically the macro call will be
-directly evaluated as python code and thus follows all the function calling
-rules and conventions of python. 
+call. More specifically the macro call will be directly evaluated as python
+code and thus follows all the function calling rules and conventions of
+python. 
 
 To expound it further, let us take a specific example of ''YearsBefore''
 Macro, which computes the time elapsed from a given (month,day,year) and
@@ -45,7 +36,7 @@ With this in mind, we will try to decipher ''YearsBefore'' macro
 * ''fromday'', is option keyword argument, specifying the day.
 * ''kwargs'', most of the macro functions have this last arguments to accept a
   variable number of keyword arguments. One use case for this is to
-  pass styling attributes, which is explained the section below.
+  pass styling attributes.
 
 Use case,
 > [<PRE started this activity and running this for {{ YearsBefore('past %s', '2008') }} >]
@@ -77,9 +68,12 @@ accepts ''semicolon (;)'' seperated style attributes, like,
 > started this activity and running this for 
 > {{ YearsBefore('past %s', '2008', color="red", style="font-weight: bold; font-size: 200%" ) }}
 
-Now let us move on to available macros,
-
 """
+
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2010 SKR Farms (P) LTD.
+
 
 # -*- coding: utf-8 -*-
 
@@ -96,18 +90,23 @@ from   os.path     import splitext, dirname
 from   paste.util.import_string  import import_module, eval_import
 
 class ZWMacro( object ) :
-    """Base Macro class that should be used to derive ZWiki Macro classes
+    """
+    Base Macro class that should be used to derive ZWiki Macro classes
     The following attributes are available for the ZWMacro() object.
-        macronode        passed while instantiating, provides the Macro instance
-        macronode.parser PLY Yacc parser
-        parser.zwparser  ZWParser() object
-        zwparser.tu      Translation Unit for the parsed text
-        zwparser.text    Raw wiki text.
-        zwparser.pptext  Preprocessed wiki text.
-        zwparser.html    Converted HTML code from Wiki text
+      * macronode        passed while instantiating, provides the Macro instance
+      * macronode.parser PLY Yacc parser
+      * parser.zwparser  ZWParser() object
+      * zwparser.tu      Translation Unit for the parsed text
+      * zwparser.text    Raw wiki text.
+      * zwparser.pptext  Preprocessed wiki text.
+      * zwparser.html    Converted HTML code from Wiki text
     """
     
     def __init__( self, *args, **kwargs ) :
+        pass
+
+    def on_parse( self,  ) :
+        """Will be called after parsing the extension text"""
         pass
 
     def on_prehtml( self,  ) :
@@ -123,8 +122,9 @@ class ZWMacro( object ) :
         pass
 
 
-macronames = []
+macrolist = {}
 def loadmacros( dirname ) :
+    global macrolist
     sys.path.insert( 0, dirname )
     plugin_files = list(set([ 
                         splitext(f)[0]
@@ -138,7 +138,7 @@ def loadmacros( dirname ) :
             try :
                 if issubclass( obj, ZWMacro ) :
                     globals()[obj.__name__] = obj
-                    macronames.append( obj.__name__ )
+                    macrolist.setdefault( obj.__name__, obj )
             except:
                 pass
     sys.path.remove(dirname)
@@ -153,6 +153,7 @@ def build_macro( macronode, macro ) :
     except :
         o = ZWMacro()
         if macronode.parser.zwparser.debug : raise
+        raise
 
     if not isinstance( o, ZWMacro ) :
         o = ZWMacro()
@@ -160,8 +161,9 @@ def build_macro( macronode, macro ) :
     zwparser = macronode.parser.zwparser
 
     # Register macro-node
-    o.macronode = macronode
-    zwparser.regmacro( o )
+    o.macronode = macronode     # Backreference to parser AST node
+    zwparser.regmacro( o )      # Register macro with the parser
+    o.on_parse()                # Callback on_parse()
     return o
 
 loadmacros( dirname( __file__ ) )

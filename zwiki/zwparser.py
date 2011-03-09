@@ -45,6 +45,7 @@ import sys
 from   types    import StringType
 import copy
 from   os.path  import splitext, dirname
+from   hashlib  import sha1
 
 import ply.yacc
 
@@ -63,7 +64,6 @@ class ZWParser( object ):
     skin_tmpl = '<style type="text/css"> %s </style>'
 
     def __init__(   self,
-                    app=None,
                     skin='default.css',
                     style={},
                     outputdir='',
@@ -78,85 +78,82 @@ class ZWParser( object ):
                     yacc_optimize=False,
                     yacctab='zwiki.yacctab',
                     yacc_debug=False,
+                    app=None,
                 ):
-        """Create a new ZWParser.
-        
-        app :
-            Application object that provides the standard objects to be used
-            by ZWiki.
-                name    should indicate the application name. Supported
-                        applications are,
-                            'zeta'
-                h       Helper function that can be used by zeta specific
-                        code.
-                c       Context in which to handle the wiki page.
-            For more information refer to the ZWiki documentation.
-
-        skin :
-            Either, CSS file (in which case the file name must end with '.css'
+        """
+        Create a new ZWParser.
+        : skin ::
+            Either a CSS file (in which case the file name must end with '.css'
             extension) to be included in the generated HTML page.
             Or, HTML snippet to be included in the generated HTML page.
             If specified None, then no styling will be included inside the
             HTML file.
             
-        outputdir:
+        : outputdir ::
             To change the directory in which the parsetab.py file (and other
             output files) are written.
                         
-        obfuscatemail:
+        : obfuscatemail ::
             Obfuscate email ids written using link markup.
             [[ mailto:<emailid> | text ]]
 
-        nested :
+        : nested ::
             Extensions like Nested, and Box will do another level of
             zwiki parsing for its content.  If that is the case, then `nested`
             is set to True. Default is set to `False` which means this is the
             root invocation to parse wiki document.
 
-        macrodir :
+        : macrodir ::
             List of directories to look for macro plugins. Each module is
             considered as a macro plugin.
 
-        zwextdir :
+        : zwextdir ::
             List of directories to look for wiki extension plugins. Each module
             is considered as an extension plugin.
 
-        stripscript :
+        : stripscript ::
             HTML markup allows raw html to be interspeced with wiki text.
             Malicious users can inject use this to CSRF attacks. By setting
             this key word argument to True, all script tags found within HTML
             markup will be pruned away.
 
-        lex_optimize:
+        : lex_optimize ::
+            PLY-Lexer option.
             Set to False when you're modifying the lexer. Otherwise, changes
             in the lexer won't be used, if some lextab.py file exists.
             When releasing with a stable lexer, set to True to save the
             re-generation of the lexer table on each run.
             
-        lextab:
+        : lextab ::
+            PLY-Lexer option.
             Points to the lex table that's used for optimized mode. Only if
             you're modifying the lexer and want some tests to avoid
             re-generating the table, make this point to a local lex table file
             (that's been earlier generated with lex_optimize=True)
             
-        yacc_debug:
-            Generate a parser.out file that explains how yacc built the parsing
-            table from the grammar.
+        : lex_debug ::
+            PLY-Yacc option.
 
-        yacc_optimize:
+        : yacc_optimize ::
+            PLY-Yacc option.
             Set to False when you're modifying the parser. Otherwise, changes
             in the parser won't be used, if some parsetab.py file exists.
             When releasing with a stable parser, set to True to save the
             re-generation of the parser table on each run.
             
-        yacctab:
+        : yacctab ::
+            PLY-Yacc option.
             Points to the yacc table that's used for optimized mode. Only if
             you're modifying the parser, make this point to a local yacc table
             file.
                         
-        yacc_debug:
+        : yacc_debug ::
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar.
+
+        : app ::
+            Application object that provides the standard objects to be used
+            by ZWiki.
         """
         self.app = app
         self.zwlex = ZWLexer( error_func=self._lex_error_func )
@@ -179,19 +176,25 @@ class ZWParser( object ):
         self.obfuscatemail = obfuscatemail
         self.nested = nested
         self.stripscript = stripscript
-        if skin == None :
-            self.skin = ''
-        elif splitext( skin )[-1] == '.css' :
-            self.skin = self.skin_tmpl%open(join(rootdir, 'skins', skin)).read()
-        else :
-            self.skin = skin
+        self.skin = self._fetchskin( skin )
 
-        macrodir = [ macrodir ] if isinstance(macrodir,basestring) else macrodir
-        zwextdir = [ zwextdir ] if isinstance(zwextdir,basestring) else zwextdir
+        macrodir = [ macrodir
+                   ] if isinstance(macrodir,basestring) else macrodir
+        zwextdir = [ zwextdir
+                   ] if isinstance(zwextdir,basestring) else zwextdir
         macrodir and map( loadmacros, macrodir )
         zwextdir and map( loadextensions, zwextdir )
     
-    def wiki_preprocess( self, text ) :
+    def _fetchskin( self, skin ) :
+        if skin == None :
+            self.skin = ''
+        elif splitext( skin )[-1] == '.css' :
+            csscont = open(join(rootdir, 'skins', skin)).read()
+            self.skin = self.skin_tmpl % csscont
+        else :
+            self.skin = skin
+
+    def _wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove and fix unwanted
         side effects in the parser.
         Return the preprossed text"""
@@ -202,14 +205,19 @@ class ZWParser( object ):
         text = text.replace( '\\\n', '' )
         return text
 
-    def parse( self, text, filename='', debuglevel=0 ):
-        """Parses C code and returns an AST.
-        
-        text:
+    def parse( self, text, nested=None, skin=None,
+               filename='', debuglevel=0 ):
+        """Parses zwiki-markup //text// and creates an AST tree. For every
+        parsing invocation, the same lex, yacc, app options and objects will
+        be used.
+
+        : nested ::
             A string containing the Wiki text
-        filename:
+        : text ::
+            A string containing the Wiki text
+        : filename ::
             Name of the file being parsed (for meaningful error messages)
-        debuglevel:
+        : debuglevel ::
             Debug level to yacc
         """
 
@@ -220,9 +228,12 @@ class ZWParser( object ):
         self.wikiprops = {}
         self.macroobjects = []  # ZWMacro objects detected while parsing
         self.zwextobjects = []  # ZWExtension objects detected while parsing
-        self.predivs = []       # <div> elements prepend before wikipage
-        self.postdivs = []      # <div> elements append after wikipage
+        self.prehtmls = []      # html goes before actual translated text
+        self.posthtmls = []     # html goes after actual translated text
         self.styleattr = ''
+        self.hashtext = sha1( text ).hexdigest()
+        self.nested = self.nested if nested == None else nested
+        self.skin = self.skin if skin == None else self._fetchskin( skin )
 
         # Parse wiki properties, returned `props` contains only styling
         # (key,value) pairs
@@ -236,7 +247,7 @@ class ZWParser( object ):
         self.styleattr += ('; ' + style[1]) if self.style[1] else ''
 
         # Pre-process the text, massage them for prasing.
-        self.pptext = self.wiki_preprocess( text )
+        self.pptext = self._wiki_preprocess( text )
 
         # parse and get the Translation Unit
         self.pptext += '\n' + ENDMARKER
@@ -248,36 +259,74 @@ class ZWParser( object ):
     # ---------------------- Interfacing with Macro Core ----------------------
 
     def regmacro( self, macroobject ) :
-        """Register the Macro node with the parser, so that pre and post html
-        processing can be done."""
+        """
+        Register the Macro node with the parser, so that pre and post html
+        processing can be done. This is automatically handled by the macro
+        framework.
+        """
         self.macroobjects.append( macroobject )
 
     def onprehtml_macro( self ) :
-        """Before tohtml() method is called on the Node tree, all the
-        registered macroobject's on_prehtml() method will be called."""
-        [ m.on_prehtml() for m in self.macroobjects ]
+        """
+        Before tohtml() method is called on the Node tree, all the
+        registered macroobject's on_prehtml() method will be called, which
+        should return a tuple of,
+            (weight, html)
+        higher the //weight//, earlier the //html// content will be positioned.
+        This is automatically handled by the macro framework.
+        """
+        for m in self.macroobjects :
+            rc = m.on_prehtml()
+            self.prehtmls.append(rc) if rc else None
         
     def onposthtml_macro( self ) :
-        """After tohtml() method is called on the Node tree, all the
-        registered macroobject's on_posthtml() method will be called."""
-        [ m.on_posthtml() for m in self.macroobjects ]
+        """
+        After tohtml() method is called on the Node tree, all the
+        registered macroobject's on_posthtml() method will be called, which
+        should return a tuple of,
+            (weight, html)
+        higher the //weight//, earlier the //html// content will be positioned.
+        This is automatically handled by the macro framework.
+        """
+        for m in self.macroobjects :
+            rc = m.on_posthtml()
+            self.posthtmls.append(rc) if rc else None
 
     # ---------------------- Interfacing with Extension Core ------------------
 
     def regzwext( self, zwextobject ) :
-        """Register the NoWiki node with the parser, so that pre and post html
-        processing can be done."""
+        """
+        Register the NoWiki node with the parser, so that pre and post html
+        processing can be done. This is automatically handled by extension
+        framework.
+        """
         self.zwextobjects.append( zwextobject )
     
     def onprehtml_zwext( self ) :
-        """Before tohtml() method is called on the Node tree, all the
-        registered zwextobject's on_prehtml() method will be called."""
-        [ zwe.on_prehtml() for zwe in self.zwextobjects ]
+        """
+        Before tohtml() method is called on the Node tree, all the
+        registered extension-obj's on_prehtml() method will be called, which
+        should return a tuple of,
+            (weight, html)
+        higher the //weight//, earlier the //html// content will be positioned.
+        This is automatically handled by the macro framework.
+        """
+        for zwe in self.zwextobjects :
+            rc = zwe.on_prehtml()
+            self.prehtmls.append(rc) if rc else None
         
     def onposthtml_zwext( self ) :
-        """After tohtml() method is called on the Node tree, all the
-        registered zwextobject's on_posthtml() method will be called."""
-        [ zwe.on_posthtml() for zwe in self.zwextobjects ]
+        """
+        After tohtml() method is called on the Node tree, all the
+        registered extension-obj's on_posthtml() method will be called, which
+        should return a tuple of,
+            (weight, html)
+        higher the //weight//, earlier the //html// content will be positioned.
+        This is automatically handled by the macro framework.
+        """
+        for zwe in self.zwextobjects :
+            rc = zwe.on_posthtml()
+            self.posthtmls.append(rc) if rc else None
 
     # ------------------------- Private functions -----------------------------
 

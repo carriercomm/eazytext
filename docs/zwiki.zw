@@ -238,8 +238,7 @@ list items.
 ## Visit www.google.com to access a peta \\ flop computer.
 # [[ mailto:hello.world@google.com | Mail ]] with gmail.
 ** Sub item one
-** Sub item [<
-   >] two
+** Sub item two
 # item three
 * item four
 ** Sub item one
@@ -404,10 +403,11 @@ computing and fault-tolerance.
 
 which will be translated as,
 
-: dojo :: JavaScript tool-kit supporting classes, widgets, data stored etc.
-
-: minix3 :: Supposedly a next generation operating system aimed at distributed computing \
-and fault-tolerance.
+: dojo ::
+    JavaScript tool-kit supporting classes, widgets, data stored etc.
+: minix3 ::
+    Supposedly a next generation operating system aimed at distributed
+    computing and fault-tolerance.
 
 ''double colon (::)'' should not be present in the term-text except where it delimits
 definition-term from its definition.
@@ -514,7 +514,7 @@ generated using ''PRE'' template, like,
 
 === Macros
 
-Macros are direct function calls that can be made from wiki text into the wiki
+Macros are direct function calls from wiki text into the wiki
 engine, provided, there is a macro my that name available. Most probably the
 macro will return a html content, which will be used to replace the macro
 call. [[ /help/zwiki/ZWMacros | List of available macros ]].

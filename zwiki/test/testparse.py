@@ -168,7 +168,7 @@ class TestDumpsValid( object ) :
         # Prepare the reference.
         ref        = ref or testcontent
         props, ref = wiki_properties( ref )
-        ref        = zwparser.wiki_preprocess( ref )
+        ref        = zwparser._wiki_preprocess( ref )
 
         # Test by comparing the dumps
         try :

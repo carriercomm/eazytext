@@ -2,7 +2,7 @@
 
 Style shortcuts are enclosed within '' { ... } '', and immediately follows the
 wiki-markup that it augments. Within the curly braces, each style shortcut
-entiry is seperated by a ''semicolon (;)'',
+entity is seperated by a ''semicolon (;)'',
 
 : Foreground color ::
     A single //small case alphabet//, ranging from a-z

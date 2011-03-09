@@ -2,8 +2,6 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Implementing the Span macro"""
-
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
@@ -13,18 +11,20 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Span
-
-: Description ::
-    Create a span element. Try using ~``...~`` markup to generate span
-    elements, if advanced styling is required, this macro can come in handy.
-
-Positional arguments,
-|= text   | optional, text for the span element
-"""
-
 class Span( ZWMacro ) :
+    """
+    h3. Span
+
+    : Description ::
+        Create a span element. Try using ~``...~`` markup to generate span
+        elements, if advanced styling is required, this macro can come in handy.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Span( 'hello world' ) }} >]
+
+    Positional arguments,
+    |= text   | optional, text for the span element
+    """
 
     tmpl = '<span class="zwm-span" style="%s"> %s </span>'
 

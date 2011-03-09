@@ -2,6 +2,11 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
+# TODO :
+#   1. Move Project*() macros out of zwiki source tree into zeta source tree.
+#   2. Toc() macro's Javascript based shrink UI.
+#   3. Box() extension's Javascript based shrink UI.
+
 import re, logging, sys
 import lxml.html            as lhtml
 
@@ -49,7 +54,7 @@ def constructstyle( kwargs, defcss={}, styles='' ) :
     css.update( kwargs )
 
     style = '; '.join([ "%s: %s" % (k,v) for k,v in css.items() ])
-    style = "%s; %s ; %s;" % ( style, s_style, styles )
+    style = '; '.join(filter(None, [style, s_style, styles ]))
     return style
 
 def obfuscatemail( text ) :

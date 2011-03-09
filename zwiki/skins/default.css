@@ -1,5 +1,5 @@
 .zwpage {
-    'white-space' : 'normal',
+  'white-space' : 'normal',
 }
 .zwblk {
 }
@@ -199,14 +199,14 @@ div.zwm-toc a {
 }
 
 /* extension-box */
-p.zwext-box .box {
+div.zwext-box .box {
   color         : gray;
   border-top    : thin solid gray;
   border-right  : thin solid gray;
   border-bottom : thin solid gray;
   border-left   : thin solid gray;
 }
-p.zwext-box .boxtitle = {
+div.zwext-box .boxtitle = {
   color          : black;
   background     : #EEEEEE;
   font-weight    : bold;
@@ -215,62 +215,77 @@ p.zwext-box .boxtitle = {
   padding-bottom : 3px;
   padding-left   : 3px;
 }
-p.zwext-box .boxcont = {
+div.zwext-box .boxcont = {
   padding-top    : 3px;
   padding-right  : 3px;
   padding-bottom : 3px;
   padding-left   : 3px;
 }
-
+div.zwext-box span.boxhide {
+  display: none;
+  float: right;
+  font-size : xx-small;
+  color: blue;
+  cursor: pointer;
+}
+div.zwext-box span.boxshow {
+  display: none;
+  float: right;
+  font-size : xx-small;
+  color: blue;
+  cursor: pointer;
+}
 
 
 /* extension-code */
-p.zwext-code .code {
+div.zwext-code {
   margin-left  : 5%;
   margin-right : 5%;
 }
-p.zwext-code .highlighttable td.linenos {
+div.zwext-code .highlighttable td.linenos {
   padding : 3px;
   color : brown;
   background-color : activeborder;
 }
-p.zwext-code .highlighttable td.code {
+div.zwext-code .highlighttable td.code {
   padding : 3px
 }
-p.zwext-code .highlight {
+div.zwext-code .highlight {
   background-color : #FAFAFA;
 }
-p.zwext-code .codecont {
+div.zwext-code .codecont {
   background : #FAFAFA;
   border : 1px dashed gray;
 }
 
 /* extension-footnote */
-p.zwext-footnote .footnote {
+div.zwext-footnote .footnote {
 }
-p.zwext-footnote table {
+div.zwext-footnote table {
   margin-left: 5px;
 }
-p.zwext-footnote td.anchor {
+div.zwext-footnote td.anchor {
   padding: 5px;
   color: blue;
   vertical-align: top;
 }
-p.zwext-footnote td.notes {
+div.zwext-footnote td.notes {
   padding: 5px;
   text-align: left;
 }
 
 /* extension-html */
-p.zwext-html .html {
+div.zwext-html .html {
 }
 
 /* extension-nested */
-p.zwext-nested .nested {
+div.zwext-nested .nested {
 }
 
 /* Templated tags */
-pre.zwttag {
+span.zwttag.pre {
+  white-space : pre;
+  font-family : monospace;
 }
 abbr.zwttag {
 }

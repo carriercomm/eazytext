@@ -17,25 +17,25 @@ from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
 from   zwiki.zwext  import ZWExtension
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Code
+doc = """
+h3. Code
 
 : Description ::
     Syntax highlighting for code-snippet. Highlighting is available for
-    [[ /help/pygments | several-dozen formats ]], refer to the //Alias// field
-    to invoke the correct highligher.
+    [[ http://pygments.org/docs/lexers/ | several-dozen formats ]].
+    Property key-value pairs accepts CSS styling attributes.
 
 '' Example ''
 
-> [<PRE  {{{ Code C
-    struct process {
-      struct process *next;
-      const char *name;
-      PT_THREAD((* thread)(struct pt *, process_event_t, process_data_t));
-      struct pt pt;
-      unsigned char state;
-    };
-  }}} >]
+> [<PRE {{{ Code C
+>   struct process {
+>     struct process *next;
+>     const char *name;
+>     PT_THREAD((* thread)(struct pt *, process_event_t, process_data_t));
+>     struct pt pt;
+>     unsigned char state;
+>   };
+> }}} >]
 
 {{{ Code C
 struct process {
@@ -53,34 +53,41 @@ To highlight a different syntax, supply the syntax name as a parameter like,
 To disable line numbers while highlighting add parameter 'noln'. The default
 is to list the line numbers.
 > [<PRE {{{ Code <syntax-name> nonl >]
-
 """
 
 
 class Code( ZWExtension ) :
-    """Implements Code() wikix"""
 
-    tmpl = '<div class="code" style="%s"> %s %s </div>'
+    tmpl = '<div class="zwext-code" style="%s"> %s </div>'
     script_tmpl = '<style type="text/css"> %s </style>'
     code_tmpl = '<div class="codecont"> %s </div>'
 
+    hashtext = None
+
     def __init__( self, props, nowiki, *args ) :
-        self.nowiki  = nowiki
-        self.style   = constructstyle( props )
+        self.nowiki = nowiki
+        self.style = constructstyle( props )
         self.lexname = args and args[0].lower() or 'text'
         self.linenos = 'noln' not in args
+
+    def on_prehtml( self ) :
+        zwparser = self.zwextnode.parser.zwparser
+        if self.hashtext == zwparser.hashtext :
+            return None
+        else :
+            self.hashtext == zwparser.hashtext
+            script = HtmlFormatter().get_style_defs('.highlight')
+            html = self.script_tmpl % script
+            return (-100, html)
 
     def tohtml( self ) :
         try :
             lexer = get_lexer_by_name( self.lexname )
-            scrpt = HtmlFormatter().get_style_defs('.highlight')
             code  = highlight( self.nowiki, lexer,
                                HtmlFormatter( linenos=self.linenos ) )
-            html  = self.tmpl % ( self.style,
-                                  (self.script_tmpl % scrpt),
-                                  (self.code_tmpl % code)
-                                )
+            html  = self.tmpl % ( self.style, (self.code_tmpl % code) )
         except:
             html  = self.nowiki
         return html
 
+Code._doc = doc

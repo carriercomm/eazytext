@@ -12,23 +12,22 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import lhtml
 
-wikidoc = """
-=== Html
-
-: Description ::
-    Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup first,
-    if advanced styling is required for the embedded HTML text, then this
-    macro can come in handy.
-
-Positional arguments,
-|= html | HTML text
-"""
-
 class Html( ZWMacro ) :
+    """
+    h3. Html
 
+    : Description ::
+        Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup
+        first, if advanced styling is required for the embedded HTML text,
+        then this macro can come in handy.
+    : Example ::
+        [<PRE {{ Html( '<b>hello world</b>' ) }} >]
+
+    Positional arguments,
+    |= html | HTML text
+    """
     def __init__( self, html='' ) :
         self.html  = html
-        self.style = ''
 
     def tohtml( self ) :
         return self.html

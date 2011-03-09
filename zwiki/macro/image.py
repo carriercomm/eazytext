@@ -11,24 +11,27 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Image
-
-: Description ::
-    Embed Images in the doc. Try to use ''Link markup'' to embed images, if
-    advanced styling is required, this macro can come in handy.
-
-Positional arguments,
-|= src    | source-url for image, goes into @src attribute
-|= alt    | alternate text, goes into @alt attribute
-
-keyword argument,
-|= height | optional, image height, goes into @height attribute
-|= width  | optional, image width, goes into @width attribute
-|= href   | optional, href, to convert the image into a hyper-link
-"""
-
 class Image( ZWMacro ) :
+    """
+    h3. Image
+
+    : Description ::
+        Embed Images in the doc. Try to use ''Link markup'' to embed images, if
+        advanced styling is required, this macro can come in handy.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Image( '/photo.jpg' ) }} >]
+
+    Positional arguments,
+    |= src    | source-url for image, goes into @src attribute
+    |= alt    | alternate text, goes into @alt attribute
+
+    keyword argument,
+    |= height | optional, image height, goes into @height attribute
+    |= width  | optional, image width, goes into @width attribute
+    |= href   | optional, href, to convert the image into a hyper-link
+    """
+
 
     template = '<img class="zwm-image" ' + \
                '%s %s src="%s" alt="%s" style="%s"> </img>'

@@ -2,8 +2,6 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Implementing the Images macro"""
-
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
@@ -13,23 +11,24 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Images
-
-: Description ::
-    Embed Image galleries in the doc. 
-
-Positional arguments,
-|= *args  | variable number of image sources (@src), one for each for image
-
-keyword argument,
-|= alt    | alternate text (@alt), that goes into each image
-|= height | optional, image height, applicable to all image's @height attribute
-|= width  | optional, image width, applicable to all image's @width attribute
-|= cols   | optional, number of image columns in the gallery, default is 3.
-"""
-
 class Images( ZWMacro ) :
+    """
+    h3. Images
+
+    : Description ::
+        Embed Image galleries in the doc. 
+        Accepts CSS styles for keyword arguments.
+
+    Positional arguments,
+    |= *args  | variable number of image sources (@src), one for each for image
+
+    keyword argument,
+    |= alt    | alternate text (@alt), that goes into each image
+    |= height | optional, image height, applicable to all image's @height attr.
+    |= width  | optional, image width, applicable to all image's @width attr.
+    |= cols   | optional, number of image columns in the gallery, default is 3.
+    """
+
 
     tmpl = '<table class="zwm-images"> %s </table>'
     row_tmpl = '<tr> %s </tr>'

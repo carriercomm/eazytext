@@ -3,13 +3,13 @@
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
 """
-== ZWiki Extensions
+h3. ZWiki Extensions
 
-ZWiki Extension is a plugin like framework to extend wiki engine itself. One
+ZWiki Extension is a plugin framework to extend wiki engine itself. One
 can define new markups, text formats etc ... and integrate it with ZWiki as an
 extension.
 
-=== Extension Framework
+h3. Extension Framework
 
 Extented wiki text can be added into the main document by enclosing them within
 triple curly braces '' ~{~{{ ... ~}~}} ''. Everything between the curly braces
@@ -32,8 +32,7 @@ is,
 * ''property-name'', property name can be a property accepted by the extension
   module or can be CSS property. Note that, the entire property block should
   be marked by a beginning ''hash (#)''
-
-== Extension List
+* ''wiki-text'', the actual text that get passed on to the extension class.
 """
 
 # -*- coding: utf-8 -*-
@@ -51,16 +50,20 @@ class ZWExtension( object ) :
     """Base Extension class that should be used to derive
     ZWiki Extension / nowiki classes.
     The following attributes are available for the ZWExtension() object.
-        zwextnode        passed while instantiating, provides the Extention
-                         instance
-        zwextnode.parser ZWParser() object
-        parser.tu        Translation Unit for the parsed text
-        parser.text      Raw wiki text.
-        parser.pptext    Preprocessed wiki text.
-        parser.html      Converted HTML code from Wiki text
+      *  zwextnode        passed while instantiating, provides the Extention
+                          instance
+      *  zwextnode.parser ZWParser() object
+      *  parser.tu        Translation Unit for the parsed text
+      *  parser.text      Raw wiki text.
+      *  parser.pptext    Preprocessed wiki text.
+      *  parser.html      Converted HTML code from Wiki text
     """
     
     def __init__( self, props, nowiki ) :
+        pass
+
+    def on_parse( self,  ) :
+        """Will be called after parsing the extension text"""
         pass
 
     def on_prehtml( self,  ) :
@@ -83,10 +86,10 @@ from zwiki.zwext.footnote import Footnote
 from zwiki.zwext.html     import Html
 from zwiki.zwext.nested   import Nested
 
-extnames = []
+extlist = {}
 def loadextensions( dirname ) :
+    global extlist
     sys.path.insert( 0, dirname )
-    extnames = []
     plugin_files = list(set([ 
                         splitext(f)[0]
                         for f in os.listdir(dirname)
@@ -95,10 +98,13 @@ def loadextensions( dirname ) :
     for p in plugin_files :
         m = __import__( p )
         for attr in dir(m) :
-            obj = getattr(m, attr)
-            if not isinstance( obj, ZWExtension ) : continue
-            globals()[obj.__name__] = obj
-            extnames.append( obj.__name__ )
+            obj = m.__dict__[attr]
+            try :
+                if issubclass( obj, ZWExtension ) :
+                    globals()[obj.__name__] = obj
+                    extlist.setdefault( obj.__name__, obj )
+            except:
+                pass
     sys.path.remove(dirname)
 
 def build_zwext( zwextnode, nowiki ) :
@@ -121,24 +127,26 @@ def build_zwext( zwextnode, nowiki ) :
     nowiki = '\n'.join( nowikilines[i:] )
 
     try :
-        props   = props and eval( ''.join( props ) ) or {}
+        props = props and eval( ''.join( props ) ) or {}
     except :
-        props   = {}
+        props = {}
 
     try :
-        xwiki   = zwextnode.xwikiname
-        o       = globals()[zwextnode.xwikiname](
-                        *( [ props, nowiki ] + zwextnode.xparams )
-                  )
+        xwiki = zwextnode.xwikiname
+        args = [ props, nowiki ] + zwextnode.xparams
+        o  = globals()[zwextnode.xwikiname]( *args )
     except :
         o = ZWExtension( {}, nowiki )
-        # if zwextnode.parser.zwparser.debug :
-        #     raise
+        if zwextnode.parser.zwparser.debug : raise
 
     if not isinstance( o, ZWExtension ) :
         o = ZWExtension( {}, nowiki )
+
     zwparser = zwextnode.parser.zwparser
-    # Register extension
-    o.zwextnode = zwextnode
-    zwextnode.parser.zwparser.regzwext( o )
+
+    o.zwextnode = zwextnode     # Backreference to parser AST node
+    zwextnode.parser.zwparser.regzwext( o ) # Register macro with the parser
+    o.on_parse()                # Callback on_parse()
     return o
+
+loadextensions( dirname( __file__ ) )

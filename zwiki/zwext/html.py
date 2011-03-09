@@ -17,7 +17,7 @@ wikidoc = """
 : Description :: Raw html text.
 """
 
-tmpl = 'div class="html" style="%s"> %s </div>'
+tmpl = 'div class="zwext-html" style="%s"> %s </div>'
 
 class Html( ZWExtension ) :
     """Implements Html() wikix"""

@@ -1,14 +1,8 @@
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2010 SKR Farms (P) LTD.
-
-# -*- coding: utf-8 -*-
-
 """
 h2. Templated Tags
 
 HTML tags with common usage pattern are pre-templated and can be used by
-attaching the template name with beginning markup
+attaching the template name with HTML markup
 ''~[<''. And the text contained within '' ~[< .... >] '' are interpreted by
 the template. For example, most of the pre-formatted text in this page are
 generated using ''PRE'' template, like,
@@ -16,6 +10,12 @@ generated using ''PRE'' template, like,
 
    > [<PRE preformatted text >]
 """
+
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2010 SKR Farms (P) LTD.
+
+# -*- coding: utf-8 -*-
 
 # Gotcha : None
 # Notes  : None
@@ -61,12 +61,10 @@ def parsetag( text ) :
 
 def tt_PRE( text ) :
     """
-    :Description::
-        Generate a preformated element.
-    :Syntax ::
-        ~[<PRE //text// ~>]
+    |= Description | Generate preformated element |
+    |= Syntax      | ~[<PRE //text// ~>]          |
     """
-    template = '<pre class="zwttag">%s</pre>'
+    template = '<span class="zwttag pre">%s</span>'
     return  template % escape_htmlchars( text )
 
 tt_PRE.example = '[<PRE sample text >]'
@@ -74,10 +72,8 @@ tt_PRE.example = '[<PRE sample text >]'
 
 def tt_ABBR( text ) :
     """
-    :Description::
-        Generate Abbreviation element
-    :Syntax ::
-        ~[<ABBR //text//, //title// ~>]
+    |= Description | Generate abbreviation element   |
+    |= Syntax      | ~[<ABBR //text//, //title// ~>] |
     """
     args = text.split(',')
     cont = args and args.pop(0).strip() or ''
@@ -91,10 +87,8 @@ tt_ABBR.example = '[<ABBR WTO, World Trade organisation >]'
 
 def tt_FIXME() :
     """
-    :Description::
-        Generate a FIXME label
-    :Syntax ::
-        ~[<FIXME~>]
+    |= Description  | Generate FIXME label |
+    |= Syntax       | ~[<FIXME~>]            |
     """
     template = '<span class="zwttag fixme">%s</span>'
     html = template % 'FIXME'
@@ -104,12 +98,10 @@ tt_FIXME.example = '[<FIXME>]'
 
 def tt_Q( text ) :
     """
-    :Description::
-        Generate a quotable quotes
-    :Syntax ::
-        ~[<Q -quote-text- ~>]
+    |= Description | Generate quotable quotes |
+    |= Syntax      | ~[<Q -quote-text- ~>]    |
 
-    ''html element generated is a div element with class attribute "qbq"''
+    html element generated is a div element with class attribute ''//qbq//''
     """
     template = '<div class="zwttag qbq">%s</div>'
     html = template % text
@@ -126,10 +118,8 @@ Toughening the bones.
 
 def tt_SMILEYSMILE() :
     """
-    :Description::
-        Generate a happy smiley Glyph
-    :Syntax ::
-        ~[<:-)~>]
+    |= Description | Generate happy smiley Glyph |
+    |= Syntax      | ~[<:-)~>]                   |
     """
     template = '<span class="zwttag smile">%s</span>'
     html = template % '&#9786;'
@@ -140,10 +130,8 @@ tt_SMILEYSMILE.example = '[<:-)>] '
 
 def tt_SMILEYSAD() :
     """
-    :Description::
-        Generate a SMILEYSAD label
-    :Syntax ::
-        ~[<:-(~>]
+    |= Description | Generate sad smiley glyph |
+    |= Syntax      | ~[<:-(~>]                  |
     """
     template = '<span class="zwttag sad">%s</span>'
     html = template % '&#9785;'
@@ -154,10 +142,8 @@ tt_SMILEYSAD.example = '[<:-(>]'
 
 def tt_ADDR( text ) :
     """
-    :Description::
-        Generate `address` element
-    :Syntax ::
-        ~[<ADDR //field1//, //field2//, ... ~>]
+    |= Description | Generate `address` element              |
+    |= Syntax      | ~[<ADDR //field1//, //field2//, ... ~>] |
 
     comma will be replaced with <br/> element
     """
@@ -171,10 +157,8 @@ tt_ADDR.example = "[<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]"
 
 def tt_FNT( text ) :
     """
-    :Description::
-        Generate a span element with specified font styling.
-    :Syntax ::
-        ~[<FNT <CSS font style> ; <text> ~>]
+    |= Description | Generate a span element with specified font styling. |
+    |= Syntax      | ~[<FNT <CSS font style> ; <text> ~>]                 |
     """
     try :
         style, innerHTML = text.split( ';', 1 )
@@ -193,10 +177,8 @@ This text is specially fonted >]
 
 def tt_FOOTNOTE( text ) :
     """
-    :Description::
-        Generate footnote references.
-    :Syntax ::
-        ~[<FN text ~>]
+    |= Description | Generate footnote references. |
+    |= Syntax      | ~[<FN text ~>] |
 
     Where `text` will be super-scripted and hyper-linked to foot-note content.
 

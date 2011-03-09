@@ -12,19 +12,19 @@
 from   zwiki.zwext  import ZWExtension
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
+doc = """
 === Nested
 
 : Description ::
     Simpley nest another ZWiki document / text within the current
-    document.
+    document. Property key-value pairs accepts CSS styling attributes.
 """
 
-tmpl = '<div class="nested"> %s </div>'
 
 class Nested( ZWExtension ) :
-    """Implements Nested() wikix"""
 
+    tmpl = '<div class="zwext-nested"> %s </div>'
+    
     def __init__( self, props, nowiki, *args ) :
         self.nowiki = nowiki
         self.style = constructstyle( props )
@@ -42,7 +42,9 @@ class Nested( ZWExtension ) :
                        )
             tu = zwparser.parse( self.nowiki, debuglevel=0 )
             try :
-                html = tmpl % ( tu.tohtml() )
+                html = self.tmpl % ( tu.tohtml() )
             except :
-                html = tmpl % ''
+                html = self.tmpl % ''
         return html
+
+Nested._doc = doc

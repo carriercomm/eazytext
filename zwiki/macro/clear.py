@@ -11,17 +11,18 @@
 from   zwiki.macro  import ZWMacro
 from   zwiki        import split_style, constructstyle, lhtml
 
-wikidoc = """
-=== Clear
-
-: Description :: 
-    Styling macro to clear the DOM elements on both sides, warding off from
-    floating effects
-
-Positional arguments, None
-"""
-
 class Clear( ZWMacro ) :
+    """
+    h3. Clear
+
+    : Description :: 
+        Styling macro to clear the DOM elements on both sides, warding off from
+        floating effects. Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Clear() }} >]
+
+    Positional arguments, //None//
+    """
 
     template = '<div class="zwm-clear" style="%s"></div>'
 

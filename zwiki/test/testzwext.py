@@ -92,7 +92,7 @@ class TestZWextDumpsRandom( object ) :
             cfunc( ref, tu )
         else :
             ref        = ref or testcontent
-            ref        = zwparser.wiki_preprocess( ref )
+            ref        = zwparser._wiki_preprocess( ref )
             props, ref = wiki_properties( ref )
             if result != ref :
                 print ''.join(diff.ndiff( result.splitlines(1), ref.splitlines(1) ))

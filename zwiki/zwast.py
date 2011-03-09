@@ -20,6 +20,7 @@ import sys
 import re
 from   random       import randint
 from   os.path      import basename, abspath, dirname, join, isdir, isfile
+import types
 
 from   zwiki.macro        import build_macro
 from   zwiki.zwext        import build_zwext
@@ -97,8 +98,8 @@ html_templates = {
         '<em class="zwmark" style="%s"><u class="zwmark">',
         '</u></em>', ],
     TEXT_M_BOLDITALICUNDERLINE : [
-        '<strong class="zwmark" style="%s"><em class="zwmark"><u class="zwmark">',
-        '</u></em></strong>' ]
+    '<strong class="zwmark" style="%s"><em class="zwmark"><u class="zwmark">',
+    '</u></em></strong>' ]
 }
 def markup2html( type_, mtext, steed ) :
     if steed == 0 :
@@ -116,10 +117,19 @@ class Content( object ) :
         self.parser = parser
         self.text   = text
         self.type   = type
-        self.html   = html
+        self._html  = html
+
+    def _gethtml( self ) :
+        attr = self._html
+        return attr() if hasattr(attr, '__call__') else attr
+
+    def _sethtml( self, value ) :
+        self._html = value
 
     def __repr__( self ) :
         return "Content<'%s','%s','%s'>" % (self.text, self.type, self.html )
+
+    html = property( _gethtml, _sethtml )
 
 def process_textcontent( contents ) :
     """From the list of content objects (tokenized), construct the html
@@ -226,24 +236,25 @@ class Wikipage( Node ):
         zwparser.onposthtml_macro()
         zwparser.onposthtml_zwext()
 
-        # Collect, prepend and append `posthtml`s from macros and extensions
-        objs = [ o for o in zwparser.macroobjects + zwparser.zwextobjects
-                   if getattr( o, 'posthtml', None ) and
-                      getattr( o, 'postindex', None ) ]
-        peerhtml_neg = []
-        peerhtml_pos = []
-        for o in sorted( objs, key=lambda x : x.postindex ) :
-            peerhtml_neg.append( o.posthtml
-            ) if o.postindex < 0 else peerhtml_pos.append( o.posthtml )
+        # Sort prehtmls and posthtmls based on the weight
+        allhtmls = sorted( zwparser.prehtmls + zwparser.posthtmls,
+                           key=lambda x : x[0] )
+        prehtmls = filter( lambda x : x[0] < 0, allhtmls )
+        posthtmls = filter( lambda x : x[0] >= 0, allhtmls )
+
+        # Join them together
+        prehtmls = ''.join( map( lambda x : x[1], prehtmls ))
+        posthtmls = ''.join( map( lambda x : x[1], posthtmls ))
 
         # Final html
+        skin = '' if zwparser.skin == None else zwparser.skin
         zwparser.html = self.template % (
                             'zwblk' if zwparser.nested else 'zwpage',
                             zwparser.styleattr,
-                            zwparser.skin,
-                            '\n'.join( peerhtml_neg ),
+                            '' if zwparser.nested else skin,
+                            prehtmls,
                             zwparser.html,
-                            '\n'.join( peerhtml_pos )
+                            posthtmls
                         )
         return zwparser.html
 
@@ -338,8 +349,6 @@ class Paragraph( Node ) :
 class NoWiki( Node ) :
     """class to handle `nowikiblock` grammar."""
 
-    template = '<p class="zwext-%s"> %s </p>'
-
     def __init__( self, parser, opennowiki, opennl, nowikilines,
                   closenowiki=None, closenl=None, skip=False  ) :
         _t = opennowiki[3:]
@@ -354,14 +363,14 @@ class NoWiki( Node ) :
             self.closenewline = Newline( parser, closenl )
             self.wikixobject = build_zwext( self, nowikilines )
             self.nowikitext += closenowiki + closenl
+        self.text = self.nowikitext
 
     def children( self ) :
         return (self.nowikilines,)
 
     def tohtml( self ):
-        return '' if self.skip else \
-               self.template % (
-                        self.xwikiname.lower(), self.wikixobject.tohtml() )
+        html = '' if self.skip else self.wikixobject.tohtml()
+        return html
 
     def dump( self ) :
         return self.nowikitext
@@ -382,9 +391,9 @@ class Heading( Node ) :
 
     template = """
     <h%s class="zwsec" style="%s">
-        %s
-        <a name="%s"></a>
-        <a class="zwseclink" href="#%s" title="Link to this section">&#9875;</a>
+      %s
+      <a name="%s"></a>
+      <a class="zwseclink" href="#%s" title="Link to this section">&#9875;</a>
     </h%s>
     """
 
@@ -426,8 +435,8 @@ class Heading( Node ) :
             [ contents.extend( item.contents )
               for item in self.textcontents.textcontents ]
         process_textcontent( contents )
-        text = escape_htmlchars( self.textcontents.dump().strip(' \t=') )
         html = self.textcontents.tohtml().strip(' \t=')
+        text = ''.join( lhtml.fromstring(html).xpath( '//text()' ) )
         html = ( self.template % ( l, self.style, html, text, text, l )) + \
                self.newline.tohtml()
         return html
@@ -439,7 +448,7 @@ class Heading( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'heading: `%s` ' % self.children()[:-1] )
+        buf.write( lead + 'heading: `%s` ' % list(self.children()[:-1] ))
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
@@ -895,12 +904,12 @@ class List( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        if self.textcontents :
-            self.textcontents.show()
-        elif self.empty :
-            self.empty.show()
-        else :
-            raise ZWASTError( "show() : No textcontent available for List()" )
+        for textcontents, nl in self.textlines :
+            if textcontents :
+                textcontents.show()
+            else :
+                raise ZWASTError(
+                            "show() : No textcontent available for List()" )
 
 
 class Definitions( Node ) :
@@ -979,13 +988,12 @@ class Definition( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        if self.textcontents :
-            self.textcontents.show()
-        elif self.empty :
-            self.empty.show()
-        else :
-            raise ZWASTError(
-                    "show() : No defnitem available for Definition() node" )
+        for textcontents, nl in self.textlines :
+            if textcontents :
+                textcontents.show()
+            else :
+                raise ZWASTError(
+                   "show() : No defnitem available for Definition() node" )
 
 
 class BQuotes( Node ) :
@@ -1135,7 +1143,7 @@ class BQuote( Node ) :
         elif self.empty :
             self.empty.show()
         else :
-            raise ZWASTError( "show() : No bqitem available for BQuote() node" )
+            raise ZWASTError("show() : No bqitem available for BQuote() node")
 
 
 class TextContents( Node ) :
@@ -1161,7 +1169,8 @@ class TextContents( Node ) :
         return self.textcontents
 
     def tohtml( self ) :
-        return ''.join([ item.tohtml() for item in self.textcontents ])
+        html = ''.join([ item.tohtml() for item in self.textcontents ])
+        return html
 
     def dump( self ) :
         return ''.join([ item.dump() for item in self.textcontents ])
@@ -1260,10 +1269,9 @@ class Macro( Node ) :
         self.parser = parser
         self.text = macro
         self.macroobject = build_macro( self, macro )
-        # Translate the macro object right here itself.
-        html = self.macroobject.tohtml()
-        html = html or ' '  # Dont leave html empty !!
-        self.contents = [ Content( parser, macro, TEXT_MACRO, html or ' ' ) ]
+        self.contents = [
+                Content( parser, macro, TEXT_MACRO, self.macroobject.tohtml )
+        ]
 
     def children( self ) :
         return self.contents
@@ -1277,7 +1285,7 @@ class Macro( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'macro: `%s`' % self.macro )
+        buf.write( lead + 'macro: `%s`' % self.text )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )

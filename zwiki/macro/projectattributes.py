@@ -2,8 +2,6 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-"""Implementing the ProjectAttributes macro"""
-
 # -*- coding: utf-8 -*-
 
 # Gotcha : None

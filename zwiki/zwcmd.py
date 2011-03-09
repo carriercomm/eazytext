@@ -33,6 +33,8 @@ def _option_parse() :
                        help='Output html file to store translated result' )
     parser.add_option( '-d', action='store_true', dest='dump',
                        help='Dump translation' )
+    parser.add_option( '-s', action='store_true', dest='show',
+                       help='Show AST parse tree' )
     parser.add_option( '-l', dest='debuglevel', default='0',
                        help='Debug level for PLY parser' )
     parser.add_option( '--version', action='store_true', dest='version',
@@ -57,6 +59,8 @@ def main() :
         print "Done"
     if tu and options.dump :
         print tu.dump()
+    elif tu and options.show :
+        tu.show()
     elif tu :
         ofile = options.ofile or (os.path.splitext(ifile)[0] + '.html')
         print "Translation ...",

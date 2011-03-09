@@ -18,18 +18,6 @@ from   zwiki        import split_style, constructstyle, lhtml
 alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
 
-wikidoc = """
-=== Toc
-
-: Description ::
-    Macro to generate Table of contents.
-
-Default CSS styling,
-> [<PRE %s >]
-
-CSS styling accepted as optional keyword arguments
-"""
-
 #script = """
 #<style type="text/css">
 #    .dispnone { display : none; }
@@ -60,6 +48,22 @@ CSS styling accepted as optional keyword arguments
 shorten = lambda s, m : s[:m] + (s[m:] and ' ...' or '' )
 
 class Toc( ZWMacro ) :
+    """
+    h3. Toc
+
+    : Description ::
+        Macro to generate Table of contents.  Accepts CSS styles for keyword
+        arguments.
+    : Example ::
+        [<PRE {{ Toc() }} >]
+
+    Positional arguments, //None//
+
+    keyword argument,
+    |= weight | optional, will be returned by on_posthtml() method
+    |= topic  | optional, topic for table of contents
+    |= maxheadlen | optional, number of characters to display for each title.
+    """
 
     tmpl = '<div class="zwm-toc" style="%s"> %s %s </div>'
     head_tmpl = '<div class="head"> %s %s </div>'
@@ -72,13 +76,12 @@ class Toc( ZWMacro ) :
 
     htags = [ 'h1', 'h2', 'h3', 'h4', 'h5', ]
 
-    def __init__( self, *args, **kwargs ) :
-        indent = int( kwargs.pop( 'indent', '1' ))
-        index = int( kwargs.pop( 'index', '-1' ))
+    def __init__( self, **kwargs ) :
+        weight = int( kwargs.pop( 'weight', '-1' ))
         self.maxheadlen = int(kwargs.pop( 'maxheadlen', 30 ))
         self.topic = kwargs.pop( 'topic', 'Table of Contents' )
         self.style  = constructstyle( kwargs )
-        self.postindex = index == 0 and -1 or index
+        self.weight = weight == 0 and -1 or weight
 
     def tohtml( self ) :
         # Gotcha : cannot return a empty string since process_textcontent()
@@ -110,9 +113,8 @@ class Toc( ZWMacro ) :
             headdiv = self.head_tmpl % ( closediv, topicdiv )
             entries = self._maketoc( htmltree )
             toc_div = self.tocul_tmpl % ''.join( entries )
-            self.posthtml = self.tmpl % (self.style, headdiv, toc_div)
+            html = self.tmpl % (self.style, headdiv, toc_div)
         except :
-            self.posthtml = 'Unable to generate the TOC, ' + \
+            html = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
-            raise
-        return
+        return (self.weight, html)
