@@ -40,7 +40,7 @@ classifiers=[
 ]
 
 setup(
-    name='zwiki_zeta',
+    name='eazytext',
     version='0.91b',
     py_modules=[],
     package_dir={},
@@ -54,7 +54,7 @@ setup(
     zip_safe=True,                          # setuptools
     entry_points={                          # setuptools
         'console_scripts' : [
-            'zw = zwiki.zwcmd:main'
+            'eazytext = eazytext.eazytext:main'
         ],
     },
     install_requires=[                      # setuptools
@@ -68,9 +68,9 @@ setup(
     setup_requires={},                      # setuptools
     dependency_links=[],                    # setuptools
     namespace_packages=[],                  # setuptools
-    test_suite='zwiki.test',                # setuptools
+    test_suite='eazytext.test',             # setuptools
 
-    provides=[ 'zwiki_zeta', ],
+    provides=[ 'eazytext', ],
     requires='',
     obsoletes='',
 

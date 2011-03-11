@@ -1,21 +1,21 @@
-ZWiki
-=====
+EastText
+========
 
 Wiki, in general is a simple markup language to generate html pages
 that can be rendered in a browser. This is quick and neat way of 
 documentation.
 
-ZWiki is a text markup that is primarily developed for Zeta Project
+EazyText is a text markup that is primarily developed for Zeta Project
 Collaboration suite, visit `discoverzeta <http://www.discoverzeta.com/>`_
 
 The Browser and its HTML are built for documentation. Wiki makes
-it accessible. As a newbie, get started with ZWiki in 5 minutes.  As a pro,
+it accessible. As a newbie, get started with EazyText in 5 minutes.  As a pro,
 never be limited by a wiki engine.
 Our philosophy of wiki,
 
     "Make simple things easy and difficult things possible"
 
-Some interesting features in zwiki are,
+Some interesting features in EazyText are,
 
 * Text content can be emphasized, italicized, underlined, subscripted,
   superscripted.
@@ -53,5 +53,3 @@ Documentation
 * `ZWiki Macors <http://dev.discoverzeta.com/help/zwiki/ZWMacros>`_
 * `ZWiki Templated tags <http://dev.discoverzeta.com/help/zwiki/ZWTemplateTags>`_
 * `ZWiki Extensions <http://dev.discoverzeta.com/help/zwiki/ZWExtensions>`_
-
-

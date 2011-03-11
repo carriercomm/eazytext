@@ -4,9 +4,9 @@ Rlease check-list
 * Change the release version in 
     ./setup.py,
     ./CHANGELOG,
-    ./zwiki/__init__.py
+    ./eazytext/__init__.py
     ../zeta/bin/regrupgrade.py
     ./README
 
 * Upload the source into launchpad.
-* Rename the package to zwiki_zeta under pypi.
+* Rename the package to eazytext under pypi.

@@ -1,0 +1,93 @@
+h3. Overview
+While the core of eazytext syntax remain under the definition of parser grammar,
+there are two syntactic elements that are used to create a plugin framework.
+They are namely,
+: Macros ::
+    Macros are direct function calls made from wiki text into the
+    wiki engine, provided, there is a macro by that name available. Most
+    probably the macro will return html content, which will be used to
+    replace the macro call.
+
+: Extensions ::
+    Wiki extensions provide a way to extend the wiki engine, by defining a
+    markup syntax for themselves, like math, graphs, code-highlighter etc ...
+    Entire text within the extension-block will be passed on to the plugin,
+    which can then apply its own parsing on the text and return suitable
+    html for rendering.
+
+Even though Macro plugins and Extension plugins derive from different base
+class, namely [<PRE Macro >] and [<PRE Extension >], concept-wise they are
+one and the same. In future there are plans to use zope.interface to abstract
+them into a single common plugin-interface.
+
+h3. Design 
+
+Both macro-plugins or extension-plugins must be implemented as a class derived
+from [<PRE Macro >] or [<PRE Extension >].
+
+''eazytext markup syntax to invoke a macro-plugin'',
+> [<PRE {{ macroname( arg1, arg2, .... ) }} >] 
+if it looks like a python function call, that is exactly what it is.
+//macroname// is the name of the class that is derived from //Macro//. When
+encountering the macro text, the parser simply ''evaluates'' the portion of
+text between [<PRE {{ ... }} >] as python code. And by evaluating it, an
+instance of that macro class is created, which is subsequently used by the
+plugin framework to generate the html.
+
+''eazytext markup syntax to invoke an extension-plugin'',
+
+> [<PRE{{{ extension-name arg1 arg2 arg3
+>   # { 'key1' : 'value', 'key2' : 'value2' }
+>   ...
+>   extension-text
+>   ...
+> }}} >]
+
+An extension block begins with [<PRE {{{ >] and ends with [<PRE }}} >].
+Note that the opening and closing markup must begin in a new line, flush with
+white-space.  //extension-name// is the name of the class that is derived from
+//Extension// and arg1, arg2, ... are arguments to its constructor. Upon
+encountering the extension block an instance of the extension class is
+created, which is subsequently used by the plugin framework to generrate the
+html.
+
+Whether macro-class or extension-class, a set of attributes are made available
+on its instance,
+
+: obj.macronode ::
+   Backreference to AST node in the parse tree corresponding to this macro
+: obj.macronode.parser ::
+   Backreference to the parser object from PLY.
+: obj.macronode.parser.etparser ::
+   Backreference to ETParser instance object.
+: obj.macronode.text ::
+   Actual text.
+
+Methods expected in macro-class and extension-class.
+
+: on_parse ::
+   Will be called after an instance of the class is created and linked up with
+   the parse tree.
+: tohtml ::
+   Will be called when the parse tree is to be converted into html. Expected
+   to return html text which will be used to replace the actual wiki text
+   corresponding to the macro or extension.
+: on_prehtml ::
+   Will be called before tohtml() method is called on the parse tree.
+   Expected to return a tuple of //(weight, html)//. Where, //weight// is a
+   number that can either be negative, which means //html// text in the tuple
+   should be prepended to the translated html or be positive, which means
+   //html// text in the tuple should be appended to the translated html.
+: on_posthtml ::
+   Will be called after tohtml() method is called on the parse tree.
+   Expected to return a tuple of //(weight, html)//, and their meaning is same
+   as that of //on_prehtml//.
+
+-----
+
+{{{ Nested 
+@ { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim \\ 
+/* vim: set filetype=etx : */
+}}}
+
