@@ -19,8 +19,13 @@ upload :
 sdist :
 	python ./setup.py sdist
 
+vimplugin :
+	rm -rf ./vim-plugin/vim-eazytext.tar.gz
+	cd ./vim-plugin; tar cvfz ./vim-eazytext.tar.gz *
+
 cleanall : clean
 	rm -rf eazytext-env
+
 
 clean :
 	rm -rf build;

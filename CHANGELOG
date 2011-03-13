@@ -1,8 +1,59 @@
 {{ Toc( position='relative', float='right' ) }}
 
-h3. 0.91b
+h3. 0.91b``{i} on Fri 2011-03-15``
 
-* In progress
+* EazyText features and enhancements
+    ** Changed the project name from ZWiki to EazyText. Now available from 
+        http://pypi.python.org/pypi/eazytext/0.91b
+    ** `stripscript` key-word argument added to optionally strip `<script>` tag
+        from generated HTML. To avoid CSRF attack.
+    ** Macro and Extension plugin load algorithm is made generic. Now a list of
+       directories can be passed while instanstiating ETParser, to look for
+       user plugins.
+    ** Improvised plugin framework.
+    ** Added Makefile.
+    ** Updated documentation. Moved documentation from Zeta to eazytext/doc
+      directory.
+    ** Switched versioning scheme from *beta to *b
+    ** wiki-page-properties pushed to dormant.
+    ** style related code refactored from ast.py to styleshortcuts.py
+    ** Optimized and refactored ast.py
+    ** Migrated from xml.etree.cElementTree to lxml.html
+    ** Code Extension highlights line numbers in different color. It is
+       also now possible to disable line number listing.
+    ** Border radius styling removed from macros, projectattributes projectteam
+    ** Shadow effect for ToC macro.
+    ** Border radius styling should be attributed to elements using classes,
+       br* (like br2, br5, etc ...)
+    ** Sortable tables.
+    ** Nested ETParser() instansiations should have `nested` attribute set
+       to True.
+    ** Automatic hyper link generation for text words starting with `https`.
+    ** Documentation fixes to Code, Footnote and ETExtension modules.
+    ** Random styling for ordered lists.
+    ** Improvised column span for tables.
+    ** Template tag added to generate a span element with font styling.
+    ** HTML page generation and its styling is seperated. Styling can now be
+       applied using skins. A `default.css` skin is provided.
+    ** Cleaned up and refactored eztext.py
+    ** Added dependancies for lxml and nose.
+    ** Create virtualenv using Makefile for development.
+    ** Refactored is is_matchinghtml() and wiki_properties into 
+       eazytext.__init__.py
+    ** Refactored stylelookup.py
+    ** Updated test cases for testlex and testparse.
+
+
+* EazyText bug fixes
+    ** Fixed Foot note text formating in Footnote extension
+    ** New lines in multiline definition-list, Big-table cell and
+       list-items are preserved and converted to html.
+    ** Generated html, <br></br> is replaced with <br/>
+    ** Templated tag markups are made case insensitive,
+       for eg, ~[<PRE .... ~>] is same as ~[<pre ... ~>]
+    ** 
+
+
 
 h3. 0.9beta   ``{i} on Fri 2010-06-18``
 

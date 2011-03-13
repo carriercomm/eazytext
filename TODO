@@ -1,2 +1,6 @@
 Track the project at,
     http://dev.discoverzeta.com/p/zwiki
+
+* CSS skin class names should be more unique.
+* update MANIFEST.in for packaging.
+* Change discoverzeta.com link to pluggdapps.com link

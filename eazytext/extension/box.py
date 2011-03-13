@@ -32,7 +32,7 @@ attributes like,
 
 > [<PRE{{{ Box hide
  #{
- # 'title' : 'Building A Mnesia Database',
+ # 'title' : 'Building Mnesia Database',
  # 'titlestyle' : 'color: brown;',
  # 'contentstyle' : 'color: gray;',
  # 'border' : '1px solid gray',
@@ -50,7 +50,7 @@ attributes like,
 
 {{{ Box hide
 #{
-# 'title' : 'Building A Mnesia Database',
+# 'title' : 'Building Mnesia Database',
 # 'titlestyle' : 'color: brown;',
 # 'contentstyle' : 'color: gray;',
 # 'border' : '1px solid gray',

@@ -12,7 +12,7 @@
 from   eazytext.extension   import Extension
 from   eazytext             import split_style, lhtml
 
-wikidoc = """
+doc = """
 === HtmlExt
 : Description :: Raw html text.
 """
@@ -20,7 +20,7 @@ wikidoc = """
 tmpl = 'div class="etext-html" style="%s"> %s </div>'
 
 class HtmlExt( Extension ) :
-    """Implements HtmlExt() wikix"""
+    _doc = doc
 
     def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki

@@ -16,7 +16,7 @@ doc = """
 === Nested
 
 : Description ::
-    Simpley nest another EazyText document / text within the current
+    Nest another EazyText document / text within the current
     document. Property key-value pairs accepts CSS styling attributes.
 """
 
