@@ -42,7 +42,7 @@ h3. 0.91b``{i} on Fri 2011-03-15``
        eazytext.__init__.py
     ** Refactored stylelookup.py
     ** Updated test cases for testlex and testparse.
-
+    ** Vim plugin for file detection and syntax highlighting.
 
 * EazyText bug fixes
     ** Fixed Foot note text formating in Footnote extension
