@@ -6,7 +6,6 @@ EazyText processor is built using formal parser grammar, thus making it both
 robust and clean. It is available as,
 * Stand-alone command line tool
 * Library package usable by python programs
-* And built into Zeta web application
 
 h3. Installation
 
@@ -37,30 +36,30 @@ h3. Command line usage
 
 Make sure that eazytext package is installed in your environment (using
 easy_install) or available via //PYTHONPATH//. 
-''eazytext/eazytext.py'' script under eazytext-package can be used as command
+''eazytext/eztext.py'' script under eazytext-package can be used as command
 line tool. Either invoke it from its original path, or create a symbolic link
 to a bin/ directory.
 
-script-file:    <site-package>/eazytext/eazytext.py
+script-file:    <site-package>/eazytext/eztext.py
 
 symbolic link to your binary path, like,
 
 {{{ Code bash
 
-    ln -s <site-package>/eazytext/eazytext.py $(HOME)/bin/eazytext.py
+    ln -s <site-package>/eazytext/eztext.py $(HOME)/bin/eztext.py
     # or,
-    ln -s <site-package>/eazytext/eazytext.py /usr/bin/eazytext.py
+    ln -s <site-package>/eazytext/eztext.py /usr/bin/eztext.py
 
 }}}
 
-Once `eazytext.py` is available as an executable command and `eazytext` module 
+Once `eztext.py` is available as an executable command and `eazytext` module 
 in your python path, use the command-line tool, like,
 
 {{{ Code bash
 
-  eazytext.py -o <out-file> <wiki-file>
+  eztext.py -o <out-file> <wiki-file>
   # For more help, try
-  eazytext.py -h
+  eztext.py -h
 
 }}}
    
@@ -94,7 +93,7 @@ and then use the ''make'' command to create a development environment.
 
 which,
 * sets-up a virtual environment under // eazytext-env/ // directory.
-* Installs eazytext under the virtual environment in development mode
+* Installs eazytext under the virtual environment in development mode,
   [<PRE python ./setup.py develop >]
 
 To start using the eazytext package, enter the virtual environment by doing,

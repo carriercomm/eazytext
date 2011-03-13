@@ -1,0 +1,10 @@
+h3. ROADMAP
+
+* To restructure the plugin framework using zope.interface.
+* Creating slide show using eazy-text wiki markup.
+* Ability to generate dynamic HTML using JavaScript from eazy-text wiki
+  markup.
+* Once the core parser grammar become stable, move the entire lexer and parser
+  to C, with plugin-framework available for multiple languages (python, ruby
+  ...).
+* Editor plugins for emacs, eclipse, and more.
