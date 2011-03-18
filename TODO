@@ -1,6 +1,7 @@
 Track the project at,
-    http://dev.discoverzeta.com/p/zwiki
+    http://eazytext.pluggdapps.com
 
+* Mailing list for EazyText.
 * CSS skin class names should be more unique.
-* update MANIFEST.in for packaging.
-* Change discoverzeta.com link to pluggdapps.com link
+* Launchpad-eazytext project details have several links to external sites
+  related to eazytext, fill them up.

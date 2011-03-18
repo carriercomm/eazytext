@@ -40,8 +40,8 @@ Some interesting features in EazyText are,
 Quicklinks
 ==========
 
-* `README <http://dev.discoverzeta.com/p/zwiki/wiki/README>`_
-* `CHANGELOG <http://dev.discoverzeta.com/p/zwiki/wiki/CHANGELOG>`_
+* `README <http://eazytext.pluggdapps.com/dev/readme>`_
+* `CHANGELOG <http://eazytext.pluggdapps.com/dev/changelog>`_
 * `Track ZWiki development <http://dev.discoverzeta.com/p/zwiki>`_
 * If you have any queries, suggestions
   `discuss with us <http://groups.google.com/group/zeta-discuss>`_
@@ -49,7 +49,7 @@ Quicklinks
 Documentation
 =============
 
-* `ZWiki reference <http://dev.discoverzeta.com/help/zwiki/ZWiki>`_
-* `ZWiki Macors <http://dev.discoverzeta.com/help/zwiki/ZWMacros>`_
-* `ZWiki Templated tags <http://dev.discoverzeta.com/help/zwiki/ZWTemplateTags>`_
-* `ZWiki Extensions <http://dev.discoverzeta.com/help/zwiki/ZWExtensions>`_
+* `ZWiki reference <http://eazytext.pluggdapps.com/doc/markup>`_
+* `ZWiki Macros <http://eazytext.pluggdapps.com/plugins/macros>`_
+* `ZWiki Templated tags <http://eazytext.pluggdapps.com/doc/ttags>`_
+* `ZWiki Extensions <http://eazytext.pluggdapps.com/plugins/extensions>`_

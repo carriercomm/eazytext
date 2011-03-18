@@ -9,7 +9,7 @@ import os
 here = abspath(dirname(__file__))
 README = open(join(here, 'README.rst')).read()
 
-description='Wiki based documentation tool'
+description='An extensible wiki processor, using parser grammer'
 
 classifiers=[
 'Development Status :: 4 - Beta',
@@ -78,12 +78,12 @@ setup(
     author_email='prataprc@gmail.com',
     maintainer='Pratap R Chakravarthy',
     maintainer_email='prataprc@gmail.com',
-    url='http://discoverzeta.com',
-    download_url='http://dev.discoverzeta.com/p/zwiki/downloads',
+    url='http://eazytext.pluggdapps.com',
+    download_url='',
     license='Original BSD license',
     description=description,
     long_description=README,
     platforms='',
     classifiers=classifiers,
-    keywords=[ 'wiki documentation web parser' ],
+    keywords=[ 'wiki documentation parser ply' ],
 )
