@@ -1,9 +1,9 @@
 include AUTHORS
-include CHANGELOG
-include LICENSE
-include COPYING
-include README
 include RELEASE
+include docs/CHANGELOG
+include docs/LICENSE
+include docs/README
+include docs/ROADMAP
 
 recursive-include eazytext *.etx *.css *.js
 recursive-include docs *.etx

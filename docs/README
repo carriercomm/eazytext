@@ -1,0 +1,137 @@
+{{ Toc( float='right' ) }}
+
+h3. Overview
+
+EazyText processor is built using formal parser grammar, thus making it both
+robust and clean. It is available as,
+* Stand-alone command line tool
+* Library package usable by python programs
+
+h3. Installation
+
+Installing via package management
+
+{{{ Code bash
+
+  # Install system packages for debian and ubuntu machines.
+  sudo apt-get install libxml2 libxml2-dev libxslt1.1 libxslt1-dev
+
+  # -Z to do unzipped install. The reason for installing it in un-zipped form
+  #    is to make use of the command line tool.
+  # -U to upgrade install
+  easy_install -Z -U eazytext
+
+}}}
+
+''Source code''
+
+Download the latest tar.gz from http://pypi.python.org/pypi/eazytext
+
+Check out form bazaar repository,
+{{{ Code bash
+  bzr branch lp:eazytext
+}}}
+
+h3. Command line usage
+
+Make sure that eazytext package is installed in your environment (using
+easy_install) or available via //PYTHONPATH//. 
+''eazytext/eztext.py'' script under eazytext-package can be used as command
+line tool. Either invoke it from its original path, or create a symbolic link
+to a bin/ directory.
+
+script-file:    <site-package>/eazytext/eztext.py
+
+symbolic link to your binary path, like,
+
+{{{ Code bash
+
+    ln -s <site-package>/eazytext/eztext.py $(HOME)/bin/eztext.py
+    # or,
+    ln -s <site-package>/eazytext/eztext.py /usr/bin/eztext.py
+
+}}}
+
+Once `eztext.py` is available as an executable command and `eazytext` module 
+in your python path, use the command-line tool, like,
+
+{{{ Code bash
+
+  eztext.py -o <out-file> <wiki-file>
+  # For more help, try
+  eztext.py -h
+
+}}}
+   
+h3. Using it as library, for python
+
+{{{ Code python
+
+    from   eazytext.parser import ETParser
+
+    etparser = ETParser( obfuscatemail=True )
+    wikitext = open( file ).read()  # Read text written using wiki-markup
+    tu = etparser.parse( wikitext, debuglevel=0 ) # Obtain the AST
+    html = tu.tohtml()      # HTML text
+    wikitext_ = tu.dump()   # To dump back the original text from AST tree
+    tu.show()               # To show the parse tree. 
+
+}}}
+  
+By browsing the source-doc you can learn more about development with EazyText.
+
+h3. Development
+
+It is always better to setup the development tree under a virtual environemnt.
+To begin with, first checkout the source tree from the latest repository tree
+and then use the ''make'' command to create a development environment.
+
+{{{ Code sh
+  cd eazytext
+  make develop
+}}}
+
+which,
+* sets-up a virtual environment under // eazytext-env/ // directory.
+* Installs eazytext under the virtual environment in development mode,
+  [<PRE python ./setup.py develop >]
+
+To start using the eazytext package, enter the virtual environment by doing,
+[<PRE source ./eazytext-env/bin/activate >]
+
+''To create an egg packages'',
+
+{{{ Code bash
+
+  make bdist_egg        # For creating binary distribution
+  make sdist            # For creating source distribution
+
+}}}
+
+The .egg package will be availabe under dist/ directory
+
+''To test the package'',
+
+{{{ Code bash
+  
+  source eazytext-env/bin/activate
+  make testall
+
+}}}
+
+''Finally, Build the egg and upload it into pypi''
+
+{{{ Code bash
+
+  make upload
+
+}}}
+
+-----
+
+{{{ Nested 
+@ { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim \\ 
+/* vim: set filetype=etx : */
+}}}
+
