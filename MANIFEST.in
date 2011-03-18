@@ -5,4 +5,5 @@ include COPYING
 include README
 include RELEASE
 
-recursive-include docs *
+recursive-include eazytext *.etx *.css *.js
+recursive-include docs *.etx

@@ -2,11 +2,9 @@ Rlease check-list
 -----------------
 
 * Change the release version in 
-    ./setup.py,
     ./CHANGELOG,
     ./eazytext/__init__.py
-    ../zeta/bin/regrupgrade.py
-    ./README
-
-* Upload the source into launchpad.
-* Rename the package to eazytext under pypi.
+* Create a tag and push the tagged branch to launch-pad.
+* Update setup.py and MANIFEST.in for release
+* Upload the source into pypi.
+        make upload

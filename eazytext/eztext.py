@@ -23,7 +23,7 @@ import re
 from   optparse       import OptionParser
 from   os.path        import isfile
 
-from   eazytext        import VERSION
+from   eazytext        import __version__ as VERSION
 from   eazytext.parser import ETParser
 
 def _option_parse() :

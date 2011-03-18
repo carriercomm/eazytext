@@ -13,19 +13,18 @@ testall :
 bdist_egg :
 	python ./setup.py bdist_egg
 
-upload : 
-	python ./setup.py bdist_egg register upload --show-response 
-	
 sdist :
 	python ./setup.py sdist
 
+upload : 
+	python ./setup.py bdist_egg register upload --show-response 
+	
 vimplugin :
 	rm -rf ./vim-plugin/vim-eazytext.tar.gz
 	cd ./vim-plugin; tar cvfz ./vim-eazytext.tar.gz *
 
 cleanall : clean
 	rm -rf eazytext-env
-
 
 clean :
 	rm -rf build;

@@ -7,12 +7,13 @@
 #   2. Toc() macro's Javascript based shrink UI.
 #   3. Box() extension's Javascript based shrink UI.
 
+__version__ = '0.91b'
+
 import re, logging, sys
 import lxml.html            as lhtml
 
 log = logging.getLogger( __name__ )
 
-VERSION = '0.91b'
 HTML_CHARS = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'
 
