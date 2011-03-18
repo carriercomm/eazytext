@@ -3,5 +3,6 @@ Track the project at,
 
 * Mailing list for EazyText.
 * CSS skin class names should be more unique.
+* eztext.py automatic script generation via easy_install.
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.

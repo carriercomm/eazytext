@@ -5,9 +5,14 @@
 from   setuptools import setup, find_packages
 from   os.path    import abspath, dirname, join
 import os
+import re
 
 here = abspath(dirname(__file__))
 README = open(join(here, 'README.rst')).read()
+
+v = open(join(dirname(__file__), 'eazytext', '__init__.py'))
+version = re.compile(r".*__version__[ ]*=[ ]*'(.*?)'", re.S).match(v.read()).group(1)
+v.close()
 
 description='An extensible wiki processor, using parser grammer'
 
@@ -41,7 +46,7 @@ classifiers=[
 
 setup(
     name='eazytext',
-    version='0.91b',
+    version=version,
     py_modules=[],
     package_dir={},
     packages=find_packages(),
@@ -54,7 +59,7 @@ setup(
     zip_safe=True,                          # setuptools
     entry_points={                          # setuptools
         'console_scripts' : [
-            'eazytext = eazytext.eazytext:main'
+           'eztext = eazytext.eazytext:main'
         ],
     },
     install_requires=[                      # setuptools
