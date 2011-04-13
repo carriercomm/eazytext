@@ -85,7 +85,7 @@ setup(
     maintainer_email='prataprc@gmail.com',
     url='http://eazytext.pluggdapps.com',
     download_url='',
-    license='Original BSD license',
+    license='Simplified BSD license',
     description=description,
     long_description=README,
     platforms='',

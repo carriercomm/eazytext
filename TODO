@@ -2,7 +2,7 @@ Track the project at,
     http://eazytext.pluggdapps.com
 
 * While installing the egg, it should automatically unzip and install
-* Mailing list for EazyText.
+* Mailing list for EazyText, use pluggdapps-discuss for now.
 * CSS skin class names should be more unique.
 * eztext.py automatic script generation via easy_install.
 * Launchpad-eazytext project details have several links to external sites
