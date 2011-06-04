@@ -304,14 +304,14 @@ class Paragraphs( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'paragraphs: ' )
+        #buf.write( lead + 'paragraphs: ' )
 
         if showcoord:
             buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+        #buf.write('\n')
 
         for c in self.children():
-            c.show( buf, offset + 2, attrnames, showcoord )
+            c.show( buf, offset, attrnames, showcoord )
 
 
 class Paragraph( Node ) :
@@ -377,9 +377,10 @@ class NoWiki( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + ( 
-                   'nowikiblock: `%s` ' % self.nowikilines.split('\n')[0] )
-                 )
+        lines = '\n'.join([
+                    lead+(' '*4)+('%r'%l) for l in self.nowikilines.split('\n')
+                ])
+        buf.write( lead + ('nowikiblock:\n%s'% lines))
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
@@ -447,12 +448,13 @@ class Heading( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'heading: `%s` ' % list(self.children()[:-1] ))
+        heading = self.children()[1].dump()
+        buf.write( lead + ('heading: %r'%heading) )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
-        self.newline.show( buf, offset + 2, attrnames, showcoord )
+        self.newline.show( buf, offset, attrnames, showcoord )
 
 
 class HorizontalRule( Node ) :
@@ -483,7 +485,7 @@ class HorizontalRule( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        self.newline.show( buf, offset + 2, attrnames, showcoord )
+        self.newline.show( buf, offset, attrnames, showcoord )
 
 
 class TextLines( Node ) :
@@ -534,7 +536,6 @@ class TextLines( Node ) :
 
         linecount = 1
         for textcontent, newline in self.textlines :
-            buf.write( lead + '(line %s)\n' % linecount )
             linecount += 1
             textcontent.show( buf, offset + 2, attrnames, showcoord )
             newline.show( buf, offset + 2, attrnames, showcoord )
@@ -659,14 +660,8 @@ class BtableRow( Node ) :
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
         buf.write( '\n' )
-        if self.textcontents :
-            self.textcontents.show()
-        elif self.empty :
-            self.empty.show()
-        else :
-            raise ASTError(
-                    "show() : No bqitem available for BtableRow() node"
-            )
+        for textcontents, nl in self.textlines :
+            textcontents.show( buf, offset + 2, attrnames, showcoord )
 
 
 class TableRows( Node ) :
@@ -709,12 +704,9 @@ class TableRows( Node ) :
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
 
-        rowcount = 1
         for row, pipe, nl in self.rows :
-            buf.write( lead + '(row %s)\n' % rowcount )
-            rowcount += 1
             row.show( buf, offset + 2, attrnames, showcoord )
-            nl and nl.show( buf, offset + 2, attrnames, showcoord )
+            nl and nl.show( buf, offset, attrnames, showcoord )
 
 
 class TableCells( Node ) :
@@ -841,12 +833,11 @@ class Lists( Node ) :
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
         for c in self.listitems :
-            c.show( buf, offset + 2, attrnames, showcoord )
+            c.show( buf, offset, attrnames, showcoord )
 
 
 class List( Node ) :
@@ -906,7 +897,8 @@ class List( Node ) :
 
         for textcontents, nl in self.textlines :
             if textcontents :
-                textcontents.show()
+                textcontents.show( buf, offset + 2, attrnames, showcoord )
+                nl.show( buf, offset+2, attrnames, showcoord )
             else :
                 raise ASTError(
                             "show() : No textcontent available for List()"
@@ -937,12 +929,11 @@ class Definitions( Node ) :
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
         for c in self.listitems :
-            c.show( buf, offset + 2, attrnames, showcoord )
+            c.show( buf, offset, attrnames, showcoord )
 
 class Definition( Node ) :
     """class to handle `definitionlist` grammar."""
@@ -991,7 +982,8 @@ class Definition( Node ) :
 
         for textcontents, nl in self.textlines :
             if textcontents :
-                textcontents.show()
+                textcontents.show( buf, offset+2, attrnames, showcoord )
+                nl.show( buf, offset+2, attrnames, showcoord )
             else :
                 raise ASTError(
                    "show() : No defnitem available for Definition() node"
@@ -1074,12 +1066,11 @@ class BQuotes( Node ) :
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
         for c in self.listitems :
-            c.show( buf, offset + 2, attrnames, showcoord )
+            c.show( buf, offset, attrnames, showcoord )
 
 
 class BQuote( Node ) :
@@ -1141,9 +1132,9 @@ class BQuote( Node ) :
         buf.write('\n')
 
         if self.textcontents :
-            self.textcontents.show()
+            self.textcontents.show( buf, offset+2, attrnames, showcoord )
         elif self.empty :
-            self.empty.show()
+            self.empty.show( buf, offset+2, attrnames, showcoord )
         else :
             raise ASTError("show() : No bqitem available for BQuote() node")
 
@@ -1180,12 +1171,11 @@ class TextContents( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'textcontent: ' )
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
 
         for textcontent in self.textcontents :
-            textcontent.show( buf, offset + 2, attrnames, showcoord )
+            textcontent.show( buf, offset, attrnames, showcoord )
 
 
 class Link( Node ) :
@@ -1255,7 +1245,7 @@ class Link( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'link: ' )
+        buf.write( lead + 'link: %r'% self.dump() )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
@@ -1324,7 +1314,10 @@ class Html( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write( lead + 'html: `%s`' % self.html )
+        lines = '\n'.join([
+                    lead+(' '*4)+('%r'%l) for l in self.html.split('\n')
+                ])
+        buf.write( lead + 'html:\n%s' % lines )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
@@ -1388,7 +1381,7 @@ class BasicText( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write(lead + 'basictext :' )
+        buf.write(lead + 'basictext : %r' % self.dump() )
 
         if showcoord :
             buf.write( ' (at %s)' % self.coord )
@@ -1428,15 +1421,16 @@ class ParagraphSeparator( Node ) :
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
-        buf.write(lead + 'paragraph_separator: ')
+        #lead = ' ' * offset
+        #buf.write(lead + 'paragraph_separator: ')
 
-        if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+        #if showcoord :
+        #    buf.write( ' (at %s)' % self.coord )
+        #buf.write('\n')
 
-        for c in self.children() :
-            c.show( buf, offset + 2, attrnames, showcoord )
+        #for c in self.children() :
+        #    c.show( buf, offset + 2, attrnames, showcoord )
+        pass
 
 
 class Empty( Node ) :
@@ -1480,5 +1474,5 @@ class Newline( Node ) :
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         lead = ' ' * offset
-        buf.write(lead + 'newline: ')
+        buf.write(lead + 'newline: %r' % self.newline )
         buf.write('\n')
