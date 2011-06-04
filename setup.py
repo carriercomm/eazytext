@@ -56,7 +56,7 @@ setup(
     package_data={},                        # setuptools / distutils
     include_package_data=True,              # setuptools
     exclude_package_data={},                # setuptools
-    zip_safe=True,                          # setuptools
+    zip_safe=False,                         # setuptools
     entry_points={                          # setuptools
         'console_scripts' : [
            'eztext = eazytext.eazytext:main'

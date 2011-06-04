@@ -7,7 +7,7 @@
 #   2. Toc() macro's Javascript based shrink UI.
 #   3. Box() extension's Javascript based shrink UI.
 
-__version__ = '0.92b'
+__version__ = '0.92dev'
 
 import re, logging, sys
 import lxml.html            as lhtml
