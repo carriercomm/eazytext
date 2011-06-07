@@ -87,6 +87,7 @@ class Code( Extension ) :
                                HtmlFormatter( linenos=self.linenos ) )
             html  = self.tmpl % ( self.style, (self.code_tmpl % code) )
         except:
+            if self.extnode.parser.etparser.debug : raise
             html  = self.nowiki
         return html
 

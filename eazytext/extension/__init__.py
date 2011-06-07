@@ -124,6 +124,7 @@ def build_ext( extnode, nowiki ) :
     try :
         props = props and eval( ''.join( props ) ) or {}
     except :
+        if extnode.parser.etparser.debug : raise
         props = {}
 
     try :
@@ -131,8 +132,8 @@ def build_ext( extnode, nowiki ) :
         args = [ props, nowiki ] + extnode.xparams
         o  = globals()[extnode.xwikiname]( *args )
     except :
-        o = Extension( {}, nowiki )
         if extnode.parser.etparser.debug : raise
+        o = Extension( {}, nowiki )
 
     if not isinstance( o, Extension ) :
         o = Extension( {}, nowiki )

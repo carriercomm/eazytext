@@ -9,6 +9,7 @@ testall :
 	cd eazytext/test/; nosetests -x -s testmacros;
 	cd eazytext/test/; nosetests -x -s testextn;
 	cd eazytext/test/; nosetests -x -s testwiki;
+	cd eazytext/test/; nosetests -x -s testdocs;
 
 bdist_egg :
 	python ./setup.py bdist_egg

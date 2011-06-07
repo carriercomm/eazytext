@@ -40,6 +40,7 @@ class HtmlExt( Extension ) :
         try :
             boxnode = lhtml.fromstring( self.nowiki )
         except :
+            if self.extnode.parser.etparser.debug : raise
             html = tmpl % (style, '')
         else :
             html = tmpl % (style, lhtml.tostring(boxnode) )

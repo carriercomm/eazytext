@@ -115,6 +115,7 @@ class Toc( Macro ) :
             toc_div = self.tocul_tmpl % ''.join( entries )
             html = self.tmpl % (self.style, headdiv, toc_div)
         except :
+            if self.extnode.parser.etparser.debug : raise
             html = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
         return (self.weight, html)

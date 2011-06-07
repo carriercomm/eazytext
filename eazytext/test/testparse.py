@@ -159,7 +159,8 @@ class TestDumpsValid( object ) :
 
     def _test_execute( self, type, testcontent, count, ref='' ) :
         # Initialising the parser
-        etparser = ETParser( lex_optimize=True, yacc_optimize=False, yacc_debug=False )
+        etparser = ETParser( lex_optimize=True, yacc_optimize=False,
+                             yacc_debug=False )
 
         # Characterize the generated testcontent set the wikiproperties
         wikiprops  = {}
@@ -497,6 +498,7 @@ class TestDumpsValid( object ) :
             yield self._test_execute, 'crooked_heading', t, testcount
             testcount += 1
 
+    @attr(type='crooked_wikix')
     def test_J_crooked_wikix( self ) :
         """Testing crooked nowiki syntax"""
         print "\nTesting crooked nowiki syntax"

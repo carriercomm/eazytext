@@ -137,9 +137,11 @@ it as ''href''
 Feel free to intermix link markup with text markup, only rule being that, the
 link text ~[[...]] must be fully contained within text markups, like,
 
-> [<PRE `` www.google.com ``, //{c;20|} [[ www.google.com | google ]] // >]
+> [<PRE `` www.google.com `` >]
+> [<PRE //{c;20|} [[ www.google.com | google ]] with-in italics// >]
 
-> `` www.google.com ``, //{c;20|} [[ www.google.com | google ]] with-in span//
+> `` www.google.com ``
+> //{c} [[ www.google.com | google ]] with-in italics//
 
 === Block level markup
 

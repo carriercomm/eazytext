@@ -44,6 +44,7 @@ class Nested( Extension ) :
             try :
                 html = self.tmpl % ( tu.tohtml() )
             except :
+                if self.extnode.parser.etparser.debug : raise
                 html = self.tmpl % ''
         return html
 

@@ -33,6 +33,8 @@ def _option_parse() :
                        help='Output html file to store translated result' )
     parser.add_option( '-d', action='store_true', dest='dump',
                        help='Dump translation' )
+    parser.add_option( '-g', action='store_true', dest='debug',
+                       help='Debug' )
     parser.add_option( '-s', action='store_true', dest='show',
                        help='Show AST parse tree' )
     parser.add_option( '-l', dest='debuglevel', default='0',
@@ -46,7 +48,7 @@ def _option_parse() :
 
 def main() :
     options, args = _option_parse()
-    etparser = ETParser( obfuscatemail=True )
+    etparser = ETParser( obfuscatemail=True, debug=options.debug )
     tu = None
     if options.version :
         print VERSION
@@ -60,6 +62,7 @@ def main() :
     if tu and options.dump :
         print tu.dump()
     elif tu and options.show :
+        print "AST tree ..."
         tu.show()
     elif tu :
         ofile = options.ofile or (os.path.splitext(ifile)[0] + '.html')

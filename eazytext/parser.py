@@ -79,6 +79,7 @@ class ETParser( object ):
                     yacctab='eazytext.yacctab',
                     yacc_debug=False,
                     app=None,
+                    debug=False
                 ):
         """
         Create a new ETParser.
@@ -172,7 +173,7 @@ class ETParser( object ):
         self.style = list(split_style( style ))
         self.wikiprops = {}
         self.dynamictext = False
-        self.debug = lex_debug or yacc_debug
+        self.debug = lex_debug or yacc_debug or debug
         self.obfuscatemail = obfuscatemail
         self.nested = nested
         self.stripscript = stripscript
@@ -186,12 +187,13 @@ class ETParser( object ):
     
     def _fetchskin( self, skin ) :
         if skin == None :
-            self.skin = ''
+            skin = ''
         elif splitext( skin )[-1] == '.css' :
             csscont = open(join(rootdir, 'skins', skin)).read()
-            self.skin = self.skin_tmpl % csscont
+            skin = self.skin_tmpl % csscont
         else :
-            self.skin = skin
+            skin = skin
+        return skin
 
     def _wiki_preprocess( self, text ) :
         """The text to be parsed is pre-parsed to remove and fix unwanted
@@ -382,9 +384,8 @@ class ETParser( object ):
                                 | horizontalrule
                                 | btablerows
                                 | table_rows
-                                | orderedlists
-                                | unorderedlists
-                                | definitionlists
+                                | mixedlists
+                                | definitions
                                 | blockquotes
                                 | textlines"""
         p[0] = Paragraph( p.parser, p[1] )
@@ -403,7 +404,7 @@ class ETParser( object ):
                                 | nowikicontent NEWLINE
                                 | nowikilines NEWLINE
                                 | nowikilines nowikicontent NEWLINE"""
-        if len(p) == 2 and isinstance( p[1], Empty ):
+        if len(p) == 2 and isinstance( p[1], EMPTY ):
             p[0] = ''
         elif len(p) == 2 :
             p[0] = p[1]
@@ -434,7 +435,7 @@ class ETParser( object ):
         if len(p) == 4 :
             p[0] = Heading( p.parser, p[1], p[2], p[3] )
         elif len(p) == 3 :
-            p[0] = Heading( p.parser, p[1], Empty( p.parser ), p[2] )
+            p[0] = Heading( p.parser, p[1], EMPTY( p.parser ), p[2] )
         else :
             raise ParseError( "unexpected rule-match for heading")
 
@@ -446,10 +447,11 @@ class ETParser( object ):
         """textlines            : text_contents NEWLINE
                                 | textlines text_contents NEWLINE"""
         if len(p) == 3 :
-            p[0] = TextLines( p.parser, p[1], p[2] )
+            p[0] = TextLines( p.parser, textcontents=p[1], newline=p[2] )
         elif len(p) == 4 and isinstance( p[1], TextLines ) :
-            p[1].appendline( p[2], p[3] )
-            p[0] = p[1]
+            p[0] = TextLines(
+                p.parser, textlines=p[1], textcontents=p[2], newline=p[3]
+            )
         else :
             raise ParseError( "unexpected rule-match for textlines")
 
@@ -460,31 +462,33 @@ class ETParser( object ):
             p[0] = BtableRows( p.parser, p[1] )
         elif len(p) == 3 and isinstance( p[1], BtableRows ) \
                          and isinstance( p[2], BtableRow ) :
-            p[1].appendrow( p[2] )
-            p[0] = p[1]
+            p[0] = BtableRows( p.parser, p[2], rows=p[1] )
         else :
             raise ParseError( "unexpected rule-match for btablerows")
 
     def p_btablerow( self, p ):                  # BtableRow+newline+text
-        """btablerow        : btablerowbegin
+        """btablerow        : btablerow_start_line
                             | btablerow text_contents NEWLINE"""
         if len(p) == 2 :
-            p[0] = p[1]
+            p[0] = BtableRow( p.parser, p[1] )
         elif len(p) == 4 :
-            p[1].contlist( p.parser, p[2], p[3] )
-            p[0] = p[1]
+            p[0] = BtableRow( p.parser, p[1], p[2], p[3] )
         else :
             raise ParseError( "unexpected rule-match for btablerow")
 
-    def p_btablerowbegin_1( self, p ):                         # BtableRow
-        """btablerowbegin   : BTABLE_START text_contents NEWLINE
-                            | BTABLE_START empty NEWLINE"""
-        p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLE )
+    def p_btablerow_start_line_1( self, p ):                         # BtableRow
+        """btablerow_start_line : BTABLE_START text_contents NEWLINE
+                                | BTABLE_START empty NEWLINE"""
+        p[0] = BtableRowStartline(
+            p.parser, p[1], p[2], p[3], term=FORMAT_BTABLE
+        )
 
-    def p_btablerowbegin_2( self, p ):                         # BtableRow
-        """btablerowbegin   : BTABLESTYLE_START text_contents NEWLINE
-                            | BTABLESTYLE_START empty NEWLINE"""
-        p[0] = BtableRow( p.parser, p[1], p[2], p[3], type=FORMAT_BTABLESTYLE )
+    def p_btablerow_start_line_2( self, p ):                         # BtableRow
+        """btablerow_start_line : BTABLESTYLE_START text_contents NEWLINE
+                                | BTABLESTYLE_START empty NEWLINE"""
+        p[0] = BtableRowStartline(
+            p.parser, p[1], p[2], p[3], term=FORMAT_BTABLESTYLE
+        )
 
     def p_table_rows_1( self, p ):
         """table_rows       : table_cells NEWLINE
@@ -492,21 +496,15 @@ class ETParser( object ):
                             | table_rows table_cells NEWLINE
                             | table_rows table_cells TABLE_CELLSTART NEWLINE"""
         if len(p) == 3 and isinstance( p[1], TableCells ):
-            p[0] = TableRows( p.parser, p[1], newline=p[2] )
-
-        elif len(p) == 4 and isinstance( p[1], TableCells ):
-            p[0] = TableRows( p.parser, p[1], p[2], p[3] )
-
-        elif len(p) == 4 and isinstance( p[1], TableRows ) \
-                         and isinstance( p[2], TableCells ) :
-            p[1].appendrow( p[2], newline=p[3] )
-            p[0] = p[1]
-
-        elif len(p) == 5 and isinstance( p[1], TableRows ) \
-                         and isinstance( p[2], TableCells ) :
-            p[1].appendrow( p[2], p[3], p[4] )
-            p[0] = p[1]
-
+            p[0] = TableRows( p.parser, cells=p[1], newline=p[2] )
+        elif len(p) == 4 and isinstance( p[1], TableCells ) :
+            p[0] = TableRows( p.parser, cells=p[1], markup=p[2], newline=p[3] )
+        elif len(p) == 4 and isinstance( p[1], TableRows ) :
+            p[0] = TableRows( p.parser, rows=p[1], cells=p[2], newline=p[3] )
+        elif len(p) == 5 and isinstance( p[1], TableRows ) :
+            p[0] = TableRows(
+                p.parser, rows=p[1], cells=p[2],  markup=p[3], newline=p[4]
+            )
         else :
             raise ParseError( "unexpected rule-match for table_rows_1")
 
@@ -514,130 +512,103 @@ class ETParser( object ):
         """table_rows       : TABLE_CELLSTART NEWLINE
                             | table_rows TABLE_CELLSTART NEWLINE"""
         if len(p) == 3 :
-            p[0] = TableRows( p.parser,
-                              TableCells( p.parser, p[1], Empty( p.parser ) ),
-                              newline=p[2]
-                            )
+            p[0] = TableRows( p.parser, markup=p[1], newline=p[2]
+            )
         elif len(p) == 4 :
-            p[1].appendrow( TableCells( p.parser, p[2], Empty( p.parser ) ),
-                            newline=p[3] )
-            p[0] = p[1]
+            p[0] = TableRows(
+                p.parser, rows=p[1], markup=p[2], newline=p[3]
+            )
         else :
             raise ParseError( "unexpected rule-match for table_rows_2")
 
     def p_table_cells( self, p ):                       # TableCells
         """table_cells      : TABLE_CELLSTART text_contents
                             | TABLE_CELLSTART empty
-                            | table_cells TABLE_CELLSTART empty
-                            | table_cells TABLE_CELLSTART text_contents"""
-        if len(p) == 3 and isinstance( p[2], Empty ) :
-            p[0] = TableCells( p.parser, p[1], p[2] )
-        elif len(p) == 3 :
-            p[0] = TableCells( p.parser, p[1], p[2] )
-        elif len(p) == 4 and isinstance( p[3], Empty ) :
-            p[1].appendcell( p[2], p[3] )
-            p[0] = p[1]
+                            | table_cells TABLE_CELLSTART text_contents
+                            | table_cells TABLE_CELLSTART empty"""
+        if len(p) == 3 :
+            p[0] = TableCells( p.parser, markup=p[1], textcontents=p[2] )
         elif len(p) == 4 :
-            p[1].appendcell( p[2], p[3] )
-            p[0] = p[1]
+            p[0] = TableCells(
+                p.parser, cells=p[1], markup=p[2], textcontents=p[3]
+            )
         else :
             raise ParseError( "unexpected rule-match for table_cells")
 
-    def p_orderedlists( self, p ):                      # Lists
-        """orderedlists : orderedlist
-                        | orderedlists unorderedlist
-                        | orderedlists orderedlist"""
-        if len(p) == 2 and isinstance( p[1], List ) :
-            p[0] = Lists( p.parser, p[1] )
-        elif len(p) == 3 and isinstance( p[1], Lists ) \
-                         and isinstance( p[2], List ) :
-            p[1].appendlist( p[2] )
-            p[0] = p[1]
-        else :
-            raise ParseError( "unexpected rule-match for orderedlists")
-
-    def p_unorderedlists( self, p ):                    # Lists
-        """unorderedlists       : unorderedlist
-                                | unorderedlists orderedlist
-                                | unorderedlists unorderedlist"""
-        if len(p) == 2 and isinstance( p[1], List ) :
-            p[0] = Lists( p.parser, p[1] )
-        elif len(p) == 3 and isinstance( p[1], Lists ) \
-                         and isinstance( p[2], List ):
-            p[1].appendlist( p[2] )
-            p[0] = p[1]
-        else :
-            raise ParseError( "unexpected rule-match for unorderedlists")
-
-    def p_orderedlist( self, p ):                       # List+newline+text
-        """orderedlist : orderedlistbegin
-                       | orderedlist text_contents NEWLINE"""
+    def p_mixedlists( self, p ):                        # MixedLists
+        """mixedlists       : orderedlist
+                            | unorderedlist
+                            | mixedlists unorderedlist
+                            | mixedlists orderedlist"""
         if len(p) == 2 :
-            p[0] = p[1]
+            p[0] = MixedLists( p.parser, nlist=p[1] )
+        elif len(p) == 3 and isinstance( p[1], MixedLists ) :
+            p[0] = MixedLists( p.parser, mixedlists=p[1], nlist=p[2] )
+        else :
+            raise ParseError( "unexpected rule-match for orderedlist")
+
+    def p_orderedlist( self, p ):                      # List+newline+text
+        """orderedlist     : orderedlistbegin
+                           | orderedlist text_contents NEWLINE"""
+        if len(p) == 2 :
+            p[0] = List( p.parser, p[1] )
         elif len(p) == 4 :
-            p[1].contlist( p.parser, p[2], p[3] )
-            p[0] = p[1]
+            p[0] = List( p.parser, p[1], p[2], p[3] )
         else :
             raise ParseError( "unexpected rule-match for orderedlist")
 
     def p_orderedlistbegin( self, p ):                  # List
         """orderedlistbegin : ORDLIST_START text_contents NEWLINE
                             | ORDLIST_START empty NEWLINE"""
-        p[0] = List( p.parser, LIST_ORDERED, p[1], p[2], p[3] )
+        p[0] = ListBegin( p.parser, LIST_ORDERED, p[1], p[2], p[3] )
 
     def p_unorderedlist( self, p ):                     # List+newline+text
-        """unorderedlist : unorderedlistbegin
-                         | unorderedlist text_contents NEWLINE"""
+        """unorderedlist   : unorderedlistbegin
+                           | unorderedlist text_contents NEWLINE"""
         if len(p) == 2 :
-            p[0] = p[1]
+            p[0] = List( p.parser, p[1] )
         elif len(p) == 4 :
-            p[1].contlist( p.parser, p[2], p[3] )
-            p[0] = p[1]
+            p[0] = List( p.parser, p[1], p[2], p[3] )
         else :
-            raise ParseError( "unexpected rule-match for unorderedlist")
+            raise ParseError( "unexpected rule-match for unorderedlist" )
 
     def p_unorderedlistbegin( self, p ):                # List
         """unorderedlistbegin   : UNORDLIST_START text_contents NEWLINE
                                 | UNORDLIST_START empty NEWLINE"""
-        p[0] = List( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
+        p[0] = ListBegin( p.parser, LIST_UNORDERED, p[1], p[2], p[3] )
 
-    def p_definitionlists( self, p ):                    # Definitions
-        """definitionlists      : definitionlist
-                                | definitionlists definitionlist"""
+    def p_definitions( self, p ):                       # Definitions
+        """definitions          : definition
+                                | definitions definition"""
         if len(p) == 2 and isinstance( p[1], Definition ) :
-            p[0] = Definitions( p.parser, p[1] )
-        elif len(p) == 3 and isinstance( p[1], Definitions ) \
-                         and isinstance( p[2], Definition ):
-            p[1].appendlist( p[2] )
-            p[0] = p[1]
+            p[0] = Definitions( p.parser, defn=p[1] )
+        elif len(p) == 3 and isinstance( p[1], Definitions ) :
+            p[0] = Definitions( p.parser, defns=p[1], defn=p[2] )
         else :
-            raise ParseError( "unexpected rule-match for definitionlists")
+            raise ParseError( "unexpected rule-match for definitions")
 
-    def p_definitionlist( self, p ):                    # Def..+Text+Newline
-        """definitionlist       : definitionlistbegin
-                                | definitionlist  text_contents NEWLINE"""
+    def p_definition( self, p ):                        # Definition
+        """definition           : definitionbegin
+                                | definition text_contents NEWLINE"""
         if len(p) == 2 :
-            p[0] = p[1]
+            p[0] = Definition( p.parser, p[1] )
         elif len(p) == 4 :
-            p[1].contlist( p.parser, p[2], p[3] )
-            p[0] = p[1]
+            p[0] = Definition( p.parser, p[1], p[2], p[3] )
         else :
-            raise ParseError( "unexpected rule-match for definitionlist")
+            raise ParseError( "Unexpected rule-match for definition" )
 
-    def p_definitionlistbegin( self, p ):               # Definition
-        """definitionlistbegin  : DEFINITION_START text_contents NEWLINE
+    def p_definitionbegin( self, p ) :                  # DefinitionBegin
+        """definitionbegin      : DEFINITION_START text_contents NEWLINE
                                 | DEFINITION_START empty NEWLINE"""
-        p[0] = Definition( p.parser, p[1], p[2], p[3] )
+        p[0] = DefinitionBegin( p.parser, p[1], p[2], p[3] )
 
     def p_blockquotes( self, p ):                       # BQuotes
         """blockquotes          : blockquote
                                 | blockquotes blockquote"""
         if len(p) == 2 and isinstance( p[1], BQuote ) :
-            p[0] = BQuotes( p.parser, p[1] )
-        elif len(p) == 3 and isinstance( p[1], BQuotes ) \
-                         and isinstance( p[2], BQuote ):
-            p[1].appendlist( p[2] )
-            p[0] = p[1]
+            p[0] = BQuotes( p.parser, bquote=p[1] )
+        elif len(p) == 3 and isinstance( p[1], BQuotes ) :
+            p[0] = BQuotes( p.parser, bquotes=p[1], bquote=p[2] )
         else :
             raise ParseError( "unexpected rule-match for blockquotes")
 
@@ -656,11 +627,9 @@ class ETParser( object ):
                                 | text_contents macro
                                 | text_contents html"""
         if len(p) == 2 and isinstance( p[1], (Link,Macro,Html,BasicText) ):
-            p[0] = TextContents( p.parser, p[1] ) 
-        elif len(p) == 3 and isinstance( p[1], TextContents ) \
-                         and isinstance( p[2], (Link,Macro,Html,BasicText) ) :
-            p[1].appendcontent( p[2] )
-            p[0] = p[1]
+            p[0] = TextContents( p.parser, textcontent=p[1] ) 
+        elif len(p) == 3 and isinstance( p[1], TextContents ) :
+            p[0] = TextContents( p.parser, textcontents=p[1], textcontent=p[2] )
         else :
             raise ParseError( "unexpected rule-match for text_contents")
 
@@ -761,7 +730,7 @@ class ETParser( object ):
 
     def p_empty( self, p ):
         'empty : '
-        p[0] = Empty( p.parser )
+        p[0] = EMPTY( p.parser )
         
     def p_error( self, p ):
         if p:

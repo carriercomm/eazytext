@@ -176,7 +176,7 @@ class ETLexer( object ) :
         return t
 
     def t_table_TABLE_CELLSTART( self, t ):
-        r'[ \t]*\|=?(\{[^{}\r\n]*\})?'
+        r'\|=?(\{[^{}\r\n]*\})?'
         return t
 
     def t_table_NEWLINE( self, t ):

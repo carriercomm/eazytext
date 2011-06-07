@@ -139,7 +139,7 @@ def loadmacros( dirname ) :
                 if issubclass( obj, Macro ) :
                     globals()[obj.__name__] = obj
                     macrolist.setdefault( obj.__name__, obj )
-            except:
+            except :
                 pass
     sys.path.remove(dirname)
 
@@ -151,8 +151,8 @@ def build_macro( macronode, macro ) :
     try :
         o = eval( macro[2:-2] )
     except :
-        o = Macro()
         if macronode.parser.etparser.debug : raise
+        o = Macro()
 
     if not isinstance( o, Macro ) :
         o = Macro()

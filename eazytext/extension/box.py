@@ -67,7 +67,6 @@ programmer. The chapter includes the following sections:
 * creating new tables.
 
 }}}
-
 """
 
 tmpl = """
