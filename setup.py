@@ -59,7 +59,7 @@ setup(
     zip_safe=False,                         # setuptools
     entry_points={                          # setuptools
         'console_scripts' : [
-           'eztext = eazytext.eazytext:main'
+           'eztext = eazytext.eztext:main'
         ],
     },
     install_requires=[                      # setuptools
