@@ -4,7 +4,6 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-
 """Lexing rules for EazyText text"""
 
 # -*- coding: utf-8 -*-
@@ -389,7 +388,6 @@ class ETLexer( object ) :
     def t_table_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])
         self._error(msg, t)
-
 
 
 if __name__ == "__main__":

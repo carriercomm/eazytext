@@ -16,6 +16,7 @@
 #   2. Endmarker is appender to the wiki text to facilitate the wiki parsing.
 #
 # Todo   : 
+#   * Move `TERMINAL` defintion and instantiation from ast.py to parser.py
 #   ( The following lists needs be triaged )
 #   * Mako to be integrated with EazyText as an extension.
 #   * Explore the possible addition of `indentation` feature, like,
@@ -58,6 +59,9 @@ from   eazytext.extension    import loadextensions
 
 log = logging.getLogger( __name__ )
 rootdir = dirname( __file__ )
+
+class ParseError( Exception ):
+    pass
 
 # Default Wiki page properties
 class ETParser( object ):
@@ -756,11 +760,6 @@ class Coord( object ):
         if self.column :
             str += ":%s" % self.column
         return str
-
-
-class ParseError( Exception ):
-    pass
-
 
 
 if __name__ == "__main__":
