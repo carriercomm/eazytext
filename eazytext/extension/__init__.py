@@ -44,63 +44,14 @@ is,
 # Todo   : None
 
 import os, sys
-from   os.path     import splitext, dirname
+from   os.path                      import splitext, dirname
+from   zope.component               import queryUtility
 
-class Extension( object ) :
-    """Base Extension class that should be used to derive
-    EazyText extension / nowiki classes.
-    The following attributes are available for the Extension() object.
-      *  extnode        passed while instantiating, provides the Extention
-                        instance
-      *  extnode.parser ETParser() object
-      *  parser.tu      Translation Unit for the parsed text
-      *  parser.text    Raw wiki text.
-      *  parser.pptext  Preprocessed wiki text.
-      *  parser.html    Converted HTML code from Wiki text
-    """
-    
-    def __init__( self, props, nowiki ) :
-        pass
-
-    def on_parse( self,  ) :
-        """Will be called after parsing the extension text"""
-        pass
-
-    def on_prehtml( self,  ) :
-        """Will be called before calling tohtml() method"""
-        pass
-
-    def tohtml( self ) :
-        """HTML content to replace the nowiki text"""
-        return ''
-
-    def on_posthtml( self,  ) :
-        """Will be called afater calling tohtml() method"""
-        pass
-
-
-from eazytext                    import split_style, constructstyle
-
-extlist = {}
-def loadextensions( dirname ) :
-    global extlist
-    sys.path.insert( 0, dirname )
-    plugin_files = list(set([ 
-                        splitext(f)[0]
-                        for f in os.listdir(dirname)
-                        if f[0] != '.' and f != '__init__.py' 
-                   ]))
-    for p in plugin_files :
-        m = __import__( p )
-        for attr in dir(m) :
-            obj = m.__dict__[attr]
-            try :
-                if issubclass( obj, Extension ) :
-                    globals()[obj.__name__] = obj
-                    extlist.setdefault( obj.__name__, obj )
-            except :
-                pass
-    sys.path.remove(dirname)
+import eazytext.extension.box
+import eazytext.extension.code
+import eazytext.extension.footnote
+import eazytext.extension.htmlext
+import eazytext.extension.nested
 
 def build_ext( extnode, nowiki ) :
     """Parse the nowiki text, like,
@@ -112,6 +63,7 @@ def build_ext( extnode, nowiki ) :
         }}}
     To function name, *args and **kwargs
     """
+    from   eazytext.interfaces   import IEazyTextExtensionFactory
     props = []
     nowikilines = nowiki.split( '\n' )
     for i in range( len(nowikilines) ) :
@@ -128,21 +80,16 @@ def build_ext( extnode, nowiki ) :
         props = {}
 
     try :
-        xwiki = extnode.xwikiname
+        factory = queryUtility( IEazyTextExtensionFactory, extnode.xwikiname )
         args = [ props, nowiki ] + extnode.xparams
-        o  = globals()[extnode.xwikiname]( *args )
+        ext = factory( *args )
     except :
         if extnode.parser.etparser.debug : raise
-        o = Extension( {}, nowiki )
-
-    if not isinstance( o, Extension ) :
-        o = Extension( {}, nowiki )
+        ext = None
 
     etparser = extnode.parser.etparser
-
-    o.extnode = extnode     # Backreference to parser AST node
-    extnode.parser.etparser.regext( o ) # Register macro with the parser
-    o.on_parse()                # Callback on_parse()
-    return o
-
-loadextensions( dirname( __file__ ) )
+    if ext :
+        ext.extnode = extnode               # Backreference to parser AST node
+        extnode.parser.etparser.regext(ext) # Register macro with the parser
+        ext.on_parse(ext.extnode)           # Callback on_parse()
+    return ext

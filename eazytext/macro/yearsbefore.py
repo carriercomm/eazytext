@@ -10,10 +10,15 @@
 
 import datetime     as dt
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-class YearsBefore( Macro ) :
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
+class YearsBefore( object ) :
     """
     h3. YearsBefore
 
@@ -33,8 +38,8 @@ class YearsBefore( Macro ) :
     |= fromday   | from day
     """
 
-
     tmpl = '<span class="etm-yearsbefore" style="%s">%s</span>'
+    implements( IEazyTextMacro )
 
     def __init__( self, template, fromyear, frommonth=1, fromday=1, **kwargs ) :
         utc = dt.datetime.utcnow()
@@ -49,7 +54,13 @@ class YearsBefore( Macro ) :
             self.fromday   = utc.day
         self.style = constructstyle( kwargs )
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
         utc   = dt.datetime.utcnow()
         date  = dt.datetime( self.fromyear, self.frommonth, self.fromday )
         delta = utc - date
@@ -71,3 +82,14 @@ class YearsBefore( Macro ) :
         string = self.template % text
 
         return self.tmpl % (self.style, string)
+
+    def on_posthtml( self, node ) :
+        pass
+
+class YearsBeforeFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'YearsBefore( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility(YearsBeforeFactory(), IEazyTextMacroFactory, 'YearsBefore')

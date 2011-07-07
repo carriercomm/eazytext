@@ -9,8 +9,14 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   eazytext.extension   import Extension
-from   eazytext             import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
+
+from   eazytext.interfaces  import IEazyTextExtension, \
+                                   IEazyTextExtensionFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
 
 doc = """
 === Nested
@@ -21,15 +27,22 @@ doc = """
 """
 
 
-class Nested( Extension ) :
+class Nested( object ) :
 
     tmpl = '<div class="etext-nested"> %s </div>'
+    implements( IEazyTextExtension )
     
     def __init__( self, props, nowiki, *args ) :
         self.nowiki = nowiki
         self.style = constructstyle( props )
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node) :
         from   eazytext.parser import ETParser
 
         if self.nowiki :
@@ -48,4 +61,14 @@ class Nested( Extension ) :
                 html = self.tmpl % ''
         return html
 
+    def on_posthtml( self, node ) :
+        pass
+
+class NestedFactory( object ):
+    implements( IEazyTextExtensionFactory )
+    def __call__( self, *args ):
+        return Nested( *args )
+
+# Register this plugin
+gsm.registerUtility( NestedFactory(), IEazyTextExtensionFactory, 'Nested' )
 Nested._doc = doc

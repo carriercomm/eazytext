@@ -10,7 +10,7 @@
 #   CSS styling is currently using zeta.
 
 from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   eazytext.lib    import split_style, constructstyle, lhtml
 
 css = {
     'padding'            : '5px',

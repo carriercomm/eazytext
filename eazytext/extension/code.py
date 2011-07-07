@@ -14,8 +14,15 @@ from   pygments.formatters import HtmlFormatter
 from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
                                   get_lexer_by_name
 
-from   eazytext.extension  import Extension
-from   eazytext            import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
+
+from   eazytext.interfaces  import IEazyTextExtension, \
+                                   IEazyTextExtensionFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
 
 doc = """
 h3. Code
@@ -56,12 +63,12 @@ is to list the line numbers.
 """
 
 
-class Code( Extension ) :
+class Code( object ) :
 
+    implements( IEazyTextExtension )
     tmpl = '<div class="etext-code" style="%s"> %s </div>'
     script_tmpl = '<style type="text/css"> %s </style>'
     code_tmpl = '<div class="codecont"> %s </div>'
-
     hashtext = None
 
     def __init__( self, props, nowiki, *args ) :
@@ -70,7 +77,10 @@ class Code( Extension ) :
         self.lexname = args and args[0].lower() or 'text'
         self.linenos = 'noln' not in args
 
-    def on_prehtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
         etparser = self.extnode.parser.etparser
         if self.hashtext == etparser.hashtext :
             return None
@@ -80,7 +90,7 @@ class Code( Extension ) :
             html = self.script_tmpl % script
             return (-100, html)
 
-    def tohtml( self ) :
+    def tohtml( self , node) :
         try :
             lexer = get_lexer_by_name( self.lexname )
             code  = highlight( self.nowiki, lexer,
@@ -91,4 +101,14 @@ class Code( Extension ) :
             html  = self.nowiki
         return html
 
+    def on_posthtml( self, node ) :
+        pass
+
+class CodeFactory( object ):
+    implements( IEazyTextExtensionFactory )
+    def __call__( self, *args ):
+        return Code( *args )
+
+# Register this plugin
+gsm.registerUtility( CodeFactory(), IEazyTextExtensionFactory, 'Code' )
 Code._doc = doc

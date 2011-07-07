@@ -8,10 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-class Span( Macro ) :
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
+class Span( object ) :
     """
     h3. Span
 
@@ -32,6 +37,23 @@ class Span( Macro ) :
         self.text = len(args) > 0 and args[0] or ''
         self.style = constructstyle( kwargs )
 
-    def tohtml( self ) :
-        html = self.tmpl % ( self.style, self.text )
-        return html
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
+        return self.tmpl % ( self.style, self.text )
+
+    def on_posthtml( self, node ) :
+        pass
+
+class SpanFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Span( %s )' % argtext )
+
+
+# Register this plugin
+gsm.registerUtility( SpanFactory(), IEazyTextMacroFactory, 'Span' )

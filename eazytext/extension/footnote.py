@@ -9,8 +9,15 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   eazytext.extension   import Extension
-from   eazytext             import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
+
+from   eazytext.interfaces  import IEazyTextExtension, \
+                                   IEazyTextExtensionFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
 
 doc = """
 h3. Footnote
@@ -72,8 +79,10 @@ rowtmpl = """
 </tr>
 """
 
-class Footnote( Extension ) :
+class Footnote( object ) :
     """Implements Footnote() wikix"""
+
+    implements( IEazyTextExtension )
 
     def _compose(self, lines) :
         row = ''
@@ -90,7 +99,13 @@ class Footnote( Extension ) :
         self.title  = args and args[0] or 'Footnotes :'
         self.args   = args[1:]
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
         rows = []
         curr = []
         lines = self.nowiki.splitlines()
@@ -108,4 +123,14 @@ class Footnote( Extension ) :
         html = tmpl % (self.title, self.style, ''.join(rows))
         return html
 
+    def on_posthtml( self, node ) :
+        pass
+
+class FootnoteFactory( object ):
+    implements( IEazyTextExtensionFactory )
+    def __call__( self, *args ):
+        return Footnote( *args )
+
+# Register this plugin
+gsm.registerUtility( FootnoteFactory(), IEazyTextExtensionFactory, 'Footnote' )
 Footnote._doc = doc

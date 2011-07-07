@@ -8,10 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-class Images( Macro ) :
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
+class Images( object ) :
     """
     h3. Images
 
@@ -34,6 +39,7 @@ class Images( Macro ) :
     row_tmpl = '<tr> %s </tr>'
     cell_tmpl = '<td> %s </td>'
     img_tmpl = '<img %s %s src="%s" alt="%s" style="%s"> </img>'
+    implements( IEazyTextMacro )
 
     def __init__( self, *args, **kwargs ) :
         self.imgsources = args
@@ -42,10 +48,15 @@ class Images( Macro ) :
         self.height = kwargs.pop( 'height', None )
         self.width  = kwargs.pop( 'width', None )
         self.cols   = int( kwargs.pop( 'cols', '3' ))
-        
         self.style  = constructstyle( kwargs )
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
 
@@ -64,3 +75,14 @@ class Images( Macro ) :
             rows.append( row )
         html = self.tmpl % '\n'.join( rows )
         return html
+
+    def on_posthtml( self, node ) :
+        pass
+
+class ImagesFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Images( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility( Images(), IEazyTextMacroFactory, 'Images' )

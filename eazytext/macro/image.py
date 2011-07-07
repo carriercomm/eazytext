@@ -8,10 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-class Image( Macro ) :
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
+class Image( object ) :
     """
     h3. Image
 
@@ -35,6 +40,7 @@ class Image( Macro ) :
 
     template = '<img class="etm-image" ' + \
                '%s %s src="%s" alt="%s" style="%s"> </img>'
+    implements( IEazyTextMacro )
 
     def __init__( self, src, alt, **kwargs ) :
         self.src = src
@@ -44,7 +50,13 @@ class Image( Macro ) :
         self.href = kwargs.pop( 'href', '' )
         self.style = constructstyle( kwargs )
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
         img = self.template % ( hattr, wattr, self.src, self.alt, self.style )
@@ -56,3 +68,14 @@ class Image( Macro ) :
         else :
             html = img
         return html
+
+    def on_posthtml( self, node ) :
+        pass
+
+class ImageFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Image( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility( ImageFactory(), IEazyTextMacroFactory, 'Image' )

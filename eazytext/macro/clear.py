@@ -8,10 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-class Clear( Macro ) :
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
+class Clear( object ) :
     """
     h3. Clear
 
@@ -23,12 +28,28 @@ class Clear( Macro ) :
 
     Positional arguments, //None//
     """
-
+    implements( IEazyTextMacro )
     template = '<div class="etm-clear" style="%s"></div>'
 
     def __init__( self, *args, **kwargs ) :
         self.style = constructstyle( kwargs )
 
-    def tohtml( self ) :
-        html = self.template % self.style
-        return html
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
+        return self.template % self.style
+
+    def on_posthtml( self, node ) :
+        pass
+
+class ClearFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Clear( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility( ClearFactory(), IEazyTextMacroFactory, 'Clear' )

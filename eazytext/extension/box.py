@@ -9,8 +9,16 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   eazytext.extension   import Extension
-from   eazytext             import split_style, lhtml
+
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
+
+from   eazytext.interfaces  import IEazyTextExtension,\
+                                   IEazyTextExtensionFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
+
+gsm = getGlobalSiteManager()
+
 
 doc = """
 h3. Box
@@ -83,8 +91,10 @@ spantmpl = """
 <span class="boxshow"> show</span>
 """
 
-class Box( Extension ) :
+class Box( object ) :
     _doc = doc
+
+    implements( IEazyTextExtension )
 
     def __init__( self, props, nowiki, *args ) :
         self.nowiki = nowiki
@@ -111,7 +121,13 @@ class Box( Extension ) :
 
         self.hide = 'hide' in args
 
-    def tohtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
         from   eazytext.parser import ETParser
 
         fn = lambda (k, v) : '%s : %s' % (k,v)
@@ -147,3 +163,14 @@ class Box( Extension ) :
                             contstyle, self.nowiki_h )
         return html
 
+    def on_posthtml( self, node ) :
+        pass
+
+class BoxFactory( object ):
+    implements( IEazyTextExtensionFactory )
+    def __call__( self, *args ):
+        return Box( *args )
+
+# Register this plugin
+gsm.registerUtility( BoxFactory(), IEazyTextExtensionFactory, 'Box' )
+Box._doc = doc

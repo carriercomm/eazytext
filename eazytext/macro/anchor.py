@@ -8,11 +8,15 @@
 # Notes  : None
 # Todo   : None
 
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
 
-class Anchor( Macro ) :
+gsm = getGlobalSiteManager()
+
+class Anchor( object ):
     """
     h3. Anchor
 
@@ -28,14 +32,31 @@ class Anchor( Macro ) :
     |= text   | optional, text to be display at the anchor
     """
 
+    implements( IEazyTextMacro )
     template = '<a class="etm-anchor" name="%s" style="%s"> %s </a>'
 
-    def __init__( self, *args, **kwargs ) :
+    def __init__( self, *args, **kwargs ):
         args = list( args )
         self.anchor = args and args.pop( 0 ) or ''
         self.text = args and args.pop( 0 ) or '&#167;'
         self.style = constructstyle( kwargs )
 
-    def tohtml( self ) :
-        html = self.template % ( self.anchor, self.style, self.text )
-        return html
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
+        return self.template % ( self.anchor, self.style, self.text )
+
+    def on_posthtml( self, node ) :
+        pass
+
+class AnchorFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Anchor( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility( AnchorFactory(), IEazyTextMacroFactory, 'Anchor' )

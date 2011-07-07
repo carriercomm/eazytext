@@ -82,87 +82,41 @@ accepts ''semicolon (;)'' seperated style attributes, like,
 #      for `eval()` call.
 # Notes  : none
 # Todo   : 
-#   1. Test case for yearsbefore macro
 
 import os, sys
-from   os.path     import splitext, dirname
+from   os.path                      import splitext, dirname
+from   zope.component               import queryUtility
 
-from   paste.util.import_string  import import_module, eval_import
-
-class Macro( object ) :
-    """
-    Base Macro class that should be used to derive EazyText Macro classes
-    The following attributes are available for the Macro() object.
-      * macronode        passed while instantiating, provides the Macro instance
-      * macronode.parser PLY Yacc parser
-      * parser.etparser  ETParser() object
-      * etparser.tu      Translation Unit for the parsed text
-      * etparser.text    Raw wiki text.
-      * etparser.pptext  Preprocessed wiki text.
-      * etparser.html    Converted HTML code from Wiki text
-    """
-    
-    def __init__( self, *args, **kwargs ) :
-        pass
-
-    def on_parse( self,  ) :
-        """Will be called after parsing the extension text"""
-        pass
-
-    def on_prehtml( self,  ) :
-        """Will be called before calling tohtml() method"""
-        pass
-
-    def tohtml( self ) :
-        """HTML content to replace the macro text"""
-        return ''
-
-    def on_posthtml( self,  ) :
-        """Will be called afater calling tohtml() method"""
-        pass
-
-
-macrolist = {}
-def loadmacros( dirname ) :
-    global macrolist
-    sys.path.insert( 0, dirname )
-    plugin_files = list(set([ 
-                        splitext(f)[0]
-                        for f in os.listdir(dirname)
-                        if f[0] != '.' and f != '__init__.py' 
-                   ]))
-    for p in plugin_files :
-        m = eval_import( p )
-        for attr in dir(m) :
-            obj = m.__dict__[attr]
-            try :
-                if issubclass( obj, Macro ) :
-                    globals()[obj.__name__] = obj
-                    macrolist.setdefault( obj.__name__, obj )
-            except :
-                pass
-    sys.path.remove(dirname)
+import eazytext.macro.anchor
+import eazytext.macro.clear
+import eazytext.macro.html
+import eazytext.macro.image
+import eazytext.macro.images
+import eazytext.macro.redirect
+import eazytext.macro.span
+import eazytext.macro.toc
+import eazytext.macro.yearsbefore
 
 def build_macro( macronode, macro ) :
     """Parse the macro text, like,
         {{ Macroname( arg1, arg2, kwarg1=value1, kwarg2=value2 ) }}
     To function name, *args and **kwargs
     """
+    from  eazytext.interfaces   import IEazyTextMacroFactory
     try :
-        o = eval( macro[2:-2] )
+        macroname, evaltext = macro[2:-2].lstrip().split('(', 1)
+        evaltext = evaltext.rstrip(' \r)')
+        factory = queryUtility( IEazyTextMacroFactory, macroname )
+        macro = factory( evaltext.strip() )
     except :
         if macronode.parser.etparser.debug : raise
-        o = Macro()
-
-    if not isinstance( o, Macro ) :
-        o = Macro()
+        macro = None
 
     etparser = macronode.parser.etparser
 
     # Register macro-node
-    o.macronode = macronode     # Backreference to parser AST node
-    etparser.regmacro( o )      # Register macro with the parser
-    o.on_parse()                # Callback on_parse()
-    return o
-
-loadmacros( dirname( __file__ ) )
+    if macro :
+        macro.macronode = macronode     # Backreference to parser AST node
+        etparser.regmacro( macro )      # Register macro with the parser
+        macro.on_parse(macro.macronode) # Callback on_parse()
+    return macro

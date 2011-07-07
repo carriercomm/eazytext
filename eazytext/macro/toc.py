@@ -12,42 +12,19 @@
 from   random       import choice
 from   copy         import copy, deepcopy
 
-from   eazytext.macro  import Macro
-from   eazytext        import split_style, constructstyle, lhtml
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
+
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.lib         import split_style, constructstyle, lhtml
 
 alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
-
-#script = """
-#<style type="text/css">
-#    .dispnone { display : none; }
-#</style>
-#<script type="text/javascript">
-#    dojo.addOnLoad(
-#        function() {
-#            var n_toc = dojo.query( 'div.toc' )[0];
-#            var headdiv = n_toc.childNodes[0];
-#            var toc_div = n_toc.childNodes[1];
-#            dojo.connect( headdiv.childNodes[0], 'onclick',
-#                function( e ) {
-#                    if ( e.target.innerHTML == 'close' ) {
-#                        dojo.toggleClass( toc_div, 'dispnone', true );
-#                        e.target.innerHTML = 'show';
-#                    } else if ( e.target.innerHTML == 'show' ) {
-#                        dojo.toggleClass( toc_div, 'dispnone', false );
-#                        e.target.innerHTML = 'close';
-#                    }
-#                    dojo.stopEvent( e );
-#                }
-#            );
-#        }
-#    );
-#</script>
-#"""
-
 shorten = lambda s, m : s[:m] + (s[m:] and ' ...' or '' )
 
-class Toc( Macro ) :
+gsm = getGlobalSiteManager()
+
+class Toc( object ) :
     """
     h3. Toc
 
@@ -76,18 +53,14 @@ class Toc( Macro ) :
 
     htags = [ 'h1', 'h2', 'h3', 'h4', 'h5', ]
 
+    implements( IEazyTextMacro )
+
     def __init__( self, **kwargs ) :
         weight = int( kwargs.pop( 'weight', '-1' ))
         self.maxheadlen = int(kwargs.pop( 'maxheadlen', 30 ))
         self.topic = kwargs.pop( 'topic', 'Table of Contents' )
         self.style  = constructstyle( kwargs )
         self.weight = weight == 0 and -1 or weight
-
-    def tohtml( self ) :
-        # Gotcha : cannot return a empty string since process_textcontent()
-        # logic assumes that the translation fails. actually this macro is a
-        # post html macro.
-        return ' '
 
     def _maketoc( self, node ) :
         entries = []
@@ -104,7 +77,19 @@ class Toc( Macro ) :
             entries.extend( self._maketoc( n ))
         return entries
 
-    def on_posthtml( self ) :
+    def on_parse( self, node ) :
+        pass
+
+    def on_prehtml( self, node ) :
+        pass
+
+    def tohtml( self, node ) :
+        # Gotcha : cannot return a empty string since process_textcontent()
+        # logic assumes that the translation fails. actually this macro is a
+        # post html macro.
+        return ' '
+
+    def on_posthtml( self, node ) :
         etparser = self.macronode.parser.etparser
         try :
             htmltree = lhtml.fromstring( etparser.html )
@@ -119,3 +104,11 @@ class Toc( Macro ) :
             html = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
         return (self.weight, html)
+
+class TocFactory( object ):
+    implements( IEazyTextMacroFactory )
+    def __call__( self, argtext ):
+        return eval( 'Toc( %s )' % argtext )
+
+# Register this plugin
+gsm.registerUtility( TocFactory(), IEazyTextMacroFactory, 'Toc' )
