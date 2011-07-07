@@ -39,7 +39,7 @@ import types
 
 from   eazytext.macro        import build_macro
 from   eazytext.extension    import build_ext
-from   eazytext              import escape_htmlchars, split_style, \
+from   eazytext.lib          import escape_htmlchars, split_style, \
                                     obfuscatemail, lhtml
 from   eazytext.stylelookup  import styleparser 
 import eazytext.ttags        as tt
@@ -472,7 +472,8 @@ class NoWiki( Node ) :
                  self.closenowiki, self.closenewline )
 
     def tohtml( self ):
-        html = '' if self.skip else self.wikixobject.tohtml()
+        html = self.wikixobject.tohtml(self) \
+               if self.wikixobject and not self.skip else ''
         return html
 
     def dump( self ) :
@@ -1450,7 +1451,7 @@ class Link( Node ) :
     img_template = '<img class="et" src="%s" alt="%s" style="%s"/>'
 
     def __init__( self, parser, link ) :
-        self.parser, app = parser, parser.etparser.app
+        self.parser = parser
 
         # parse the text
         tup  = link[2:-2].split( '|', 1 )
@@ -1475,10 +1476,9 @@ class Link( Node ) :
             src = href[1:].strip( '<>' )
             html = self.img_template % ( src, text or src, style )
 
-        elif app and (app.name == 'zeta' and prefix == '@') :
-                                        # Link - InterZeta or ZetaLinks
-            from eazytext.zetawiki import parse_link2html
-            html = parse_link2html( parser.etparser, href, text )
+        #elif app and (app.name == 'zeta' and prefix == '@') :
+        #    from eazytext.zetawiki import parse_link2html
+        #    html = parse_link2html( parser.etparser, href, text )
 
         elif href[:6] == "mailto" :     # Link - E-mail
             if self.parser.etparser.obfuscatemail :
@@ -1523,9 +1523,8 @@ class Macro( Node ) :
         self.parser = parser
         self.text = macro
         self.macroobject = build_macro( self, macro )
-        self.contents = [
-            Content( parser, macro, TEXT_MACRO, self.macroobject.tohtml )
-        ]
+        macrohtml = self.macroobject and self.macroobject.tohtml( self ) or ''
+        self.contents = [ Content( parser, macro, TEXT_MACRO, macrohtml ) ]
         self.macro = MACRO( parser, macro )
         # terminals and non-terminals
         self._terms = [ self.macro ]

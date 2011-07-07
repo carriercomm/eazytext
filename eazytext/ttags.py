@@ -24,7 +24,7 @@ generated using ''PRE'' template, like,
 import sys
 import re
 
-from   eazytext  import escape_htmlchars, split_style, obfuscatemail
+from   eazytext.lib     import escape_htmlchars, split_style, obfuscatemail
 
 def parsetag( text ) :
     html    = text

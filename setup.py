@@ -56,18 +56,19 @@ setup(
     package_data={},                        # setuptools / distutils
     include_package_data=True,              # setuptools
     exclude_package_data={},                # setuptools
-    zip_safe=False,                         # setuptools
+    zip_safe=True,                          # setuptools
     entry_points={                          # setuptools
         'console_scripts' : [
            'eztext = eazytext.eztext:main'
         ],
     },
     install_requires=[                      # setuptools
-        'ply==3.4',
-        'lxml==2.3',
-        'pygments==1.4',
-        'paste==1.7.5.1',
-        'nose==1.0.0',
+        'ply',
+        'lxml',
+        'pygments',
+        'nose',
+        'zope.interface',
+        'zope.component',
     ],
     extras_require={},                      # setuptools
     setup_requires={},                      # setuptools

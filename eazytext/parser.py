@@ -50,12 +50,12 @@ from   hashlib  import sha1
 
 import ply.yacc
 
-from   eazytext              import escape_htmlchars, split_style, \
+import eazytext.macro
+import eazytext.extension
+from   eazytext.lib          import escape_htmlchars, split_style, \
                                     wiki_properties, ENDMARKER
 from   eazytext.lexer        import ETLexer
 from   eazytext.ast          import *
-from   eazytext.macro        import loadmacros
-from   eazytext.extension    import loadextensions
 
 log = logging.getLogger( __name__ )
 rootdir = dirname( __file__ )
@@ -70,20 +70,19 @@ class ETParser( object ):
     def __init__(   self,
                     skin='default.css',
                     style={},
-                    outputdir='',
                     obfuscatemail=False,
                     nested=False,
-                    macrodir=None,
-                    extdir=None,
                     stripscript=True,
+                    debug=False,
+                    # PLY-lexer options
                     lex_optimize=False,
                     lextab='eazytext.lextab',
                     lex_debug=False,
+                    # PLY-parser options
+                    outputdir='',
                     yacc_optimize=False,
                     yacctab='eazytext.yacctab',
                     yacc_debug=False,
-                    app=None,
-                    debug=False
                 ):
         """
         Create a new ETParser.
@@ -107,14 +106,6 @@ class ETParser( object ):
             eazytext parsing for its content.  If that is the case, then
             `nested` is set to True. Default is set to `False` which means
             this is the root invocation to parse wiki document.
-
-        : macrodir ::
-            List of directories to look for macro plugins. Each module is
-            considered as a macro plugin.
-
-        : extdir ::
-            List of directories to look for wiki extension plugins. Each module
-            is considered as an extension plugin.
 
         : stripscript ::
             HTML markup allows raw html to be interspeced with wiki text.
@@ -155,41 +146,36 @@ class ETParser( object ):
         : yacc_debug ::
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar.
-
-        : app ::
-            Application object that provides the standard objects to be used
-            by EazyText.
         """
-        self.app = app
         self.etlex = ETLexer( error_func=self._lex_error_func )
         self.etlex.build(
             optimize=lex_optimize, lextab=lextab, debug=lex_debug
         )
         self.tokens = self.etlex.tokens
         self.parser = ply.yacc.yacc( module=self, 
+                                     outputdir=outputdir,
                                      debug=yacc_debug,
                                      optimize=yacc_optimize,
                                      tabmodule=yacctab,
-                                     outputdir=outputdir
-                                     # debuglog=log
                                    )
         self.parser.etparser = self     # For AST nodes to access `this`
         self.style = list(split_style( style ))
-        self.wikiprops = {}
-        self.dynamictext = False
         self.debug = lex_debug or yacc_debug or debug
         self.obfuscatemail = obfuscatemail
         self.nested = nested
         self.stripscript = stripscript
         self.skin = self._fetchskin( skin )
 
-        macrodir = [ macrodir
-                   ] if isinstance(macrodir,basestring) else macrodir
-        extdir = [ extdir ] if isinstance(extdir,basestring) else extdir
-        macrodir and map( loadmacros, macrodir )
-        extdir and map( loadextensions, extdir )
-    
-    def _fetchskin( self, skin ) :
+    def _initialize( self ):
+        self.etlex.reset_lineno()
+        self.macroobjects = []    # Macro objects detected while parsing
+        self.extobjects = []      # Extension objects detected while parsing
+        self.prehtmls = []        # html goes before actual translated text
+        self.posthtmls = []       # html goes after actual translated text
+        self.styleattr = ''
+
+
+    def _fetchskin( self, skin ):
         if skin == None :
             skin = ''
         elif splitext( skin )[-1] == '.css' :
@@ -213,7 +199,7 @@ class ETParser( object ):
     def parse( self, text, nested=None, skin=None,
                filename='', debuglevel=0 ):
         """Parses eazytext-markup //text// and creates an AST tree. For every
-        parsing invocation, the same lex, yacc, app options and objects will
+        parsing invocation, the same lex, yacc, and objects will
         be used.
 
         : nested ::
@@ -225,17 +211,10 @@ class ETParser( object ):
         : debuglevel ::
             Debug level to yacc
         """
-
         # Initialize
+        self._initialize()
         self.etlex.filename = filename
-        self.etlex.reset_lineno()
         self.text = text
-        self.wikiprops = {}
-        self.macroobjects = []  # Macro objects detected while parsing
-        self.extobjects = []    # Extension objects detected while parsing
-        self.prehtmls = []      # html goes before actual translated text
-        self.posthtmls = []     # html goes after actual translated text
-        self.styleattr = ''
         self.hashtext = sha1( text ).hexdigest()
         self.nested = self.nested if nested == None else nested
         self.skin = self.skin if skin == None else self._fetchskin( skin )
@@ -281,7 +260,7 @@ class ETParser( object ):
         This is automatically handled by the macro framework.
         """
         for m in self.macroobjects :
-            rc = m.on_prehtml()
+            rc = m.on_prehtml(m.macronode)
             self.prehtmls.append(rc) if rc else None
         
     def onposthtml_macro( self ) :
@@ -294,7 +273,7 @@ class ETParser( object ):
         This is automatically handled by the macro framework.
         """
         for m in self.macroobjects :
-            rc = m.on_posthtml()
+            rc = m.on_posthtml(m.macronode)
             self.posthtmls.append(rc) if rc else None
 
     # ---------------------- Interfacing with Extension Core ------------------
@@ -317,7 +296,7 @@ class ETParser( object ):
         This is automatically handled by the macro framework.
         """
         for e in self.extobjects :
-            rc = e.on_prehtml()
+            rc = e.on_prehtml(e.extnode)
             self.prehtmls.append(rc) if rc else None
         
     def onposthtml_ext( self ) :
@@ -330,7 +309,7 @@ class ETParser( object ):
         This is automatically handled by the macro framework.
         """
         for e in self.extobjects :
-            rc = e.on_posthtml()
+            rc = e.on_posthtml(e.extnode)
             self.posthtmls.append(rc) if rc else None
 
     # ------------------------- Private functions -----------------------------
