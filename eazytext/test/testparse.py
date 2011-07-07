@@ -14,8 +14,8 @@ from   nose.tools           import assert_equal, assert_true, assert_false
 import lxml.html            as lhtml
 from   nose.plugins.attrib  import attr
 
-import eazytext
-from   eazytext                import wiki_properties
+from   eazytext.lib            import wiki_properties, split_style, \
+                                      escape_htmlchars
 from   eazytext.parser         import ETParser
 import eazytext.test.testlib   as testlib
 from   eazytext.test.testlib   import ETMARKUP, ETMARKUP_RE, UNICODE, \
@@ -208,7 +208,7 @@ class TestDumpsValid( object ) :
 
         # escape_htmlchars
         text = 'first type, &, second type, ", third type, <, fourth type, >'
-        text = eazytext.escape_htmlchars( text )
+        text = escape_htmlchars( text )
         assert_true( '&amp;' in text, 'Mismatch in escape_htmlchars, for &' )
         assert_true( '&quot;' in text, 'Mismatch in escape_htmlchars, for "' )
         assert_true( '&lt;' in text, 'Mismatch in escape_htmlchars, for <' )
@@ -227,7 +227,7 @@ class TestDumpsValid( object ) :
         }
         styletext3 = "margin-left : 10px"
 
-        style, s_style = eazytext.split_style( styletext1 )
+        style, s_style = split_style( styletext1 )
         assert_equal( style,
                       { 'border'  : '1px solid gray',
                         'display' : 'none' },
@@ -236,7 +236,7 @@ class TestDumpsValid( object ) :
         assert_equal( s_style, 'border-radius : 2px',
                       'Mismatch in styletext1, s_style' )
 
-        style, s_style = eazytext.split_style( styletext2 )
+        style, s_style = split_style( styletext2 )
         assert_equal( style,
                       { 'border'  : '1px solid gray',
                         'display' : 'block' },
@@ -245,7 +245,7 @@ class TestDumpsValid( object ) :
         assert_equal( s_style, 'border-radius : 4px',
                       'Mismatch in styletext2, s_style' )
 
-        style, s_style = eazytext.split_style( styletext3 )
+        style, s_style = split_style( styletext3 )
         assert_equal( style, {}, 'Mismatch in styletext3, style' )
         assert_equal( s_style, 'margin-left : 10px',
                       'Mismatch in styletext3, s_style' )

@@ -13,7 +13,7 @@ from   nose.plugins.attrib    import attr
 from   nose.tools             import assert_equal, assert_raises, assert_true,\
                                      assert_false
 
-from   eazytext                  import wiki_properties
+from   eazytext.lib              import wiki_properties
 from   eazytext.parser           import ETParser
 import eazytext.test.testlib     as testlib
 from   eazytext.test.testlib     import ETMARKUP, ETMARKUP_RE, \
@@ -106,6 +106,7 @@ class TestETextDumpsRandom( object ) :
             yield self._test_execute, 'ref', t, testcount
             testcount += 1
 
+    @attr(type='box')
     def test_1_box( self ) :
         """Testing the Box() extension"""
         print "\nTesting the Box() extension"
@@ -133,6 +134,7 @@ class TestETextDumpsRandom( object ) :
                   box_cfunc
             testcount += 1
 
+    @attr(type='code')
     def test_2_Code( self ) :
         """Testing the Code() extension"""
         print "\nTesting the Code() extension"
@@ -156,6 +158,7 @@ class TestETextDumpsRandom( object ) :
                   code_cfunc
             testcount += 1
 
+    @attr(type='footnote')
     def test_3_Footnote( self ) :
         """Testing the Footnote() extension"""
         print "\nTesting the Footnote() extension"
@@ -180,17 +183,18 @@ class TestETextDumpsRandom( object ) :
                   footnote_cfunc
             testcount += 1
 
-    def test_4_HtmlExt( self ) :
-        """Testing the HtmlExt() extension"""
-        print "\nTesting the HtmlExt() extension"
-        log.info( "Testing the HtmlExt() extension" )
+    @attr(type='htmlext')
+    def test_4_HtmLExt( self ) :
+        """Testing the Htmlext() extension"""
+        print "\nTesting the Htmlext() extension"
+        log.info( "Testing the Htmlext() extension" )
         props = """# }"""
         testlist = [
-            ( tmpl % ( 'HtmlExt', props, '<div>sometext</div>' ),
+            ( tmpl % ( 'Htmlext', props, '<div>sometext</div>' ),
               [ 'both', 'border-bottom : 1px solid black; color : cyan;',
                 '<div>sometext</div>' ]
             ),
-            ( tmpl % ( 'HtmlExt', props, '' ),
+            ( tmpl % ( 'Htmlext', props, '' ),
               [ 'both', 'border-bottom : 1px solid black; color : cyan;', ]
             ),
         ]
@@ -202,10 +206,11 @@ class TestETextDumpsRandom( object ) :
 
         testcount = 1
         for t, r in testlist :
-            yield self._test_execute, 'html_ext', t, testcount, r, \
+            yield self._test_execute, 'htmlext', t, testcount, r, \
                   html_cfunc
             testcount += 1
 
+    @attr(type='nested')
     def test_5_Nested( self ) :
         """Testing the Nested() extension"""
         print "\nTesting the Nested() extension"

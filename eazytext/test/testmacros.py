@@ -2,13 +2,9 @@
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-# Note :
-#   1. Project*() macros cannot be test via unit-testing. It can be tested
-#      only in the context of zeta-app and a project under zeta-app
-
 import logging
 import unittest
-import os
+import os, sys
 import difflib                as diff
 import random
 from   random                 import choice, randint, shuffle
@@ -16,7 +12,7 @@ from   random                 import choice, randint, shuffle
 from   nose.plugins.attrib    import attr
 from   nose.tools             import assert_equal, assert_raises, assert_true, \
                                      assert_false
-from   eazytext               import wiki_properties
+from   eazytext.lib           import wiki_properties
 from   eazytext.lexer         import ETLexer
 from   eazytext.parser        import ETParser
 import eazytext.test.testlib  as testlib
@@ -151,7 +147,7 @@ class TestMacroDumpsRandom( object ) :
                      for k in range(100) ]
         clear_macros = [ '{{ Clear() }}', '{{Clear() }}', '{{ Clear() }}' ]
 
-        def clear_cfunc( ref, tu ) :
+        def clear_cfunc( ref, tu ):
             html= tu.tohtml()
             assert_true( 'class="etm-clear"' in html,
                          'Fail Clear Macro : %s ' % html )
@@ -292,23 +288,23 @@ class TestMacroDumpsRandom( object ) :
                   toc_cfunc
             testcount += 1
 
+    @attr(type='image')
     def test_6_image( self ) :
         """Testing the Image() macro"""
         print "\nTesting the Image() macro"""
         log.info( "Testing the Image() macro" )
 
         def img_cfunc( ref, tu ) :
-            html= tu.tohtml()
-            [ assert_true(
-                    r in html, 'Fail not found `%s` : %s ' % ( r, html )
-              ) for r in ref ]
+            html = tu.tohtml()
+            for r in ref :
+                assert_true(r in html, 'Fail not found `%s` : %s ' % (r, html))
 
         testcount = 1
         for t, r in image_macros :
-            yield self._test_execute, 'macro_image', t, testcount, r, \
-                  img_cfunc
+            yield self._test_execute, 'macro_image', t, testcount, r, img_cfunc
             testcount += 1
             
+    @attr(type='images')
     def test_7_images( self ) :
         """Testing the Images() macro"""
         print "\nTesting the Images() macro"
@@ -370,31 +366,6 @@ class TestMacroDumpsRandom( object ) :
         for t, r in anchortext :
             yield self._test_execute, 'macro_anchor', t, testcount, r, \
                   anchor_cfunc
-            testcount += 1
-
-    @attr(type='project')
-    def test_A_project( self ) :
-        """Testing the Project*() macros"""
-        print "\nTesting the Project*() macro"
-        log.info( "Testing the Project*() macro" )
-        
-        projecttext = [
-            ( """ {{ Projectattributes() }} """, [] ),
-            ( """ {{ Projectcompontents() }} """, [] ),
-            ( """ {{ Projectdescription() }} """, [] ),
-            ( """ {{ Projectteam() }} """, [] ),
-            ( """ {{ Projectversions() }} """, [] ),
-        ]
-        def project_cfunc( ref, tu ) :
-            html = tu.tohtml()
-            [ assert_true(
-                    r in html, 'Fail not found `%s` : %s ' % ( r, html )
-              ) for r in ref ]
-
-        testcount = 1
-        for t, r in projecttext :
-            yield self._test_execute, 'macro_project', t, testcount, r, \
-                  project_cfunc
             testcount += 1
 
     @attr(type='htmlinwiki')

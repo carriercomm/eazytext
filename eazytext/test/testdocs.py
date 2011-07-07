@@ -10,8 +10,7 @@ from   os                 import listdir
 
 from   nose.tools         import assert_equal
 
-import eazytext
-from   eazytext              import wiki_properties
+from   eazytext.lib          import wiki_properties
 from   eazytext.parser       import ETParser
 from   eazytext.test.testlib import genseed
 

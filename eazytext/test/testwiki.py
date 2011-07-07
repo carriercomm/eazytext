@@ -11,8 +11,7 @@ from   random             import choice, randint, shuffle
 
 from   nose.tools         import assert_equal
 
-import eazytext
-from   eazytext              import wiki_properties
+from   eazytext.lib          import wiki_properties
 from   eazytext.parser       import ETParser
 import eazytext.test.testlib as testlib
 from   eazytext.test.testlib import ETMARKUP, ETMARKUP_RE, \
