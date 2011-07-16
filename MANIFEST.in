@@ -1,5 +1,6 @@
 include AUTHORS
 include RELEASE
+include README.rst
 include docs/CHANGELOG
 include docs/LICENSE
 include docs/README

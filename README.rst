@@ -42,14 +42,14 @@ Quicklinks
 
 * `README <http://eazytext.pluggdapps.com/dev/readme>`_
 * `CHANGELOG <http://eazytext.pluggdapps.com/dev/changelog>`_
-* `Track ZWiki development <http://dev.discoverzeta.com/p/zwiki>`_
+* `Track eazytext development <https://launchpad.net/eazytext>`_
 * If you have any queries, suggestions
-  `discuss with us <http://groups.google.com/group/zeta-discuss>`_
+  `discuss with us <http://groups.google.com/group/pluggdapps>`_
 
 Documentation
 =============
 
-* `ZWiki reference <http://eazytext.pluggdapps.com/doc/markup>`_
-* `ZWiki Macros <http://eazytext.pluggdapps.com/plugins/macros>`_
-* `ZWiki Templated tags <http://eazytext.pluggdapps.com/doc/ttags>`_
-* `ZWiki Extensions <http://eazytext.pluggdapps.com/plugins/extensions>`_
+* `Eazytext reference <http://eazytext.pluggdapps.com/doc/markup>`_
+* `Eazytext Macros <http://eazytext.pluggdapps.com/plugins/macros>`_
+* `Eazytext Templated tags <http://eazytext.pluggdapps.com/doc/ttags>`_
+* `Eazytext Extensions <http://eazytext.pluggdapps.com/plugins/extensions>`_

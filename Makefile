@@ -18,7 +18,7 @@ sdist :
 	python ./setup.py sdist
 
 upload : 
-	python ./setup.py bdist_egg register upload --show-response 
+	python ./setup.py sdist register upload --show-response 
 	
 vimplugin :
 	rm -rf ./vim-plugin/vim-eazytext.tar.gz

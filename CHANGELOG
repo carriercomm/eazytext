@@ -1,6 +1,19 @@
 {{ Toc( position='relative', float='right' ) }}
 
-h3. 0.91b``{i} on Fri 2011-03-15``
+h3. 0.92dev ``{i} on Fri 2011-03-15``
+
+* EazyText features and enhancements
+    ** Macro and Extension plugins are now based on zope.interface and
+       zope.component.
+
+* EazyText bug fixes
+    ** Cleaned up show() method in AST nodes. Output is in human readable format
+    ** Refactored AST implementation to provide a cleaner parse tree in exact
+       match to the defined grammar (with 2 exception cases).
+    ** Command line script file name is changed from `eazytext` to `eztext`
+    ** Project* macros are moved to .Attic.
+
+h3. 0.91b ``{i} on Fri 2011-03-15``
 
 * EazyText features and enhancements
     ** Changed the project name from ZWiki to EazyText. Now available from 
@@ -51,8 +64,6 @@ h3. 0.91b``{i} on Fri 2011-03-15``
     ** Generated html, <br></br> is replaced with <br/>
     ** Templated tag markups are made case insensitive,
        for eg, ~[<PRE .... ~>] is same as ~[<pre ... ~>]
-    ** 
-
 
 
 h3. 0.9beta   ``{i} on Fri 2010-06-18``
