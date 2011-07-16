@@ -15,17 +15,19 @@ They are namely,
     which can then apply its own parsing on the text and return suitable
     html for rendering.
 
-Even though Macro plugins and Extension plugins derive from different base
-class, namely [<PRE Macro >] and [<PRE Extension >], concept-wise they are
-one and the same. In future there are plans to use zope.interface to abstract
-them into a single common plugin-interface.
+Plugins are created using interface specifications created using
+''zope.interface'' and ''zope.component''. The interface specifications to
+implement macros and extensions are available under //eazytext/interfaces.py//
 
 h3. Design 
 
-Both macro-plugins or extension-plugins must be implemented as a class derived
-from [<PRE Macro >] or [<PRE Extension >].
+Macro-plugin classes must implement the interface-spec ``{b}IEazyTextMacro``
+defined in //eazytext/interfaces.py//, similarly extension-plugins must
+implement the interface-spec ``{b}IEazyTextExtension``. Additionally a callable
+factory class must be defined for each plugin.
 
 ''eazytext markup syntax to invoke a macro-plugin'',
+
 > [<PRE {{ macroname( arg1, arg2, .... ) }} >] 
 if it looks like a python function call, that is exactly what it is.
 //macroname// is the name of the class that is derived from //Macro//. When

@@ -2,8 +2,10 @@
 .vim_tests
 yacctab.py
 lextab.py
+parsetab.py
 parser.out
+distribute-0.6.10.tar.gz
 build/
 dist/
-distribute-0.6.10.tar.gz
 eazytext.egg-info/
+eazytext-env/
