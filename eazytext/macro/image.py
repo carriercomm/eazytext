@@ -17,27 +17,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class Image( object ) :
-    """
-    h3. Image
-
-    : Description ::
-        Embed Images in the doc. Try to use ''Link markup'' to embed images, if
-        advanced styling is required, this macro can come in handy.
-        Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ Image( '/photo.jpg' ) }} >]
-
-    Positional arguments,
-    |= src    | source-url for image, goes into @src attribute
-    |= alt    | alternate text, goes into @alt attribute
-
-    keyword argument,
-    |= height | optional, image height, goes into @height attribute
-    |= width  | optional, image width, goes into @width attribute
-    |= href   | optional, href, to convert the image into a hyper-link
-    """
-
-
     template = '<img class="etm-image" ' + \
                '%s %s src="%s" alt="%s" style="%s"> </img>'
     implements( IEazyTextMacro )
@@ -73,6 +52,25 @@ class Image( object ) :
         pass
 
 class ImageFactory( object ):
+    """
+    h3. Image
+
+    : Description ::
+        Embed Images in the doc. Try to use ''Link markup'' to embed images, if
+        advanced styling is required, this macro can come in handy.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Image( '/photo.jpg' ) }} >]
+
+    Positional arguments,
+    |= src    | source-url for image, goes into @src attribute
+    |= alt    | alternate text, goes into @alt attribute
+
+    keyword argument,
+    |= height | optional, image height, goes into @height attribute
+    |= width  | optional, image width, goes into @width attribute
+    |= href   | optional, href, to convert the image into a hyper-link
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Image( %s )' % argtext )

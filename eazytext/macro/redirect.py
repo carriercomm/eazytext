@@ -17,10 +17,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class Redirect( object ) :
-    """
-    Just sets the ``redirect`` attribute in
-    self.macronode.parser.etparser.redirect to the the argument that is passed
-    """
     implements( IEazyTextMacro )
     def __init__( self, redireclink='' ) :
         self.redirect = redireclink
@@ -39,6 +35,10 @@ class Redirect( object ) :
         pass
 
 class RedirectFactory( object ):
+    """
+    Just sets the ``redirect`` attribute in
+    self.macronode.parser.etparser.redirect to the the argument that is passed
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Redirect( %s )' % argtext )

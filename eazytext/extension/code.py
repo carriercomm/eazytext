@@ -111,4 +111,4 @@ class CodeFactory( object ):
 
 # Register this plugin
 gsm.registerUtility( CodeFactory(), IEazyTextExtensionFactory, 'Code' )
-Code._doc = doc
+CodeFactory._doc = doc

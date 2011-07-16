@@ -17,19 +17,6 @@ from   eazytext.lib         import lhtml
 gsm = getGlobalSiteManager()
 
 class Html( object ) :
-    """
-    h3. Html
-
-    : Description ::
-        Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup
-        first, if advanced styling is required for the embedded HTML text,
-        then this macro can come in handy.
-    : Example ::
-        [<PRE {{ Html( '<b>hello world</b>' ) }} >]
-
-    Positional arguments,
-    |= html | HTML text
-    """
     implements( IEazyTextMacro )
 
     def __init__( self, html='' ) :
@@ -48,6 +35,19 @@ class Html( object ) :
         pass
 
 class HtmlFactory( object ):
+    """
+    h3. Html
+
+    : Description ::
+        Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup
+        first, if advanced styling is required for the embedded HTML text,
+        then this macro can come in handy.
+    : Example ::
+        [<PRE {{ Html( '<b>hello world</b>' ) }} >]
+
+    Positional arguments,
+    |= html | HTML text
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Html( %s )' % argtext )

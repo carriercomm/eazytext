@@ -17,24 +17,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class Images( object ) :
-    """
-    h3. Images
-
-    : Description ::
-        Embed Image galleries in the doc. 
-        Accepts CSS styles for keyword arguments.
-
-    Positional arguments,
-    |= *args  | variable number of image sources (@src), one for each for image
-
-    keyword argument,
-    |= alt    | alternate text (@alt), that goes into each image
-    |= height | optional, image height, applicable to all image's @height attr.
-    |= width  | optional, image width, applicable to all image's @width attr.
-    |= cols   | optional, number of image columns in the gallery, default is 3.
-    """
-
-
     tmpl = '<table class="etm-images"> %s </table>'
     row_tmpl = '<tr> %s </tr>'
     cell_tmpl = '<td> %s </td>'
@@ -80,9 +62,25 @@ class Images( object ) :
         pass
 
 class ImagesFactory( object ):
+    """
+    h3. Images
+
+    : Description ::
+        Embed Image galleries in the doc. 
+        Accepts CSS styles for keyword arguments.
+
+    Positional arguments,
+    |= *args  | variable number of image sources (@src), one for each for image
+
+    keyword argument,
+    |= alt    | alternate text (@alt), that goes into each image
+    |= height | optional, image height, applicable to all image's @height attr.
+    |= width  | optional, image width, applicable to all image's @width attr.
+    |= cols   | optional, number of image columns in the gallery, default is 3.
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Images( %s )' % argtext )
 
 # Register this plugin
-gsm.registerUtility( Images(), IEazyTextMacroFactory, 'Images' )
+gsm.registerUtility( ImagesFactory(), IEazyTextMacroFactory, 'Images' )

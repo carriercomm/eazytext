@@ -19,25 +19,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class YearsBefore( object ) :
-    """
-    h3. YearsBefore
-
-    : Description ::
-        Generate a string (based on a template) describing time elapsed since
-        the given (day,month,year). The described time is in UTC.
-        Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ YearsBefore('past %s', '2008', color="red" ) }} >]
-
-    Positional arguments,
-    |= template | template string.
-    |= fromyear | from year
-
-    keyword argument,
-    |= frommonth | from month
-    |= fromday   | from day
-    """
-
     tmpl = '<span class="etm-yearsbefore" style="%s">%s</span>'
     implements( IEazyTextMacro )
 
@@ -87,6 +68,24 @@ class YearsBefore( object ) :
         pass
 
 class YearsBeforeFactory( object ):
+    """
+    h3. YearsBefore
+
+    : Description ::
+        Generate a string (based on a template) describing time elapsed since
+        the given (day,month,year). The described time is in UTC.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ YearsBefore('past %s', '2008', color="red" ) }} >]
+
+    Positional arguments,
+    |= template | template string.
+    |= fromyear | from year
+
+    keyword argument,
+    |= frommonth | from month
+    |= fromday   | from day
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'YearsBefore( %s )' % argtext )

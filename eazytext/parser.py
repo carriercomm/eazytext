@@ -68,6 +68,7 @@ class ETParser( object ):
     skin_tmpl = '<style type="text/css"> %s </style>'
 
     def __init__(   self,
+                    plugin_packages='',
                     skin='default.css',
                     style={},
                     obfuscatemail=False,
@@ -81,7 +82,6 @@ class ETParser( object ):
                     # PLY-parser options
                     outputdir='',
                     yacc_optimize=False,
-                    yacctab='eazytext.yacctab',
                     yacc_debug=False,
                 ):
         """
@@ -137,16 +137,11 @@ class ETParser( object ):
             When releasing with a stable parser, set to True to save the
             re-generation of the parser table on each run.
             
-        : yacctab ::
-            PLY-Yacc option.
-            Points to the yacc table that's used for optimized mode. Only if
-            you're modifying the parser, make this point to a local yacc table
-            file.
-                        
         : yacc_debug ::
             Generate a parser.out file that explains how yacc built the parsing
             table from the grammar.
         """
+        self.importpackages( plugin_packages )
         self.etlex = ETLexer( error_func=self._lex_error_func )
         self.etlex.build(
             optimize=lex_optimize, lextab=lextab, debug=lex_debug
@@ -156,7 +151,6 @@ class ETParser( object ):
                                      outputdir=outputdir,
                                      debug=yacc_debug,
                                      optimize=yacc_optimize,
-                                     tabmodule=yacctab,
                                    )
         self.parser.etparser = self     # For AST nodes to access `this`
         self.style = list(split_style( style ))
@@ -174,6 +168,15 @@ class ETParser( object ):
         self.posthtmls = []       # html goes after actual translated text
         self.styleattr = ''
 
+    def _importpackage( self, pkg ):
+        try :
+            __import__(pkg)
+        except :
+            pass
+
+    def importpackages( self, packages ):
+        packages = [ x.strip(' \t') for x in packages.split(',') ]
+        [ __import__(pkg) for pkg in filter(None, packages) ]
 
     def _fetchskin( self, skin ):
         if skin == None :

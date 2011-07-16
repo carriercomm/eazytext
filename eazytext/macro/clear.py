@@ -17,17 +17,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class Clear( object ) :
-    """
-    h3. Clear
-
-    : Description :: 
-        Styling macro to clear the DOM elements on both sides, warding off from
-        floating effects. Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ Clear() }} >]
-
-    Positional arguments, //None//
-    """
     implements( IEazyTextMacro )
     template = '<div class="etm-clear" style="%s"></div>'
 
@@ -47,6 +36,17 @@ class Clear( object ) :
         pass
 
 class ClearFactory( object ):
+    """
+    h3. Clear
+
+    : Description :: 
+        Styling macro to clear the DOM elements on both sides, warding off from
+        floating effects. Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Clear() }} >]
+
+    Positional arguments, //None//
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Clear( %s )' % argtext )

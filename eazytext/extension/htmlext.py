@@ -27,10 +27,7 @@ doc = """
 tmpl = 'div class="etext-html" style="%s"> %s </div>'
 
 class Htmlext( object ) :
-    _doc = doc
     implements( IEazyTextExtension )
-
-
     def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki
         
@@ -65,6 +62,7 @@ class Htmlext( object ) :
         pass
 
 class HtmlextFactory( object ):
+    _doc = doc
     implements( IEazyTextExtensionFactory )
     def __call__( self, *args ):
         return Htmlext( *args )

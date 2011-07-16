@@ -25,23 +25,6 @@ shorten = lambda s, m : s[:m] + (s[m:] and ' ...' or '' )
 gsm = getGlobalSiteManager()
 
 class Toc( object ) :
-    """
-    h3. Toc
-
-    : Description ::
-        Macro to generate Table of contents.  Accepts CSS styles for keyword
-        arguments.
-    : Example ::
-        [<PRE {{ Toc() }} >]
-
-    Positional arguments, //None//
-
-    keyword argument,
-    |= weight | optional, will be returned by on_posthtml() method
-    |= topic  | optional, topic for table of contents
-    |= maxheadlen | optional, number of characters to display for each title.
-    """
-
     tmpl = '<div class="etm-toc" style="%s"> %s %s </div>'
     head_tmpl = '<div class="head"> %s %s </div>'
     topic_tmpl = '<div class="topic"> %s </div>'
@@ -106,6 +89,22 @@ class Toc( object ) :
         return (self.weight, html)
 
 class TocFactory( object ):
+    """
+    h3. Toc
+
+    : Description ::
+        Macro to generate Table of contents.  Accepts CSS styles for keyword
+        arguments.
+    : Example ::
+        [<PRE {{ Toc() }} >]
+
+    Positional arguments, //None//
+
+    keyword argument,
+    |= weight | optional, will be returned by on_posthtml() method
+    |= topic  | optional, topic for table of contents
+    |= maxheadlen | optional, number of characters to display for each title.
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Toc( %s )' % argtext )

@@ -133,4 +133,4 @@ class FootnoteFactory( object ):
 
 # Register this plugin
 gsm.registerUtility( FootnoteFactory(), IEazyTextExtensionFactory, 'Footnote' )
-Footnote._doc = doc
+FootnoteFactory._doc = doc

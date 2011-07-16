@@ -17,20 +17,6 @@ from   eazytext.lib         import split_style, constructstyle, lhtml
 gsm = getGlobalSiteManager()
 
 class Span( object ) :
-    """
-    h3. Span
-
-    : Description ::
-        Create a span element. Try using ~``...~`` markup to generate span
-        elements, if advanced styling is required, this macro can come in handy.
-        Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ Span( 'hello world' ) }} >]
-
-    Positional arguments,
-    |= text   | optional, text for the span element
-    """
-
     tmpl = '<span class="etm-span" style="%s"> %s </span>'
 
     def __init__( self, *args, **kwargs ) :
@@ -50,6 +36,19 @@ class Span( object ) :
         pass
 
 class SpanFactory( object ):
+    """
+    h3. Span
+
+    : Description ::
+        Create a span element. Try using ~``...~`` markup to generate span
+        elements, if advanced styling is required, this macro can come in handy.
+        Accepts CSS styles for keyword arguments.
+    : Example ::
+        [<PRE {{ Span( 'hello world' ) }} >]
+
+    Positional arguments,
+    |= text   | optional, text for the span element
+    """
     implements( IEazyTextMacroFactory )
     def __call__( self, argtext ):
         return eval( 'Span( %s )' % argtext )

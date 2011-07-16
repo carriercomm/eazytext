@@ -71,4 +71,4 @@ class NestedFactory( object ):
 
 # Register this plugin
 gsm.registerUtility( NestedFactory(), IEazyTextExtensionFactory, 'Nested' )
-Nested._doc = doc
+NestedFactory._doc = doc

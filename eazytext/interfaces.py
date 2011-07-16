@@ -70,4 +70,3 @@ class IEazyTextExtensionFactory( Interface ) :
 
     def __call__( self, *args ) :
         """Return an instance of extension-plugin"""
-

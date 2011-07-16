@@ -173,4 +173,4 @@ class BoxFactory( object ):
 
 # Register this plugin
 gsm.registerUtility( BoxFactory(), IEazyTextExtensionFactory, 'Box' )
-Box._doc = doc
+BoxFactory._doc = doc
