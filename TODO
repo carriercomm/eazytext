@@ -6,3 +6,25 @@ Track the project at,
 * eztext.py automatic script generation via easy_install.
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.
+
+----
+* Re-design the engine on stack-machine concept.
+* Address() extension to generate <address> tag with author's address.
+* Wrap the translated html text inside <article> tag.
+* Markup syntax for <aside> tag,
+    << ... << for left aside
+    >> ... >> for right aside
+* Markup syntax for <q> tag,
+    """ quotable quotes ... """
+* Link markup should have syntax to generate the <del> element, eg,
+    [[ -url | text ]]
+* Markup syntax to generate <details> <summary> tags.
+* Use figure and figure-caption for images, code etc ...
+* Macro for <audio> element.
+* Extension for <header> element.
+* Syntax for grouping headers via <hgroup> element.
+* Syntax to generate <mark> element
+* Syntax to attach value to <li> element for ordered list.
+* Support nested link markup for <nav> element, like,
+    [[ [[ /pref.html | pref ]] [[ /pref.html | pref ]] ]]
+* Enclose TOC generated output links within <nav> element.
