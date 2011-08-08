@@ -8,50 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.lib         import constructstyle, lhtml
 
 gsm = getGlobalSiteManager()
 
-class Image( object ) :
-    template = '<img class="etm-image" ' + \
-               '%s %s src="%s" alt="%s" style="%s"> </img>'
-    implements( IEazyTextMacro )
-
-    def __init__( self, src, alt, **kwargs ) :
-        self.src = src
-        self.alt = alt
-        self.height = kwargs.pop( 'height', None )
-        self.width = kwargs.pop( 'width', None )
-        self.href = kwargs.pop( 'href', '' )
-        self.style = constructstyle( kwargs )
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        hattr = self.height and ( 'height="%s"' % self.height ) or ''
-        wattr = self.width and ( 'width="%s"' % self.width ) or ''
-        img = self.template % ( hattr, wattr, self.src, self.alt, self.style )
-        # If the image is a link, enclose it with a 'anchor' dom-element.
-        if self.href :
-            href = lhtml.Element( 'a', { 'href' : self.href } )
-            href.append( lhtml.fromstring( img ))
-            html = lhtml.tostring( href )
-        else :
-            html = img
-        return html
-
-    def on_posthtml( self, node ) :
-        pass
-
-class ImageFactory( object ):
+class Image( Macro ) :
     """
     h3. Image
 
@@ -71,9 +36,31 @@ class ImageFactory( object ):
     |= width  | optional, image width, goes into @width attribute
     |= href   | optional, href, to convert the image into a hyper-link
     """
-    implements( IEazyTextMacroFactory )
+    tmpl = '<img class="etm-image" %s %s src="%s" alt="%s" style="%s"/>'
+
+    def __init__( self, src, alt, **kwargs ) :
+        self.src = src
+        self.alt = alt
+        self.height = kwargs.pop( 'height', None )
+        self.width = kwargs.pop( 'width', None )
+        self.href = kwargs.pop( 'href', '' )
+        self.style = constructstyle( kwargs )
+
     def __call__( self, argtext ):
         return eval( 'Image( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ) :
+        hattr = self.height and ( 'height="%s"' % self.height ) or ''
+        wattr = self.width and ( 'width="%s"' % self.width ) or ''
+        img = self.tmpl % ( hattr, wattr, self.src, self.alt, self.style )
+        # If the image is a link, enclose it with a 'anchor' dom-element.
+        if self.href :
+            href = lhtml.Element( 'a', { 'href' : self.href } )
+            href.append( lhtml.fromstring( img ))
+            html = lhtml.tostring( href )
+        else :
+            html = img
+        return html
+
 # Register this plugin
-gsm.registerUtility( ImageFactory(), IEazyTextMacroFactory, 'Image' )
+gsm.registerUtility( Image(), IEazyTextMacroFactory, 'Image' )

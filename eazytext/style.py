@@ -90,11 +90,10 @@ padding_pattern = ( re.compile( r'^\|[0-9]+$' ), style_padding )
 stylematcher = [ fg_pattern, bg_pattern, border_pattern, margin_pattern,
                  padding_pattern ]
 
-def styleparser( stylemarkups ) :
+def stylemarkup( text ) :
     """Parse the text for style markup and convert them into html style
     attribute values"""
-    stylemarkups = stylemarkups.strip('{}')
-    props = [ prop.strip( ' \t' ) for prop in stylemarkups.split( ';' ) ]
+    props = [ prop.strip( ' \t' ) for prop in style.split( ';' ) ]
     styleprops   = []
     for prop in props :
         for regex, func in stylematcher :
@@ -104,5 +103,3 @@ def styleparser( stylemarkups ) :
         else :
             styleprops.append( prop )
     return '; '.join( styleprops )
-
-

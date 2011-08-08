@@ -9,15 +9,13 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextExtension, \
-                                   IEazyTextExtensionFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.extension   import Extension
+from   eazytext.interfaces  import IEazyTextExtensionFactory
+from   eazytext.lib         import lhtml
 
 gsm = getGlobalSiteManager()
-
 
 doc = """
 === Htmlext
@@ -26,8 +24,8 @@ doc = """
 
 tmpl = 'div class="etext-html" style="%s"> %s </div>'
 
-class Htmlext( object ) :
-    implements( IEazyTextExtension )
+class Htmlext( Extension ) :
+    _doc = doc
     def __init__( self, props, nowiki, *args ) :
         self.nowiki  = nowiki
         
@@ -37,13 +35,10 @@ class Htmlext( object ) :
         self.css.update( d_style )
         self.css.update( props )
 
-    def on_parse( self, node ) :
-        pass
+    def __call__( self, argtext ):
+        return eval( 'Htmlext( %s )' % argtext )
 
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
+    def html( self, node, igen, *args, **kwargs ) :
         fn = lambda (k, v) : '%s : %s' % (k,v)
         style = '; '.join(map( fn, self.css.items() ))
         if self.style :
@@ -58,14 +53,5 @@ class Htmlext( object ) :
             html = tmpl % (style, lhtml.tostring(boxnode) )
         return html
 
-    def on_posthtml( self, node ) :
-        pass
-
-class HtmlextFactory( object ):
-    _doc = doc
-    implements( IEazyTextExtensionFactory )
-    def __call__( self, *args ):
-        return Htmlext( *args )
-
 # Register this plugin
-gsm.registerUtility( HtmlextFactory(), IEazyTextExtensionFactory, 'Htmlext' )
+gsm.registerUtility( Htmlext(), IEazyTextExtensionFactory, 'Htmlext' )

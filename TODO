@@ -28,3 +28,29 @@ Track the project at,
 * Support nested link markup for <nav> element, like,
     [[ [[ /pref.html | pref ]] [[ /pref.html | pref ]] ]]
 * Enclose TOC generated output links within <nav> element.
+* Syntax to generate <small> element.
+* Syntax to generate the <wbr> element.
+* From html text to eazytext markup.
+* Optionally enable ${ expression evaluation } feature.
+* Implement `stripscript` 
+* Find a way to pass the body arguments programatically via Translator()
+
+* Explore the possible addition of `indentation` feature, like,
+    :some text          < one level indentation >
+    ::some text         < two level indentation >
+  while the indentation offset is configurable in the wiki style.
+  NOTE : indentation is not a feature of html. But can/should be achieved via CSS
+* Support merging table cells like (refer wiki-dot).
+* Printable pages.
+* Should we add the concept of variables and namespace ?
+* Check out http://meta.wikimedia.org/wiki/Help:Variable and add them as
+  macros
+* For Toc() macro add numbering feature.
+* Math Macro (and extensions).
+* Include macro to include pages from another wiki page.
+* Social bookmarking.
+* Flash support.
+* When an ENDMARKER is detected by any grammar other than `wikipage`, it
+  can be indicated to the user, via translated HTML.
+* While documenting the wiki, also document the original wiki texts that
+  gets consumed by wiki parsing and html translation.

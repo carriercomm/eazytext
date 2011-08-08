@@ -8,33 +8,14 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
 
 gsm = getGlobalSiteManager()
 
-class Html( object ) :
-    implements( IEazyTextMacro )
-
-    def __init__( self, html='' ) :
-        self.html  = html
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        return self.html
-
-    def on_posthtml( self, node ) :
-        pass
-
-class HtmlFactory( object ):
+class Html( Macro ) :
     """
     h3. Html
 
@@ -48,9 +29,16 @@ class HtmlFactory( object ):
     Positional arguments,
     |= html | HTML text
     """
-    implements( IEazyTextMacroFactory )
+
+    def __init__( self, html='' ) :
+        self.html  = html
+
     def __call__( self, argtext ):
         return eval( 'Html( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ) :
+        return self.html
+
+
 # Register this plugin
-gsm.registerUtility( HtmlFactory(), IEazyTextMacroFactory, 'Html' )
+gsm.registerUtility( Html(), IEazyTextMacroFactory, 'Html' )

@@ -67,56 +67,53 @@ accepts ''semicolon (;)'' seperated style attributes, like,
 
 > started this activity and running this for 
 > {{ YearsBefore('past %s', '2008', color="red", style="font-weight: bold; font-size: 200%" ) }}
-
 """
 
 # This file is subject to the terms and conditions defined in
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
-
 # -*- coding: utf-8 -*-
 
-# Gotcha : none
-#   1. While testing EazyText, make sure that the exception is not re-raised
-#      for `eval()` call.
-# Notes  : none
-# Todo   : 
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-import os, sys
-from   os.path                      import splitext, dirname
-from   zope.component               import queryUtility
+from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
 
-import eazytext.macro.anchor
-import eazytext.macro.clear
-import eazytext.macro.html
-import eazytext.macro.image
-import eazytext.macro.images
-import eazytext.macro.redirect
-import eazytext.macro.span
-import eazytext.macro.toc
-import eazytext.macro.yearsbefore
+gsm = getGlobalSiteManager()
 
-def build_macro( macronode, macro ) :
-    """Parse the macro text, like,
-        {{ Macroname( arg1, arg2, kwarg1=value1, kwarg2=value2 ) }}
-    To function name, *args and **kwargs
-    """
-    from  eazytext.interfaces   import IEazyTextMacroFactory
-    try :
-        macroname, evaltext = macro[2:-2].lstrip().split('(', 1)
-        evaltext = evaltext.rstrip(' \r)')
-        factory = queryUtility( IEazyTextMacroFactory, macroname )
-        macro = factory( evaltext.strip() )
-    except :
-        if macronode.parser.etparser.debug : raise
-        macro = None
+class Macro( object ):
+    """Base class from with macro-plugin implementers must derive from."""
+    implements( IEazyTextMacro )
+    implements( IEazyTextMacroFactory )
 
-    etparser = macronode.parser.etparser
+    def __init__( self, *args, **kwargs ):
+        pass
 
-    # Register macro-node
-    if macro :
-        macro.macronode = macronode     # Backreference to parser AST node
-        etparser.regmacro( macro )      # Register macro with the parser
-        macro.on_parse(macro.macronode) # Callback on_parse()
-    return macro
+    def __call__( self, argtext ):
+        return eval( 'Macro( %s )' % argtext )
+
+    def onparse( node ):
+        pass
+
+    def headpass1( node, igen ):
+        pass
+
+    def headpass2( node, igen ):
+        pass
+
+    def generate( self, node, igen, *args, **kwargs ) :
+        html = self.html( node, igen, *args, **kwargs )
+        html and igen.puttext( html )
+
+    def tailpass( node, igen ):
+        pass
+
+    def html( self, node, igen, *args, **kwargs ):
+        """Can be overriden by the deriving class to provide the translated html
+        that will be substituted in the place of the macro() calls.
+        """
+        return ''
+
+# Register this plugin
+gsm.registerUtility( Macro(), IEazyTextMacroFactory, 'Macro' )

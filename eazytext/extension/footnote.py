@@ -9,15 +9,13 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextExtension, \
-                                   IEazyTextExtensionFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.extension   import Extension
+from   eazytext.interfaces  import IEazyTextExtensionFactory
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
-
 
 doc = """
 h3. Footnote
@@ -79,12 +77,17 @@ rowtmpl = """
 </tr>
 """
 
-class Footnote( object ) :
-    """Implements Footnote() wikix"""
+class Footnote( Extension ) :
+    def __init__( self, props, nowiki, *args ):
+        self.nowiki = nowiki
+        self.style  = constructstyle( props )
+        self.title  = args and args[0] or 'Footnotes :'
+        self.args   = args[1:]
 
-    implements( IEazyTextExtension )
+    def __call__( self, argtext ):
+        return eval( 'Footnote( %s )' % argtext )
 
-    def _compose(self, lines) :
+    def _compose( self, lines ):
         row = ''
         if lines :
             splits = lines[0].split(' ', 1)
@@ -93,21 +96,8 @@ class Footnote( object ) :
             row = rowtmpl % (name, name, text)
         return row
 
-    def __init__( self, props, nowiki, *args ) :
-        self.nowiki = nowiki
-        self.style  = constructstyle( props )
-        self.title  = args and args[0] or 'Footnotes :'
-        self.args   = args[1:]
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        rows = []
-        curr = []
+    def html( self, node, igen, *args, **kwargs ) :
+        rows, curr = [], []
         lines = self.nowiki.splitlines()
         while lines :
             line = lines.pop(0)
@@ -123,14 +113,6 @@ class Footnote( object ) :
         html = tmpl % (self.title, self.style, ''.join(rows))
         return html
 
-    def on_posthtml( self, node ) :
-        pass
-
-class FootnoteFactory( object ):
-    implements( IEazyTextExtensionFactory )
-    def __call__( self, *args ):
-        return Footnote( *args )
-
 # Register this plugin
-gsm.registerUtility( FootnoteFactory(), IEazyTextExtensionFactory, 'Footnote' )
-FootnoteFactory._doc = doc
+gsm.registerUtility( Footnote(), IEazyTextExtensionFactory, 'Footnote' )
+Footnote._doc = doc

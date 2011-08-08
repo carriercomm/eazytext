@@ -8,34 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
-class Clear( object ) :
-    implements( IEazyTextMacro )
-    template = '<div class="etm-clear" style="%s"></div>'
-
-    def __init__( self, *args, **kwargs ) :
-        self.style = constructstyle( kwargs )
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        return self.template % self.style
-
-    def on_posthtml( self, node ) :
-        pass
-
-class ClearFactory( object ):
+class Clear( Macro ) :
     """
     h3. Clear
 
@@ -47,9 +28,17 @@ class ClearFactory( object ):
 
     Positional arguments, //None//
     """
-    implements( IEazyTextMacroFactory )
+    tmpl = '<div class="etm-clear" style="%s"></div>'
+
+    def __init__( self, *args, **kwargs ):
+        self.style = constructstyle( kwargs )
+
     def __call__( self, argtext ):
         return eval( 'Clear( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ):
+        return self.tmpl % self.style
+
+
 # Register this plugin
-gsm.registerUtility( ClearFactory(), IEazyTextMacroFactory, 'Clear' )
+gsm.registerUtility( Clear(), IEazyTextMacroFactory, 'Clear' )

@@ -8,34 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
-class Span( object ) :
-    tmpl = '<span class="etm-span" style="%s"> %s </span>'
-
-    def __init__( self, *args, **kwargs ) :
-        self.text = len(args) > 0 and args[0] or ''
-        self.style = constructstyle( kwargs )
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        return self.tmpl % ( self.style, self.text )
-
-    def on_posthtml( self, node ) :
-        pass
-
-class SpanFactory( object ):
+class Span( Macro ) :
     """
     h3. Span
 
@@ -49,10 +30,17 @@ class SpanFactory( object ):
     Positional arguments,
     |= text   | optional, text for the span element
     """
-    implements( IEazyTextMacroFactory )
+    tmpl = '<span class="etm-span" style="%s"> %s </span>'
+
+    def __init__( self, *args, **kwargs ):
+        self.text = len(args) > 0 and args[0] or ''
+        self.style = constructstyle( kwargs )
+
     def __call__( self, argtext ):
         return eval( 'Span( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ):
+        return self.tmpl % ( self.style, self.text )
 
 # Register this plugin
-gsm.registerUtility( SpanFactory(), IEazyTextMacroFactory, 'Span' )
+gsm.registerUtility( Span(), IEazyTextMacroFactory, 'Span' )

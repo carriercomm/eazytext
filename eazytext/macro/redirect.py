@@ -8,40 +8,27 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
 
 gsm = getGlobalSiteManager()
 
-class Redirect( object ) :
-    implements( IEazyTextMacro )
-    def __init__( self, redireclink='' ) :
-        self.redirect = redireclink
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        self.macronode.parser.etparser.redirect = self.redirect
-        return ''
-
-    def on_posthtml( self, node ) :
-        pass
-
-class RedirectFactory( object ):
+class Redirect( Macro ) :
     """
     Just sets the ``redirect`` attribute in
     self.macronode.parser.etparser.redirect to the the argument that is passed
     """
-    implements( IEazyTextMacroFactory )
+    def __init__( self, redireclink='' ) :
+        self.redirect = redireclink
+
     def __call__( self, argtext ):
         return eval( 'Redirect( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ) :
+        self.macronode.parser.etparser.redirect = self.redirect
+        return ''
+
 # Register this plugin
-gsm.registerUtility( RedirectFactory(), IEazyTextMacroFactory, 'Redirect' )
+gsm.registerUtility( Redirect(), IEazyTextMacroFactory, 'Redirect' )

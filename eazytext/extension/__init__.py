@@ -31,66 +31,51 @@ is,
 * ''wiki-text'', the actual text that get passed on to the extension class.
 """
 
-# -*- coding: utf-8 -*-
-
 # This file is subject to the terms and conditions defined in
 # file 'LICENSE', which is part of this source code package.
 #       Copyright (c) 2010 SKR Farms (P) LTD.
 
+# -*- coding: utf-8 -*-
 
-# Gotcha : None
-#   1. While testing EazyText, make sure that the exception is not re-raised
-#      for `eval()` call.
-# Notes  : None
-# Todo   : None
+from   zope.interface       import implements
+from   zope.component       import getGlobalSiteManager
 
-import os, sys
-from   os.path                      import splitext, dirname
-from   zope.component               import queryUtility
+from   eazytext.interfaces  import IEazyTextExtension, IEazyTextExtensionFactory
 
-import eazytext.extension.box
-import eazytext.extension.code
-import eazytext.extension.footnote
-import eazytext.extension.htmlext
-import eazytext.extension.nested
+gsm = getGlobalSiteManager()
 
-def build_ext( extnode, nowiki ) :
-    """Parse the nowiki text, like,
-        {{{ ExtensionName
-        # property dictionary
-        # ..
-        # ..
-        ....
-        }}}
-    To function name, *args and **kwargs
-    """
-    from   eazytext.interfaces   import IEazyTextExtensionFactory
-    props = []
-    nowikilines = nowiki.split( '\n' )
-    for i in range( len(nowikilines) ) :
-        if len(nowikilines[i]) and nowikilines[i][0] == '#' :
-            props.append( nowikilines[i][1:] )
-            continue
-        break;
-    nowiki = '\n'.join( nowikilines[i:] )
+class Extension( object ):
+    """Base class from with extension-plugin implementers must derive from."""
+    implements( IEazyTextExtension )
+    implements( IEazyTextExtensionFactory )
 
-    try :
-        props = props and eval( ''.join( props ) ) or {}
-    except :
-        if extnode.parser.etparser.debug : raise
-        props = {}
+    def __init__( self, *args, **kwargs ):
+        pass
 
-    try :
-        factory = queryUtility( IEazyTextExtensionFactory, extnode.xwikiname )
-        args = [ props, nowiki ] + extnode.xparams
-        ext = factory( *args )
-    except :
-        if extnode.parser.etparser.debug : raise
-        ext = None
+    def __call__( self, argtext ):
+        return eval( 'Extension( %s )' % argtext )
 
-    etparser = extnode.parser.etparser
-    if ext :
-        ext.extnode = extnode               # Backreference to parser AST node
-        extnode.parser.etparser.regext(ext) # Register macro with the parser
-        ext.on_parse(ext.extnode)           # Callback on_parse()
-    return ext
+    def onparse( node ):
+        pass
+
+    def headpass1( node, igen ):
+        pass
+
+    def headpass2( node, igen ):
+        pass
+
+    def generate( self, node, igen, *args, **kwargs ) :
+        html = self.html( node, igen, *args, **kwargs )
+        html and igen.puttext( html )
+
+    def tailpass( node, igen ):
+        pass
+
+    def html( self, node, igen, *args, **kwargs ):
+        """Can be overriden by the deriving class to provide the translated html
+        that will be substituted in the place of the extennsion() calls.
+        """
+        return ''
+
+# Register this plugin
+gsm.registerUtility( Extension(), IEazyTextExtensionFactory, 'Extension' )

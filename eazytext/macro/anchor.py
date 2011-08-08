@@ -8,37 +8,15 @@
 # Notes  : None
 # Todo   : None
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.macro       import Macro
+from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
-class Anchor( object ):
-    implements( IEazyTextMacro )
-    template = '<a class="etm-anchor" name="%s" style="%s"> %s </a>'
-
-    def __init__( self, *args, **kwargs ):
-        args = list( args )
-        self.anchor = args and args.pop( 0 ) or ''
-        self.text = args and args.pop( 0 ) or '&#167;'
-        self.style = constructstyle( kwargs )
-
-    def on_parse( self, node ) :
-        pass
-
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node ) :
-        return self.template % ( self.anchor, self.style, self.text )
-
-    def on_posthtml( self, node ) :
-        pass
-
-class AnchorFactory( object ):
+class Anchor( Macro ):
     """
     h3. Anchor
 
@@ -53,9 +31,19 @@ class AnchorFactory( object ):
     |= anchor | anchor name as fragment, goes under @name attribute
     |= text   | optional, text to be display at the anchor
     """
-    implements( IEazyTextMacroFactory )
+    tmpl = '<a class="etm-anchor" name="%s" style="%s"> %s </a>'
+
+    def __init__( self, *args, **kwargs ):
+        args = list( args )
+        self.anchor = args and args.pop( 0 ) or ''
+        self.text = args and args.pop( 0 ) or '&#167;'
+        self.style = constructstyle( kwargs )
+
     def __call__( self, argtext ):
         return eval( 'Anchor( %s )' % argtext )
 
+    def html( self, node, igen, *args, **kwargs ) :
+        return self.tmpl % ( self.anchor, self.style, self.text )
+
 # Register this plugin
-gsm.registerUtility( AnchorFactory(), IEazyTextMacroFactory, 'Anchor' )
+gsm.registerUtility( Anchor(), IEazyTextMacroFactory, 'Anchor' )

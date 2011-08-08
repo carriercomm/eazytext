@@ -9,12 +9,11 @@
 # Todo   : none
 #   1. Unit test case for this extension.
 
-from   zope.interface       import implements
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.interfaces  import IEazyTextExtension, \
-                                   IEazyTextExtensionFactory
-from   eazytext.lib         import split_style, constructstyle, lhtml
+from   eazytext.extension   import Extension
+from   eazytext.interfaces  import IEazyTextExtensionFactory
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
@@ -26,25 +25,18 @@ doc = """
     document. Property key-value pairs accepts CSS styling attributes.
 """
 
-
-class Nested( object ) :
-
+class Nested( Extension ) :
     tmpl = '<div class="etext-nested"> %s </div>'
-    implements( IEazyTextExtension )
     
-    def __init__( self, props, nowiki, *args ) :
+    def __init__( self, props, nowiki, *args ):
         self.nowiki = nowiki
         self.style = constructstyle( props )
 
-    def on_parse( self, node ) :
-        pass
+    def __call__( self, argtext ):
+        return eval( 'Nested( %s )' % argtext )
 
-    def on_prehtml( self, node ) :
-        pass
-
-    def tohtml( self, node) :
+    def html( self, node, igen, *args, **kwargs ):
         from   eazytext.parser import ETParser
-
         if self.nowiki :
             etparser = ETParser(
                             nested=True,
@@ -61,14 +53,7 @@ class Nested( object ) :
                 html = self.tmpl % ''
         return html
 
-    def on_posthtml( self, node ) :
-        pass
-
-class NestedFactory( object ):
-    implements( IEazyTextExtensionFactory )
-    def __call__( self, *args ):
-        return Nested( *args )
 
 # Register this plugin
-gsm.registerUtility( NestedFactory(), IEazyTextExtensionFactory, 'Nested' )
-NestedFactory._doc = doc
+gsm.registerUtility( Nested(), IEazyTextExtensionFactory, 'Nested' )
+Nested._doc = doc
