@@ -7,6 +7,7 @@ __version__ = '0.92dev'
 import codecs
 from   os.path                  import dirname
 from   copy                     import deepcopy
+from   datetime                 import datetime as dt
 
 from   zope.component           import getGlobalSiteManager
 import pkg_resources            as pkg
@@ -31,7 +32,7 @@ defaultconfig = {
     'module_directory' : None,
     # CSV of escape filter names to be applied for expression substitution
     'escape_filters' : 'uni',
-    # Default input endcoding for .etx file, the output will always be in utf-8.
+    # Default input endcoding for .etx file.
     'input_encoding': DEFAULT_ENCODING,
     # CSV list of plugin packages that needs to be imported, before compilation.
     'plugin_packages'   : '',
@@ -90,7 +91,7 @@ def initplugins( etxconfig, force=False ):
 #---- APIs for executing Tayra Template Language
 
 class Translate( object ):
-    def __init__( self, etxloc, etxconfig_ ):
+    def __init__( self, etxloc=None, etxtext=None, etxconfig_ ):
         """`etxconfig` parameter will find its way into every object defined
         by wiki processor.
             TODO : somehow find a way to pass the arguments to `body` function
@@ -99,27 +100,24 @@ class Translate( object ):
         etxconfig.update( etxconfig_ )
         # Initialize plugins
         self.etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
-        self.etxloc = etxloc
+        self.etxloc, self.etxtext = etxloc, self.etxtext
         self.etparser = ETParser( etxconfig=etxconfig )
 
-    def __call__( self, entry=None, context={} ):
-        from   tayra.ttl.compiler       import Compiler, TemplateLookup
+    def __call__( self, entry='body', context={} ):
+        from  eazytext.compiler  import Compiler, TemplateLookup
         self.compiler = Compiler(
-            self.ttlloc, ttlconfig=self.ttlconfig, ttlparser=self.ttlparser
+            self.etxloc, etxconfig=self.etxconfig, etparser=self.etparser
         )
-        context['_ttlcontext'] = context
-        module = self.compiler.execttl( context=context )
-        # Fetch parent-most module
-        entry = getattr( module.self, entry or 'body' )
-        # TODO : Optionally translate the return string into unicode
+        context['_etxcontext'] = context
+        module = self.compiler.execetx( context=context )
+        entry = getattr( module, entryfn )
         html = entry() if callable( entry ) else ''
         return html
 
-def ttl_cmdline( ttlloc, **kwargs ):
-    from   tayra.ttl.compiler       import Compiler, TemplateLookup
-    from   datetime                 import datetime as dt
+def etx_cmdline( etxloc, **kwargs ):
+    from eazytext.compiler import Compiler, TemplateLookup
 
-    ttlconfig = deepcopy( defaultconfig )
+    etxconfig = deepcopy( defaultconfig )
     # directories, module_directory, devmod
     ttlconfig.update( kwargs )
     ttlconfig.setdefault( 'module_directory', dirname( ttlloc ))
