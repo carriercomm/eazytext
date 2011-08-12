@@ -1,5 +1,3 @@
-{{ YearsBefore('past %s', '2008', color="red" ) }}
-
 {{{ Code C
   struct process {
     struct process *next;

@@ -9,7 +9,7 @@
     Goto [[ #anchor in list | anchor created using anchor macro ]] \\ 
     Open the [[ *#contacts | contacts ]] in a new window
 
-=={c;/1,solid,c;A} '_Some text markup_'
+=={c;/1,solid,c;A;} '_Some text markup_'
 
 [[ +https://code.google.com/images/code_logo.png | image ]]
 
@@ -20,8 +20,8 @@ superscripting, x^^2^^
 subscripting, log,,2,,7
 '/_ bold italic underline '/_
 Also possible to, have '_ underlined bold '_ and /_italic underline/_
-Character formatting extends across line breaks: ''bold,
-this is still bold''.
+Character formatting extends across line breaks: **bold,
+this is still bold**.
 This line deliberately ''does not end in double
 single-quotes.
 Not bold. Character formatting does not cross paragraph boundaries.
@@ -67,11 +67,11 @@ give the link a [[internal links|different]] name.
 Here's another sentence: This wisdom is taken from [[Ward Cunningham's]]
 [[http://www.c2.com/doc/wikisym/WikiSym2006.pdf|Presentation at the Wikisym 06]].
 
-Here's a external link without a description: https://www.wikicreole.org
+Here's a external link without a description: // https://www.wikicreole.org
 
 Be careful that italic links are rendered properly:  //[[http://my.book.example/|My Book Title]]// 
 
-Free links without braces should be rendered as well, like http://www.wikicreole.org/ and http://www.wikicreole.org/users/~example. 
+Free links without braces should be rendered as well, like http://www.wikicreole.org/ and http://www.wikicreole.org/users/\example. 
 
 Creole1.0 specifies that http://bar and ftp://bar should not render italic,
 something like foo://bar// should render as italic.
@@ -166,18 +166,18 @@ up to five levels
 Here is a long quotation here is a long quotation here is a long quotation  \
 here is a long quotation here is a long quotation here is a long quotation  \
 here is a long quotation here is a long quotation here is a long quotation.
->> ''Level 2 block quote : ''\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
+>> ''Level 2 block quote : ''
+Here is a long quotation here is a long quotation here is a long quotation  
+here is a long quotation here is a long quotation here is a long quotation 
 here is a long quotation here is a long quotation here is a long quotation.
->>> ''Level 3 block quote : ''\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
+>>> ''Level 3 block quote : ''
+Here is a long quotation here is a long quotation here is a long quotation  
+here is a long quotation here is a long quotation here is a long quotation 
 here is a long quotation here is a long quotation here is a long quotation.
 
 >>>> ''Level 4 block quote : ''\
-Here is a long quotation here is a long quotation here is a long quotation  \
-here is a long quotation here is a long quotation here is a long quotation  \
+Here is a long quotation here is a long quotation here is a long quotation
+here is a long quotation here is a long quotation here is a long quotation
 here is a long quotation here is a long quotation here is a long quotation.
 
 >>>>> ''Level 5 block quote : ''\
@@ -187,15 +187,15 @@ here is a long quotation here is a long quotation here is a long quotation.
 
 This is normal text here.
 
-> Indent me! The quick brown fox jumps over the lazy dog.  \
-Now this the time for all good men to come to the aid of   \
-their country. Notice how we can continue the block-quote  \
-in the same "paragraph" by using a backslash at the end of \
-the line.
+> Indent me! The quick brown fox jumps over the lazy dog.
+> Now this the time for all good men to come to the aid of
+> their country. Notice how we can continue the block-quote
+> in the same "paragraph" by using a backslash at the end of
+> the line.
 >
 > Another block, leading to...
->> Second level of indenting. This second is indented even \
-more than the previous one.
+>>Second level of indenting. This second is indented even
+>>more than the previous one.
 
 Back to normal text.
 
@@ -328,27 +328,27 @@ cancellation of the Fourth East Asia Summit.
 
 [[ +>http://l.yimg.com/t/i/in/adv/puneproperty/punehome_1.gif | text ]]
 
-{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png',
           'alternative text', href='http://www.google.com' ) }}
 
-{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png',
           'alternative text', float='right' ) }}
 
-{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png', \
+{{ Image( 'http://assets0.twitter.com/images/twitter_logo_header.png',
           'alternative text', href='http://www.google.com', float='right' ) }}
 
-{{ Images( \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg', \
-'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg', \
-alt='alternate text', height='100px', width='100px', cols='3', \
+{{ Images(
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/m/matanuska-glacier-221184-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Promotional/Geocore History/petra-pharaohs-treasure-377742-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Environment/Images/Habitat/drypowell-758749-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/s/small-forest-elephants-684716-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/bora-bora-aerial-view-513886-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/churchill-aurora-407026-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/h/holi-powder-518591-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/POD/b/boundless-biplane-509314-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/purple-diatoms-527157-mn.jpg', 
+'http://photography.nationalgeographic.com/staticfiles/NGS/Shared/StaticFiles/Photography/Images/Content/shark-and-bubbles-689679-mn.jpg', 
+alt='alternate text', height='100px', width='100px', cols='3', 
 style="border : 3px solid gray;" ) }}
 
 == HTML wiki extension 
@@ -359,13 +359,13 @@ style="border : 3px solid gray;" ) }}
 }}}
 
 = Escapes =
-Normal Link: http://wikicreole.org/ - now same link, but escaped: ~http://wikicreole.org/ 
+Normal Link: http://wikicreole.org/ - now same link, but escaped: \http://wikicreole.org/ 
 
-Normal asterisks: ~''not bold~''
+Normal asterisks: \''not bold\''
 
-a tilde alone: ~ 
+a tilde alone: \ 
 
-a tilde escapes itself: ~~xxx
+a tilde escapes itself: \\xxx
 
 === Tables ===
 
@@ -384,15 +384,15 @@ Tables are done like this:
 
 And big tables are done, like this :
 
-||{ { g; background-color:#ffffcc; cellpadding : 20; cellspacing : 0; /5,solid,gray } |
-||-{ W }
-|| { y } | Fruits 
+||{{ g; /5,solid,g;}
+||-{W;}
+|| {y;} Fruits 
 || Icecreams
 ||-
-||                                        Orange
-|| { G } | Apple
-||-{ font-weight : bold; m } |
-|| //{m} Bread //
+||  Orange
+|| {G;} Apple
+||-{font-weight : bold; m;}
+|| //{m;} Bread //
 || Pie
 ||-
 || Butter

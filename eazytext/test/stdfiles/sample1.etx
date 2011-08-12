@@ -26,13 +26,13 @@ And, complex markups like '' hello // world // \\ is treated like this ''
 An example for indentation, \\
 {{ Span( 'Second level', style={ 'margin-left' : '4em'} ) }} \\
 
-=== Text with html special chars ===
+=== Text with html special chars
 
->>> it = [ 1, 2, 3, ]   \\
->>> print type(it)      \\
+>>> it = [ 1, 2, 3, ]   \
+>>> print type(it)      \
     < List  type ... >
 
-== Links ==
+== Links
 
 You can use [[internal links]] or [[http://www.wikicreole.org|external links]],
 Here's another sentence: This wisdom is taken from [[Ward Cunningham's]]
@@ -58,7 +58,7 @@ You can use nowiki syntax if you would like do stuff like this:
 This is a sample box written using wiki extensions. Note that the width is
 adjustable and you can even position it.
 
-== list ==
+== list
 You can use lists, start it at the first column for now, please...
 
 unnumbered lists are like
