@@ -2,6 +2,8 @@
 
 h3. 0.92dev ``{i} on Fri 2011-03-15``
 
+( On going edition )
+
 * EazyText features and enhancements
     ** Macro and Extension plugins are now based on zope.interface and
        zope.component.

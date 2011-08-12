@@ -3,13 +3,10 @@ develop :
 	virtualenv eazytext-env --no-site-packages
 	bash -c "source eazytext-env/bin/activate ; python ./setup.py develop"
 
-testall :
-	cd eazytext/test/; nosetests -x -s testlex;
-	cd eazytext/test/; nosetests -x -s testparse;
-	cd eazytext/test/; nosetests -x -s testmacros;
-	cd eazytext/test/; nosetests -x -s testextn;
-	cd eazytext/test/; nosetests -x -s testwiki;
-	cd eazytext/test/; nosetests -x -s testdocs;
+test :
+	cd eazytext/test; teststd.py;
+	cd eazytext/test; testmixchar.py;
+	cd eazytext/test; testmixline.py;
 
 bdist_egg :
 	python ./setup.py bdist_egg
@@ -28,6 +25,7 @@ cleanall : clean
 	rm -rf eazytext-env
 
 clean :
+	rm distribute-0.6.10.tar.gz
 	rm -rf build;
 	rm -rf dist;
 	rm -rf zwiki.egg-info;
