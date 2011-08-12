@@ -17,7 +17,7 @@ from   zope.component       import getGlobalSiteManager
 from   eazytext.macro       import Macro
 from   eazytext.interfaces  import IEazyTextMacroFactory
 from   eazytext.lib         import constructstyle, escape_htmlchars
-from   eazytext.ast         import Heading
+from   eazytext.ast         import Heading, BASICTEXT
 
 gsm = getGlobalSiteManager()
 
@@ -62,13 +62,16 @@ class Toc( Macro ):
             headings = node.getroot().filter( lambda n : isinstance(n, Heading) )
             headlist = []
             for h in headings :
-                text = escape_htmlchars( h.headtext )[:self.maxheadlen]
+                text = ''.join([
+                  n.dump(None)
+                  for n in h.filter( lambda n : isinstance(n, BASICTEXT) )
+                ])
+                text = escape_htmlchars( text )[:self.maxheadlen]
                 headlist.append( self.toca_tmpl % (h.level, '#'+text, text) )
             headlist = self.headlist_tmpl % '\n'.join( headlist )
             summary = self.summary_tmpl % self.summary
             html = self.tmpl % ( self.style, '\n'.join([summary, headlist]) )
         except :
-            raise
             if node.parser.etparser.debug : raise
             html = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
