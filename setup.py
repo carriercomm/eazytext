@@ -78,9 +78,9 @@ setup(
     obsoletes='',
 
     author='Pratap R Chakravarthy',
-    author_email='prataprc@gmail.com',
+    author_email='prataprc@pluggdapps.com',
     maintainer='Pratap R Chakravarthy',
-    maintainer_email='prataprc@gmail.com',
+    maintainer_email='prataprc@pluggdapps.com',
     url='http://eazytext.pluggdapps.com',
     download_url='',
     license='Simplified BSD license',
