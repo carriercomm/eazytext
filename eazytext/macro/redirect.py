@@ -18,7 +18,7 @@ gsm = getGlobalSiteManager()
 class Redirect( Macro ) :
     """
     Just sets the ``redirect`` attribute in
-    self.macronode.parser.etparser.redirect to the the argument that is passed
+    node.parser.etparser.redirect to the the argument that is passed
     """
     def __init__( self, redireclink='' ) :
         self.redirect = redireclink
@@ -27,7 +27,7 @@ class Redirect( Macro ) :
         return eval( 'Redirect( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :
-        self.macronode.parser.etparser.redirect = self.redirect
+        node.parser.etparser.redirect = self.redirect
         return ''
 
 # Register this plugin

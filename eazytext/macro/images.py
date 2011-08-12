@@ -16,7 +16,7 @@ from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
-class Images( object ) :
+class Images( Macro ) :
     """
     h3. Images
 
@@ -40,7 +40,6 @@ class Images( object ) :
 
     def __init__( self, *args, **kwargs ) :
         self.imgsources = args
-
         self.alt    = kwargs.pop( 'alt', '' )
         self.height = kwargs.pop( 'height', None )
         self.width  = kwargs.pop( 'width', None )
@@ -54,7 +53,7 @@ class Images( object ) :
         hattr = self.height and ( 'height="%s"' % self.height ) or ''
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
 
-        imgsources = list(self.imgsources[:])
+        imgsources = list(self.imgsources)
         rows = []
         while imgsources :
             cells = []

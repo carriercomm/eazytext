@@ -84,8 +84,7 @@ gsm = getGlobalSiteManager()
 
 class Macro( object ):
     """Base class from with macro-plugin implementers must derive from."""
-    implements( IEazyTextMacro )
-    implements( IEazyTextMacroFactory )
+    implements( IEazyTextMacro, IEazyTextMacroFactory )
 
     def __init__( self, *args, **kwargs ):
         pass
@@ -93,20 +92,20 @@ class Macro( object ):
     def __call__( self, argtext ):
         return eval( 'Macro( %s )' % argtext )
 
-    def onparse( node ):
+    def onparse( self, node ):
         pass
 
-    def headpass1( node, igen ):
+    def headpass1( self, node, igen ):
         pass
 
-    def headpass2( node, igen ):
+    def headpass2( self, node, igen ):
         pass
 
     def generate( self, node, igen, *args, **kwargs ) :
         html = self.html( node, igen, *args, **kwargs )
         html and igen.puttext( html )
 
-    def tailpass( node, igen ):
+    def tailpass( self, node, igen ):
         pass
 
     def html( self, node, igen, *args, **kwargs ):

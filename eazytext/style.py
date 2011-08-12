@@ -65,41 +65,57 @@ bgcolors = {
 }
 
 def style_color( m ) :
-    return 'color: %s;' % fgcolors[m]
-fg_pattern = ( re.compile( r'^[a-z]$' ), style_color )
+    return 'color: %s' % fgcolors[m]
 
 def style_background( m ) :
-    return 'background-color: %s;' % bgcolors[m]
-bg_pattern = ( re.compile( r'^[A-Z]$' ), style_background )
+    return 'background-color: %s' % bgcolors[m]
 
 def style_border( m ) :
-    w, style, color = m[1:].split( ',' )
-    color = fgcolors[color]
-    return 'border : %spx %s %s;' % ( w, style, color )
-_r = r'^/[0-9]+,(dotted|dashed|solid|double|groove|ridge|inset|outset),[a-z]$'
-border_pattern = ( re.compile( _r ), style_border )
+    w, style, color = [ x.strip() for x in m[1:].split( ',' ) ]
+    color = fgcolors[color] if len(color) == 1 else color
+    return 'border : %spx %s %s' % ( w, style, color )
 
 def style_margin( m ) :
-    return 'margin : %spx' % m[:-1]
-margin_pattern = ( re.compile( r'^[0-9]+\|$' ), style_margin )
+    return 'margin : %spx' % m[:-1].strip()
 
 def style_padding( m ) :
-    return 'padding : %spx' % m[1:]
-padding_pattern = ( re.compile( r'^\|[0-9]+$' ), style_padding )
+    return 'padding : %spx' % m[1:].strip()
 
-stylematcher = [ fg_pattern, bg_pattern, border_pattern, margin_pattern,
-                 padding_pattern ]
+def style_wcard( m ) :
+    return m.strip()
+
+space      = r'[ \t]*'
+re_fg      = r'%s[a-z]%s;' % (space, space)
+re_bg      = r'%s[A-Z]%s;' % (space, space)
+re_border  = r'%s/%s[0-9]+%s,%s[a-z]+%s,%s[a-z]+%s;' % tuple( [space] * 7 )
+re_margin  = r'%s[0-9]+%s\|%s;' % (space, space, space)
+re_padding = r'%s\|%s[0-9]+%s;' % (space, space, space)
+re_wcard   = r'[^;]+?;'
+
+re_list = [
+    (re_fg,      style_color),
+    (re_bg,      style_background),
+    (re_border,  style_border),
+    (re_margin,  style_margin),
+    (re_padding, style_padding),
+    (re_wcard,   style_wcard)
+]
+re_master = re.compile(
+    '|'.join([ r'(%s)' % r for r in map( lambda x : x[0], re_list ) ])
+)
 
 def stylemarkup( text ) :
-    """Parse the text for style markup and convert them into html style
-    attribute values"""
-    props = [ prop.strip( ' \t' ) for prop in style.split( ';' ) ]
-    styleprops   = []
-    for prop in props :
-        for regex, func in stylematcher :
-            if regex.match( prop ) :
-                styleprops.append( func( prop ))
-                break
-        else :
-            styleprops.append( prop )
-    return '; '.join( styleprops )
+    if text :
+        text += ';' if text[-1] != ';' else ''
+        fns = map( lambda x : x[1], re_list )
+        styles = []
+        for x in re_master.findall(text) :
+            for text, func in zip(x, fns) :
+                text = text.strip()[:-1].strip() 
+                if not text : continue
+                try    : styles.append( func( text ) )
+                except : pass
+        style = '; '.join(filter(None, styles))
+    else :
+        style = ''
+    return style

@@ -9,20 +9,13 @@
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
-#   1. Bug in PLY ???
-#   Enabling optimize screws up the order of regex match (while lexing)
-#       etparser = ETParser( yacc_debug=True )
 # Notes  : None
 # Todo   : None
 
-import unittest
-import os
-import difflib        as diff
-from   random         import choice, randint, shuffle
-import re
-from   optparse       import OptionParser
-from   os.path        import isfile
+from   optparse             import OptionParser
+from   os.path              import isfile
 
+import eazytext
 from   eazytext        import __version__ as VERSION
 from   eazytext.parser import ETParser
 
@@ -33,11 +26,17 @@ def _option_parse() :
                        help='Output html file to store translated result' )
     parser.add_option( '-d', action='store_true', dest='dump',
                        help='Dump translation' )
-    parser.add_option( '-g', action='store_true', dest='debug',
-                       help='Debug' )
     parser.add_option( '-s', action='store_true', dest='show',
                        help='Show AST parse tree' )
-    parser.add_option( '-l', dest='debuglevel', default='0',
+    parser.add_option( '-t', action='store_true', dest='generate',
+                       help='Generate python executable' )
+    parser.add_option( '-x', action='store_true', dest='execute',
+                       help='Executable and generate html' )
+    parser.add_option( '-a', dest='args', default='[]',
+                       help='Argument to template' )
+    parser.add_option( '-c', dest='context', default='{}',
+                       help='Context to template' )
+    parser.add_option( '-g', dest='debug', default='0',
                        help='Debug level for PLY parser' )
     parser.add_option( '--version', action='store_true', dest='version',
                        help='Version information of the package' )
@@ -48,28 +47,18 @@ def _option_parse() :
 
 def main() :
     options, args = _option_parse()
-    etparser = ETParser( obfuscatemail=True, debug=options.debug )
-    tu = None
-    if options.version :
-        print VERSION
-    if args and isfile( args[0] ) :
-        ifile = args[0]
-        wikitext = open( ifile ).read()
-        debuglevel = int(options.debuglevel)
-        print "Parsing ...",
-        tu = etparser.parse( wikitext, debuglevel=debuglevel )
-        print "Done"
-    if tu and options.dump :
-        print tu.dump()
-    elif tu and options.show :
-        print "AST tree ..."
-        tu.show()
-    elif tu :
-        ofile = options.ofile or (os.path.splitext(ifile)[0] + '.html')
-        print "Translation ...",
-        html = '<html><body>' + tu.tohtml() + '</body></html>'
-        print "Done"
-        open( ofile, 'w' ).write( html )
 
+    if options.version :
+        print tayra.__version__
+
+    elif args and isfile( args[0] ) :
+        eazytext.etx_cmdline(
+            args[0],
+            args=options.args,
+            context=options.context,
+            debuglevel=int(options.debug),
+            show=options.show,
+            dump=options.dump,
+        )
 if __name__ == '__main__' :
     main()

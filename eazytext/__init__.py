@@ -14,10 +14,20 @@ import pkg_resources            as pkg
 
 # Import macro-plugins so that they can register themselves.
 import eazytext.macro
+import eazytext.macro.anchor
+import eazytext.macro.clear
+import eazytext.macro.html
+import eazytext.macro.image
+import eazytext.macro.images
+import eazytext.macro.redirect
+import eazytext.macro.span
+import eazytext.macro.toc
+import eazytext.macro.yearsbefore
 # Import extension-plugins so that they can register themselves.
 import eazytext.extension
 
 from   eazytext.interfaces      import IEazyTextMacroFactory, \
+                                       IEazyTextTemplateTags, \
                                        IEazyTextExtensionFactory
 from   eazytext.parser          import ETParser
 
@@ -51,17 +61,21 @@ defaultconfig = {
     # If set to false generate the html text enclosed within <article> tag, else
     # wrap them withing <html><body> tag
     'ashtml' : False,
+    # In memory cache for compiled etxfile
+    'memcache'          : True,
+    'text_as_hashkey'   : False,
 }
 
-macroplugins = {}         # { plugin-name   : instance }
-extplugins   = {}         # { plugin-name   : instance }
-init_status = 'pending'
+macroplugins = {}           # { plugin-name : instance }
+extplugins   = {}           # { plugin-name : instance }
+ttplugins    = {}           # { plugin-name : instance }
+init_status  = 'pending'
 def initplugins( etxconfig, force=False ):
     """Collect and organize macro plugins and extension plugins implementing
     the interfaces,
         IEazyTextMacroFactory, IEazyTextExtensionFactory
     """
-    global macroplugins, extplugins
+    global init_status, macroplugins, extplugins, ttplugins
     if init_status == 'progress' :
         return etxconfig
 
@@ -77,13 +91,15 @@ def initplugins( etxconfig, force=False ):
 
         # Gather plugins template tag handlers, filter-blocks
         for x in gsm.registeredUtilities() :
-            if x.provided == IEazyTextMacroFactory :    # Filter blocks
+            if x.provided == IEazyTextMacroFactory :        # macro-plugins
                 macroplugins[x.name] = x.component
-            if x.provided == ITayraEscapeFilter :   # Escape Filters
+            if x.provided == IEazyTextExtensionFactory :    # extension-plugins
                 extplugins[x.name] = x.component
+            if x.provided == IEazyTextTemplateTags :        # tt-plugins
+                ttplugins[x.name] = x.component
             etxconfig['macroplugins'] = macroplugins
-            etxconfig['extplugins'] = extplugins
-
+            etxconfig['extplugins']   = extplugins
+            etxconfig['ttplugins']    = ttplugins
     init_status = 'done'
     return etxconfig
 
@@ -91,23 +107,25 @@ def initplugins( etxconfig, force=False ):
 #---- APIs for executing Tayra Template Language
 
 class Translate( object ):
-    def __init__( self, etxloc=None, etxtext=None, etxconfig_ ):
+    def __init__( self, etxloc=None, etxtext=None, etxconfig={} ):
         """`etxconfig` parameter will find its way into every object defined
         by wiki processor.
             TODO : somehow find a way to pass the arguments to `body` function
         """
-        etxconfig = deepcopy( defaultconfig )
-        etxconfig.update( etxconfig_ )
+        etxconfig_ = deepcopy( defaultconfig )
+        etxconfig_.update( etxconfig )
         # Initialize plugins
-        self.etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
-        self.etxloc, self.etxtext = etxloc, self.etxtext
-        self.etparser = ETParser( etxconfig=etxconfig )
+        self.etxconfig = initplugins( etxconfig_, force=etxconfig_['devmod'] )
+        self.etxloc, self.etxtext = etxloc, etxtext
+        self.etparser = ETParser( etxconfig=self.etxconfig )
 
-    def __call__( self, entry='body', context={} ):
-        from  eazytext.compiler  import Compiler, TemplateLookup
-        self.compiler = Compiler(
-            self.etxloc, etxconfig=self.etxconfig, etparser=self.etparser
-        )
+    def __call__( self, entryfn='body', context={} ):
+        from   eazytext.compiler import Compiler
+        self.compiler = Compiler( etxtext=self.etxtext,
+                                  etxloc=self.etxloc,
+                                  etxconfig=self.etxconfig,
+                                  etparser=self.etparser
+                                )
         context['_etxcontext'] = context
         module = self.compiler.execetx( context=context )
         entry = getattr( module, entryfn )
@@ -115,29 +133,30 @@ class Translate( object ):
         return html
 
 def etx_cmdline( etxloc, **kwargs ):
-    from eazytext.compiler import Compiler, TemplateLookup
+    from eazytext.compiler import Compiler
 
     etxconfig = deepcopy( defaultconfig )
     # directories, module_directory, devmod
-    ttlconfig.update( kwargs )
-    ttlconfig.setdefault( 'module_directory', dirname( ttlloc ))
+    etxconfig.update( kwargs )
+    etxconfig['module_directory'] = '.'
+    etxconfig['include_skin'] = True
+    etxconfig['ashtml'] = True
 
     # Parse command line arguments and configuration
-    args = eval( ttlconfig.pop( 'args', '[]' ))
-    context = eval( ttlconfig.pop( 'context', '{}' ))
-    debuglevel = ttlconfig.pop( 'debuglevel', 0 )
-    show = ttlconfig.pop( 'show', False )
-    dump = ttlconfig.pop( 'dump', False )
-    encoding = ttlconfig['input_encoding']
+    context = eval( etxconfig.pop( 'context', '{}' ))
+    debuglevel = etxconfig.pop( 'debuglevel', 0 )
+    show = etxconfig.pop( 'show', False )
+    dump = etxconfig.pop( 'dump', False )
+    encoding = etxconfig['input_encoding']
 
     # Initialize plugins
-    ttlconfig = initplugins( ttlconfig, force=ttlconfig.get('devmod', True) )
+    etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
 
     # Setup parser
-    ttlparser = TTLParser( debug=debuglevel, ttlconfig=ttlconfig )
-    compiler = Compiler( ttlloc, ttlconfig=ttlconfig, ttlparser=ttlparser )
-    pyfile = compiler.ttlfile+'.py'
-    htmlfile = compiler.ttlfile.rsplit('.', 1)[0] + '.html'
+    etparser = ETParser( etxconfig=etxconfig, debug=debuglevel )
+    compiler = Compiler( etxloc=etxloc, etxconfig=etxconfig, etparser=etparser )
+    pyfile = compiler.etxfile+'.py'
+    htmlfile = compiler.etxfile.rsplit('.', 1)[0] + '.html'
 
     if debuglevel :
         print "AST tree ..."
@@ -149,29 +168,22 @@ def etx_cmdline( etxloc, **kwargs ):
     elif dump :
         tu = compiler.toast()
         rctext =  tu.dump()
-        if rctext != codecs.open( compiler.ttlfile, encoding=encoding ).read() :
+        if rctext != codecs.open( compiler.etxfile, encoding=encoding ).read() :
             print "Mismatch ..."
         else : print "Success ..."
     else :
         print "Generating py / html file ... "
-        pytext = compiler.topy()
+        pytext = compiler.topy( etxhash=compiler.etxlookup.etxhash )
         # Intermediate file should always be encoded in 'utf-8'
         codecs.open(pyfile, mode='w', encoding=DEFAULT_ENCODING).write(pytext)
 
-        #code = compiler.ttl2code( pyfile=pyfile, pytext=pytext )
-        #context['_ttlcontext'] = context
-        #module = compiler.execttl( code, context=context )
-        ## Fetch parent-most module
-        #body = getattr( module.self, 'body' )
-        #html = body( *args ) if callable( body ) else ''
-
-        ttlconfig.setdefault( 'memcache', 'true' )
-        r = Renderer( ttlloc, ttlconfig )
-        html = r( context=context )
+        etxconfig.setdefault( 'memcache', True )
+        t = Translate( etxloc=etxloc, etxconfig=etxconfig )
+        html = t( context=context )
         codecs.open( htmlfile, mode='w', encoding=encoding).write( html )
 
         # This is for measuring performance
         st = dt.now()
-        [ r( context=context ) for i in range(10) ]
+        [ t( context=context ) for i in range(10) ]
         print (dt.now() - st) / 10
 

@@ -80,10 +80,38 @@ class InstrGen( object ) :
         self.cr()
         self.outfd.write( '_m.pushbuf()' )
 
+    def putstatement( self, stmt ):
+        self.flushtext()
+        self.cr()
+        self.outfd.write( stmt.rstrip('\r\n') )
+
+    def popreturn( self, astext=True ):
+        self.flushtext()
+        self.cr()
+        if astext == True :
+            self.outfd.write( 'return _m.popbuftext()' )
+        else :
+            self.outfd.write( 'return _m.popbuf()' )
+
     def evalexprs( self, code, filters ) :
         self.flushtext()
         self.cr()
         self.outfd.write('_m.append( _m.evalexprs(%s, %r) )' % (code, filters))
+
+    def handlett( self, ttname, argstr ):
+        self.flushtext()
+        self.cr()
+        self.outfd.write('_m.handlett( %r, %r )' % (ttname, argstr) )
+
+    def handlemacro( self, macroname, argstr ):
+        self.flushtext()
+        self.cr()
+        self.outfd.write('_m.handlemacro( %r, %r )' % (macroname, argstr) )
+
+    def handleext( self, extname, argstr ):
+        self.flushtext()
+        self.cr()
+        self.outfd.write('_m.extname( %r, %r )' % (extname, argstr) )
 
     def popcompute( self, astext=True ):
         self.flushtext()

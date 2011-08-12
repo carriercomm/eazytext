@@ -1,3 +1,7 @@
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2010 SKR Farms (P) LTD.
+
 """Module containing Node definition for all non-teminals and translator
 functions for translating the text to HTML.
 
@@ -15,10 +19,6 @@ To walk throug the AST,
   * Use _terms and _nonterms attribute to get lists of terminals and
     non-terminals for every node.
 """
-
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2010 SKR Farms (P) LTD.
 
 # -*- coding: utf-8 -*-
 
@@ -77,10 +77,10 @@ class Node( object ):
         """Post-processing phase 1, useful to implement multi-pass compilers"""
         [ x.tailpass( igen ) for x in self.children() ]
 
-    def dump( self, context ):
+    def dump( self, c ):
         """Simply dump the contents of this node and its children node and
         return the same."""
-        return ''.join([ x.dump(context) for x in self.children() ])
+        return ''.join([ x.dump(c) for x in self.children() ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
@@ -132,6 +132,24 @@ class Node( object ):
         l.append( value )
         setattr( rootnode, attrname, l )
 
+    def filter( self, handler ):
+        nodes  = list( self.children() )
+        result = []
+        while nodes :
+            node = nodes.pop(0)
+            result.append( node ) if handler( node ) else None
+            nodes = list( node.children() ) + nodes
+        return result
+
+    def flatterminals( self ):
+        nodes = list( self.children() )
+        result = []
+        while nodes :
+            node = nodes.pop(0)
+            result.append(node) if isinstance(node, Terminal) else None
+            nodes = list( node.children() ) + nodes
+        return result
+
     @classmethod
     def setparent( cls, parnode, childnodes ):
         [ setattr( n, 'parent', parnode ) for n in childnodes ]
@@ -155,7 +173,7 @@ class Terminal( Node ) :
         """Dump the content."""
         igen.puttext( self.dump(None) )
 
-    def dump( self, context ):
+    def dump( self, c ):
         """Simply dump the contents of this node and its children node and
         return the same."""
         return self.terminal
@@ -227,19 +245,54 @@ class WikiPage( NonTerminal ):
     def children( self ) :
         return self._nonterms
 
+    def children( self ):
+        return self._nonterms
+
+    def headpass1( self, igen ):
+        NonTerminal.headpass1( self, igen )
+
+    def headpass2( self, igen ):
+        igen.initialize()
+        NonTerminal.headpass2( self, igen )
+
     def generate( self, igen, *args, **kwargs ):
-        etparser = self.parser.etparser
-        etxconfig = etparser.etxconfig
+        self.etxhash = kwargs.pop( 'etxhash', '' )
+        etparser     = self.parser.etparser
+        self.etxfile, etxconfig = etparser.etxfile, etparser.etxconfig
+
         ashtml, nested = etxconfig['ashtml'], etxconfig['nested']
-        # Use css skin
-        if not nested and exconfig['include_skin'] :
-            igen.puttext( self.tmpl_inclskin % etparser.skincss )
+
+        # Generate the body function only when there is valid content in the
+        # global scope.
+        igen.cr()
+        # Body function signature
+        line = "def body( *args, **kwargs ) :"
+        igen.putstatement( line )
+        igen.codeindent( up='  ' )
+        igen.pushbuf()
+
         # Wrapper Template
         (not nested and ashtml) and igen.puttext( self.tmpl_html_o )
         igen.puttext( self.tmpl_article_o )
+        # Use css skin
+        if not nested and etxconfig['include_skin'] :
+            igen.puttext( self.tmpl_inclskin % etparser.skincss )
+        # Generate paragraphs
         self.paragraphs.generate( igen, *args, **kwargs )
+        # Wrapper close
         igen.puttext( self.tmpl_article_c )
         (not nested and ashtml) and igen.puttext( self.tmpl_html_c )
+        # finish body function
+        igen.flushtext()
+        igen.popreturn( astext=True )
+        igen.codeindent( down='  ' )
+
+    def tailpass( self, igen ):
+        igen.cr()
+        NonTerminal.tailpass( self, igen )
+        igen.comment( "---- Footer" )
+        igen.footer( self.etxhash, self.etxfile )
+        igen.finish()
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
@@ -277,8 +330,8 @@ class Paragraphs( NonTerminal ) :
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -319,23 +372,24 @@ class Paragraph( NonTerminal ) :
 
 class NoWiki( NonTerminal ) :
     """class to handle `nowikiblock` grammar."""
-    def __init__( self, parser, nwopen, nl, nwlines, nwclose, nl ):
-        NonTerminal.__init__( self, parser, nwopen, nl, nwlines, nwclose, nl )
-        self._terms = 
+    def __init__( self, parser, nwopen, nl1, nwlines, nwclose, nl2 ):
+        NonTerminal.__init__( self, parser, nwopen, nl1, nwlines, nwclose, nl2 )
+        self._terms = \
             self.NOWIKI_OPEN, self.NEWLINE1, self.NOWIKI_CLOSE, self.NEWLINE2 = \
-                nwopen, nl, nwclose, nl
+                nwopen, nl1, nwclose, nl2
         self._terms = filter( None, self._terms )
         self._nonterms = (self.nwlines,) = (nwlines,)
-        self.text = self.nwlines.dump( None )
+        self.text = self.nwlines.dump(None) # Don't change the attribute name !!
         # Fetch the plugin
         try :
             headline = self.NOWIKI_OPEN.dump(None).strip()[3:].strip()
-            self.nowikiname, xparams = headline.split(' ', 1)
+            try    : self.nowikiname, xparams = headline.split(' ', 1)
+            except : self.nowikiname, xparams = headline, ''
             nowikiname = self.nowikiname.strip()
             extplugins = parser.etparser.etxconfig.get( 'extplugins', {} )
-            factory = extplugins( nowikiname, None )
+            factory = extplugins.get( nowikiname, None )
             self.extplugin = factory and factory( xparams.strip() )
-            self.extplugin and self.extplugin.on_parse( self )
+            self.extplugin and self.extplugin.onparse( self )
         except :
             if parser.etparser.debug : raise
             self.extplugin = None
@@ -343,7 +397,7 @@ class NoWiki( NonTerminal ) :
         self.setparent( self, self.children() )
 
     def children( self ) :
-        x = ( self.NOWIKI_OPEN, self.NEWLINE1, self.nwline,s self.NOWIKI_CLOSE,
+        x = ( self.NOWIKI_OPEN, self.NEWLINE1, self.nwlines, self.NOWIKI_CLOSE,
               self.NEWLINE2 )
         return filter( None, x )
 
@@ -354,7 +408,10 @@ class NoWiki( NonTerminal ) :
         self.extplugin and self.extplugin.headpass2( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
-        self.extplugin and self.extplugin.generate( self, igen, *args, **kwargs )
+        if self.extplugin :
+            self.extplugin.generate( self, igen, *args, **kwargs )
+        else :
+            igen.puttext( escape_htmlchars( self.text ))
 
     def tailpass( self, igen ):
         self.extplugin and self.extplugin.tailpass( self, igen )
@@ -373,7 +430,7 @@ class NowikiLines( NonTerminal ):
     def __init__( self, parser, nwlines, nowikitext, newline ) :
         NonTerminal.__init__( self, parser, nwlines, nowikitext, newline )
         self._terms = (self.NOWIKITEXT, self.NEWLINE) = nowikitext, newline
-        self._nonterms = (self.nwlines,) = nwlines
+        self._nonterms = (self.nwlines,) = (nwlines,)
         self._terms = filter( None, self._terms )
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
@@ -394,8 +451,8 @@ class NowikiLines( NonTerminal ):
     def tailpass( self, igen ):
         raise Exception( 'Execution does not come to nowikilines' )
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -406,7 +463,7 @@ class NowikiLines( NonTerminal ):
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
-        return NonTerminal.flatten( self, 'nwlines', ('newline', 'nowikitext') )
+        return NonTerminal.flatten( self, 'nwlines', ('NEWLINE', 'NOWIKITEXT') )
 
 
 #---- Heading
@@ -423,6 +480,7 @@ class Heading( NonTerminal ) :
         self._terms = self.HEADING, self.NEWLINE = heading, newline
         self._nonterms = (self.text_contents,) = (text_contents,)
         self._nonterms = filter( None, self._nonterms )
+        self.headtext = self.text_contents and self.text_contents.dump(None) or ''
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -436,10 +494,10 @@ class Heading( NonTerminal ) :
     def generate( self, igen, *args, **kwargs ):
         level, style = self.HEADING.level, stylemarkup( self.HEADING.style )
         igen.puttext( self.tmpl_o % (level, style) )
-        text = self.text_contents.dump( None )
-        self.text_contents.generate( igen, *args, **kwargs )
-        igen.puttext( self.tmpl_a % self.text )
-        igen.puttext( self.tmpl_ah % self.text )
+        if self.text_contents :
+            self.text_contents.generate( igen, *args, **kwargs )
+            igen.puttext( self.tmpl_a % self.headtext )
+            igen.puttext( self.tmpl_ah % self.headtext )
         self.NEWLINE.generate( igen, *args, **kwargs )
         igen.puttext( self.tmpl_c % level )
 
@@ -451,19 +509,22 @@ class Heading( NonTerminal ) :
         buf.write('\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
+    level = property( lambda self : self.HEADING.level )
+
 
 #---- Horizontal rule
 
-class HorizontalRule( Node ) :
+class HorizontalRule( NonTerminal ) :
     """class to handle `horizontalrule` grammar."""
     tmpl = '<hr class="ethorz"/>\n'
-    def __init__( self, parser ) :
+    def __init__( self, parser, term ) :
         NonTerminal.__init__( self, parser )
+        self._terms = (self.TERMINAL,) = (term,)
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
     def children( self ) :
-        return tuple()
+        return self._terms
 
     def generate( self, igen, *args, **kwargs ):
         igen.puttext( self.tmpl )
@@ -479,7 +540,7 @@ class HorizontalRule( Node ) :
 
 #---- Textlines
 
-class TextLines( Node ) :
+class TextLines( NonTerminal ) :
     """class to handle `textlines` grammar."""
     tmpl_o = '<p class="ettext">\n'
     tmpl_c = '</p>\n'
@@ -495,21 +556,22 @@ class TextLines( Node ) :
         return filter( None, (self.textlines, self.textline) )
 
     def headpass1( self, igen ):
+        igen.markupstack = []
         [ x.headpass1( igen ) for x in self.flatten() ]
 
     def headpass2( self, igen ):
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        igen.puttext( tmpl_o )
-        [ x.generate( igen ) for x in self.flatten() ]
-        igen.puttext( tmpl_c )
+        igen.puttext( self.tmpl_o )
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
+        igen.puttext( self.tmpl_c )
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -523,12 +585,12 @@ class TextLines( Node ) :
         return NonTerminal.flatten( self, 'textlines', 'textline' )
 
 
-class TextLine( Node ) :
+class TextLine( NonTerminal ) :
     """class to handle `textline` grammar."""
     def __init__( self, parser, text_contents, newline ):
         NonTerminal.__init__( self, parser, text_contents, newline )
         self._nonterms = (self.text_contents,) = (text_contents,)
-        self._terms = (self.NEWLINE,) = (self.newline,)
+        self._terms = (self.NEWLINE,) = (newline,)
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -596,16 +658,17 @@ class BigtableBlocks( NonTerminal ) :
     def generate( self, igen, *args, **kwargs ):
         for bt in self.flatten() :
             style = stylemarkup( bt.style )
-            tmpl_o, tmpl_c = self.tmpl.get( bt.btmark, (None, None) )
-            tmpl_o and igen.puttext( tmpl_o % style )
+            tmpl_o, tmpl_c = self.tmpl.get( bt.btmark[2], (None, None) )
+            opentag = tmpl_o if bt.btmark[2] == ETLexer.btclose else tmpl_o%style
+            tmpl_o and igen.puttext( opentag )
             bt.generate( igen, *args, **kwargs )
             tmpl_c and igen.puttext( tmpl_c )
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -628,7 +691,7 @@ class BigtableBlock( NonTerminal ) :
                 self, parser, btblock, btstart, text_contents, newline )
         self._terms = self.BTABLE_START, self.NEWLINE = btstart, newline
         self._nonterms = self.bigtableblock, self.text_contents = \
-                bigtableblock, text_contents
+                btblock, text_contents
         self._terms = filter( None, self._terms )
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
@@ -645,13 +708,13 @@ class BigtableBlock( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        [ x.generate( igen ) for x in self.flatten() ]
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -675,8 +738,8 @@ class BigtableBlock( NonTerminal ) :
 
 class Table( NonTerminal ) :
     """class to handle `table_rows` grammar."""
-    tmpl_o = "<table>\n"
-    tmpl_c = "</table>\n"
+    tmpl_o = '<table class="ettbl">\n'
+    tmpl_c = '</table>\n'
     def __init__( self, parser, table_rows ):
         NonTerminal.__init__( self, parser, table_rows )
         self._nonterms = (self.table_rows,) = (table_rows,)
@@ -703,9 +766,9 @@ class Table( NonTerminal ) :
 
 class TableRows( NonTerminal ) :
     """class to handle `table_rows` grammar."""
-    def __init__( self, parser, table_rows, table_rows ):
-        NonTerminal.__init__( self, parser, table_rows, table_rows )
-        self._nonterms = self.table_rows, self.table_rows = table_rows, table_rows
+    def __init__( self, parser, table_rows, table_row ):
+        NonTerminal.__init__( self, parser, table_rows, table_row )
+        self._nonterms = self.table_rows, self.table_row = table_rows, table_row
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
@@ -715,19 +778,20 @@ class TableRows( NonTerminal ) :
 
     def headpass1( self, igen ):
         [ x.headpass1( igen ) for x in self.flatten() ]
-        igen.maxcolumns = max([ x.columns for x in self.flatten() ])
+        maxcolumns = max([ x.columns for x in self.flatten() ])
+        [ setattr(x, 'maxcolumns', maxcolumns) for x in self.flatten() ]
 
     def headpass2( self, igen ):
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        [ x.generate( igen ) for x in self.flatten() ]
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -739,7 +803,7 @@ class TableRows( NonTerminal ) :
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
-        return NonTerminal.flatten( self, 'table_rows', 'table_rows' )
+        return NonTerminal.flatten( self, 'table_rows', 'table_row' )
 
 
 class TableRow( NonTerminal ) :
@@ -747,37 +811,42 @@ class TableRow( NonTerminal ) :
     tmpl_o = '<tr class="ettbl">\n'
     tmpl_c = '</tr>\n'
     tmpl_emptyrow = '<td colspan="%s"></td>\n'
-    def __init__( self, parser, tablecells, newline ):
-        NonTerminal.__init__( self, parser, tablecells, newline )
-        self._nonterms = (self.tablecells,) = (tablecells,)
+    def __init__( self, parser, table_cells, newline ):
+        NonTerminal.__init__( self, parser, table_cells, newline )
+        self._nonterms = (self.table_cells,) = (table_cells,)
         self._terms = (self.NEWLINE,) = (newline,)
         self.columns, self.emptyrow = None, None
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
     def children( self ) :
-        return (self.tablcells, self.NEWLINE)
+        return (self.table_cells, self.NEWLINE)
 
     def headpass1( self, igen ):
-        self.columns = len( self.tablecells.flatten() )
+        self.columns = len( self.table_cells.flatten() )
         NonTerminal.headpass1( self, igen )
 
     def headpass2( self, igen ):
         cell, colspan = None, 0
-        for t in self.tablecells.flatten() :
-            if t.colspan == 0 : colspan += 1
-            else : t.colspan, cell, colspan = colspan, t, 0
-        n = igen.maxcolumns - self.columns
+        for t in self.table_cells.flatten() :
+            if t.colspan == 0 :
+                colspan += 1
+            elif colspan :
+                t.colspan, cell, colspan = (t.colspan+colspan), t, 0
+            elif t.colspan :
+                cell = t
+        n = self.maxcolumns - self.columns
         if cell and (colspan or n) :
             cell.colspan += colspan + n
         elif colspan or n :
             self.emptyrow = colspan + n
+        NonTerminal.headpass2( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
         igen.puttext( self.tmpl_o )
         NonTerminal.generate( self, igen, *args, **kwargs )
-        if self.emptyrows :
-            igen.puttext( self.tmpl_emptyrow % self.emptyrows )
+        if self.emptyrow :
+            igen.puttext( self.tmpl_emptyrow % self.emptyrow )
         igen.puttext( self.tmpl_c )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
@@ -792,9 +861,9 @@ class TableRow( NonTerminal ) :
 
 class TableCells( NonTerminal ) :
     """class to handle `table_cells` grammar."""
-    def __init__( self, parser, tablecells, tablecell ) :
-        NonTerminal.__init__( self, parser, tablecells, tablecell )
-        self._nonterms = self.tablecells, self.tablecell = tablecells, tablecell
+    def __init__( self, parser, table_cells, table_cell ) :
+        NonTerminal.__init__( self, parser, table_cells, table_cell )
+        self._nonterms = self.table_cells, self.table_cell = table_cells, table_cell
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
@@ -809,13 +878,13 @@ class TableCells( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        [ x.generate( igen ) for x in self.flatten() ]
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -826,7 +895,7 @@ class TableCells( NonTerminal ) :
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
-        return NonTerminal.flatten( self, 'tablecells', 'tablecell' )
+        return NonTerminal.flatten( self, 'table_cells', 'table_cell' )
 
 
 class TableCell( NonTerminal ) :
@@ -835,10 +904,9 @@ class TableCell( NonTerminal ) :
     tmpl_o = { 'h' : '<th class="ettbl" colspan="%s" style="%s">',
                'd' : '<td class="ettbl" colspan="%s" style="%s">' }
     tmpl_c = { 'h' : '</th>\n', 'd' : '</td>\n' }
-    style  = { RIGHTALIGN : 'text-align : right;' }
 
     def __init__( self, parser, cellstart, text_contents ) :
-        NonTerminal.__init__( self, parser, markup, text_contents )
+        NonTerminal.__init__( self, parser, cellstart, text_contents )
         self._terms = (self.TABLE_CELLSTART,) = (cellstart,)
         self._nonterms = (self.text_contents,) = (text_contents,)
         self._nonterms = filter( None, self._nonterms )
@@ -847,7 +915,7 @@ class TableCell( NonTerminal ) :
         self.setparent( self, self.children() )
 
     def children( self ) :
-        return filter( None, self.TABLE_CELLSTART, self.text_contents )
+        return filter( None, (self.TABLE_CELLSTART, self.text_contents) )
 
     def headpass1( self, igen ):
         igen.markupstack = []
@@ -856,9 +924,15 @@ class TableCell( NonTerminal ) :
     def generate( self, igen, *args, **kwargs ):
         if self.colspan > 0 :
             typ   = 'h' if self.TABLE_CELLSTART.ishead else 'd'
-            cont  = self.text_contents.dump( None )
-            style = stylemarkup( self.TABLE_CELLSTART.style ) + \
-                    self.style.get( cont[-1], '' )
+            cont  = self.text_contents.dump(None)
+            style = stylemarkup( self.TABLE_CELLSTART.style )
+            if cont[-1] == self.RIGHTALIGN :
+                style += '; text-align : right'
+                flatnodes = self.flatterminals()
+                if flatnodes[-1].dump(None) == self.RIGHTALIGN :
+                    flatnodes[-1].terminal = ''
+                else :
+                    raise Exception( 'Unexpected !!' )
             igen.puttext( self.tmpl_o[typ] % (self.colspan, style) )
             self.text_contents.generate( igen, *args, **kwargs )
             igen.puttext( self.tmpl_c[typ] )
@@ -882,6 +956,7 @@ class MixedLists( NonTerminal ) :
         NonTerminal.__init__( self, parser, mixedlists, ulists, olists )
         self._nonterms = self.mixedlists, self.ulists, self.olists = \
                 mixedlists, ulists, olists
+        self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -895,14 +970,18 @@ class MixedLists( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        igen.lmarks.append( (None, 0) )
-        [ x.generate( igen ) for x in self.flatten() ]
+        igen.lmarks = [ (0, None, None) ]
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
+        # Flush out all the closing tags for ordered and unordered list.
+        for level, type_, closetag in igen.lmarks :
+            if type_ == None : continue
+            igen.puttext( closetag )
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -910,7 +989,7 @@ class MixedLists( NonTerminal ) :
         if showcoord:
             buf.write( ' (at %s)' % self.coord )
         buf.write('\n')
-        [ x.show(buf, offset+2, attrnames, showcoord), for x in self.flatten() ]
+        [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
         return NonTerminal.flatten( self, 'mixedlists', ('ulists', 'olists') )
@@ -920,8 +999,9 @@ class Lists( NonTerminal ) :
     """class to handle `unorderedlists` or `unorderedlists` grammar."""
     tmpl_o = { 'ul' : '<ul class="et">', 'ol' : '<ol class="et">' }
     tmpl_c = { 'ul' : '</ul>', 'ol' : '</ol>' }
-    def __init__( self, parser, lists, list_ ) :
+    def __init__( self, parser, type_, lists, list_ ) :
         NonTerminal.__init__( self, parser, lists, list_ )
+        self.type = type_
         self._nonterms = self.lists, self.list = lists, list_
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
@@ -938,22 +1018,22 @@ class Lists( NonTerminal ) :
 
     def generate( self, igen, *args, **kwargs ):
         for l in self.flatten() :
-            level, type_ = igen.lmarks[-1]
+            level, type_, closetag = igen.lmarks[-1]
             if l.level > level :
                 for x in range(l.level-level) :
                     igen.puttext( self.tmpl_o[l.type] )
-                    igen.lmarks.append( (l.level, l.type) )
-            elif level < l.level :
+                    igen.lmarks.append( (level+x+1, l.type, self.tmpl_c[l.type]) )
+            elif l.level < level :
                 for x in range(level-l.level) :
-                    level, type_ = igen.lmarks.pop(-1)
-                    igen.puttext( self.tmpl_c[type_] )
+                    level, type_, closetag = igen.lmarks.pop(-1)
+                    igen.puttext( closetag )
             l.generate( igen, *args, **kwargs )
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -971,12 +1051,13 @@ class List( NonTerminal ) :
     """class to handle `orderedlist` or `unorderedlist` grammar."""
     tmpl_o = '<li class="et" style="%s">'
     tmpl_c = '</li>'
-    def __init__( self, parser, lbegin, list_, text_contents, newline ):
+    def __init__( self, parser, type_, lbegin, list_, text_contents, newline ):
         NonTerminal.__init__( self, parser, lbegin, list_, text_contents, newline )
         self._nonterms = \
-            self.listbegin, self.list, self.text_contents, self.newline = \
+            self.listbegin, self.list, self.text_contents, self.NEWLINE = \
                 lbegin, list_, text_contents, newline
-        self._terms = (self.NEWLINE,) = newline
+        self.type, self.NEWLINE = type_, newline
+        self._terms = (self.NEWLINE,)
         self._nonterms = filter( None, self._nonterms )
         self._terms = filter( None, self._terms )
         # Set parent attribute for children, should be last statement !!
@@ -1002,8 +1083,7 @@ class List( NonTerminal ) :
         buf.write('\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
-    level = property( lambda self : (self.lbegin or self.list).level )
-    type  = property( lambda self : (self.lbegin or self.list).type )
+    level = property( lambda self : (self.listbegin or self.list).level )
 
 
 class ListBegin( NonTerminal ) :
@@ -1014,7 +1094,7 @@ class ListBegin( NonTerminal ) :
         self.UNORDLIST_START, self.ORDLIST_START = \
             (lstart, None) if self.type == 'ul' else (None, lstart)
         self._terms = self.UNORDLIST_START, self.ORDLIST_START, self.NEWLINE
-        self._nonterms = (self.text_contents,) = text_contents
+        self._nonterms = (self.text_contents,) = (text_contents,)
         self._terms = filter( None, self._terms )
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
@@ -1026,9 +1106,9 @@ class ListBegin( NonTerminal ) :
 
     def generate( self, igen, *args, **kwargs ):
         LIST = self.UNORDLIST_START or self.ORDLIST_START
-        igen.puttext( self.parent.tmpl_o % stylemarkup( self.LIST.style ))
-        self.text_contents.generate( igen, *args, **kwargs )
-        self.newline.generate( igen, *args, **kwargs )
+        igen.puttext( self.parent.tmpl_o % stylemarkup( LIST.style ))
+        self.text_contents and self.text_contents.generate( igen, *args, **kwargs )
+        self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -1073,8 +1153,8 @@ class Definitions( NonTerminal ) :
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -1097,15 +1177,16 @@ class Definition( NonTerminal ) :
         NonTerminal.__init__(
                 self, parser, defbegin, definition, text_contents, newline )
         self._terms = (self.NEWLINE,) = (newline,)
-        self._nonterms = (self.defbegin, self.definition, self.text_contents)
+        self._nonterms = (self.defbegin, self.definition, self.text_contents) =\
+                defbegin, definition, text_contents
         self._terms = filter( None, self._terms )
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
     def children( self ):
-        x = ( self.defbegin, self.definition, self.text_contents, self.newline )
-        return filter( x, None )
+        x = ( self.defbegin, self.definition, self.text_contents, self.NEWLINE )
+        return filter( None, x )
 
     def headpass1( self, igen ):
         igen.markupstack = []
@@ -1138,10 +1219,12 @@ class DefinitionBegin( NonTerminal ) :
         return filter( None, x )
 
     def generate( self, igen, *args, **kwargs ):
-        igen.puttext( self.parent.tmpl_dt % self.DEFINITION_START.defterm )
+        defterm = escape_htmlchars( self.DEFINITION_START.defterm )
+        igen.puttext( self.parent.tmpl_dt % defterm )
         igen.puttext( self.parent.tmpl_dd_o )
-        self.text_contents.generate( igen, *args, **kwargs )
-        self.newline.generate( igen, *args, **kwargs )
+        if self.text_contents :
+            self.text_contents.generate( igen, *args, **kwargs )
+        self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -1154,13 +1237,13 @@ class DefinitionBegin( NonTerminal ) :
 
 #---- Blockquotes
 
-class BQuotes( NonTerminal ) :
+class BlockQuotes( NonTerminal ) :
     """class to handle `blockquotes` grammar."""
     tmpl_o = '<blockquote class="et %s">\n'
     tmpl_c = '</blockquote>\n'
     def __init__( self, parser, bquotes=None, bquote=None ) :
         NonTerminal.__init__( self, parser, bquotes, bquote )
-        self._nonterms = self.bquotes, self.bquote = bquotes, bquote
+        self._nonterms = self.blockquotes, self.blockquote = bquotes, bquote
         self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
@@ -1172,8 +1255,7 @@ class BQuotes( NonTerminal ) :
         level = 0
         for bquote in self.flatten() :
             if bquote.level != level :
-                igen.markupstack = []
-                continue
+                igen.markupstack, level = [], bquote.level
             bquote.headpass1( igen )
 
     def headpass2( self, igen ):
@@ -1187,8 +1269,8 @@ class BQuotes( NonTerminal ) :
     def tailpass( self, igen ):
         [ x.tailpass(igen) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset
@@ -1199,10 +1281,10 @@ class BQuotes( NonTerminal ) :
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
-        return NonTerminal.flatten( self, 'blockquotes', 'blockqoute' )
+        return NonTerminal.flatten( self, 'blockquotes', 'blockquote' )
 
 
-class BQuote( NonTerminal ) :
+class BlockQuote( NonTerminal ) :
     """class to handle `blockquote` grammar."""
     def __init__( self, parser, bqstart, text_contents, newline ) :
         NonTerminal.__init__( self, parser, bqstart, text_contents, newline )
@@ -1218,18 +1300,20 @@ class BQuote( NonTerminal ) :
 
     def generate( self, igen, *args, **kwargs ):
         bqmark = self.BQUOTE_START.bqmark
-        cls = 'firstlevel' if igen.bqmark[-1] == '' else 'innerlevel'
         if bqmark > igen.bqmarks[-1] :
+            cls = 'firstlevel' if igen.bqmarks[-1] == '' else 'innerlevel'
             for x in bqmark.replace( igen.bqmarks[-1], '', 1 ) :
                 igen.puttext( self.parent.tmpl_o % cls )
+                cls = 'innerlevel'
             igen.bqmarks.append( bqmark )
         elif bqmark < igen.bqmarks[-1] :
             for x in igen.bqmarks[-1].replace( bqmark, '', 1 ) :
                 igen.puttext( self.parent.tmpl_c )
             igen.bqmarks.pop( -1 )
             igen.bqmarks.append( bqmark )
-        self.text_contents.generate( igen, *args, **kwargs )
-        self.newline.generate( igen, *args, **kwargs )
+        if self.text_contents :
+            self.text_contents.generate( igen, *args, **kwargs )
+        self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -1251,6 +1335,7 @@ class TextContents( NonTerminal ) :
         NonTerminal.__init__( self, parser, text_contents, text_content )
         self._nonterms = (self.text_contents, self.text_content) = \
                 text_contents, text_content
+        self._nonterms = filter( None, self._nonterms )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -1263,14 +1348,14 @@ class TextContents( NonTerminal ) :
     def headpass2( self, igen ):
         [ x.headpass2(igen) for x in self.flatten() ]
 
-    def generate( self, igen ):
-        [ x.generate(igen) for x in self.flatten() ]
+    def generate( self, igen, *args, **kwargs ):
+        [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
 
     def tailpass( self, igen ):
         [ x.tailpass(igen) for x in self.flatten() ]
 
-    def dump( self ):
-        return ''.join([ x.dump() for x in self.flatten() ])
+    def dump( self, c ):
+        return ''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         if showcoord:
@@ -1278,7 +1363,7 @@ class TextContents( NonTerminal ) :
         [ x.show(buf, offset, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
-        return NonTerminal.flatten( self, 'textcontents', 'text_content' )
+        return NonTerminal.flatten( self, 'text_contents', 'text_content' )
 
 
 class Link( NonTerminal ) :
@@ -1297,7 +1382,7 @@ class Link( NonTerminal ) :
         NonTerminal.__init__( self, parser, link )
         self._terms = (self.LINK,) = (link,)
         self.obfuscatemail = self.parser.etparser.etxconfig['obfuscatemail']
-        self.html = self._parse( LINK.dump(None)[2:-2].lstrip() )
+        self.html = self._parse( self.LINK.dump(None)[2:-2].lstrip() )
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -1314,7 +1399,7 @@ class Link( NonTerminal ) :
         if prefix1 == '*' :                         # Link - Open in new window
             html = self.l_template % ( '_blank', href, text )
         elif prefix1 == '#' :                       # Link - Anchor 
-            html = self.a_template % ( href, text )
+            html = self.a_template % ( href, href, text )
         elif prefix1 == '+' and prefix2 == '>' :    # Link - Image (right)
             html = self.img_template % ( href, text, 'float: right;' )
         elif prefix1 == '+' and prefix2 == '<' :    # Link - Image (left)
@@ -1352,17 +1437,20 @@ class Macro( NonTerminal ) :
     def __init__( self, parser, macro ) :
         NonTerminal.__init__( self, parser, macro )
         self._terms = (self.MACRO,) = (macro,)
+        self.macrotext = self.MACRO.dump(None)
         # Fetch the plugin
         try :
-            _macro = self.MACRO.dump(None)[2:-2]
-            macroname, argstr = _macro.lstrip().split('(', 1)
+            _macro = self.macrotext[2:-2].lstrip()
+            try    : macroname, argstr = _macro.split('(', 1)
+            except : macroname, argstr = _macro, ''
             macroname = macroname.strip()
             argstr = argstr.rstrip(' \r)')
             macroplugins = parser.etparser.etxconfig.get( 'macroplugins', {} )
             factory = macroplugins.get( macroname, None )
             self.macroplugin = factory and factory( argstr.strip() )
-            self.macroplugin.on_parse( self )
+            self.macroplugin and self.macroplugin.onparse( self )
         except :
+            raise
             if parser.etparser.debug : raise
             self.macroplugin = None
         # Set parent attribute for children, should be last statement !!
@@ -1378,7 +1466,10 @@ class Macro( NonTerminal ) :
         self.macroplugin and self.macroplugin.headpass2( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
-        self.macroplugin and self.macroplugin.generate( self, igen, *args, **kwargs )
+        if self.macroplugin :
+            self.macroplugin.generate( self, igen, *args, **kwargs )
+        else :
+            igen.puttext( escape_htmlchars( self.macrotext ))
 
     def tailpass( self, igen ):
         self.macroplugin and self.macroplugin.tailpass( self, igen )
@@ -1397,11 +1488,19 @@ class Html( NonTerminal ) :
     def __init__( self, parser, html ) :
         NonTerminal.__init__( self, parser, html )
         self._terms = (self.HTML,) = (html,)
+        self.htmltext = html.dump(None)
         # Fetch the plugin
-        self.tagname, self.text = html.dump(None)[2:-2].split(' ',1)
-        self.tagname = self.tagname.strip()
-        ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
-        self.ttplugin = tagplugins.get( self.tagname, None )
+        try :
+            _tagtext = self.htmltext[2:-2].lstrip()
+            try : self.tagname, self.text = _tagtext.split(' ', 1)
+            except : self.tagname, self.text = _tagtext, ''
+            self.tagname = self.tagname.strip()
+            ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
+            self.ttplugin = ttplugins.get( self.tagname, None )
+            self.ttplugin and self.ttplugin.onparse( self )
+        except :
+            if parser.etparser.debug : raise
+            self.ttplugin = None
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -1415,7 +1514,14 @@ class Html( NonTerminal ) :
         self.ttplugin and self.ttplugin.headpass2( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
-        self.ttplugin and self.ttplugin.generate( self, igen, *args, **kwargs )
+        if self.ttplugin :
+            self.ttplugin.generate( self, igen, *args, **kwargs )
+        else :
+            if self.parser.etparser.etxconfig['stripscript'] :
+                text = re.sub( '<[ \t]*script[^>]*?>', '', self.htmltext[2:-2] )
+            else :
+                text = self.htmltext[2:-2]
+            igen.puttext( text )
 
     def tailpass( self, igen ):
         self.ttplugin and self.ttplugin.tailpass( self, igen )
@@ -1433,7 +1539,7 @@ class BasicText( NonTerminal ) :
     """class to handle `basictext` grammar."""
     def __init__( self, parser, term ) :
         NonTerminal.__init__( self, parser, term )
-        self._term = (self.TERMINAL,) = (term,)
+        self._terms = (self.TERMINAL,) = (term,)
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -1453,7 +1559,7 @@ class MarkupText( NonTerminal ) :
     """class to handle `markuptext` grammar."""
     def __init__( self, parser, term ) :
         NonTerminal.__init__( self, parser, term )
-        self._term = (self.TERMINAL,) = (term,)
+        self._terms = (self.TERMINAL,) = (term,)
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -1463,9 +1569,10 @@ class MarkupText( NonTerminal ) :
     def headpass1( self, igen ):
         TERM = self.TERMINAL
         OPEN = igen.markupstack and igen.markupstack[-1].TERMINAL
-        if OPEN.markup == TERM.markup :
+        if OPEN and (OPEN.markup == TERM.markup) :
             OPEN.html, TERM.html = \
                     OPEN.tmpl_o % stylemarkup(OPEN.style), TERM.tmpl_c
+            igen.markupstack.pop(-1)
         else :
             igen.markupstack.append( self )
 
@@ -1483,7 +1590,7 @@ class ParagraphSeparator( NonTerminal ) :
 
     def __init__( self, parser, ps, newline ) :
         NonTerminal.__init__( self, parser, ps, newline )
-        self.newline = self.empty = self.paragraph_separator = None
+        self.NEWLINE = self.paragraph_separator = None
         self._terms = (self.NEWLINE,) = (newline,)
         self._nonterms = (self.paragraph_separator,) = (ps,)
         # Set parent attribute for children, should be last statement !!
@@ -1515,68 +1622,68 @@ class MARKUPTEXT( object ):
 #---- Text
 class NEWLINE( Terminal ): pass
 class ESCAPED_TEXT( Terminal ):
-    html   = property( lambda self : self.terminal )
-class TEXT( Terminal, BASICTEXT ):
-    html   = property( lambda self : self.terminal )
-class SPECIALCHAR( Terminal, BASICTEXT ):
-    html   = property( lambda self : self.terminal )
-class HTTP_URI( Terminal, BASICTEXT ):
+    html   = property( lambda self : escape_htmlchars( self.terminal ))
+class TEXT( BASICTEXT, Terminal ):
+    html   = property( lambda self : escape_htmlchars( self.terminal ))
+class SPECIALCHARS( BASICTEXT, Terminal ):
+    html   = property( lambda self : escape_htmlchars( self.terminal ))
+class HTTP_URI( BASICTEXT, Terminal ):
     tmpl   = '<a class="ethttpuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
-class HTTPS_URI( Terminal, BASICTEXT ):
+class HTTPS_URI( BASICTEXT, Terminal ):
     tmpl   = '<a class="ethttpsuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
-class WWW_URI( Terminal, BASICTEXT ):
+class WWW_URI( BASICTEXT, Terminal ):
     tmpl   = '<a class="etwwwuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
 
 #---- Text markup
-class M_SPAN( Terminal, MARKUPTEXT ):
+class M_SPAN( MARKUPTEXT, Terminal ):
     markup = 'span'
     tmpl_o = '<span class="etmark" style="%s">'
     tmpl_c = '</span>'
 
-class M_BOLD( Terminal, MARKUPTEXT ):
+class M_BOLD( MARKUPTEXT, Terminal ):
     markup = 'bold'
     tmpl_o = '<strong class="etmark" style="%s">'
     tmpl_c = '</strong>'
 
-class M_ITALIC( Terminal, MARKUPTEXT ):
+class M_ITALIC( MARKUPTEXT, Terminal ):
     markup = 'italic'
     tmpl_o = '<em class="etmark" style="%s">'
     tmpl_c = '</em>'
 
-class M_UNDERLINE( Terminal, MARKUPTEXT ):
+class M_UNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'underline'
     tmpl_o = '<u class="etmark" style="%s">'
     tmpl_c = '</u>'
 
-class M_SUPERSCRIPT( Terminal, MARKUPTEXT ):
+class M_SUPERSCRIPT( MARKUPTEXT, Terminal ):
     markup = 'superscript'
     tmpl_o = '<sup class="etmark" style="%s">'
     tmpl_c = '</sup>'
 
-class M_SUBSCRIPT( Terminal, MARKUPTEXT ):
+class M_SUBSCRIPT( MARKUPTEXT, Terminal ):
     markup = 'subscript'
     tmpl_o = '<sub class="etmark" style="%s">'
     tmpl_c = '</sub>'
 
-class M_BOLDITALIC( Terminal, MARKUPTEXT ):
+class M_BOLDITALIC( MARKUPTEXT, Terminal ):
     markup = 'bolditalic'
     tmpl_o = '<strong><em class="etmark" style="%s">'
     tmpl_c = '</em></strong>'
 
-class M_BOLDUNDERLINE( Terminal, MARKUPTEXT ):
+class M_BOLDUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'boldunderline'
     tmpl_o = '<strong><u class="etmark" style="%s">'
     tmpl_c = '</u></strong>'
 
-class M_ITALICUNDERLINE( Terminal, MARKUPTEXT ):
+class M_ITALICUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'italicunderline'
     tmpl_o = '<em><u class="etmark" style="%s">'
     tmpl_c = '</u></em>'
 
-class M_BOLDITALICUNDERLINE( Terminal, MARKUPTEXT ):
+class M_BOLDITALICUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'bolditalicunderline'
     tmpl_o = '<strong><em><u class="etmark" style="%s">'
     tmpl_c = '</u></em></strong>'
@@ -1596,7 +1703,7 @@ class HEADING( Terminal ):
     def _level( self ):
         x = self.hpatt1.findall( self.terminal.strip() )
         y = x or self.hpatt2.findall( self.terminal.strip() )
-        try    : level = len(x[0]) if x else int(y[1])
+        try    : level = len(x[0]) if x else int(y[0][1])
         except : level = 6
         return level
     def _style( self ):
@@ -1630,15 +1737,15 @@ class BQUOTE_START( Terminal ) :
     bqmark = property( lambda self : self.terminal.strip() )
     level  = property( lambda self : len(self.bqmark) )
 
-class BTABLE_START( Terminal ): pass
+class BTABLE_START( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
         return rc[0][1:-1] if rc else ''
-    btmark = property( lambda self : self.terminal.strip()[:3] )
+    btmark = property( lambda self : self.terminal.lstrip()[:3] )
     style  = property( lambda self : self._style() )
 
-class TABLE_CELLSTART( Terminal ): pass
+class TABLE_CELLSTART( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
@@ -1648,6 +1755,6 @@ class TABLE_CELLSTART( Terminal ): pass
 
 class NOWIKI_OPEN( Terminal ): pass
 class NOWIKITEXT( Terminal ): pass
-class NOWIKI_CLOSE( Terminal )  pass
+class NOWIKI_CLOSE( Terminal ): pass
 #---- Endmarker
 class ENDMARKER( Terminal ): pass

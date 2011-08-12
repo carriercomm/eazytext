@@ -16,6 +16,7 @@
 import logging, re, sys, copy
 from   os.path  import splitext, dirname
 from   hashlib  import sha1
+from   copy     import deepcopy
 
 import ply.yacc
 
@@ -33,6 +34,7 @@ class ParseError( Exception ):
 
 # Default Wiki page properties
 class ETParser( object ):
+    ENDMARKER = '<{<{}>}>'
     def __init__(   self,
                     etxconfig={},
                     outputdir=None,
@@ -63,23 +65,20 @@ class ETParser( object ):
         kwargs.update( outputdir=outputdir ) if outputdir else None
         kwargs.update( yacctab=yacctab )     if yacctab else None
         self.parser = ply.yacc.yacc( module=self, **kwargs )
-
-    def _initialize( self, etxconfig={} ):
         self.parser.etparser = self   # For AST nodes to access `this`
-        self.etlex.reset_lineno()
-        # Config initialization
-        self.etxconfig = copy.deepcopy( self._etxconfig )
-        self.etxconfig.update( etxconfig )
-        self._importpackages( etxconfig['plugin_packages'] )
 
-    def _importpackages( self, packages ):
-        packages = [ x.strip(' \t') for x in packages.split(',') ]
-        [ __import__(pkg) for pkg in filter(None, packages) ]
+        self._initialize()
+
+    def _initialize( self, etxfile=None, etxconfig={} ):
+        self.etxfile = etxfile
+        self.etxconfig = deepcopy( self._etxconfig )
+        self.etxconfig.update( etxconfig )
+        self.etlex.reset_lineno()
 
     def _fetchskin( self, skinfile ):
         if skinfile == None :
             skincss = ''
-        elif splitext.endswith( '.css' ) :
+        elif skinfile.endswith( '.css' ) :
             skincss = open( join(rootdir, 'skins', skinfile) ).read()
         else :
             skincss = skincss
@@ -92,34 +91,37 @@ class ETParser( object ):
         # Replace `a string ESCAPE characters`
         text = re.compile( r'\\+', re.MULTILINE | re.UNICODE ).sub(r'\\', text)
         text = text.rstrip( r'\\' )   # Remove trailing ESCAPE char
+        # Replace `\ Escaped new lines`
+        text = text.replace( '\\\n', '' )
         return text
 
-    def parse( self, text, etxconfig={}, filename='', debuglevel=0 ):
+    def parse( self, text, etxfile=None, etxconfig={}, debuglevel=0 ):
         """Parses eazytext-markup //text// and creates an AST tree. For every
         parsing invocation, the same lex, yacc, and objects will
         be used.
 
         : text ::
             A string containing the Wiki text
-        : filename ::
+        : etxfile ::
             Name of the file being parsed (for meaningful error messages)
         : debuglevel ::
             Debug level to yacc
         """
         # Initialize
-        self._initialize()
+        self._initialize( etxfile=etxfile, etxconfig=etxconfig )
         self.text = text
-        self.etlex.filename = filename
+        self.etlex.filename = etxfile
         self.hashtext = sha1( text ).hexdigest()
-        etxconfig = self.etxconfig
-        if self.etxconfig['include_skin'] :
-            self.skincss = self._fetchskin( etxconfig['skinfile'] )
+
+        self.skincss = self._fetchskin( self.etxconfig['skinfile'] 
+                       ) if self.etxconfig['include_skin'] else ''
 
         # Pre-process the text, massage them for prasing.
         self.pptext = self._preprocess( text )
 
         # parse and get the Translation Unit
-        self.pptext += '\n' + ETLexer.endmarker
+        debuglevel = self.debug or debuglevel
+        self.pptext += '\n' + self.ENDMARKER
         self.tu = self.parser.parse(self.pptext, lexer=self.etlex, debug=debuglevel)
         return self.tu
 
@@ -171,22 +173,37 @@ class ETParser( object ):
         p[0] = WikiPage( p.parser, p[1] )
 
     def p_paragraphs_1( self, p ):
-        """paragraphs       : paragraphs paragraph paragraph_separator"""
-        p[0] = Paragraphs( p.parser, p[1], p[2], p[3] )
-
-    def p_paragraphs_2( self, p ):
-        """paragraphs       : paragraph paragraph_separator"""
-        p[0] = Paragraphs( p.parser, None, p[1], p[2] )
-
-    def p_paragraphs_3( self, p ):
         """paragraphs       : paragraph_separator"""
         p[0] = Paragraphs( p.parser, None, None, p[1] )
 
-    def p_paragraph( self, p ):
-        """paragraph        : nowikiblock
+    def p_paragraphs_2( self, p ):
+        """paragraphs       : paragraph"""
+        p[0] = Paragraphs( p.parser, None, p[1], None )
+
+    def p_paragraphs_3( self, p ):
+        """paragraphs       : paragraph paragraph_separator"""
+        p[0] = Paragraphs( p.parser, None, p[1], p[2] )
+
+    def p_paragraphs_4( self, p ):
+        """paragraphs       : paragraphs paragraph paragraph_separator"""
+        p[0] = Paragraphs( p.parser, p[1], p[2], p[3] )
+
+    def p_paragraphs_5( self, p ):
+        """paragraphs       : paragraphs paragraph"""
+        p[0] = Paragraphs( p.parser, p[1], p[2], None )
+
+    def p_paragraph_1( self, p ):
+        """paragraph        : textlines"""
+        p[0] = Paragraph( p.parser, p[1] )
+
+    def p_paragraph_2( self, p ):
+        """paragraph        : specialpara"""
+        p[0] = p[1]
+
+    def p_specialpara( self, p ):
+        """specialpara      : nowikiblock
                             | heading
                             | horizontalrule
-                            | textlines
                             | btable
                             | table
                             | mixedlists
@@ -203,7 +220,7 @@ class ETParser( object ):
 
     def p_nowiki_2( self, p ):
         """nowikiblock  : NOWIKI_OPEN NEWLINE nowikilines ENDMARKER"""
-        terms = [ (NOWIKI_OPEN,1), (NEWLINE,2), p[3] ]
+        terms = [ (NOWIKI_OPEN,1), (NEWLINE,2), p[3], None, None ]
         p[0] = NoWiki( p.parser, *self._buildterms( p, terms ) )
 
     def p_nowikilines_1( self, p ):
@@ -221,7 +238,7 @@ class ETParser( object ):
 
     def p_nowikilines_4( self, p ):
         """nowikilines  : nowikilines NOWIKITEXT NEWLINE"""
-        terms = [ P[1], (NOWIKITEXT,2), (NEWLINE,3) ]
+        terms = [ p[1], (NOWIKITEXT,2), (NEWLINE,3) ]
         p[0] = NowikiLines( p.parser, *self._buildterms(p, terms) )
 
     def p_nowikilines_5( self, p ):
@@ -245,7 +262,7 @@ class ETParser( object ):
         """textlines    : textline
                         | textlines textline"""
         args = [ p[1], p[2] ] if len(p)==3 else [ None, p[1] ]
-        p[0] = TextLines( p.parser, *self._buildterms(p, terms))
+        p[0] = TextLines( p.parser, *args )
 
     def p_textline( self, p ):
         """textline     : text_contents NEWLINE"""
@@ -321,13 +338,13 @@ class ETParser( object ):
         """orderedlists : orderedlist
                         | orderedlists orderedlist"""
         args = [ p[1], p[2] ] if len(p)==3 else [ None, p[1] ]
-        p[0] = OrderedLists( 'ol', p.parser, *args )
+        p[0] = Lists( 'ol', p.parser, *args )
 
     def p_unorderedlists( self, p ):
         """unorderedlists   : unorderedlist
                             | unorderedlists unorderedlist"""
         args = [ p[1], p[2] ] if len(p)==3 else [ None, p[1] ]
-        p[0] = UnorderedLists( 'ul', p.parser, *args )
+        p[0] = Lists( 'ul', p.parser, *args )
 
     def p_orderedlist( self, p ):
         """orderedlist  : orderedlistbegin
@@ -391,7 +408,7 @@ class ETParser( object ):
         """blockquote   : BQUOTE_START text_contents NEWLINE
                         | BQUOTE_START NEWLINE"""
         terms = [ (BQUOTE_START,1), p[2], (NEWLINE,3)
-                ] if len(p) == 4 else [ (BQUOTE_START, None, (NEWLINE,2) ]
+                ] if len(p) == 4 else [ (BQUOTE_START,1), None, (NEWLINE,2) ]
         p[0] = BlockQuote( p.parser, *self._buildterms( p, terms ) )
 
     #---- Text contents
@@ -414,10 +431,10 @@ class ETParser( object ):
         """link         : LINK %prec PREC_LINK"""
         p[0] = Link( p.parser, LINK(p.parser, p[1]) )
 
-    def p_nestedlink( self, p ):
-        """nestedlink   : NESTEDLINK %prec PREC_LINK"""
-        #p[0] = NestedLink( p.parser, NESTEDLINK(p.parser, p[1]) )
-        pass
+    #def p_nestedlink( self, p ):
+    #    """nestedlink   : NESTEDLINK %prec PREC_LINK"""
+    #    p[0] = NestedLink( p.parser, NESTEDLINK(p.parser, p[1]) )
+    #    pass
 
     def p_macro( self, p ):
         """macro        : MACRO %prec PREC_MACRO"""
@@ -426,6 +443,9 @@ class ETParser( object ):
     def p_html( self, p ):
         """html         : HTML %prec PREC_HTML"""
         p[0] = Html( p.parser, HTML(p.parser, p[1]) )
+
+
+    #---- Basic Text
 
     def p_basictext_0( self, p ):
         """basictext    : TEXT"""
@@ -495,15 +515,15 @@ class ETParser( object ):
 
     def p_paragraph_seperator_1( self, p ) :
         """paragraph_separator  : NEWLINE"""
-        p[0] = ParagraphSeparator( p.parser, None, NEWLINE(p.parser, p[2]) )
+        p[0] = ParagraphSeparator( p.parser, None, NEWLINE(p.parser, p[1]) )
 
     def p_paragraph_seperator_2( self, p ) :
         """paragraph_separator  : paragraph_separator NEWLINE"""
         p[0] = ParagraphSeparator( p.parser, p[1], NEWLINE(p.parser, p[2]) )
 
-    def p_paragraph_seperator_3( self, p ) :
-        """paragraph_separator  : """
-        p[0] = ParagraphSeparator( p.parser, None, None )
+    #def p_paragraph_seperator_3( self, p ) :
+    #    """paragraph_separator  : """
+    #    p[0] = ParagraphSeparator( p.parser, None, None )
 
     def p_error( self, p ):
         if p:

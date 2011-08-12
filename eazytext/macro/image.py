@@ -12,7 +12,7 @@ from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
 from   eazytext.interfaces  import IEazyTextMacroFactory
-from   eazytext.lib         import constructstyle, lhtml
+from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
@@ -37,10 +37,12 @@ class Image( Macro ) :
     |= href   | optional, href, to convert the image into a hyper-link
     """
     tmpl = '<img class="etm-image" %s %s src="%s" alt="%s" style="%s"/>'
+    a_tmpl = '<a href="%s"> %s </a>'
 
-    def __init__( self, src, alt, **kwargs ) :
-        self.src = src
-        self.alt = alt
+    def __init__( self, *args, **kwargs ) :
+        args = list(args)
+        self.src = args.pop(0) if args else None
+        self.alt = args.pop(0) if args else None
         self.height = kwargs.pop( 'height', None )
         self.width = kwargs.pop( 'width', None )
         self.href = kwargs.pop( 'href', '' )
@@ -54,12 +56,7 @@ class Image( Macro ) :
         wattr = self.width and ( 'width="%s"' % self.width ) or ''
         img = self.tmpl % ( hattr, wattr, self.src, self.alt, self.style )
         # If the image is a link, enclose it with a 'anchor' dom-element.
-        if self.href :
-            href = lhtml.Element( 'a', { 'href' : self.href } )
-            href.append( lhtml.fromstring( img ))
-            html = lhtml.tostring( href )
-        else :
-            html = img
+        html = ( self.a_tmpl % (self.href, img) ) if self.href else img
         return html
 
 # Register this plugin

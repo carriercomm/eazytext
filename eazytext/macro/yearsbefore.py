@@ -39,9 +39,13 @@ class YearsBefore( Macro ) :
     """
     tmpl = '<span class="etm-yearsbefore" style="%s">%s</span>'
 
-    def __init__( self, template, fromyear, frommonth=1, fromday=1, **kwargs ) :
+    def __init__( self, *args, **kwargs ) :
+        args = list(args)
         utc = dt.datetime.utcnow()
-        self.template  = template
+        self.template  = args.pop(0) if args else 'past %s'
+        fromyear = kwargs.get( 'fromyear', 2000 )
+        frommonth = kwargs.get( 'frommonth', 1 )
+        fromday = kwargs.get( 'fromday', 1 )
         try :
             self.fromyear  = int(fromyear)
             self.frommonth = int(frommonth)

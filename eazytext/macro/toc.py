@@ -16,11 +16,8 @@ from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
 from   eazytext.interfaces  import IEazyTextMacroFactory
-from   eazytext.lib         import constructstyle, lhtml
-
-alphanum = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-random_word = lambda : ''.join([ choice(alphanum) for i in range(4) ])
-shorten = lambda s, m : s[:m] + (s[m:] and ' ...' or '' )
+from   eazytext.lib         import constructstyle, escape_htmlchars
+from   eazytext.ast         import Heading
 
 gsm = getGlobalSiteManager()
 
@@ -37,60 +34,48 @@ class Toc( Macro ):
     Positional arguments, //None//
 
     keyword argument,
-    |= weight | optional, will be returned by on_posthtml() method
-    |= topic  | optional, topic for table of contents
+    |= summary    | optional, summary for table of contents
     |= maxheadlen | optional, number of characters to display for each title.
     """
-    tmpl = '<div class="etm-toc" style="%s"> %s %s </div>'
-    head_tmpl = '<div class="head"> %s %s </div>'
-    topic_tmpl = '<div class="topic"> %s </div>'
-    close_tmpl = '<div class="close">close</div>'
-    tocul_tmpl = '<div class="toc"> %s </div>'
-    tocli_tmpl = '<div class="%s"> %s </div>'
-    toca_tmpl = '<a href="%s"> %s </a>'
+    tmpl = '<details class="etm-toc" style="%s"> %s </details>'
+    summary_tmpl = '<summary> %s </summary>'
+    headlist_tmpl  = '<ul> %s </ul>'
+    toca_tmpl = '<li><a class="level-%s" href="%s"> %s </a></li>'
 
-    htags = [ 'h1', 'h2', 'h3', 'h4', 'h5', ]
+    htags = [ '', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+
+    MAXHEADLEN = 30
+    SUMMARY    = 'Table of Contents'
 
     def __init__( self, **kwargs ) :
-        weight = int( kwargs.pop( 'weight', '-1' ))
-        self.maxheadlen = int(kwargs.pop( 'maxheadlen', 30 ))
-        self.topic = kwargs.pop( 'topic', 'Table of Contents' )
+        try    : self.maxheadlen = int(kwargs.pop( 'maxheadlen', self.MAXHEADLEN ))
+        except : self.maxheadlen = self.MAXHEADLEN
+        self.summary = kwargs.pop( 'summary', self.SUMMARY )
         self.style  = constructstyle( kwargs )
-        self.weight = weight == 0 and -1 or weight
 
     def __call__( self, argtext ):
         return eval( 'Toc( %s )' % argtext )
 
-    def _maketoc( self, node ) :
-        entries = []
-        for n in node.getchildren() :
-            if n.tag in self.htags :
-                children  = n.getchildren()
-                text = children[0].get('name'
-                       ) if len(children) == 2 else children[1].get( 'name' )
-                linktext = shorten( text, self.maxheadlen
-                           ) if self.maxheadlen else text or ' '
-                link = self.toca_tmpl % ( '#' + text, linktext )
-                e = self.tocli_tmpl % ( n.tag, link )
-                entries.append( e )
-            entries.extend( self._maketoc( n ))
-        return entries
-
-    def tailpass( self, node, igen ) :
-        etparser = self.macronode.parser.etparser
+    def headpass1( self, node, igen ) :
+        etparser = node.parser.etparser
         try :
-            htmltree = lhtml.fromstring( etparser.html )
-            topicdiv = self.topic_tmpl % self.topic
-            closediv = self.close_tmpl
-            headdiv = self.head_tmpl % ( closediv, topicdiv )
-            entries = self._maketoc( htmltree )
-            toc_div = self.tocul_tmpl % ''.join( entries )
-            html = self.tmpl % (self.style, headdiv, toc_div)
+            headings = node.getroot().filter( lambda n : isinstance(n, Heading) )
+            headlist = []
+            for h in headings :
+                text = escape_htmlchars( h.headtext )[:self.maxheadlen]
+                headlist.append( self.toca_tmpl % (h.level, '#'+text, text) )
+            headlist = self.headlist_tmpl % '\n'.join( headlist )
+            summary = self.summary_tmpl % self.summary
+            html = self.tmpl % ( self.style, '\n'.join([summary, headlist]) )
         except :
-            if self.extnode.parser.etparser.debug : raise
+            raise
+            if node.parser.etparser.debug : raise
             html = 'Unable to generate the TOC, ' + \
                             'Wiki page not properly formed ! <br></br>'
-       igen.puttext( html ) 
+        self.htmltext = html
+
+    def generate( self, node, igen, *args, **kwargs ):
+        igen.puttext( self.htmltext )
 
 # Register this plugin
 gsm.registerUtility( Toc(), IEazyTextMacroFactory, 'Toc' )

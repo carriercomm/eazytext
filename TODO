@@ -1,13 +1,14 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
-* Mailing list for EazyText, use pluggdapps-discuss for now.
 * CSS skin class names should be more unique.
 * eztext.py automatic script generation via easy_install.
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.
 
 ----
+* Line-break feature.
+* use os.sep instead of using magic-values
 * Re-design the engine on stack-machine concept.
 * Address() extension to generate <address> tag with author's address.
 * Wrap the translated html text inside <article> tag.
@@ -25,6 +26,7 @@ Track the project at,
 * Syntax for grouping headers via <hgroup> element.
 * Syntax to generate <mark> element
 * Syntax to attach value to <li> element for ordered list.
+* Style short for list attributes.
 * Support nested link markup for <nav> element, like,
     [[ [[ /pref.html | pref ]] [[ /pref.html | pref ]] ]]
 * Enclose TOC generated output links within <nav> element.

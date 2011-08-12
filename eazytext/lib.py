@@ -7,8 +7,7 @@
 #   2. Toc() macro's Javascript based shrink UI.
 #   3. Box() extension's Javascript based shrink UI.
 
-import re, logging, sys
-import lxml.html            as lhtml
+import re, sys
 
 HTML_CHARS = [ '"', "'", '&', '<', '>' ]
 ENDMARKER  = '<{<{}>}>'

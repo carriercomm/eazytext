@@ -30,19 +30,20 @@ from   eazytext.interfaces  import IEazyTextTemplateTags
 gsm = getGlobalSiteManager()
 
 class TT( object ):
-    def onparse( node ):
+    ttname = '_default'
+    def onparse( self, node ):
         pass
 
-    def headpass1( node, igen ):
+    def headpass1( self, node, igen ):
         pass
 
-    def headpass2( node, igen ):
+    def headpass2( self, node, igen ):
         pass
 
-    def generate( node, igen, *args, **kwargs ):
+    def generate( self, node, igen, *args, **kwargs ):
         pass
 
-    def tailpass( node, igen ):
+    def tailpass( self, node, igen ):
         pass
 
 
@@ -51,11 +52,11 @@ class TTPre( TT ):
     |= Description | Generate preformated element |
     |= Syntax      | \[<PRE //text// \>]          |
     """
-    ttname = 'pre'
+    ttname = 'PRE'
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag pre">%s</span>'
     def generate( self, node, igen, *args, **kwargs ) :
-        igen.puttext( self.template % escape_htmlchars( node.text.strip() )
+        igen.puttext( self.template % escape_htmlchars( node.text ))
     example = '[<PRE sample text >]'
 
 
@@ -64,14 +65,14 @@ class TTAbbr( TT ):
     |= Description | Generate abbreviation element   |
     |= Syntax      | \[<ABBR //text//, //title// \>] |
     """
-    ttname = 'abbr'
+    ttname = 'ABBR'
     implements( IEazyTextTemplateTags )
     template = '<abbr class="etttag" title="%s">%s</abbr>'
     def generate( self, node, igen, *args, **kwargs ):
         args  = node.text.split(',')
         cont  = escape_htmlchars( args and args.pop(0).strip() or '' )
         title = escape_htmlchars( args and args.pop(0).strip() or '' )
-        html  =  template % ( title, cont )
+        html  =  self.template % ( title, cont )
         igen.puttext( html )
     example = '[<ABBR WTO, World Trade organisation >]'
 
@@ -81,11 +82,11 @@ class TTFixme( TT ):
     |= Description  | Generate FIXME label |
     |= Syntax       | \[<FIXME\>]            |
     """
-    ttname = 'fixme'
+    ttname = 'FIXME'
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag fixme">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
-        igen.puttext( template % 'FIXME' )
+        igen.puttext( self.template % 'FIXME' )
     example = '[<FIXME>]'
 
 
@@ -96,11 +97,11 @@ class TTQ( TT ) :
 
     html element generated is a div element with class attribute ''//qbq//''
     """
-    ttname = 'q'
+    ttname = 'Q'
     implements( IEazyTextTemplateTags )
     template = '<div class="etttag qbq">%s</div>'
     def generate( self, node, igen, *args, **kwargs ):
-        igen.puttext( template % escape_htmlchars( node.text ))
+        igen.puttext( self.template % escape_htmlchars( node.text ))
 TTQ.example = """
 [<Q
 Emptying the heart of desires,
@@ -120,7 +121,7 @@ class TTSmileySmile( TT ):
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag smile">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
-        igen.puttext( template % '&#9786;' )
+        igen.puttext( self.template % '&#9786;' )
     example='[<:-)>] '
 
 
@@ -133,7 +134,7 @@ class TTSmileySad( TT ):
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag sad">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
-        igen.puttext( template % '&#9785;' )
+        igen.puttext( self.template % '&#9785;' )
     example = '[<:-(>]'
 
 
@@ -144,12 +145,12 @@ class TTAddr( TT ) :
 
     comma will be replaced with <br/> element
     """
-    ttname = 'addr'
+    ttname = 'ADDR'
     implements( IEazyTextTemplateTags )
     template = '<address class="etttag">%s</address>'
     def generate( self, node, igen, *args, **kwargs ):
         text = escape_htmlchars( node.text.replace(',', '<br/>') )
-        igen.puttext( template % text )
+        igen.puttext( self.template % text )
     example = "[<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]"
 
 
@@ -158,7 +159,7 @@ class TTFnt( TT ) :
     |= Description | Generate a span element with specified font styling. |
     |= Syntax      | \[<FNT <CSS font style> ; <text> \>]                 |
     """
-    ttname = 'fnt'
+    ttname = 'FNT'
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag fnt" style="font: %s">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
@@ -167,7 +168,7 @@ class TTFnt( TT ) :
         except :
             style, innerHTML = '', node.text
         style, innerHTML = escape_htmlchars(style), escape_htmlchars(innerHTML)
-        igen.puttext( template % (style, innerHTML) )
+        igen.puttext( self.template % (style, innerHTML) )
 TTFnt.example = """
 [<FNT italic bold 12px/30px Georgia, serif ;
 This text is specially fonted >]
@@ -182,14 +183,14 @@ class TTFootnote( TT ) :
     Where `text` will be super-scripted and hyper-linked to foot-note content.
 
     """
-    ttname = 'footnote'
+    ttname = 'FOOTNOTE'
     implements( IEazyTextTemplateTags )
     template = '<sup class="etttag footnote">' + \
                '<a href="#%s" style="text-decoration: none;">%s' + \
                '</a></sup>'
     def generate( self, node, igen, *args, **kwargs ):
         text = escape_htmlchars( node.text.strip() )
-        igen.puttext( template % (text, text) )
+        igen.puttext( self.template % (text, text) )
 TTFootnote.example = """
 ... mentioned by Richard Feynman [<FN 1 >], initially proposed by
 Albert Einstein  [<FN 2 >]

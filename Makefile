@@ -37,4 +37,7 @@ clean :
 	rm -rf `find ./ -name "*.pyc"`;
 	rm -rf `find ./ -name "yacctab.py"`;
 	rm -rf `find ./ -name "lextab.py"`;
-
+	rm -rf eazytext/test/stdfiles/*.etx.py;
+	rm -rf eazytext/test/stdfiles/*.html;
+	rm -rf eazytext/test/mixchar.*;
+	rm -rf eazytext/test/mixline.*;

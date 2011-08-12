@@ -60,20 +60,15 @@ td.ettbl {
 
 /* Big table */
 table.etbtbl {
-  border-left : 1px solid gray;
-  border-top : 1px solid gray;
+  border-collapse: collapse;
 }
 tr.etbtbl {
 }
 th.etbtbl {
-  padding : 5px;
-  border-right : 1px solid gray;
-  border-bottom : 1px solid gray;
+  padding : 5px; border : 1px solid gray;
 }
 td.etbtbl {
-  padding : 5px;
-  border-right : 1px solid gray;
-  border-bottom : 1px solid gray;
+  padding : 5px; border : 1px solid gray;
 }
 
 /* Horizontal rule */
@@ -155,7 +150,7 @@ span.etm-span {
 }
 
 /* macro-toc */
-div.etm-toc {
+details.etm-toc {
   background    : #f8f7bc;
   position      : relative;
   float         : left;
@@ -165,37 +160,36 @@ div.etm-toc {
   border-right  : 1px solid gray;
   border-bottom : 1px solid gray;
 }
-div.etm-toc .head {
-  margin-bottom : 5px;
-}
-div.etm-toc .head .topic {
+details.etm-toc summary {
   font-weight : bold;
-}
-div.etm-toc .head .close {
   color : blue;
   cursor : pointer;
   font-size : small;
   position: relative;
   float: right;
 }
-div.etm-toc div.toc {
+details.etm-toc ul {
+  list-style : none;
 }
-div.etm-toc div.h1 {
+details.etm-toc a {
+}
+details.etm-toc a.level-1 {
   margin-left : 0em;
 }
-div.etm-toc div.h2 {
+details.etm-toc a.level-2 {
   margin-left : 0.7em;
 }
-div.etm-toc div.h3 {
+details.etm-toc a.level-3 {
   margin-left : 1.4em;
 }
-div.etm-toc div.h4 {
+details.etm-toc a.level-4 {
   margin-left : 2.1em;
 }
-div.etm-toc div.h5 {
+details.etm-toc a.level-5 {
   margin-left : 2.8em;
 }
-div.etm-toc a {
+details.etm-toc a.level-6 {
+  margin-left : 3.5em;
 }
 
 /* extension-box */

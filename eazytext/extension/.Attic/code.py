@@ -67,9 +67,7 @@ class Code( Extension ) :
     code_tmpl = '<div class="codecont"> %s </div>'
     hashtext = None
 
-    def __init__( self, props, nowiki, *args ):
-        self.nowiki = nowiki
-        self.style = constructstyle( props )
+    def __init__( self, *args ):
         self.lexname = args and args[0].lower() or 'text'
         self.linenos = 'noln' not in args
 

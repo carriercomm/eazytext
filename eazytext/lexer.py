@@ -109,6 +109,7 @@ class ETLexer( object ) :
     # States
     states = (
                ( 'nowiki', 'exclusive' ),
+               ( 'table', 'exclusive' ),
              )
 
     ## Tokens recognized by the ETLexer
@@ -121,7 +122,7 @@ class ETLexer( object ) :
         'M_SUBSCRIPT', 'M_BOLDITALIC', 'M_ITALICUNDERLINE', 'M_BOLDUNDERLINE',
         'M_BOLDITALICUNDERLINE',
         # Inline Text blocks
-        'LINK', 'NESTEDLINK', 'MACRO', 'HTML',
+        'LINK', 'MACRO', 'HTML', #'NESTEDLINK', 
         # Text blocks
         'HORIZONTALRULE', 'HEADING',
         'ORDLIST_START', 'UNORDLIST_START', 'DEFINITION_START', 'BQUOTE_START',
@@ -133,7 +134,7 @@ class ETLexer( object ) :
     )
 
     # pipe, sqropen, sqrclose, paranopen, paranclose, angleopen, angleclose,
-    spchars     = r'\\\|\[\]{}<>\#:=-'
+    spchars     = r' \\\|\[\]\{\}\<\>\#:=-'
     txtmarkup   = r"'\*/_`,^"
     anything    = r'.|\n|\r\n'
     endmarker   = r'\<\{\<\{\}\>\}\>'
@@ -150,10 +151,10 @@ class ETLexer( object ) :
     text        = r'[^\r\n%s]+' % (txtmarkup+spchars)
     specialchars= r'[%s]' % (txtmarkup+spchars)
     # Block text
-    hrule       = r'^-{4,}%s' % ws
+    hrule       = r'^-{4,}%s' % spac
     heading     = r'^%s((={1,6})|([hH][123456]\.))(%s)?' % (spac, style)
     btopen, btclose, btrow, btcell, bthead = '{', '}', '-', ' ' , '='
-    btable      = r'^%s\|\|[=\-\{\} ](%s)?' % (spac, style)
+    btable      = r'^%s\|\|[ {}=-](%s)?' % (spac, style)
     nowikiopen  = r'^\{\{\{.*?$'
     nowikinl    = r'(\n|\r\n)+'
     nowikitext  = r'^.+$'
@@ -162,7 +163,8 @@ class ETLexer( object ) :
     unordmark   = r'^%s\*{1,5}(%s)?' % (spac, style)
     defnmark    = r'^%s:[^\n\r]*::' % spac
     bqmark      = r'^%s\>{1,5}' % spac
-    tblcellmark = r'^%s\|=?(%s)?' % (spac, style)
+    tblcellbegin= r'^%s\|=?(%s)?' % (spac, style)
+    tblcellstart= r'%s\|=?(%s)?' % (spac, style)
     # Text markup
     tmark_span  = r"``(%s)?" % style
     tmark_bold  = r"(''|\*\*)(%s)?" % style
@@ -197,6 +199,10 @@ class ETLexer( object ) :
     def t_ESCAPED( self, t ):
         return self._onescaped( t )
 
+    @TOKEN( endmarker )
+    def t_ENDMARKER( self, t ):  
+        return t
+
     @TOKEN(http_uri)
     def t_HTTP_URI( self, t ):
         return t
@@ -212,6 +218,45 @@ class ETLexer( object ) :
     @TOKEN( nowikiopen )
     def t_NOWIKI_OPEN( self, t ) :
         t.lexer.push_state('nowiki')
+        return t
+
+    @TOKEN( hrule )
+    def t_HORIZONTALRULE( self, t ):
+        self._incrlineno(t)
+        return t
+
+    @TOKEN( heading )
+    def t_HEADING( self, t ):
+        return t
+
+    @TOKEN( ordmark )
+    def t_ORDLIST_START( self, t ):
+        return t
+
+    @TOKEN( unordmark )
+    def t_UNORDLIST_START( self, t ):
+        return t
+
+    @TOKEN( defnmark )
+    def t_DEFINITION_START( self, t ):
+        return t
+
+    @TOKEN( bqmark )
+    def t_BQUOTE_START( self, t ):
+        return t
+
+    @TOKEN( btable )
+    def t_BTABLE_START( self, t ) :
+        return t
+
+    @TOKEN( tblcellbegin )
+    def t_TABLE_CELLBEGIN( self, t ):
+        t.lexer.push_state( 'table' )
+        t = self._lextoken( 'TABLE_CELLSTART', t.value )
+        return t
+
+    @TOKEN( tmark_biu )
+    def t_M_BOLDITALICUNDERLINE( self, t ) :
         return t
 
     @TOKEN( tmark_span )
@@ -250,19 +295,15 @@ class ETLexer( object ) :
     def t_M_BOLDUNDERLINE( self, t ) :
         return t
 
-    @TOKEN( tmark_biu )
-    def t_M_BOLDITALICUNDERLINE( self, t ) :
-        return t
-
     @TOKEN( link )
     def t_LINK( self, t ):
         self._incrlineno(t)
         return t
 
-    @TOKEN( nestedlink )
-    def t_NESTEDLINK( self, t ):
-        self._incrlineno(t)
-        return t
+    #@TOKEN( nestedlink )
+    #def t_NESTEDLINK( self, t ):
+    #    self._incrlineno(t)
+    #    return t
 
     @TOKEN( macro )
     def t_MACRO( self, t ):
@@ -274,43 +315,9 @@ class ETLexer( object ) :
         self._incrlineno(t)
         return t
 
-    @TOKEN( hrule )
-    def t_HORIZONTALRULE( self, t ):
-        self._incrlineno(t)
-        return t
-
-    @TOKEN( heading )
-    def t_HEADING( self, t ):
-        return t
-
     @TOKEN( newline )
     def t_NEWLINE( self, t ):
         self._incrlineno(t)
-        return t
-
-    @TOKEN( ordmark )
-    def t_ORDLIST_START( self, t ):
-        return t
-
-    @TOKEN( unordmark )
-    def t_UNORDLIST_START( self, t ):
-        return t
-
-    @TOKEN( defnmark )
-    def t_DEFINITION_START( self, t ):
-        return t
-
-    @TOKEN( bqmark )
-    def t_BQUOTE_START( self, t ):
-        return t
-
-    @TOKEN( btable )
-    def t_BTABLE_START( self, t ) :
-        return t
-
-    @TOKEN( tblcellmark )
-    def t_TABLE_CELLSTART( self, t ):
-        t.lexer.push_state('table')
         return t
 
     @TOKEN( text )
@@ -321,13 +328,13 @@ class ETLexer( object ) :
     def t_SPECIALCHARS( self, t ):
         return t
 
-    @TOKEN( nowikiopen )
-    def t_nowiki_NOWIKI_OPEN( self, t ):
-        return t
-
     @TOKEN( nowikiclose )
     def t_nowiki_NOWIKI_CLOSE( self, t ):
         t.lexer.pop_state()
+        return t
+
+    @TOKEN( endmarker )
+    def t_nowiki_ENDMARKER( self, t ):  
         return t
 
     @TOKEN( nowikinl )
@@ -340,19 +347,105 @@ class ETLexer( object ) :
         self._incrlineno(t)
         return t
 
-    @TOKEN( endmarker )
-    def t_nowiki_ENDMARKER( self, t ):  
+    @TOKEN( tblcellstart )
+    def t_table_TABLE_CELLSTART( self, t ):
         return t
 
-    @TOKEN( endmarker )
-    def t_ENDMARKER( self, t ):  
+    @TOKEN( newline )
+    def t_table_NEWLINE( self, t ):
+        t.lexer.pop_state()
+        self._incrlineno(t)
         return t
+
+    @TOKEN( escseq )
+    def t_table_ESCAPED( self, t ):
+        return self._onescaped( t )
+
+    @TOKEN(http_uri)
+    def t_table_HTTP_URI( self, t ):
+        return t
+
+    @TOKEN(https_uri)
+    def t_table_HTTPS_URI( self, t ):
+        return t
+
+    @TOKEN(www_uri)
+    def t_table_WWW_URI( self, t ):
+        return t
+
+    @TOKEN( tmark_biu )
+    def t_table_M_BOLDITALICUNDERLINE( self, t ) :
+        return t
+
+    @TOKEN( tmark_span )
+    def t_table_M_SPAN( self, t ) :
+        return t
+
+    @TOKEN( tmark_bold )
+    def t_table_M_BOLD( self, t ) :
+        return t
+
+    @TOKEN( tmark_italic )
+    def t_table_M_ITALIC( self, t ) :
+        return t
+
+    @TOKEN( tmark_uline )
+    def t_table_M_UNDERLINE( self, t ) :
+        return t
+
+    @TOKEN( tmark_sup )
+    def t_table_M_SUPERSCRIPT( self, t ) :
+        return t
+
+    @TOKEN( tmark_sub )
+    def t_table_M_SUBSCRIPT( self, t ) :
+        return t
+
+    @TOKEN( tmark_bi )
+    def t_table_M_BOLDITALIC( self, t ) :
+        return t
+
+    @TOKEN( tmark_iu )
+    def t_table_M_ITALICUNDERLINE( self, t ) :
+        return t
+
+    @TOKEN( tmark_bu )
+    def t_table_M_BOLDUNDERLINE( self, t ) :
+        return t
+
+    @TOKEN( link )
+    def t_table_LINK( self, t ):
+        self._incrlineno(t)
+        return t
+
+    @TOKEN( macro )
+    def t_table_MACRO( self, t ):
+        self._incrlineno(t)
+        return t
+
+    @TOKEN( html )
+    def t_table_HTML( self, t ):
+        self._incrlineno(t)
+        return t
+
+    @TOKEN( text )
+    def t_table_TEXT( self, t ):
+        return t
+
+    @TOKEN( specialchars )
+    def t_table_SPECIALCHARS( self, t ):
+        return t
+
 
     def t_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])
         self._error(msg, t)
 
     def t_nowiki_error( self, t ):
+        msg = 'Illegal character %s' % repr(t.value[0])
+        self._error(msg, t)
+
+    def t_table_error( self, t ):
         msg = 'Illegal character %s' % repr(t.value[0])
         self._error(msg, t)
 

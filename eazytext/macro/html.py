@@ -31,13 +31,13 @@ class Html( Macro ) :
     """
 
     def __init__( self, html='' ) :
-        self.html  = html
+        self.htmltext  = html
 
     def __call__( self, argtext ):
         return eval( 'Html( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :
-        return self.html
+        return self.htmltext
 
 
 # Register this plugin

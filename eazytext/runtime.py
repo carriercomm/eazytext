@@ -26,7 +26,7 @@ class StackMachine( object ) :
         self.bufstack = [ [] ]
         self.ifile = ifile
         self.compiler = compiler
-        self.encoding = self.etxconfig.['input_encoding']
+        self.encoding = self.etxconfig['input_encoding']
 
     #---- Stack machine instructions
 
@@ -70,3 +70,24 @@ class StackMachine( object ) :
             for filt in filters :
                 text = self.escfilters.get( filt[0], None )( self, text, filt )
         return text
+
+    def handlett( self, ttname, argstr ):
+        ttplugins = self.etxconfig.get( 'ttplugins', {} )
+        factory = ttplugins.get( ttname, None )
+        ttplugin = factory and factory( argstr.strip() )
+        html = ttplugin and self.ttplugin.handle( self ) or ''
+        self.append( html )
+
+    def handlemacro( self, macroname, argstr ):
+        macroplugins = self.etxconfig.get( 'macroplugins', {} )
+        factory = macroplugins.get( macroname, None )
+        macroplugin = factory and factory( argstr.strip() )
+        html = macroplugin and self.macroplugin.handle( self ) or ''
+        self.append( html )
+
+    def handleext( self, extname, argstr ):
+        extplugins = self.etxconfig.get( 'extplugins', {} )
+        factory = extplugins.get( extname, None )
+        extplugin = factory and factory( argstr.strip() )
+        html = extplugin and self.extplugin.handle( self ) or ''
+        self.append( html )
