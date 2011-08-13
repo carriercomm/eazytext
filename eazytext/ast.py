@@ -49,6 +49,7 @@ class Node( object ):
     def __init__( self, parser ):
         self.parser = parser
         self.parent = None
+        self.ctx    = parser.etparser.ctx
 
     def children( self ):
         """Tuple of childrens in the same order as parsed by the grammar rule.
@@ -239,6 +240,7 @@ class WikiPage( NonTerminal ):
     tmpl_html_o    = '<html><body>'
     tmpl_html_c    = '</body></html>'
     def __init__( self, parser, paragraphs ) :
+        # Initialize the context
         NonTerminal.__init__( self, parser, paragraphs )
         self._nonterms = (self.paragraphs,) = (paragraphs,)
 
@@ -249,21 +251,12 @@ class WikiPage( NonTerminal ):
         return self._nonterms
 
     def headpass1( self, igen ):
-        NonTerminal.headpass1( self, igen )
-
-    def headpass2( self, igen ):
-        igen.initialize()
-        NonTerminal.headpass2( self, igen )
-
-    def generate( self, igen, *args, **kwargs ):
-        self.etxhash = kwargs.pop( 'etxhash', '' )
-        etparser     = self.parser.etparser
-        self.etxfile, etxconfig = etparser.etxfile, etparser.etxconfig
-
+        etparser       = self.parser.etparser
+        etxconfig      = etparser.etxconfig
         ashtml, nested = etxconfig['ashtml'], etxconfig['nested']
 
-        # Generate the body function only when there is valid content in the
-        # global scope.
+        igen.initialize()
+        # Generate the body function only.
         igen.cr()
         # Body function signature
         line = "def body( *args, **kwargs ) :"
@@ -274,11 +267,33 @@ class WikiPage( NonTerminal ):
         # Wrapper Template
         (not nested and ashtml) and igen.puttext( self.tmpl_html_o )
         igen.puttext( self.tmpl_article_o )
+
+        NonTerminal.headpass1( self, igen )
+
+    def headpass2( self, igen ):
+        etparser  = self.parser.etparser
+        etxconfig = etparser.etxconfig
+        nested    = etxconfig['nested']
+
         # Use css skin
         if not nested and etxconfig['include_skin'] :
             igen.puttext( self.tmpl_inclskin % etparser.skincss )
+        NonTerminal.headpass2( self, igen )
+
+    def generate( self, igen, *args, **kwargs ):
+        self.etxhash = kwargs.pop( 'etxhash', '' )
+        self.etxfile = self.parser.etparser.etxfile
         # Generate paragraphs
         self.paragraphs.generate( igen, *args, **kwargs )
+
+    def tailpass( self, igen ):
+        etparser     = self.parser.etparser
+        etxconfig    = etparser.etxconfig
+        ashtml, nested = etxconfig['ashtml'], etxconfig['nested']
+
+        igen.cr()
+        NonTerminal.tailpass( self, igen )
+
         # Wrapper close
         igen.puttext( self.tmpl_article_c )
         (not nested and ashtml) and igen.puttext( self.tmpl_html_c )
@@ -286,10 +301,7 @@ class WikiPage( NonTerminal ):
         igen.flushtext()
         igen.popreturn( astext=True )
         igen.codeindent( down='  ' )
-
-    def tailpass( self, igen ):
-        igen.cr()
-        NonTerminal.tailpass( self, igen )
+        # Footer
         igen.comment( "---- Footer" )
         igen.footer( self.etxhash, self.etxfile )
         igen.finish()
@@ -389,8 +401,9 @@ class NoWiki( NonTerminal ) :
             extplugins = parser.etparser.etxconfig.get( 'extplugins', {} )
             factory = extplugins.get( nowikiname, None )
             self.extplugin = factory and factory( xparams.strip() )
-            self.extplugin and self.extplugin.onparse( self )
+            self.extplugin and self.extplugin.onparse(self)
         except :
+            raise
             if parser.etparser.debug : raise
             self.extplugin = None
         # Set parent attribute for children, should be last statement !!
@@ -488,7 +501,7 @@ class Heading( NonTerminal ) :
         return filter( None, (self.HEADING, self.text_contents, self.NEWLINE) )
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         NonTerminal.headpass1( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
@@ -556,7 +569,7 @@ class TextLines( NonTerminal ) :
         return filter( None, (self.textlines, self.textline) )
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         [ x.headpass1( igen ) for x in self.flatten() ]
 
     def headpass2( self, igen ):
@@ -701,7 +714,7 @@ class BigtableBlock( NonTerminal ) :
         return filter(None, (self.BTABLE_START, self.text_contents, self.NEWLINE))
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         [ x.headpass1( igen ) for x in self.flatten() ]
 
     def headpass2( self, igen ):
@@ -918,7 +931,7 @@ class TableCell( NonTerminal ) :
         return filter( None, (self.TABLE_CELLSTART, self.text_contents) )
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         NonTerminal.headpass1( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
@@ -970,10 +983,10 @@ class MixedLists( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        igen.lmarks = [ (0, None, None) ]
+        self.ctx.lmarks = [ (0, None, None) ]
         [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
         # Flush out all the closing tags for ordered and unordered list.
-        for level, type_, closetag in igen.lmarks :
+        for level, type_, closetag in self.ctx.lmarks :
             if type_ == None : continue
             igen.puttext( closetag )
 
@@ -1018,14 +1031,14 @@ class Lists( NonTerminal ) :
 
     def generate( self, igen, *args, **kwargs ):
         for l in self.flatten() :
-            level, type_, closetag = igen.lmarks[-1]
+            level, type_, closetag = self.ctx.lmarks[-1]
             if l.level > level :
                 for x in range(l.level-level) :
                     igen.puttext( self.tmpl_o[l.type] )
-                    igen.lmarks.append( (level+x+1, l.type, self.tmpl_c[l.type]) )
+                    self.ctx.lmarks.append( (level+x+1, l.type, self.tmpl_c[l.type]) )
             elif l.level < level :
                 for x in range(level-l.level) :
-                    level, type_, closetag = igen.lmarks.pop(-1)
+                    level, type_, closetag = self.ctx.lmarks.pop(-1)
                     igen.puttext( closetag )
             l.generate( igen, *args, **kwargs )
 
@@ -1068,7 +1081,7 @@ class List( NonTerminal ) :
         return filter( None, x )
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         NonTerminal.headpass1( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
@@ -1189,7 +1202,7 @@ class Definition( NonTerminal ) :
         return filter( None, x )
 
     def headpass1( self, igen ):
-        igen.markupstack = []
+        self.ctx.markupstack = []
         NonTerminal.headpass1( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
@@ -1255,16 +1268,16 @@ class BlockQuotes( NonTerminal ) :
         level = 0
         for bquote in self.flatten() :
             if bquote.level != level :
-                igen.markupstack, level = [], bquote.level
+                self.ctx.markupstack, level = [], bquote.level
             bquote.headpass1( igen )
 
     def headpass2( self, igen ):
         [ x.headpass2(igen) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        igen.bqmarks = ['']
+        self.ctx.bqmarks = ['']
         [ bquote.generate( igen, *args, **kwargs ) for bquote in self.flatten() ]
-        [ igen.puttext( self.tmpl_c ) for x in igen.bqmarks[-1] ]
+        [ igen.puttext( self.tmpl_c ) for x in self.ctx.bqmarks[-1] ]
 
     def tailpass( self, igen ):
         [ x.tailpass(igen) for x in self.flatten() ]
@@ -1300,17 +1313,17 @@ class BlockQuote( NonTerminal ) :
 
     def generate( self, igen, *args, **kwargs ):
         bqmark = self.BQUOTE_START.bqmark
-        if bqmark > igen.bqmarks[-1] :
-            cls = 'firstlevel' if igen.bqmarks[-1] == '' else 'innerlevel'
-            for x in bqmark.replace( igen.bqmarks[-1], '', 1 ) :
+        if bqmark > self.ctx.bqmarks[-1] :
+            cls = 'firstlevel' if self.ctx.bqmarks[-1] == '' else 'innerlevel'
+            for x in bqmark.replace( self.ctx.bqmarks[-1], '', 1 ) :
                 igen.puttext( self.parent.tmpl_o % cls )
                 cls = 'innerlevel'
-            igen.bqmarks.append( bqmark )
-        elif bqmark < igen.bqmarks[-1] :
-            for x in igen.bqmarks[-1].replace( bqmark, '', 1 ) :
+            self.ctx.bqmarks.append( bqmark )
+        elif bqmark < self.ctx.bqmarks[-1] :
+            for x in self.ctx.bqmarks[-1].replace( bqmark, '', 1 ) :
                 igen.puttext( self.parent.tmpl_c )
-            igen.bqmarks.pop( -1 )
-            igen.bqmarks.append( bqmark )
+            self.ctx.bqmarks.pop( -1 )
+            self.ctx.bqmarks.append( bqmark )
         if self.text_contents :
             self.text_contents.generate( igen, *args, **kwargs )
         self.NEWLINE.generate( igen, *args, **kwargs )
@@ -1450,7 +1463,6 @@ class Macro( NonTerminal ) :
             self.macroplugin = factory and factory( argstr.strip() )
             self.macroplugin and self.macroplugin.onparse( self )
         except :
-            raise
             if parser.etparser.debug : raise
             self.macroplugin = None
         # Set parent attribute for children, should be last statement !!
@@ -1497,7 +1509,7 @@ class Html( NonTerminal ) :
             self.tagname = self.tagname.strip()
             ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
             self.ttplugin = ttplugins.get( self.tagname, None )
-            self.ttplugin and self.ttplugin.onparse( self )
+            self.ttplugin and self.ttplugin.onparse(self)
         except :
             if parser.etparser.debug : raise
             self.ttplugin = None
@@ -1568,13 +1580,13 @@ class MarkupText( NonTerminal ) :
 
     def headpass1( self, igen ):
         TERM = self.TERMINAL
-        OPEN = igen.markupstack and igen.markupstack[-1].TERMINAL
+        OPEN = self.ctx.markupstack and self.ctx.markupstack[-1].TERMINAL
         if OPEN and (OPEN.markup == TERM.markup) :
             OPEN.html, TERM.html = \
                     OPEN.tmpl_o % stylemarkup(OPEN.style), TERM.tmpl_c
-            igen.markupstack.pop(-1)
+            self.ctx.markupstack.pop(-1)
         else :
-            igen.markupstack.append( self )
+            self.ctx.markupstack.append( self )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         lead = ' ' * offset

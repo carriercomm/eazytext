@@ -12,6 +12,7 @@ class IEazyTextMacro( Interface ) :
       *  node.parser.etparser   ETParser() object
 
     where `etparser` has the following useful attributes,
+      *  etparser.ctx         Context for AST construction.
       *  etparser.etxconfig   Configuration parameters
       *  etparser.tu          Translation Unit for the parsed text
       *  etparser.text        Raw wiki text.
@@ -23,7 +24,8 @@ class IEazyTextMacro( Interface ) :
     """
     def onparse( node ):
         """Will be invoked after parsing the text and while instantiating the
-        AST node corresponding to template-tag.
+        AST node corresponding to template-tag. If the interface returns a
+        string, it will be assumed as html and prefixed to the wikipage.
         """
 
     def headpass1( node, igen ):
@@ -83,7 +85,8 @@ class IEazyTextExtension( Interface ) :
     
     def onparse( node ):
         """Will be invoked after parsing the text and while instantiating the
-        AST node corresponding to template-tag.
+        AST node corresponding to template-tag. If the interface returns a
+        string, it will be assumed as html and prefixed to the wikipage.
         """
 
     def headpass1( node, igen ):
@@ -131,7 +134,8 @@ class IEazyTextTemplateTags( Interface ) :
 
     def onparse( node ):
         """Will be invoked after parsing the text and while instantiating the
-        AST node corresponding to template-tag.
+        AST node corresponding to template-tag. If the interface returns a
+        string, it will be assumed as html and prefixed to the wikipage.
         """
 
     def headpass1( node, igen ):

@@ -89,6 +89,7 @@ class Compiler( object ):
         encoding = self.etxconfig['input_encoding']
         tu = self.toast()
         etxtext = self.etxlookup.etxtext
+        kwargs.update( etxhash=self.etxlookup.etxhash )
         if tu :
             tu.validate()
             tu.headpass1( self.igen )                   # Head pass, phase 1

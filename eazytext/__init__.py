@@ -5,7 +5,7 @@
 __version__ = '0.92dev'
 
 import codecs
-from   os.path                  import dirname
+from   os.path                  import dirname, basename, join
 from   copy                     import deepcopy
 from   datetime                 import datetime as dt
 
@@ -25,6 +25,7 @@ import eazytext.macro.toc
 import eazytext.macro.yearsbefore
 # Import extension-plugins so that they can register themselves.
 import eazytext.extension
+import eazytext.extension.code
 
 from   eazytext.interfaces      import IEazyTextMacroFactory, \
                                        IEazyTextTemplateTags, \
@@ -156,7 +157,8 @@ def etx_cmdline( etxloc, **kwargs ):
     etparser = ETParser( etxconfig=etxconfig, debug=debuglevel )
     compiler = Compiler( etxloc=etxloc, etxconfig=etxconfig, etparser=etparser )
     pyfile = compiler.etxfile+'.py'
-    htmlfile = compiler.etxfile.rsplit('.', 1)[0] + '.html'
+    htmlfile = basename( compiler.etxfile ).rsplit('.', 1)[0] + '.html'
+    htmlfile = join( dirname(compiler.etxfile), htmlfile )
 
     if debuglevel :
         print "AST tree ..."

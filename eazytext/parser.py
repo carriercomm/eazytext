@@ -74,6 +74,7 @@ class ETParser( object ):
         self.etxconfig = deepcopy( self._etxconfig )
         self.etxconfig.update( etxconfig )
         self.etlex.reset_lineno()
+        self.ctx = Context()
 
     def _fetchskin( self, skinfile ):
         if skinfile == None :
@@ -338,13 +339,13 @@ class ETParser( object ):
         """orderedlists : orderedlist
                         | orderedlists orderedlist"""
         args = [ p[1], p[2] ] if len(p)==3 else [ None, p[1] ]
-        p[0] = Lists( 'ol', p.parser, *args )
+        p[0] = Lists( p.parser, 'ol', *args )
 
     def p_unorderedlists( self, p ):
         """unorderedlists   : unorderedlist
                             | unorderedlists unorderedlist"""
         args = [ p[1], p[2] ] if len(p)==3 else [ None, p[1] ]
-        p[0] = Lists( 'ul', p.parser, *args )
+        p[0] = Lists( p.parser, 'ul', *args )
 
     def p_orderedlist( self, p ):
         """orderedlist  : orderedlistbegin

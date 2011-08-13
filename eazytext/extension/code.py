@@ -7,7 +7,6 @@
 # Gotcha : none
 # Notes  : none
 # Todo   : none
-#   1. Unit test case for this extension.
 
 from   pygments            import highlight
 from   pygments.formatters import HtmlFormatter
@@ -62,39 +61,39 @@ is to list the line numbers.
 
 
 class Code( Extension ) :
-    tmpl = '<div class="etext-code" style="%s"> %s </div>'
-    script_tmpl = '<style type="text/css"> %s </style>'
-    code_tmpl = '<div class="codecont"> %s </div>'
-    hashtext = None
+    tmpl       = '<div class="etext-code" style="%s"> %s </div>'
+    style_tmpl = '<style type="text/css"> %s </style>'
+    code_tmpl  = '<div class="codecont"> %s </div>'
 
     def __init__( self, *args ):
         self.lexname = args and args[0].lower() or 'text'
         self.linenos = 'noln' not in args
+        self.formatter = HtmlFormatter( linenos=self.linenos )
 
     def __call__( self, argtext ):
-        return eval( 'Code( %s )' % argtext )
+        parts   = argtext.split(',')
+        lexname = parts.pop(0) if parts else 'text'
+        linenos = parts.pop(0) if parts else ''
+        return eval( 'Code( %r, %r )' % (lexname, linenos) )
 
     def headpass1( self, node, igen ):
-        etparser = self.extnode.parser.etparser
-        if self.hashtext == etparser.hashtext :
-            html = ''
-        else :
-            self.hashtext == etparser.hashtext
-            script = HtmlFormatter().get_style_defs('.highlight')
-            html = self.script_tmpl % script
-        html and igen.puttext( html )
+        ctx = node.parser.etparser.ctx
+        if hasattr(ctx, 'ext_code_stylehtml_done') : return
+
+        style = self.formatter.get_style_defs('.highlight')
+        self.stylehtml = self.style_tmpl % style
+        ctx.ext_code_stylehtml = True
+        igen.puttext( self.stylehtml )
 
     def html( self , node, igen, *args, **kwargs ):
         try :
             lexer = get_lexer_by_name( self.lexname )
-            formatter = HtmlFormatter( linenos=self.linenos )
-            code  = highlight( self.nowiki, lexer, formatter )
-            html  = self.tmpl % ( self.style, (self.code_tmpl % code) )
+            code  = highlight( node.text.strip('\r\n'), lexer, self.formatter )
+            html  = self.tmpl % ( '', (self.code_tmpl % code) )
         except:
-            if self.extnode.parser.etparser.debug : raise
-            html  = self.nowiki
+            if node.parser.etparser.debug : raise
+            html = node.text
         return html
-
 
 # Register this plugin
 gsm.registerUtility( Code(), IEazyTextExtensionFactory, 'Code' )

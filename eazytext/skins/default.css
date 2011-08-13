@@ -159,17 +159,17 @@ details.etm-toc {
   width         : 20em;
   border-right  : 1px solid gray;
   border-bottom : 1px solid gray;
+  border-radius : 5px;
 }
 details.etm-toc summary {
   font-weight : bold;
   color : blue;
   cursor : pointer;
-  font-size : small;
-  position: relative;
-  float: right;
+  text-align : center;
 }
 details.etm-toc ul {
   list-style : none;
+  padding : 5px;
 }
 details.etm-toc a {
 }
@@ -235,6 +235,9 @@ div.etext-box span.boxshow {
 div.etext-code {
   margin-left  : 5%;
   margin-right : 5%;
+}
+div.etext-code pre {
+  margin  : 5px 0px;
 }
 div.etext-code .highlighttable td.linenos {
   padding : 3px;
