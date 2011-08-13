@@ -26,6 +26,7 @@ import eazytext.macro.yearsbefore
 # Import extension-plugins so that they can register themselves.
 import eazytext.extension
 import eazytext.extension.code
+import eazytext.extension.nested
 
 from   eazytext.interfaces      import IEazyTextMacroFactory, \
                                        IEazyTextTemplateTags, \
@@ -188,6 +189,6 @@ def etx_cmdline( etxloc, **kwargs ):
 
         # This is for measuring performance
         st = dt.now()
-        [ t( context=context ) for i in range(10) ]
-        print (dt.now() - st) / 10
+        [ t( context=context ) for i in range(2) ]
+        print (dt.now() - st) / 2
 

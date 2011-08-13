@@ -472,6 +472,10 @@ class ETParser( object ):
         """basictext    : WWW_URI"""
         p[0] = BasicText( p.parser, WWW_URI(p.parser, p[1]) )
 
+    def p_basictext_6( self, p ):
+        """basictext    : LINEBREAK"""
+        p[0] = BasicText( p.parser, LINEBREAK(p.parser, p[1]) )
+
     def p_markuptext_1( self, p ):
         """markuptext   : M_SPAN"""
         p[0] = MarkupText( p.parser, M_SPAN(p.parser, p[1]) )

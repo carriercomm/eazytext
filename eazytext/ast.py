@@ -235,7 +235,7 @@ class NonTerminal( Node ):      # Non-terminal
 class WikiPage( NonTerminal ):
     """class to handle `wikipage` grammar."""
     tmpl_inclskin  = '<style type="text/css"> %s </style>'
-    tmpl_article_o = '<article>'
+    tmpl_article_o = '<article class="%s">'
     tmpl_article_c = '</article>'
     tmpl_html_o    = '<html><body>'
     tmpl_html_c    = '</body></html>'
@@ -266,7 +266,7 @@ class WikiPage( NonTerminal ):
 
         # Wrapper Template
         (not nested and ashtml) and igen.puttext( self.tmpl_html_o )
-        igen.puttext( self.tmpl_article_o )
+        igen.puttext( self.tmpl_article_o % ['etpage', 'etblk'][nested] )
 
         NonTerminal.headpass1( self, igen )
 
@@ -403,7 +403,6 @@ class NoWiki( NonTerminal ) :
             self.extplugin = factory and factory( xparams.strip() )
             self.extplugin and self.extplugin.onparse(self)
         except :
-            raise
             if parser.etparser.debug : raise
             self.extplugin = None
         # Set parent attribute for children, should be last statement !!
@@ -1503,10 +1502,10 @@ class Html( NonTerminal ) :
         self.htmltext = html.dump(None)
         # Fetch the plugin
         try :
-            _tagtext = self.htmltext[2:-2].lstrip()
-            try : self.tagname, self.text = _tagtext.split(' ', 1)
-            except : self.tagname, self.text = _tagtext, ''
-            self.tagname = self.tagname.strip()
+            lines = self.htmltext[2:-2].lstrip().splitlines()
+            parts, lines = lines[0].split(' ', 1), lines[1:]
+            self.tagname = parts.pop(0).strip() if parts else ''
+            self.text = '\n'.join( parts + lines )
             ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
             self.ttplugin = ttplugins.get( self.tagname, None )
             self.ttplugin and self.ttplugin.onparse(self)
@@ -1633,6 +1632,9 @@ class MARKUPTEXT( object ):
 
 #---- Text
 class NEWLINE( Terminal ): pass
+class LINEBREAK( Terminal ):
+    tmpl   = '<br/>'
+    html   = property( lambda self : self.tmpl )
 class ESCAPED_TEXT( Terminal ):
     html   = property( lambda self : escape_htmlchars( self.terminal ))
 class TEXT( BASICTEXT, Terminal ):
@@ -1682,22 +1684,22 @@ class M_SUBSCRIPT( MARKUPTEXT, Terminal ):
 
 class M_BOLDITALIC( MARKUPTEXT, Terminal ):
     markup = 'bolditalic'
-    tmpl_o = '<strong><em class="etmark" style="%s">'
+    tmpl_o = '<strong class="etmark"><em style="%s">'
     tmpl_c = '</em></strong>'
 
 class M_BOLDUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'boldunderline'
-    tmpl_o = '<strong><u class="etmark" style="%s">'
+    tmpl_o = '<strong class="etmark"><u style="%s">'
     tmpl_c = '</u></strong>'
 
 class M_ITALICUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'italicunderline'
-    tmpl_o = '<em><u class="etmark" style="%s">'
+    tmpl_o = '<em class="etmark"><u style="%s">'
     tmpl_c = '</u></em>'
 
 class M_BOLDITALICUNDERLINE( MARKUPTEXT, Terminal ):
     markup = 'bolditalicunderline'
-    tmpl_o = '<strong><em><u class="etmark" style="%s">'
+    tmpl_o = '<strong class="etmark"><em><u style="%s">'
     tmpl_c = '</u></em></strong>'
 
 #---- Inline text blocks

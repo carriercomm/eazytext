@@ -106,6 +106,7 @@ class Compiler( object ):
 
 class WikiLookup( object ) :
     ETXCONFIG = [ 'directories', 'module_directory', 'devmod' ]
+    NOETXFILE = '<Source provided as raw text>'
     def __init__( self, etxloc=None, etxtext=None, etxconfig={} ):
         [ setattr( self, k, etxconfig[k] ) for k in self.ETXCONFIG ]
         self.etxconfig = etxconfig
@@ -116,8 +117,10 @@ class WikiLookup( object ) :
         if self.etxloc :
             self.etxfile = self._locateetx( self.etxloc, self.directories )
             self.pyfile = self.computepyfile( etxloc, etxconfig )
+            self.noetxfile = False
         elif self._etxtext :
-            self.etxfile = '<Source provided as raw text>'
+            self.etxfile = self.NOETXFILE
+            self.noetxfile = True
             self.pyfile = None
         else :
             raise Exception( 'Invalid eazytext source !!' )
@@ -146,7 +149,8 @@ class WikiLookup( object ) :
         return self._etxhash
 
     def _gethashkey( self ):
-        return self.etxhash if self.etxconfig['text_as_hashkey'] else self.etxfile
+        usetext = self.etxconfig['text_as_hashkey'] or self.noetxfile
+        return self.etxhash if usetext else self.etxfile
 
     def _locateetx( self, etxloc, dirs ):
         # If etxloc is relative to one of the wiki directories

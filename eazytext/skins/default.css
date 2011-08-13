@@ -1,7 +1,7 @@
-.etpage {
+article.etpage {
   white-space : normal
 }
-.etblk {
+article.etblk {
 }
 
 /* Text styling */
@@ -17,13 +17,13 @@ sup.etmark {
 }
 sub.etmark {
 }
-strong.etmark > em.etmark {
+strong.etmark > em {
 }
-strong.etmark > u.etmark {
+strong.etmark > u {
 }
-em.etmark > u.etmark {
+em.etmark > u {
 }
-strong.etmark > em.etmark > u.etmark {
+strong.etmark > em > u {
 }
 p.ettext {
 }

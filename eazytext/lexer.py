@@ -116,7 +116,7 @@ class ETLexer( object ) :
     tokens = (
         # Text
         'NEWLINE', 'TEXT', 'ESCAPED_TEXT', 'SPECIALCHARS',
-        'HTTP_URI', 'HTTPS_URI', 'WWW_URI',
+        'HTTP_URI', 'HTTPS_URI', 'WWW_URI', 'LINEBREAK',
         # Text markup
         'M_SPAN', 'M_BOLD', 'M_ITALIC', 'M_UNDERLINE', 'M_SUPERSCRIPT',
         'M_SUBSCRIPT', 'M_BOLDITALIC', 'M_ITALICUNDERLINE', 'M_BOLDUNDERLINE',
@@ -176,6 +176,7 @@ class ETLexer( object ) :
     tmark_iu    = r"(/_|_/)(%s)?" % style
     tmark_bu    = r"('_|_')(%s)?" % style
     tmark_biu   = r"('/_|_/')(%s)?" % style
+    tmark_lbreak= r"<br>"
     # Inline text block
     link        = r'\[\[(%s)+?(?=\]\])\]\]' % anything
     nestedlink  = r'\[\[(%s)+?(?=\]\])\]\]' % link
@@ -320,6 +321,10 @@ class ETLexer( object ) :
         self._incrlineno(t)
         return t
 
+    @TOKEN( tmark_lbreak )
+    def t_LINEBREAK( self, t ) :
+        return t
+
     @TOKEN( text )
     def t_TEXT( self, t ):
         return t
@@ -426,6 +431,10 @@ class ETLexer( object ) :
     @TOKEN( html )
     def t_table_HTML( self, t ):
         self._incrlineno(t)
+        return t
+
+    @TOKEN( tmark_lbreak )
+    def t_table_LINEBREAK( self, t ) :
         return t
 
     @TOKEN( text )
