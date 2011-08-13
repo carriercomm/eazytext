@@ -29,7 +29,7 @@ h3. 0.91b ``{i} on Fri 2011-03-15``
     ** Added Makefile.
     ** Updated documentation. Moved documentation from Zeta to eazytext/doc
       directory.
-    ** Switched versioning scheme from *beta to *b
+    ** Switched versioning scheme from '*beta' to '*b'
     ** wiki-page-properties pushed to dormant.
     ** style related code refactored from ast.py to styleshortcuts.py
     ** Optimized and refactored ast.py

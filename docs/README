@@ -2,8 +2,10 @@
 
 h3. Overview
 
-EazyText processor is built using formal parser grammar, thus making it both
-robust and clean. It is available as,
+EazyText is a wiki processor that translates wiki text to html. It is built
+using formal parser grammar, making it both robust and clean. By default
+the processor supports dynamic text (text that are translated based on
+context), inspite of which it is insanely fast. It is available as,
 * Stand-alone command line tool
 * Library package usable by python programs
 
@@ -12,22 +14,17 @@ h3. Installation
 Installing via package management
 
 {{{ Code bash
-
-  # Install system packages for debian and ubuntu machines.
-  sudo apt-get install libxml2 libxml2-dev libxslt1.1 libxslt1-dev
-
   # -Z to do unzipped install. The reason for installing it in un-zipped form
   #    is to make use of the command line tool.
   # -U to upgrade install
   easy_install -Z -U eazytext
-
 }}}
 
 ''Source code''
 
 Download the latest tar.gz from http://pypi.python.org/pypi/eazytext
 
-Check out form bazaar repository,
+Check out from bazaar repository,
 {{{ Code bash
   bzr branch lp:eazytext
 }}}
@@ -66,16 +63,18 @@ in your python path, use the command-line tool, like,
 h3. Using it as library, for python
 
 {{{ Code python
+    from   eazytext  import Translate
 
-    from   eazytext.parser import ETParser
+    # To translate a wiki-file, 
+    t = Translate( etxloc=wikifile, etxconfig=etxconfig )
+    # To translate a wiki-text (incase it is not present in a file),
+    t = Translate( etxtext=wikitext, etxconfig=etxconfig )
+    # In both the cases the configuration paramters can passed via `etxconfig`
+    # as a dictionary
 
-    etparser = ETParser( obfuscatemail=True )
-    wikitext = open( file ).read()  # Read text written using wiki-markup
-    tu = etparser.parse( wikitext, debuglevel=0 ) # Obtain the AST
-    html = tu.tohtml()      # HTML text
-    wikitext_ = tu.dump()   # To dump back the original text from AST tree
-    tu.show()               # To show the parse tree. 
-
+    # Get the translated html,
+    html = t( context=context )
+    codecs.open( htmlfile, mode='w', encoding=encoding).write( html )
 }}}
   
 By browsing the source-doc you can learn more about development with EazyText.
@@ -97,7 +96,7 @@ which,
   [<PRE python ./setup.py develop >]
 
 To start using the eazytext package, enter the virtual environment by doing,
-[<PRE source ./eazytext-env/bin/activate >]
+``{c} source ./eazytext-env/bin/activate ``
 
 ''To create an egg packages'',
 
@@ -113,9 +112,9 @@ The .egg package will be availabe under dist/ directory
 ''To test the package'',
 
 {{{ Code bash
-  
+
   source eazytext-env/bin/activate
-  make testall
+  make test
 
 }}}
 

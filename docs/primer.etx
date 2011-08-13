@@ -6,13 +6,23 @@ require rich styling but remains readable in plain-text as well.
 
 h3. Why eazytext
 
+Eazytext is a wiki processor that is lean, clean and insanely fast !! Since
+eazytext wiki-markup supports dynamic text (text that gets translated based on
+context), it is not practical to cache the html result and re-use them
+(by web-applications). And to avoid parsing the wiki-text every-time, an
+intermediate //.py// file is generated. Inspite of having this complexity the
+real-world performance for generating the html from static wiki text is ''O(n)''
+where ''n'' is the size of the text. On a desktop machine, it took about 
+//{b} 742 micro-seconds to generate the html for a wiki text of about 650
+lines//.
+
 Unlike many popular wiki-processors, eazytext is implemented using parser
 grammar. The advantage of using parser grammar is that the implementation
 becomes robust and stable, at the same time stays maintainable.
 The draw-back of using a parser grammar is that it throws up in-comprehensible
 syntax error when un-expected sequence of text is encountered. eazytext's
 grammar is implemented in such a flexible way that, what-ever the text may be
-(as long as it is in the supported language), it never fails, it even tries to
+(as long as it is in the supported encoding), it never fails, it even tries to
 gracefully recover from the failure and translates as much text as possible.
 
 ''Some interesting points about eazytext''
@@ -58,7 +68,7 @@ ecclesiastical history.
 which gets translated into,
 
 {{{ Nested
-@ { 'background-color' : '#EEE' }
+# { 'background-color' : '#EEE' }
 
 In // 1862 //, ''Charles Lutwidge Dodgson'', a shy Oxford mathematician
 with a stammer, created a story about a little girl tubling down a rabbit
@@ -74,9 +84,9 @@ ecclesiastical history.
 }}}
 
 To get you started, 
-* Use ''''double-single-quotes'''' to emphasize text.
-* Use //// double-forward-slash//// to italicize text.
-* Use ____ Double underscore ____ to underline text.
+* Use ''\''double-single-quotes\'''' to emphasize text.
+* Use //\// double-forward-slash\//// to italicize text.
+* Use __\__ Double underscore \____ to underline text.
 
 h3. Features
 
@@ -112,8 +122,8 @@ Some of its features are,
 -----
 
 {{{ Nested 
-@ { 'font-size' : 'small', 'color' : 'gray' }
-Document edited using Vim \\ 
+# { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim <br>
 /* vim: set filetype=etx : */
 }}}
 

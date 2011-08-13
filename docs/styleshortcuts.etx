@@ -1,4 +1,4 @@
-== Style shortcuts
+h2. Style shortcuts
 
 Style shortcuts are enclosed within '' { ... } '', and immediately follows the
 wiki-markup that it augments. Within the curly braces, each style shortcut
@@ -17,13 +17,13 @@ entity is seperated by a ''semicolon (;)'',
     immediately following a //backslash (\)//. Bordered text elements are
     automatically padded with 2 pixels.
 
-=== Color mapping
+h3. Color mapping
 
 When used in style-shortcuts, small-cased character denotes foreground color and
 capital-cased character denotes background color.
 
 {{{ Nested
-@ { 'margin-left' : '50px' }
+# { 'margin-left' : '50px' }
 
     |= alphabet |= colorname
     |{a}  //a// |{a} //aquamarine//
@@ -57,7 +57,7 @@ capital-cased character denotes background color.
 -----
 
 {{{ Nested 
-@ { 'font-size' : 'small', 'color' : 'gray' }
-Document edited using Vim \\ 
+# { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim <br>
 /* vim: set filetype=etx : */
 }}}

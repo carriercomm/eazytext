@@ -11,20 +11,12 @@ class names. To add styling to the document one should just add CSS rules
 for these pre-defined attribute values. The following table gives a complete
 list of elements and its attribute values.
 
-There are standard styling templates shipped with the package. To use them,
-just set the //skin// keyword argument while instantiating the parser
-(ETParser), like, [<PRE ETParser( ..., skin=<filename.css>, ...) >]
-Note that only the filename with its extension should be passed as argument.
-You can check out the templates under [<PRE eazytext/skins/* >] directory.
-Alternately, HTML style string like, [<PRE
-  <style>
-    span.etmark {
-    }
-    ...
-  </style>
->]
-can be passed as value to the //skin// keyword argument, which will be
-directly included inside the generated page. Take a look at the 
+There are standard styling templates shipped with the package. You can pick
+on them, using the following config-parameters,
+[<PRE { 'include_skins' : True, 'skinfile' : <filename> } >]
+Note that only the filename with its extension should be passed as
+//skinfile//. From the source tree, you can check out the templates under
+[<PRE eazytext/skins/* >] directory. Take a look at the
 [[ ../egskin | default skin ]]
 
 h4. Elements generated for text-markups
@@ -36,10 +28,10 @@ h4. Elements generated for text-markups
 |  underline                    | u.etmark
 |  superscript                  | sup.etmark
 |  subscript                    | sub.etmark
-|  bold + emphasize             | strong.etmark > em.etmark
-|  bold + underline             | strong.etmark > u.etmark
-|  emphasize + underline        | em.etmark > u.etmark
-|  bold + emphasize + underline | strong.etmark > em.etmark > u.etmark
+|  bold + emphasize             | strong.etmark > em
+|  bold + underline             | strong.etmark > u
+|  emphasize + underline        | em.etmark > u
+|  bold + emphasize + underline | strong.etmark > em > u
 
 
 h4. Elements generated for heading (sections)
@@ -83,31 +75,32 @@ h4. Definition elements
 h4. Hyper links
 
 |= markup type                        |= CSS selector
-|  hyper link                         |  a.etlink
-|  anchor                             |  a.etlink.anchor
+|  hyper link                         | a.etlink
+|  anchor                             | a.etlink.anchor
+|  plain https:// prefixed text       | a.ethttpsuri
 |  plain http:// prefixed text        | a.ethttpuri
-|  plaing www:// prefixed text        | a.etwwwuri
+|  plain www:// prefixed text         | a.etwwwuri
 |  image reference using link markup  | img.et
 
 h4. Templated tags
 
 |= markup type    |= CSS selector
-|  PRE            |  pre.etttag
-|  ABBR           |  abbr.etttag
-|  FIXME          |  span.etttag.fixme
-|  Q              |  div.etttag.qbq
-|  SMILEYSMILE    |  span.etttag.smile
-|  SMILEYSAD      |  span.etttag.sad
-|  ADDR           |  address.etttag
-|  FNT            |  span.etttag.fnt
+|  PRE            | span.etttag.pre
+|  ABBR           | abbr.etttag
+|  FIXME          | span.etttag.fixme
+|  Q              | div.etttag.qbq
+|  SMILEYSMILE    | span.etttag.smile
+|  SMILEYSAD      | span.etttag.sad
+|  ADDR           | address.etttag
+|  FNT            | span.etttag.fnt
 |  FOOTNOTE       | sup.etttag.footnote, sup.etttag.footnote a
 
 h4. Block elements
 
 |= markup type                          |= CSS selector
 |  text paragraph                       | p.ettext
-|  For the entire page (or doc)         | .etpage
-|  For pages generated with nested=True | .etblk
+|  For the entire page (or doc)         | article.etpage
+|  For pages generated with nested=True | article.etblk
 |  horizontal rule                      | hr.ethorz
 |  blockquotes                          | blockquote.et.firstlevel, \
                                           blockquote.et.innerlevel

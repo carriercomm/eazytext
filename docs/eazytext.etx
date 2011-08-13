@@ -13,23 +13,23 @@ programmers, encouraging them to use eazytext for their documentation.
 === Text markup
 
 {{{ Nested
-# { 'margin-left' : '40px' }
+# { 'margin-left' : '80px' }
 
     |= Markup syntax                       |= Rendered as
-    | ~`` just a span element ~``          | `` just a span element ``
-    | ~'' bold ~''                         | '' bold ''
-    | ~// italic ~//                       | // italic//
-    | ~__ underline ~__                    | __ underline __
-    | x~^^2~^^                             | x^^2^^
-    | log~,,2~,,10                         | log,,2,,10
-    | ~'/ bold and italic '/               | '/ bold and italic '/
-    | ~'/ bold and italic /'               | '/ bold and italic /'
-    | ~'_ bold and underline '_            | '_ bold and underline '_
-    | ~'_ bold and underline _'            | '_ bold and underline _'
-    | ~/_ italic and underline /_          | /_ italic and underline _/
-    | ~/_ italic and underline _/          | /_ italic and underline _/
-    | ~'~/_ bold, italic and underline '/_ | '/_ bold, italic and underline '/_
-    | ~'~/_ bold, italic and underline _/' | '/_ bold, italic and underline _/'
+    | \`` just a span element \``          | `` just a span element ``
+    | \'' bold \''                         | '' bold ''
+    | \// italic \//                       | // italic//
+    | \__ underline \__                    | __ underline __
+    | x\^^2\^^                             | x^^2^^
+    | log\,,2\,,10                         | log,,2,,10
+    | \'/ bold and italic '/               | '/ bold and italic '/
+    | \'/ bold and italic /'               | '/ bold and italic /'
+    | \'_ bold and underline '_            | '_ bold and underline '_
+    | \'_ bold and underline _'            | '_ bold and underline _'
+    | \/_ italic and underline /_          | /_ italic and underline _/
+    | \/_ italic and underline _/          | /_ italic and underline _/
+    | \'\/_ bold, italic and underline '/_ | '/_ bold, italic and underline '/_
+    | \'\/_ bold, italic and underline _/' | '/_ bold, italic and underline _/'
 
 }}}
 
@@ -51,38 +51,31 @@ programmers, encouraging them to use eazytext for their documentation.
 
 ==== Line Break
 
-To insert a line break any where in the text, use ''double backslash (~\\)''.
+To insert a line break any where in the text use ''\<br>''.
 Line break can be freely mixed with text markups as well. For example,
 
-
 > [<PRE
-''Monsoon is a ``{g} blessing `` in disguise. \\ It's hard to describe ``{b} emotions `` it brings to life.
-// When there is ``{r} rainfall `` at night \\ I find in the morning, ``{c} dews `` alight. // >]
+''Monsoon is a ``{g} blessing `` in disguise. <br> It's hard to describe ``{b} emotions `` it brings to life.
+// When there is ``{r} rainfall `` at night <br> I find in the morning, ``{c} dews `` alight. // >]
 
-> ''Monsoon is a ``{g} blessing `` in disguise.
-> It's hard to describe ``{b} emotions `` it brings to life. ''
-> // When there is ``{r} rainfall `` at night
+> ''Monsoon is a ``{g} blessing `` in disguise. <br> It's
+> hard to describe ``{b} emotions `` it brings to life. '' <br>
+> // When there is ``{r} rainfall `` at night <br>
 > I find in the morning, ``{c} dews `` alight.//
-
-: Note :: 
-    A ''new line (\n)'' should not immediately follow a new-line
-    markup ''~\\''
 
 ==== Escaping markups
 
-There are two ways to escape wiki characters,
-* Use ''backslash (\)'' to escape new lines.
-* Use ''tilda (~~)'' to escape wiki markups
+Use ''backslash'' to escape new lines and wiki markups.
 
 === Links
 
-Hyper linking documents is one of the strengths in HTML documentation. There
+Hyper linking document is one of the strengths in HTML documentation. There
 are few ways to generate hyper links in a wiki text.
 
 ==== Simple hyper links
 
 Generate a simple hyper reference over arbitrary text by enclosing them in
-''double-square bracket (~[[...~]])''. The enclosed text is composed of two parts,
+''double-square bracket (\[[...\]])''. The enclosed text is composed of two parts,
 the ''href'' part and ''text'' part. In the following example 
 // http://www.google.com // is ''href'', while //Google site// is the ''text''
 part,
@@ -93,7 +86,7 @@ a simple reference link to [[ http://www.google.com | Google site ]] >]
 > a simple reference link to [[ http://www.google.com | Google site ]].
 
 You might have also noticed that hyper links are automatically generated for
-text words starting with ''http:'' or ''www''
+text words starting with ''https:'' or ''http:'' or ''www''
 
 ==== Opening a link in new browser window
 
@@ -135,12 +128,12 @@ it as ''href''
 > mail to [[ mailto:hello.world@gmail.com | me ]]
 
 Feel free to intermix link markup with text markup, only rule being that, the
-link text ~[[...]] must be fully contained within text markups, like,
+link text \[[...]] must be fully contained within text markups, like,
 
-> [<PRE `` www.google.com `` >]
+> [<PRE '' www.google.com '' >]
 > [<PRE //{c;20|} [[ www.google.com | google ]] with-in italics// >]
 
-> `` www.google.com ``
+> '' www.google.com ''
 > //{c} [[ www.google.com | google ]] with-in italics//
 
 === Block level markup
@@ -148,7 +141,7 @@ link text ~[[...]] must be fully contained within text markups, like,
 ==== Headings
 
 Headings are synonymous to sections, and are contained within a single line
-(ofcourse one can use ''backslash (\)'' to escape new lines). eazytext provides
+(ofcourse one can use ''backslash'' to escape new lines). Eazytext provides
 two forms of heading markup, first one, using one or more (upto five) ''equal
 (=) '' characters, second one, using, '' h1. h2. h3. h4. h5. ''
 
@@ -178,7 +171,8 @@ two forms of heading markup, first one, using one or more (upto five) ''equal
  h5. secion5 >]
 
 Header markup begins from a new line and can accept //text markups//,
-//link markup//, //URLs//, //line-break// as heading text.
+//link markup//, //URLs//, //line-break// as heading text. You can also use 
+style shortcuts with heading markup.
 
 ==== Horizontal rule
 
@@ -237,7 +231,7 @@ list items.
 
 # item ``{c} one ``
 ## Sub // ''item'' one //
-## Visit www.google.com to access a peta \\ flop computer.
+## Visit www.google.com to access a peta <br> flop computer.
 # [[ mailto:hello.world@google.com | Mail ]] with gmail.
 ** Sub item one
 ** Sub item two
@@ -262,7 +256,7 @@ Block quoted text are written like,
  > That which doesnt kill you make you stranger  - Joker.  >]
 
 Rendered as,
-> That which doesnt kill you makes you stronger - Nietzsche 
+> That which doesnt kill you makes you stronger - Nietzsche <br>
 > That which doesnt kill you make you stranger - Joker.
 
 Block quoted text can be nested as well.
@@ -316,7 +310,7 @@ Rendered as,
   separated by ''|'' or ''|=''.
 * ``{r} There is a limitation in small tables, that each table-row should
   be contained within a single line.`` Ofcourse, you can overcome this limitation
-  by escaping the new line with a ''backslash (\)''.
+  by escaping the new line with a ''backslash''.
 * By now you should have taken it for granted that, //text markups//,
   //link markup//, //URLs//, //line-break// can be used in table-text. You are
   right.
@@ -396,8 +390,7 @@ Define terms using definition list,
 
 > [<PRE
 : dojo :: JavaScript tool-kit supporting classes, widgets, data stored etc.
->]
-
+>] <br>
 > [<PRE
 : minix3 :: Supposedly a next generation operating system aimed at distributed
 computing and fault-tolerance.
@@ -431,10 +424,10 @@ For example, the following text markup with style shortcuts is converted to,
 
 translated as,
 
-> ''{r} this text is colored''
-> ''{|5} text with padding 5 pixels''
-> ''{b;5|;|5} text with padding 5 pixels, margin 5 pixels and colored blue''
-> ''{/1,solid,g;|2} bordered and padded with 2px''
+> ''{r} this text is colored'' <br>
+> ''{|5} text with padding 5 pixels'' <br>
+> ''{b;5|;|5} text with padding 5 pixels, margin 5 pixels and colored blue'' <br>
+> ''{/1,solid,g;|2} bordered and padded with 2px'' <br>
 
 Style shortcuts are enclosed in '' { ... } '', and immediately follows
 wiki-markup that it augments. Within the curly braces, each style shortcut is
@@ -450,7 +443,7 @@ seperated by a ''semicolon (;)'',
     A //numerical value// immediately following a //pipe (|)//, like //|5//
 : Border ::
     Comma seperated width, style, color (color being a small letter alphabet),
-    immediately following a //backslash (\)//. Bordered text elements are
+    immediately following a //backslash//. Bordered text elements are
     automatically padded with 2 pixels.
 
 : Colormapping :: [[ ./sscut | Know ]] the mapping between color-alphabet and its color value.
@@ -460,7 +453,7 @@ seperated by a ''semicolon (;)'',
 Sometimes using just the wiki markup can be quite limiting in creating rich
 documents. Those who are HTML/CSS experts, can directly document with HTML and
 CSS, interspersed along with the rest of the wiki text. Just open the html
-text with '' ~[< '' and close them with '' ~>]''. For example, the following
+text with '' \[< '' and close them with '' \>]''. For example, the following
 styling is directly used in all the help documents that you see here.
 
 {{{ Code text
@@ -491,8 +484,8 @@ Gets rendered as,
    </pre>
 >]
 
-Note that the script tag within HTML markups are pruned away to avoid 
-[[http://en.wikipedia.org/wiki/Cross-site_request_forgery | CSRF]] attacks.
+Note that the script tag within HTML markups can optionally be pruned away to
+avoid [[http://en.wikipedia.org/wiki/Cross-site_request_forgery | CSRF]] attacks.
 
 HTML text can be Interspersed in the following blocks,
 * Text Paragraphs
@@ -505,10 +498,10 @@ HTML text can be Interspersed in the following blocks,
 
 HTML tags with common usage pattern are pre-templated and can be used by
 attaching the template name with beginning markup
-''~[<''. And the text contained within '' ~[< .... >] '' are interpreted by
+''\[<''. And the text contained within '' \[< .... >] '' are interpreted by
 the template. For example, most of the pre-formatted text in this page are
 generated using ''PRE'' template, like,
-   > ~[<PRE preformatted text ~>]
+   > \[<PRE preformatted text \>]
 
    > [<PRE preformatted text >]
 
@@ -517,7 +510,7 @@ generated using ''PRE'' template, like,
 === Macros
 
 Macros are direct function calls from wiki text into the wiki
-engine, provided, there is a macro my that name available. Most probably the
+engine, provided, there is a macro by that name available. Most probably the
 macro will return a html content, which will be used to replace the macro
 call. [[ ../plugins/macros | Learn more about macros ]].
 
@@ -539,33 +532,10 @@ In the above case Box extension will be invoked and the lines in-between the tri
 braces will be interpreted by the Box extension.
 [[ ../plugins/extensions | Learn more about extension ]].
 
-=== Wiki properties
-
-''Note : This feature is not fully formed.''
-
-Wiki properties are key,value pairs, where key and value are seperated by a
-''colon (:)'' and the entire block is enclosed inside '' { ... } ''. They are
-either interpreted by wiki engine or passed into html elements as
-styling-attributes. Both key and value should be of literal types 
-(like string, int, float etc ...). Wiki properties are specified at two places,
-* At the beginning of the wiki text, where the entire property block
-  '' { ... } '' is marked by a beginning ''@'', [<PRE
-  @ { 'background' : '#00ff00 url('smiley.gif') no-repeat fixed center',
-  @   'padding'    : '2cm 4cm 3cm 4cm',
-  @   'style'      : 'font-family:"Times New Roman",Georgia,Serif;'
-  @ } >]
-* At the beginning of wiki extension block (immediately following open triple
-  brace), where the entire property block is marked by a beginning
-  ''#'', [<PRE
-  # { 'background' : '#00ff00 url('smiley.gif') no-repeat fixed center',
-  #   'padding'    : '2cm 4cm 3cm 4cm',
-  #   'style'      : 'font-family:"Times New Roman",Georgia,Serif;'
-  # } >]
-
 -----
 
 {{{ Nested 
-@ { 'font-size' : 'small', 'color' : 'gray' }
-Document edited using Vim \\ 
+# { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim <br> 
 /* vim: set filetype=etx : */
 }}}
