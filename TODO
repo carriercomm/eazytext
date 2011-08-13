@@ -8,6 +8,7 @@ Track the project at,
 
 General requirements:
 * Line-break feature.
+* Fix the command-line arguments to eztext.py
 * use os.sep instead of using magic-values
 * Markup syntax for <q> tag,
     """ quotable quotes ... """

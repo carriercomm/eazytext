@@ -136,6 +136,7 @@ class Translate( object ):
 def etx_cmdline( etxloc, **kwargs ):
     from eazytext.compiler import Compiler
 
+    htmlfile  = kwargs.get( 'ofile', '' )
     etxconfig = deepcopy( defaultconfig )
     # directories, module_directory, devmod
     etxconfig.update( kwargs )
@@ -157,8 +158,9 @@ def etx_cmdline( etxloc, **kwargs ):
     etparser = ETParser( etxconfig=etxconfig, debug=debuglevel )
     compiler = Compiler( etxloc=etxloc, etxconfig=etxconfig, etparser=etparser )
     pyfile = compiler.etxfile+'.py'
-    htmlfile = basename( compiler.etxfile ).rsplit('.', 1)[0] + '.html'
-    htmlfile = join( dirname(compiler.etxfile), htmlfile )
+    if not htmlfile :
+        htmlfile = basename( compiler.etxfile ).rsplit('.', 1)[0] + '.html'
+        htmlfile = join( dirname(compiler.etxfile), htmlfile )
 
     if debuglevel :
         print "AST tree ..."

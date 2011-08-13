@@ -55,6 +55,7 @@ def main() :
         eazytext.etx_cmdline(
             args[0],
             args=options.args,
+            ofile=options.ofile,
             context=options.context,
             debuglevel=int(options.debug),
             show=options.show,
