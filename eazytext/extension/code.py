@@ -8,16 +8,16 @@
 # Notes  : none
 # Todo   : none
 
-from   pygments            import highlight
-from   pygments.formatters import HtmlFormatter
-from   pygments.lexers     import guess_lexer, get_lexer_for_filename, \
-                                  get_lexer_by_name
+from   pygments                        import highlight
+from   pygments.formatters             import HtmlFormatter
+from   pygments.lexers                 import get_lexer_by_name
 
-from   zope.component       import getGlobalSiteManager
+from   zope.component                  import getGlobalSiteManager
 
-from   eazytext.extension   import Extension
-from   eazytext.interfaces  import IEazyTextExtensionFactory
-from   eazytext.lib         import constructstyle
+from   eazytext.extension              import Extension, nowiki2prop
+from   eazytext.interfaces             import IEazyTextExtensionFactory
+from   eazytext.lib                    import constructstyle
+import eazytext.extension.ttlpygment
 
 gsm = getGlobalSiteManager()
 
@@ -82,17 +82,19 @@ class Code( Extension ) :
 
         style = self.formatter.get_style_defs('.highlight')
         self.stylehtml = self.style_tmpl % style
-        ctx.ext_code_stylehtml = True
+        ctx.ext_code_stylehtml_done = True
         igen.puttext( self.stylehtml )
 
     def html( self , node, igen, *args, **kwargs ):
+        style, text = nowiki2prop( node.text )
         try :
             lexer = get_lexer_by_name( self.lexname )
-            code  = highlight( node.text.strip('\r\n'), lexer, self.formatter )
+            code  = highlight( text.strip('\r\n'), lexer, self.formatter )
             html  = self.tmpl % ( '', (self.code_tmpl % code) )
         except:
+            raise
             if node.parser.etparser.debug : raise
-            html = node.text
+            html = text
         return html
 
 # Register this plugin

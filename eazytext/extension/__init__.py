@@ -76,5 +76,21 @@ class Extension( object ):
         """
         return ''
 
+
+def nowiki2prop( text ):
+    # Fetch the properties
+    proplines = []
+    lines = text.splitlines() 
+    while lines and lines[0].lstrip().startswith('#') :
+        proplines.append( lines.pop(0).lstrip('#') )
+    remtext = '\n'.join( lines )
+    try    :
+        prop  = proplines and eval( ''.join( proplines )) or {}
+        style = '; '.join([ '%s : %s' % (k,v) for k,v in prop.items() ])
+    except :
+        style = ''
+    return style, remtext
+
+
 # Register this plugin
 gsm.registerUtility( Extension(), IEazyTextExtensionFactory, 'Extension' )

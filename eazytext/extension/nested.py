@@ -11,7 +11,7 @@
 
 from   zope.component       import getGlobalSiteManager
 
-from   eazytext.extension   import Extension
+from   eazytext.extension   import Extension, nowiki2prop
 from   eazytext.interfaces  import IEazyTextExtensionFactory
 
 gsm = getGlobalSiteManager()
@@ -34,23 +34,11 @@ class Nested( Extension ) :
         }
 
     def __call__( self, argtext ):  # Does not take any argument.
-        o = eval( 'Nested()' )
-        return o
+        return eval( 'Nested()' )
 
     def html( self, node, igen, *args, **kwargs ):
         from   eazytext        import Translate
-        # Fetch the properties
-        proplines = []
-        lines = node.text.splitlines() 
-        while lines and lines[0].lstrip().startswith('#') :
-            proplines.append( lines.pop(0).lstrip('#') )
-        text = '\n'.join( lines )
-        try    :
-            prop  = proplines and eval( ''.join( proplines )) or {}
-            style = ';'.join([ '%s : %s' % (k,v) for k,v in prop.items() ])
-        except :
-            style = ''
-
+        style, text = nowiki2prop( node.text )
         html = ''
         if text :
             try :
