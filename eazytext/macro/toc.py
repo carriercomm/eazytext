@@ -37,10 +37,10 @@ class Toc( Macro ):
     |= summary    | optional, summary for table of contents
     |= maxheadlen | optional, number of characters to display for each title.
     """
-    tmpl = '<details class="etm-toc" style="%s"> %s </details>'
-    summary_tmpl = '<summary> %s </summary>'
-    headlist_tmpl  = '<ul> %s </ul>'
-    toca_tmpl = '<li><a class="level-%s" href="%s"> %s </a></li>'
+    tmpl          = '<details class="etm-toc" style="%s"> %s </details>'
+    summary_tmpl  = '<summary> %s </summary>'
+    headlist_tmpl = '<ul> %s </ul>'
+    toca_tmpl     = '<li><a class="level-%s" href="%s"> %s </a></li>'
 
     htags = [ '', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
 

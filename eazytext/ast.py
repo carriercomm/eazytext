@@ -391,7 +391,9 @@ class NoWiki( NonTerminal ) :
                 nwopen, nl1, nwclose, nl2
         self._terms = filter( None, self._terms )
         self._nonterms = (self.nwlines,) = (nwlines,)
-        self.text = self.nwlines.dump(None) # Don't change the attribute name !!
+        self.text = self.NEWLINE1.dump(None) + \
+                    self.nwlines.dump(None) # Don't change the attribute name !!
+        self.text = self.text[1:]           # Skip the first new line
         # Fetch the plugin
         try :
             headline = self.NOWIKI_OPEN.dump(None).strip()[3:].strip()
