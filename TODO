@@ -12,6 +12,7 @@ General requirements :
 * Sortable table.
 * Send out a mail specifying that the <br> is new and wiki-properties are
   removed.
+* Automatic spell check enabling using HTML5, global attributes.
 
 * Fix the command-line arguments to eztext.py
 * use os.sep instead of using magic-values

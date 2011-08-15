@@ -61,6 +61,9 @@ setup(
         'console_scripts' : [
            'eztext = eazytext.eztext:main'
         ],
+        'pygments.lexers' : [
+            'ttl = eazytext.extension.ttlpygment:TemplateLexer',
+        ],
     },
     install_requires=[                      # setuptools
         'ply',
