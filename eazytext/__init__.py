@@ -190,5 +190,3 @@ def etx_cmdline( etxloc, **kwargs ):
         # This is for measuring performance
         st = dt.now()
         [ t( context=context ) for i in range(2) ]
-        print (dt.now() - st) / 2
-

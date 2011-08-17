@@ -7,7 +7,6 @@ from   eazytext.parser          import ETParser
 from   eazytext.codegen         import InstrGen
 from   eazytext.runtime         import StackMachine
 
-
 class Compiler( object ):
     _memcache = {}
     def __init__( self,

@@ -17,7 +17,6 @@ from   os.path              import isfile
 
 import eazytext
 from   eazytext        import __version__ as VERSION
-from   eazytext.parser import ETParser
 
 def _option_parse() :
     '''Parse the options and check whether the semantics are correct.'''

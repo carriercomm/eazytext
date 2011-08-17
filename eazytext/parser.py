@@ -28,6 +28,8 @@ from   eazytext.ast          import *
 
 log = logging.getLogger( __name__ )
 rootdir = dirname( __file__ )
+LEXTAB = 'lexetxtab'
+YACCTAB = 'parseetxtab'
 
 class ParseError( Exception ):
     pass
@@ -40,11 +42,11 @@ class ETParser( object ):
                     outputdir=None,
                     # PLY-lexer options
                     lex_optimize=False,
-                    lextab='eazytext.lextab',
+                    lextab=LEXTAB,
                     lex_debug=False,
                     # PLY-parser options
                     yacc_optimize=False,
-                    yacctab=None,
+                    yacctab=YACCTAB,
                     yacc_debug=False,
                     debug=None
                 ):
@@ -55,7 +57,7 @@ class ETParser( object ):
         self.etlex = ETLexer( error_func=self._lex_error_func )
         kwargs = {'optimize' : lex_optimize} if lex_optimize != None else {}
         kwargs.update( debug=lex_debug ) if lex_debug else None
-        kwargs.update( lextab=lextab   ) if lextab else None
+        kwargs.update( lextab=lextab )
         self.etlex.build( **kwargs )
         self.tokens = self.etlex.tokens
 
@@ -63,7 +65,7 @@ class ETParser( object ):
         kwargs = {'optimize' : yacc_optimize} if yacc_optimize != None else {}
         kwargs.update( debug=yacc_debug    ) if yacc_debug else None
         kwargs.update( outputdir=outputdir ) if outputdir else None
-        kwargs.update( yacctab=yacctab )     if yacctab else None
+        kwargs.update( tabmodule=yacctab )
         self.parser = ply.yacc.yacc( module=self, **kwargs )
         self.parser.etparser = self   # For AST nodes to access `this`
 
