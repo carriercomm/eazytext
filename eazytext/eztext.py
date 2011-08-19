@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 
+"""Command line execution"""
+
 # This file is subject to the terms and conditions defined in
 # file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2010 SKR Farms (P) LTD.
-
-"""Command line execution"""
+#       Copyright (c) 2009 SKR Farms (P) LTD.
 
 # -*- coding: utf-8 -*-
 

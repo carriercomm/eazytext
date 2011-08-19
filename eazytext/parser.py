@@ -1,16 +1,14 @@
+"""Parser grammer for EazyText text"""
+
 # This file is subject to the terms and conditions defined in
 # file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2010 SKR Farms (P) LTD.
-
-"""Parser grammer for EazyText text"""
+#       Copyright (c) 2009 SKR Farms (P) LTD.
 
 # -*- coding: utf-8 -*-
 
 # Gotcha : None
 # Notes  :
-#   1. Currently the parser does not check for html characters in the
-#      document.
-#   2. Endmarker is appender to the wiki text to facilitate the wiki parsing.
+#   1. Endmarker is appender to the wiki text to facilitate the wiki parsing.
 # Todo   : None
 
 import logging, re, sys, copy
