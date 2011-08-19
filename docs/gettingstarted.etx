@@ -71,7 +71,9 @@ By browsing the source-doc you can learn more about development with EazyText.
 h3. Start documenting
 
 eazytext contents are normally stored in a //.etx// file. So open your favorite
-editor and we will compose our first wiki document.
+editor and we will compose our first wiki document (if you are a vim user a 
+[[ 'http://www.vim.org/scripts/script.php?script_id=3500' | vim plugin ]] is
+available for syntax highlighting)
 
 > [<PRE In // 1862 //, ''Charles Lutwidge Dodgson'', a shy Oxford mathematician
  with a stammer, created a story about a little girl tubling down a rabbit

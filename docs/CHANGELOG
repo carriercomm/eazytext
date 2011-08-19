@@ -207,7 +207,7 @@ h3. 0.1dev1 ``{i} on Wed 2009-01-21``
 -----
 
 {{{ Nested 
-@ { 'font-size' : 'small', 'color' : 'gray' }
-Document edited using Vim \\ 
+# { 'font-size' : 'small', 'color' : 'gray' }
+Document edited using Vim <br>
 /* vim: set filetype=etx : */
 }}}
