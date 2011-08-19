@@ -8,27 +8,25 @@ an extension.
 h3. Extension Framework
 
 Extented wiki text can be added into the main document by enclosing them within
-triple curly braces '' ~{~{{ ... ~}~}} ''. Everything between the curly braces
+triple curly braces '' \{\{{ ... }}} ''. Everything between the curly braces
 are passed directly to the extension module, which, in most of the cases will
 return a translated HTML text. The general format while using a wiki extension
 is,
 
-> ~{~{~{''extension-name'' //space seperated parameter-strings//
-> # {
-> # ''property-name'' : //value//
-> # ''property-name'' : //value//
-> # ...
-> # }
-> 
-> ''wiki-text ...''
-> ~}~}~}
+> \{\{{''extension-name'' //{c} extension arguments similar to python function call convention//
+> # { ''property-name'' : //value//, ''property-name'' : //value//, ... }
+>
+> ''extension-text ...''
+>
+> }}}
 
 * ''extension-name'', should be one of the valid extensions.
-* ''parameter-strings'', string values that will be passed as parameters.
+* ''parameter-strings'', a sequence of arugments to coded in python's function calling
+  convention.
 * ''property-name'', property name can be a property accepted by the extension
   module or can be CSS property. Note that, the entire property block should
   be marked by a beginning ''hash (#)''
-* ''wiki-text'', the actual text that get passed on to the extension class.
+* ''extension-text'', the actual text that get passed on to the extension class.
 """
 
 # This file is subject to the terms and conditions defined in

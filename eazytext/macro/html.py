@@ -20,7 +20,7 @@ class Html( Macro ) :
     h3. Html
 
     : Description ::
-        Embed HTML text within wiki doc. Try to use ''~[< ... ~>]'' markup
+        Embed HTML text within wiki doc. Try to use ''\[< ... \>]'' markup
         first, if advanced styling is required for the embedded HTML text,
         then this macro can come in handy.
     : Example ::

@@ -66,7 +66,10 @@ class Toc( Macro ):
                   n.dump(None)
                   for n in h.filter( lambda n : isinstance(n, BASICTEXT) )
                 ])
-                text = escape_htmlchars( text )[:self.maxheadlen]
+                text = escape_htmlchars(
+                            text[:self.maxheadlen] + \
+                            ('...' if len(text) > self.maxheadlen else '')
+                       )
                 headlist.append( self.toca_tmpl % (h.level, '#'+text, text) )
             headlist = self.headlist_tmpl % '\n'.join( headlist )
             summary = self.summary_tmpl % self.summary

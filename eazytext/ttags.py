@@ -47,23 +47,9 @@ class TT( object ):
         pass
 
 
-class TTPre( TT ):
-    """
-    |= Description | Generate preformated element |
-    |= Syntax      | \[<PRE //text// \>]          |
-    """
-    ttname = 'PRE'
-    implements( IEazyTextTemplateTags )
-    template = '<span class="etttag pre">%s</span>'
-    def generate( self, node, igen, *args, **kwargs ) :
-        igen.puttext( self.template % escape_htmlchars( node.text ))
-    example = '[<PRE sample text >]'
-
-
 class TTAbbr( TT ):
-    """
-    |= Description | Generate abbreviation element   |
-    |= Syntax      | \[<ABBR //text//, //title// \>] |
+    """Show the abbreviated text, the expanded full text will be shown by
+    hovering over the abbreviated text.
     """
     ttname = 'ABBR'
     implements( IEazyTextTemplateTags )
@@ -77,24 +63,43 @@ class TTAbbr( TT ):
     example = '[<ABBR WTO, World Trade organisation >]'
 
 
+class TTAddr( TT ) :
+    """Encapsulate address text inside <address> tag. Note that comma inside
+    the text will automatically be replaced with <br/>"""
+    ttname = 'ADDR'
+    implements( IEazyTextTemplateTags )
+    template = '<address class="etttag">%s</address>'
+    def generate( self, node, igen, *args, **kwargs ):
+        text = escape_htmlchars( node.text ).replace(',', '<br/>')
+        igen.puttext( self.template % text )
+    example = "[<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]"
+
+
 class TTFixme( TT ):
-    """
-    |= Description  | Generate FIXME label |
-    |= Syntax       | \[<FIXME\>]            |
-    """
+    """A simple FIXME motif to associate with a any particular text."""
     ttname = 'FIXME'
     implements( IEazyTextTemplateTags )
-    template = '<span class="etttag fixme">%s</span>'
+    template = '<span class="etttag fixme">%s</span> %s'
     def generate( self, node, igen, *args, **kwargs ):
-        igen.puttext( self.template % 'FIXME' )
-    example = '[<FIXME>]'
+        igen.puttext( self.template % ('FIXME', node.text) )
+    example = '[<FIXME The parser is yet to support unicode>]'
+
+
+class TTPre( TT ):
+    """Preformated text. Text inside this template will be spanned (using span
+    element) and styled with //pre//.
+    """
+    ttname = 'PRE'
+    implements( IEazyTextTemplateTags )
+    template = '<span class="etttag pre">%s</span>'
+    def generate( self, node, igen, *args, **kwargs ) :
+        igen.puttext( self.template % escape_htmlchars( node.text ))
+    example = '[<PRE sample text >]'
 
 
 class TTQ( TT ) :
-    """
-    |= Description | Generate quotable quotes |
-    |= Syntax      | \[<Q -quote-text- \>]    |
-
+    """Inline quotes using html's <q> tag. For blockquotes use the wiki markup
+    //(>)// instead.
     html element generated is a div element with class attribute ''//qbq//''
     """
     ttname = 'Q'
@@ -102,8 +107,7 @@ class TTQ( TT ) :
     template = '<div class="etttag qbq">%s</div>'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % escape_htmlchars( node.text ))
-TTQ.example = """
-[<Q
+TTQ.example = """[<Q
 Emptying the heart of desires,
 Filling the belly with food,
 Weakening the ambitions,
@@ -113,10 +117,7 @@ Toughening the bones.
 
 
 class TTSmileySmile( TT ):
-    """
-    |= Description | Generate happy smiley Glyph |
-    |= Syntax      | \[<:-)\>]                   |
-    """
+    """A simple smiley, a happy one."""
     ttname = ':-)'
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag smile">%s</span>'
@@ -126,10 +127,7 @@ class TTSmileySmile( TT ):
 
 
 class TTSmileySad( TT ):
-    """
-    |= Description | Generate sad smiley glyph |
-    |= Syntax      | \[<:-(\>]                  |
-    """
+    """A simple smiley, a sad one."""
     ttname = ':-('
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag sad">%s</span>'
@@ -138,27 +136,9 @@ class TTSmileySad( TT ):
     example = '[<:-(>]'
 
 
-class TTAddr( TT ) :
-    """
-    |= Description | Generate `address` element              |
-    |= Syntax      | \[<ADDR //field1//, //field2//, ... \>] |
-
-    comma will be replaced with <br/> element
-    """
-    ttname = 'ADDR'
-    implements( IEazyTextTemplateTags )
-    template = '<address class="etttag">%s</address>'
-    def generate( self, node, igen, *args, **kwargs ):
-        text = escape_htmlchars( node.text.replace(',', '<br/>') )
-        igen.puttext( self.template % text )
-    example = "[<ADDR 1, Presidency, St. Mark's Road, Bangalore-1 >]"
-
-
 class TTFnt( TT ) :
-    """
-    |= Description | Generate a span element with specified font styling. |
-    |= Syntax      | \[<FNT <CSS font style> ; <text> \>]                 |
-    """
+    """Style encapsulated text with CSS fonts. The font styling will be applied
+    only to the text contained inside the template. """
     ttname = 'FNT'
     implements( IEazyTextTemplateTags )
     template = '<span class="etttag fnt" style="font: %s">%s</span>'
@@ -169,20 +149,13 @@ class TTFnt( TT ) :
             style, innerHTML = '', node.text
         style, innerHTML = escape_htmlchars(style), escape_htmlchars(innerHTML)
         igen.puttext( self.template % (style, innerHTML) )
-TTFnt.example = """
-[<FNT italic bold 12px/30px Georgia, serif ;
+TTFnt.example = """[<FNT italic bold 12px/30px Georgia, serif ;
 This text is specially fonted >]
 """
 
 
 class TTFootnote( TT ) :
-    """
-    |= Description | Generate footnote references. |
-    |= Syntax      | \[<FN text \>] |
-
-    Where `text` will be super-scripted and hyper-linked to foot-note content.
-
-    """
+    """A Footnote reference."""
     ttname = 'FOOTNOTE'
     implements( IEazyTextTemplateTags )
     template = '<sup class="etttag footnote">' + \
@@ -191,9 +164,8 @@ class TTFootnote( TT ) :
     def generate( self, node, igen, *args, **kwargs ):
         text = escape_htmlchars( node.text.strip() )
         igen.puttext( self.template % (text, text) )
-TTFootnote.example = """
-... mentioned by Richard Feynman [<FN 1 >], initially proposed by
-Albert Einstein  [<FN 2 >]
+TTFootnote.example = """... mentioned by Richard Feynman
+[<FN 1 >], initially proposed by Albert Einstein  [<FN 2 >]
 
 And foot-note content can be specified using the Wiki-extension language,
 like,
@@ -211,4 +183,4 @@ formulation of quantum mechanics, the theory of quantum electrodynamics.
 
 for k, cls in globals().items() :
     if k.startswith( 'TT' ):
-        gsm.registerUtility( cls(), IEazyTextTemplateTags, cls.ttname )
+        gsm.registerUtility( cls(), IEazyTextTemplateTags, cls.ttname.lower() )

@@ -9,11 +9,11 @@ code and thus follows all the function calling rules and conventions of
 python. 
 
 To expound it further, let us take a specific example of ''YearsBefore''
-Macro, which computes the time elapsed from a given (month,day,year) and
+macro, which computes the time elapsed from a given (month,day,year) and
 composes a string like "2 years 2 months before",
 
 Definition of YearsBefore macro,
-> [<PRE YearsBefore( template, fromyear, frommonth=1, fromday=1, **kwargs ) >]
+> [<PRE YearsBefore( template, fromyear=2008, frommonth=1, fromday=1, **kwargs ) >]
 
 ''A small primer on python function calls'',
 * Arguments to python functions are of two types, positional and keyword. Other
@@ -39,9 +39,11 @@ With this in mind, we will try to decipher ''YearsBefore'' macro
   pass styling attributes.
 
 Use case,
-> [<PRE started this activity and running this for {{ YearsBefore('past %s', '2008') }} >]
+> [<PRE started this activity and running this for \
+  {{ YearsBefore('past %s', fromyear='2008') }} >]
 
-> started this activity and running this for {{ YearsBefore('past %s', '2008') }}
+> started this activity and running this for {{ YearsBefore('past %s',
+  fromyear='2008') }}
 
 === Styling paramters
 

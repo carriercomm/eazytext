@@ -1328,6 +1328,7 @@ class BlockQuote( NonTerminal ) :
         if self.text_contents :
             self.text_contents.generate( igen, *args, **kwargs )
         self.NEWLINE.generate( igen, *args, **kwargs )
+        igen.puttext( '<br/>' )
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
@@ -1509,7 +1510,7 @@ class Html( NonTerminal ) :
             self.tagname = parts.pop(0).strip() if parts else ''
             self.text = '\n'.join( parts + lines )
             ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
-            self.ttplugin = ttplugins.get( self.tagname, None )
+            self.ttplugin = ttplugins.get( self.tagname.lower(), None )
             self.ttplugin and self.ttplugin.onparse(self)
         except :
             if parser.etparser.debug : raise
