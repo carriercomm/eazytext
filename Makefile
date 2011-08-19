@@ -25,7 +25,7 @@ cleanall : clean
 	rm -rf eazytext-env
 
 clean :
-	rm distribute-0.6.10.tar.gz
+	rm -rf distribute-0.6.10.tar.gz
 	rm -rf build;
 	rm -rf dist;
 	rm -rf zwiki.egg-info;
