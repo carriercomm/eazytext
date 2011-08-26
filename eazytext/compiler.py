@@ -116,7 +116,6 @@ class WikiLookup( object ) :
         [ setattr( self, k, etxconfig[k] ) for k in self.ETXCONFIG ]
         self.etxconfig = etxconfig
         self.encoding = etxconfig['input_encoding']
-        self.directories = [ d.rstrip(' \t/') for d in self.directories.split(',') ]
         self.etxloc, self._etxtext = etxloc, etxtext
         self._etxhash, self._pytext = None, None
         if self.etxloc :

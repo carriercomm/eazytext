@@ -29,6 +29,7 @@ class Clear( Macro ) :
     Positional arguments, //None//
     """
     tmpl = '<div class="etm-clear" style="%s"></div>'
+    pluginname = 'Clear'
 
     def __init__( self, *args, **kwargs ):
         self.style = constructstyle( kwargs )
@@ -41,4 +42,4 @@ class Clear( Macro ) :
 
 
 # Register this plugin
-gsm.registerUtility( Clear(), IEazyTextMacroFactory, 'Clear' )
+gsm.registerUtility( Clear(), IEazyTextMacroFactory, Clear.pluginname )

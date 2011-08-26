@@ -20,6 +20,8 @@ class Redirect( Macro ) :
     Just sets the ``redirect`` attribute in
     node.parser.etparser.redirect to the the argument that is passed
     """
+    pluginname = 'Redirect'
+
     def __init__( self, redireclink='' ) :
         self.redirect = redireclink
 
@@ -31,4 +33,4 @@ class Redirect( Macro ) :
         return ''
 
 # Register this plugin
-gsm.registerUtility( Redirect(), IEazyTextMacroFactory, 'Redirect' )
+gsm.registerUtility( Redirect(), IEazyTextMacroFactory, Redirect.pluginname )

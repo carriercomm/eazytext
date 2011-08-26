@@ -68,6 +68,7 @@ setup(
     install_requires=[                      # setuptools
         'ply',
         'pygments',
+        'paste',
         'zope.interface',
         'zope.component',
     ],

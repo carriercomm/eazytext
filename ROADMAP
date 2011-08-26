@@ -47,6 +47,9 @@ h4. Administrative features
 * From html text to eazytext markup.
 * Implement `stripscript` 
 * Find a way to pass the body arguments programatically via Translator()
+* When used in the context of web-applications, how to pass plugin-specific
+  configuration to plugin-instances. Right now, etxconfig is made available,
+  ''node.parser.etparser.etxconfig''
 
 h4. Minor features
 

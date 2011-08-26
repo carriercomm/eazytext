@@ -26,6 +26,7 @@ doc = """
 
 class Nested( Extension ) :
     tmpl = '<div class="etext-nested" style="%s"> %s </div>'
+    pluginname = 'Nested'
     
     def __init__( self, *args ):
         self.config = {
@@ -51,5 +52,5 @@ class Nested( Extension ) :
 
 
 # Register this plugin
-gsm.registerUtility( Nested(), IEazyTextExtensionFactory, 'Nested' )
+gsm.registerUtility( Nested(), IEazyTextExtensionFactory, Nested.pluginname )
 Nested._doc = doc

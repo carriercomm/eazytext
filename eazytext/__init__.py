@@ -10,6 +10,7 @@ import codecs
 from   os.path                  import dirname, basename, join
 from   copy                     import deepcopy
 from   datetime                 import datetime as dt
+from   paste.util.converters    import asbool
 
 from   zope.component           import getGlobalSiteManager
 import pkg_resources            as pkg
@@ -40,12 +41,14 @@ DEFAULT_ENCODING = 'utf-8'
 defaultconfig = {
     # Development mode settings
     'devmod': True,
+    # Deal with un-defined context variable
+    'strict_undefined': False,
     # List of directories to look for the .etx file
     'directories' : '.',
     # path to store the compiled .py file (intermediate file)
     'module_directory' : None,
     # CSV of escape filter names to be applied for expression substitution
-    'escape_filters' : 'uni',
+    'escape_filters' : '',
     # Default input endcoding for .etx file.
     'input_encoding': DEFAULT_ENCODING,
     # CSV list of plugin packages that needs to be imported, before compilation.
@@ -70,14 +73,51 @@ defaultconfig = {
     'text_as_hashkey'   : False,
 }
 
+def normalizeconfig( config ):
+    """Convert the string representation of config parameters into
+    programmable types. It is assumed that all config parameters are atleast
+    initialized with default value.
+    """
+    config['devmod'] = asbool( config['devmod'] )
+    config['strict_undefined'] = asbool( config['strict_undefined'] )
+    try :
+        config['directories'] = [
+            x.strip() for x in config['directories'].split(',') if x.strip()
+        ]
+    except :
+        pass
+    config['module_directory'] = config['module_directory'] or None
+    try :
+        config['escape_filters'] = [
+            x.strip() for x in config['escape_filters'].split(',') if x.strip()
+        ]
+    except :
+        pass
+    try :
+        config['plugin_packages'] = [
+            x.strip() for x in config['plugin_packages'].split(',') if x.strip()
+        ]
+    except :
+        pass
+    config['include_skin'] = asbool( config['include_skin'] )
+    config['obfuscatemail'] = asbool( config['obfuscatemail'] )
+    config['nested'] = asbool( config['nested'] )
+    config['stripscript'] = asbool( config['stripscript'] )
+    config['ashtml'] = asbool( config['ashtml'] )
+    config['memcache'] = asbool( config['memcache'] )
+    config['text_as_hashkey'] = asbool( config['text_as_hashkey'] )
+    return config
+
+
 macroplugins = {}           # { plugin-name : instance }
 extplugins   = {}           # { plugin-name : instance }
 ttplugins    = {}           # { plugin-name : instance }
 init_status  = 'pending'
 def initplugins( etxconfig, force=False ):
-    """Collect and organize macro plugins and extension plugins implementing
-    the interfaces,
-        IEazyTextMacroFactory, IEazyTextExtensionFactory
+    """Load the following plugin-types,
+        * template-plugins  (IEazyTextTemplateTags),
+        * macro-plugins     (IEazyTextMacroFactory),
+        * extension-plugins (IEazyTextExtensionFactory)
     """
     global init_status, macroplugins, extplugins, ttplugins
     if init_status == 'progress' :
@@ -90,25 +130,31 @@ def initplugins( etxconfig, force=False ):
 
         # Load plugin packages
         packages = etxconfig['plugin_packages']
-        packages = filter(None, [ x.strip(' \t') for x in packages.split(',') ])
+        if isinstance( packages, basestring ):
+            packages = [ x.strip(' \t') for x in packages.split(',') ]
         [ __import__(pkg) for pkg in filter(None, packages) ]
 
         # Gather plugins template tag handlers, filter-blocks
         for x in gsm.registeredUtilities() :
             if x.provided == IEazyTextMacroFactory :        # macro-plugins
                 macroplugins[x.name] = x.component
-            if x.provided == IEazyTextExtensionFactory :    # extension-plugins
+            elif x.provided == IEazyTextExtensionFactory :    # extension-plugins
                 extplugins[x.name] = x.component
-            if x.provided == IEazyTextTemplateTags :        # tt-plugins
+            elif x.provided == IEazyTextTemplateTags :        # tt-plugins
                 ttplugins[x.name] = x.component
+            else :
+                continue
+            if not hasattr( x.component, 'pluginname' ) :
+                raise Exception( 'Plugins should have the attribute `pluginname`' )
             etxconfig['macroplugins'] = macroplugins
             etxconfig['extplugins']   = extplugins
             etxconfig['ttplugins']    = ttplugins
-    init_status = 'done'
+
+        init_status = 'done'
     return etxconfig
 
 
-#---- APIs for executing Tayra Template Language
+#---- APIs for executing Eazytext wiki markup
 
 class Translate( object ):
     def __init__( self, etxloc=None, etxtext=None, etxconfig={} ):

@@ -30,6 +30,7 @@ class Span( Macro ) :
     Positional arguments,
     |= text   | optional, text for the span element
     """
+    pluginname = 'Span'
     tmpl = '<span class="etm-span" style="%s"> %s </span>'
 
     def __init__( self, *args, **kwargs ):
@@ -43,4 +44,4 @@ class Span( Macro ) :
         return self.tmpl % ( self.style, self.text )
 
 # Register this plugin
-gsm.registerUtility( Span(), IEazyTextMacroFactory, 'Span' )
+gsm.registerUtility( Span(), IEazyTextMacroFactory, Span.pluginname )

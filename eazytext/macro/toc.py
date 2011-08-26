@@ -37,6 +37,7 @@ class Toc( Macro ):
     |= summary    | optional, summary for table of contents
     |= maxheadlen | optional, number of characters to display for each title.
     """
+    pluginname    = 'Toc'
     tmpl          = '<details class="etm-toc" style="%s"> %s </details>'
     summary_tmpl  = '<summary> %s </summary>'
     headlist_tmpl = '<ul> %s </ul>'
@@ -84,4 +85,4 @@ class Toc( Macro ):
         igen.puttext( self.htmltext )
 
 # Register this plugin
-gsm.registerUtility( Toc(), IEazyTextMacroFactory, 'Toc' )
+gsm.registerUtility( Toc(), IEazyTextMacroFactory, Toc.pluginname )

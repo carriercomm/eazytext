@@ -36,6 +36,8 @@ class Image( Macro ) :
     |= width  | optional, image width, goes into @width attribute
     |= href   | optional, href, to convert the image into a hyper-link
     """
+    pluginname = 'Image'
+
     tmpl = '<img class="etm-image" %s %s src="%s" alt="%s" style="%s"/>'
     a_tmpl = '<a href="%s"> %s </a>'
 
@@ -60,4 +62,4 @@ class Image( Macro ) :
         return html
 
 # Register this plugin
-gsm.registerUtility( Image(), IEazyTextMacroFactory, 'Image' )
+gsm.registerUtility( Image(), IEazyTextMacroFactory, Image.pluginname )

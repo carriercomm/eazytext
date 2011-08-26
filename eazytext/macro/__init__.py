@@ -78,11 +78,8 @@ accepts ''semicolon (;)'' seperated style attributes, like,
 # -*- coding: utf-8 -*-
 
 from   zope.interface       import implements
-from   zope.component       import getGlobalSiteManager
 
 from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
-
-gsm = getGlobalSiteManager()
 
 class Macro( object ):
     """Base class from with macro-plugin implementers must derive from."""
@@ -115,6 +112,3 @@ class Macro( object ):
         that will be substituted in the place of the macro() calls.
         """
         return ''
-
-# Register this plugin
-gsm.registerUtility( Macro(), IEazyTextMacroFactory, 'Macro' )

@@ -1510,7 +1510,8 @@ class Html( NonTerminal ) :
             self.tagname = parts.pop(0).strip() if parts else ''
             self.text = '\n'.join( parts + lines )
             ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
-            self.ttplugin = ttplugins.get( self.tagname.lower(), None )
+            ttplugin = ttplugins.get( self.tagname.lower(), None )
+            self.ttplugin = ttplugin() if callable(ttplugin) else ttplugin
             self.ttplugin and self.ttplugin.onparse(self)
         except :
             if parser.etparser.debug : raise

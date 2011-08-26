@@ -29,6 +29,7 @@ class Html( Macro ) :
     Positional arguments,
     |= html | HTML text
     """
+    pluginname = 'Html'
 
     def __init__( self, html='' ) :
         self.htmltext  = html
@@ -41,4 +42,4 @@ class Html( Macro ) :
 
 
 # Register this plugin
-gsm.registerUtility( Html(), IEazyTextMacroFactory, 'Html' )
+gsm.registerUtility( Html(), IEazyTextMacroFactory, Html.pluginname )

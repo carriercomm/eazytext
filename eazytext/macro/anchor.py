@@ -31,6 +31,7 @@ class Anchor( Macro ):
     |= anchor | anchor name as fragment, goes under @name attribute
     |= text   | optional, text to be display at the anchor
     """
+    pluginname = 'Anchor'
     tmpl = '<a class="etm-anchor" name="%s" style="%s"> %s </a>'
 
     def __init__( self, *args, **kwargs ):
@@ -46,4 +47,4 @@ class Anchor( Macro ):
         return self.tmpl % ( self.anchor, self.style, self.text )
 
 # Register this plugin
-gsm.registerUtility( Anchor(), IEazyTextMacroFactory, 'Anchor' )
+gsm.registerUtility( Anchor(), IEazyTextMacroFactory, Anchor.pluginname )

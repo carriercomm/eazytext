@@ -64,6 +64,7 @@ class Code( Extension ) :
     tmpl       = '<div class="etext-code" style="%s"> %s </div>'
     style_tmpl = '<style type="text/css"> %s </style>'
     code_tmpl  = '<div class="codecont"> %s </div>'
+    pluginname = 'Code'
 
     def __init__( self, *args ):
         self.lexname = args and args[0].lower() or 'text'
@@ -98,5 +99,5 @@ class Code( Extension ) :
         return html
 
 # Register this plugin
-gsm.registerUtility( Code(), IEazyTextExtensionFactory, 'Code' )
+gsm.registerUtility( Code(), IEazyTextExtensionFactory, Code.pluginname )
 Code._doc = doc

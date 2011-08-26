@@ -37,6 +37,7 @@ class YearsBefore( Macro ) :
     |= frommonth | from month
     |= fromday   | from day
     """
+    pluginname = 'YearsBefore'
     tmpl = '<span class="etm-yearsbefore" style="%s">%s</span>'
 
     def __init__( self, *args, **kwargs ) :
@@ -80,4 +81,4 @@ class YearsBefore( Macro ) :
         return self.tmpl % (self.style, string)
 
 # Register this plugin
-gsm.registerUtility( YearsBefore(), IEazyTextMacroFactory, 'YearsBefore' )
+gsm.registerUtility( YearsBefore(), IEazyTextMacroFactory, YearsBefore.pluginname )

@@ -33,6 +33,7 @@ class Images( Macro ) :
     |= width  | optional, image width, applicable to all image's @width attr.
     |= cols   | optional, number of image columns in the gallery, default is 3.
     """
+    pluginname = 'Images'
     tmpl      = '<table class="etm-images"> %s </table>'
     row_tmpl  = '<tr> %s </tr>'
     cell_tmpl = '<td> %s </td>'
@@ -70,4 +71,4 @@ class Images( Macro ) :
         return html
 
 # Register this plugin
-gsm.registerUtility( Images(), IEazyTextMacroFactory, 'Images' )
+gsm.registerUtility( Images(), IEazyTextMacroFactory, Images.pluginname )

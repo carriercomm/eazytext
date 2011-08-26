@@ -36,11 +36,8 @@ is,
 # -*- coding: utf-8 -*-
 
 from   zope.interface       import implements
-from   zope.component       import getGlobalSiteManager
 
 from   eazytext.interfaces  import IEazyTextExtension, IEazyTextExtensionFactory
-
-gsm = getGlobalSiteManager()
 
 class Extension( object ):
     """Base class from with extension-plugin implementers must derive from."""
@@ -88,7 +85,3 @@ def nowiki2prop( text ):
     except :
         style = ''
     return style, remtext
-
-
-# Register this plugin
-gsm.registerUtility( Extension(), IEazyTextExtensionFactory, 'Extension' )
