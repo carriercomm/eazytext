@@ -70,7 +70,8 @@ class Compiler( object ):
         the cache (if disk persistence is enabled and the file is available)
         or, generate afresh using `igen` Instruction Generator.
         """
-        code = self._memcache.get( self.etxlookup.hashkey, None )
+        code = self._memcache.get( self.etxlookup.hashkey, None 
+               ) if self.etxconfig['devmod'] == False else None
         if code : return code
         pytext = self.etxlookup.pytext
         if pytext :
@@ -135,6 +136,8 @@ class WikiLookup( object ) :
         return self._etxtext
 
     def _getpytext( self ):
+        if self.devmod :
+            return None
         if self.pyfile and isfile(self.pyfile) and self._pytext == None :
             self._pytext = codecs.open( self.pyfile, encoding=self.encoding ).read()
         return self._pytext

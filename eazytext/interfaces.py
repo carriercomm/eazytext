@@ -18,7 +18,7 @@ specifications //IEazyTextTemplateTags//, //IEazyTextExtension// and
 from   zope.interface   import Interface
 
 class IEazyTextMacroFactory( Interface ) :
-    """h3. IEazyTextMacroFactory interface specification
+    """h4. IEazyTextMacroFactory interface specification
     Interface specification to instantiate a handler object for macro
     plugin. Only classes implementing this interface will be registered as
     macro plugin, which must be a callable returning the actual macro
@@ -31,7 +31,7 @@ class IEazyTextMacroFactory( Interface ) :
 
 
 class IEazyTextMacro( Interface ) :
-    """h3. IEazyTextMacro interface specification
+    """h4. IEazyTextMacro interface specification
     Interface specification for wiki Macro plugin. All methods will accept
     a parameter `node` which contains following attributes,
       *  ''node.parser''            PLY Yacc parser
@@ -80,7 +80,7 @@ class IEazyTextMacro( Interface ) :
 
 
 class IEazyTextExtensionFactory( Interface ) :
-    """h3. IEazyTextExtensionFactory
+    """h4. IEazyTextExtensionFactory
     Interface specification to instantiate a handler object for extension
     plugin. Only the class implementing this interface will be registered as
     extension plugin, which must be a callable returning the actual extention
@@ -93,7 +93,7 @@ class IEazyTextExtensionFactory( Interface ) :
 
 
 class IEazyTextExtension( Interface ) :
-    """h3. IEazyTextExtension
+    """h4. IEazyTextExtension
     Interface specification for wiki Extension plugin. All methods will accept
     a parameter `node` which contains following use attributes,
     EazyText extension / nowiki classes.
@@ -144,8 +144,8 @@ class IEazyTextExtension( Interface ) :
 
 
 class IEazyTextTemplateTags( Interface ) :
-    """Interface specification for templated tag plugins. Implementing
-    plugin-class will have to support the multi pass AST processing.
+    """h4. Interface specification for templated tag plugins
+    Implementing plugin-class will have to support the multi pass AST processing.
         headpass1(), headpass2(), generate() and tailpass() methods
     """
 

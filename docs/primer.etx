@@ -8,8 +8,8 @@ h3. Why eazytext
 
 Eazytext is a wiki processor that is lean, clean and insanely fast !! Since
 eazytext wiki-markup supports dynamic text (text that gets translated based on
-context), it is not practical to cache the html result and re-use them
-(by web-applications). And to avoid parsing the wiki-text every-time, an
+context), it is not practical to cache the html result and look them up when
+needed (by web-applications). And to avoid parsing the wiki-text every-time, an
 intermediate //.py// file is generated. Inspite of having this complexity the
 real-world performance for generating the html from static wiki text is ''O(n)''
 where ''n'' is the size of the text. On a desktop machine, it took about 

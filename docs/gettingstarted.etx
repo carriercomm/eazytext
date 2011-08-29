@@ -13,7 +13,7 @@ Installing via package management
 
 Download the latest tar.gz from http://pypi.python.org/pypi/eazytext
 
-Check out from bazaar repository,
+Or to get the trunk version, check out from bazaar repository,
 {{{ Code bash
   bzr branch lp:eazytext
 }}}
