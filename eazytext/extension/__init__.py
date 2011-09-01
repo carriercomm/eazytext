@@ -1,3 +1,9 @@
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2009 SKR Farms (P) LTD.
+
+# -*- coding: utf-8 -*-
+
 """
 h3. EazyText Extensions
 
@@ -28,12 +34,6 @@ is,
   be marked by a beginning ''hash (#)''
 * ''extension-text'', the actual text that get passed on to the extension class.
 """
-
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2009 SKR Farms (P) LTD.
-
-# -*- coding: utf-8 -*-
 
 from   zope.interface       import implements
 

@@ -1,3 +1,7 @@
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2009 SKR Farms (P) LTD.
+
 """Module containing Node definition for all non-teminals and translator
 functions for translating the text to HTML.
 
@@ -15,10 +19,6 @@ To walk throug the AST,
   * Use _terms and _nonterms attribute to get lists of terminals and
     non-terminals for every node.
 """
-
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2009 SKR Farms (P) LTD.
 
 # -*- coding: utf-8 -*-
 

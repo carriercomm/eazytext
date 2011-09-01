@@ -1,3 +1,9 @@
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2009 SKR Farms (P) LTD.
+
+# -*- coding: utf-8 -*-
+
 """
 h3. An introduction to multi-pass compilation implemented on the AST
 
@@ -8,12 +14,6 @@ specifications //IEazyTextTemplateTags//, //IEazyTextExtension// and
 //IEazyTextMacro// will provide the entry points for the implementing plugin.
 
 """
-
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2009 SKR Farms (P) LTD.
-
-# -*- coding: utf-8 -*-
 
 from   zope.interface   import Interface
 

@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2010 SKR Farms (P) LTD.
+
 import os, sys, codecs
 from   random           import choice
 from   optparse         import OptionParser

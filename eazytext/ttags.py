@@ -1,3 +1,9 @@
+# This file is subject to the terms and conditions defined in
+# file 'LICENSE', which is part of this source code package.
+#       Copyright (c) 2009 SKR Farms (P) LTD.
+
+# -*- coding: utf-8 -*-
+
 """
 h2. Templated Tags
 
@@ -10,12 +16,6 @@ generated using ''PRE'' template, like,
 
    > [<PRE preformatted text >]
 """
-
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
-#       Copyright (c) 2009 SKR Farms (P) LTD.
-
-# -*- coding: utf-8 -*-
 
 # Gotcha : None
 # Notes  : None

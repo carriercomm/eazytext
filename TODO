@@ -6,3 +6,9 @@ Track the project at,
 
 * Send out a mail specifying that the <br> is new and wiki-properties are
   removed.
+
+* HTML 5 tags that are relevant to eazytext.
+    article,    aside,  audio,  button, caption,    details/summary
+    embed,  header, footer, meter,  del,    ins,    strike, time,
+    nav,    progress,   section,    source,     audio/video,
+    figure, figcaption, mark,   meter
