@@ -11,7 +11,7 @@
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 
 gsm = getGlobalSiteManager()
 
@@ -33,4 +33,4 @@ class Redirect( Macro ) :
         return ''
 
 # Register this plugin
-gsm.registerUtility( Redirect(), IEazyTextMacroFactory, Redirect.pluginname )
+gsm.registerUtility( Redirect(), IEazyTextMacro, Redirect.pluginname )

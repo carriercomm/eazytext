@@ -17,20 +17,11 @@ specifications //IEazyTextTemplateTags//, //IEazyTextExtension// and
 
 from   zope.interface   import Interface
 
-class IEazyTextMacroFactory( Interface ) :
-    """h4. IEazyTextMacroFactory interface specification
-    Interface specification to instantiate a handler object for macro
-    plugin. Only classes implementing this interface will be registered as
-    macro plugin, which must be a callable returning the actual macro
-    plugin object implementing //IEazyTextMacro// methods."""
-
-    def __call__( argtext ) :
-        """Return an instance of the macro-plugin, using the macro arguments,
-        `argtext`.
-        """
+class IEazyText( Interface ):
+    """Base class for all `eazytext` interface specifications."""
 
 
-class IEazyTextMacro( Interface ) :
+class IEazyTextMacro( IEazyText ) :
     """h4. IEazyTextMacro interface specification
     Interface specification for wiki Macro plugin. All methods will accept
     a parameter `node` which contains following attributes,
@@ -47,7 +38,15 @@ class IEazyTextMacro( Interface ) :
 
     if any of the specified method recieves `igen` as a parameter, it can be
     used to generate stack machine instruction.
+    __call__ method will be used to create a new instance based on macro
+    arguments
     """
+    
+    def __call__( argtext ) :
+        """Return an instance of the macro-plugin, using the macro arguments,
+        `argtext`.
+        """
+
     def onparse( node ):
         """Will be invoked after parsing the text and while instantiating the
         AST node corresponding to the macro. If the interface returns a
@@ -79,20 +78,8 @@ class IEazyTextMacro( Interface ) :
         """
 
 
-class IEazyTextExtensionFactory( Interface ) :
-    """h4. IEazyTextExtensionFactory
-    Interface specification to instantiate a handler object for extension
-    plugin. Only the class implementing this interface will be registered as
-    extension plugin, which must be a callable returning the actual extention
-    plugin object implementing //IEazyTextExtension// methods."""
 
-    def __call__( *args ) :
-        """Return an instance of the extension-plugin, using the extension
-        arguments list, `args`.
-        """
-
-
-class IEazyTextExtension( Interface ) :
+class IEazyTextExtension( IEazyText ) :
     """h4. IEazyTextExtension
     Interface specification for wiki Extension plugin. All methods will accept
     a parameter `node` which contains following use attributes,
@@ -110,8 +97,15 @@ class IEazyTextExtension( Interface ) :
 
     if any of the specified method recieves `igen` as a parameter, it can be
     used generate the stack machine instruction.
+    __call__ method will be used to create a new instance based on extension
+    arguments
     """
     
+    def __call__( *args ) :
+        """Return an instance of the extension-plugin, using the extension
+        arguments list, `args`.
+        """
+
     def onparse( node ):
         """Will be invoked after parsing the text and while instantiating the
         AST node corresponding to extension. If the interface returns a
@@ -143,7 +137,7 @@ class IEazyTextExtension( Interface ) :
         """
 
 
-class IEazyTextTemplateTags( Interface ) :
+class IEazyTextTemplateTags( IEazyText ) :
     """h4. Interface specification for templated tag plugins
     Implementing plugin-class will have to support the multi pass AST processing.
         headpass1(), headpass2(), generate() and tailpass() methods

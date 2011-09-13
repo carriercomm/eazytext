@@ -30,6 +30,8 @@ from   eazytext.interfaces  import IEazyTextTemplateTags
 gsm = getGlobalSiteManager()
 
 class TT( object ):
+    implements( IEazyTextTemplateTags )
+
     def onparse( self, node ):
         pass
 
@@ -51,7 +53,6 @@ class TTAbbr( TT ):
     hovering over the abbreviated text.
     """
     pluginname = 'ABBR'
-    implements( IEazyTextTemplateTags )
     template = '<abbr class="etttag" title="%s">%s</abbr>'
     def generate( self, node, igen, *args, **kwargs ):
         args  = node.text.split(',')
@@ -66,7 +67,6 @@ class TTAddr( TT ) :
     """Encapsulate address text inside <address> tag. Note that comma inside
     the text will automatically be replaced with <br/>"""
     pluginname = 'ADDR'
-    implements( IEazyTextTemplateTags )
     template = '<address class="etttag">%s</address>'
     def generate( self, node, igen, *args, **kwargs ):
         text = escape_htmlchars( node.text ).replace(',', '<br/>')
@@ -77,7 +77,6 @@ class TTAddr( TT ) :
 class TTFixme( TT ):
     """A simple FIXME motif to associate with a any particular text."""
     pluginname = 'FIXME'
-    implements( IEazyTextTemplateTags )
     template = '<span class="etttag fixme">%s</span> %s'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % ('FIXME', node.text) )
@@ -89,7 +88,6 @@ class TTPre( TT ):
     element) and styled with //pre//.
     """
     pluginname = 'PRE'
-    implements( IEazyTextTemplateTags )
     template = '<span class="etttag pre">%s</span>'
     def generate( self, node, igen, *args, **kwargs ) :
         igen.puttext( self.template % escape_htmlchars( node.text ))
@@ -102,7 +100,6 @@ class TTQ( TT ) :
     html element generated is a div element with class attribute ''//qbq//''
     """
     pluginname = 'Q'
-    implements( IEazyTextTemplateTags )
     template = '<div class="etttag qbq">%s</div>'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % escape_htmlchars( node.text ))
@@ -118,7 +115,6 @@ Toughening the bones.
 class TTSmileySmile( TT ):
     """A simple smiley, a happy one."""
     pluginname = ':-)'
-    implements( IEazyTextTemplateTags )
     template = '<span class="etttag smile">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % '&#9786;' )
@@ -128,7 +124,6 @@ class TTSmileySmile( TT ):
 class TTSmileySad( TT ):
     """A simple smiley, a sad one."""
     pluginname = ':-('
-    implements( IEazyTextTemplateTags )
     template = '<span class="etttag sad">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % '&#9785;' )
@@ -139,7 +134,6 @@ class TTFnt( TT ) :
     """Style encapsulated text with CSS fonts. The font styling will be applied
     only to the text contained inside the template. """
     pluginname = 'FNT'
-    implements( IEazyTextTemplateTags )
     template = '<span class="etttag fnt" style="font: %s">%s</span>'
     def generate( self, node, igen, *args, **kwargs ):
         try :
@@ -156,7 +150,6 @@ This text is specially fonted >]
 class TTFootnote( TT ) :
     """A Footnote reference."""
     pluginname = 'FOOTNOTE'
-    implements( IEazyTextTemplateTags )
     template = '<sup class="etttag footnote">' + \
                '<a href="#%s" style="text-decoration: none;">%s' + \
                '</a></sup>'

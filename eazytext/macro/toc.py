@@ -15,7 +15,7 @@ from   copy         import copy, deepcopy
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 from   eazytext.lib         import constructstyle, escape_htmlchars
 from   eazytext.ast         import Heading, BASICTEXT
 
@@ -85,4 +85,4 @@ class Toc( Macro ):
         igen.puttext( self.htmltext )
 
 # Register this plugin
-gsm.registerUtility( Toc(), IEazyTextMacroFactory, Toc.pluginname )
+gsm.registerUtility( Toc(), IEazyTextMacro, Toc.pluginname )

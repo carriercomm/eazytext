@@ -13,7 +13,7 @@ import datetime     as dt
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
@@ -81,4 +81,4 @@ class YearsBefore( Macro ) :
         return self.tmpl % (self.style, string)
 
 # Register this plugin
-gsm.registerUtility( YearsBefore(), IEazyTextMacroFactory, YearsBefore.pluginname )
+gsm.registerUtility( YearsBefore(), IEazyTextMacro, YearsBefore.pluginname )

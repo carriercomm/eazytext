@@ -11,7 +11,7 @@
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
@@ -44,4 +44,4 @@ class Span( Macro ) :
         return self.tmpl % ( self.style, self.text )
 
 # Register this plugin
-gsm.registerUtility( Span(), IEazyTextMacroFactory, Span.pluginname )
+gsm.registerUtility( Span(), IEazyTextMacro, Span.pluginname )

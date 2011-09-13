@@ -12,7 +12,7 @@
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.extension   import Extension, nowiki2prop
-from   eazytext.interfaces  import IEazyTextExtensionFactory
+from   eazytext.interfaces  import IEazyTextExtension
 
 gsm = getGlobalSiteManager()
 
@@ -52,5 +52,5 @@ class Nested( Extension ) :
 
 
 # Register this plugin
-gsm.registerUtility( Nested(), IEazyTextExtensionFactory, Nested.pluginname )
+gsm.registerUtility( Nested(), IEazyTextExtension, Nested.pluginname )
 Nested._doc = doc

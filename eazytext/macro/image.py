@@ -11,7 +11,7 @@
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
@@ -62,4 +62,4 @@ class Image( Macro ) :
         return html
 
 # Register this plugin
-gsm.registerUtility( Image(), IEazyTextMacroFactory, Image.pluginname )
+gsm.registerUtility( Image(), IEazyTextMacro, Image.pluginname )

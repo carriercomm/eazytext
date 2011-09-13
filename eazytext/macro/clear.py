@@ -11,7 +11,7 @@
 from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
-from   eazytext.interfaces  import IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
@@ -42,4 +42,4 @@ class Clear( Macro ) :
 
 
 # Register this plugin
-gsm.registerUtility( Clear(), IEazyTextMacroFactory, Clear.pluginname )
+gsm.registerUtility( Clear(), IEazyTextMacro, Clear.pluginname )

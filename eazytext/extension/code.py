@@ -15,7 +15,7 @@ from   pygments.lexers                 import get_lexer_by_name
 from   zope.component                  import getGlobalSiteManager
 
 from   eazytext.extension              import Extension, nowiki2prop
-from   eazytext.interfaces             import IEazyTextExtensionFactory
+from   eazytext.interfaces             import IEazyTextExtension
 from   eazytext.lib                    import constructstyle
 import eazytext.extension.ttlpygment
 
@@ -99,5 +99,5 @@ class Code( Extension ) :
         return html
 
 # Register this plugin
-gsm.registerUtility( Code(), IEazyTextExtensionFactory, Code.pluginname )
+gsm.registerUtility( Code(), IEazyTextExtension, Code.pluginname )
 Code._doc = doc

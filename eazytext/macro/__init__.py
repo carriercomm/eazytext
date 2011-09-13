@@ -79,11 +79,11 @@ accepts ''semicolon (;)'' seperated style attributes, like,
 
 from   zope.interface       import implements
 
-from   eazytext.interfaces  import IEazyTextMacro, IEazyTextMacroFactory
+from   eazytext.interfaces  import IEazyTextMacro
 
 class Macro( object ):
     """Base class from with macro-plugin implementers must derive from."""
-    implements( IEazyTextMacro, IEazyTextMacroFactory )
+    implements( IEazyTextMacro )
 
     def __init__( self, *args, **kwargs ):
         pass

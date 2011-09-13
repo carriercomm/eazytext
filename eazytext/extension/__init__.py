@@ -37,11 +37,11 @@ is,
 
 from   zope.interface       import implements
 
-from   eazytext.interfaces  import IEazyTextExtension, IEazyTextExtensionFactory
+from   eazytext.interfaces  import IEazyTextExtension
 
 class Extension( object ):
     """Base class from with extension-plugin implementers must derive from."""
-    implements( IEazyTextExtension, IEazyTextExtensionFactory )
+    implements( IEazyTextExtension )
 
     def __init__( self, *args, **kwargs ):
         pass

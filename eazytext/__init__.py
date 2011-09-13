@@ -31,9 +31,9 @@ import eazytext.extension
 import eazytext.extension.code
 import eazytext.extension.nested
 
-from   eazytext.interfaces      import IEazyTextMacroFactory, \
+from   eazytext.interfaces      import IEazyTextMacro, \
                                        IEazyTextTemplateTags, \
-                                       IEazyTextExtensionFactory
+                                       IEazyTextExtension
 from   eazytext.parser          import ETParser
 
 DEFAULT_ENCODING = 'utf-8'
@@ -116,8 +116,8 @@ init_status  = 'pending'
 def initplugins( etxconfig, force=False ):
     """Load the following plugin-types,
         * template-plugins  (IEazyTextTemplateTags),
-        * macro-plugins     (IEazyTextMacroFactory),
-        * extension-plugins (IEazyTextExtensionFactory)
+        * macro-plugins     (IEazyTextMacro),
+        * extension-plugins (IEazyTextExtension)
     """
     global init_status, macroplugins, extplugins, ttplugins
     if init_status == 'progress' :
@@ -136,9 +136,9 @@ def initplugins( etxconfig, force=False ):
 
         # Gather plugins template tag handlers, filter-blocks
         for x in gsm.registeredUtilities() :
-            if x.provided == IEazyTextMacroFactory :        # macro-plugins
+            if x.provided == IEazyTextMacro:        # macro-plugins
                 macroplugins[x.name] = x.component
-            elif x.provided == IEazyTextExtensionFactory :    # extension-plugins
+            elif x.provided == IEazyTextExtension:    # extension-plugins
                 extplugins[x.name] = x.component
             elif x.provided == IEazyTextTemplateTags :        # tt-plugins
                 ttplugins[x.name] = x.component
