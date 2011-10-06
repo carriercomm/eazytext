@@ -18,25 +18,33 @@ from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
+doc = """
+h3. YearsBefore
+
+: Description ::
+    Generate a string (based on a template) describing time elapsed since
+    the given (day,month,year). The described time is in UTC.
+    Accepts CSS styles for keyword arguments.
+: Example ::
+    [<PRE {{ YearsBefore('past %s', '2008', color="red" ) }} >]
+: Selector ::
+    The generated span element can be selected (in CSS and JS) using class
+    attribute, //etm-yearsbefore//
+
+Positional arguments,
+|= template | template string.
+|= fromyear | from year
+
+keyword argument,
+|= frommonth | from month
+|= fromday   | from day
+"""
+
 class YearsBefore( Macro ) :
+    """Macro plugin to generate dynamic text based on a reference date to
+    current date, rendered using a template string.
     """
-    h3. YearsBefore
-
-    : Description ::
-        Generate a string (based on a template) describing time elapsed since
-        the given (day,month,year). The described time is in UTC.
-        Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ YearsBefore('past %s', '2008', color="red" ) }} >]
-
-    Positional arguments,
-    |= template | template string.
-    |= fromyear | from year
-
-    keyword argument,
-    |= frommonth | from month
-    |= fromday   | from day
-    """
+    _doc = doc
     pluginname = 'YearsBefore'
     tmpl = '<span class="etm-yearsbefore" style="%s">%s</span>'
 
@@ -57,7 +65,7 @@ class YearsBefore( Macro ) :
             self.fromday   = utc.day
         self.style = constructstyle( kwargs )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'YearsBefore( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :

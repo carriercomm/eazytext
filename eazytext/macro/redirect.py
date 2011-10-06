@@ -25,7 +25,7 @@ class Redirect( Macro ) :
     def __init__( self, redireclink='' ) :
         self.redirect = redireclink
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Redirect( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :

@@ -16,28 +16,34 @@ from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
+doc ="""
+h3. Image
+
+: Description ::
+    Embed Images in the doc. Try to use ''Link markup'' to embed images, if
+    advanced styling is required, this macro can come in handy.
+    Accepts CSS styles for keyword arguments.
+: Example ::
+    [<PRE {{ Image( '/photo.jpg' ) }} >]
+: Selector ::
+    The generated <img> tag can be selected (in CSS and JS) using class
+    attribute, //etm-image//
+
+Positional arguments,
+|= src    | source-url for image, goes into @src attribute
+|= alt    | alternate text, goes into @alt attribute
+
+keyword argument,
+|= height | optional, image height, goes into @height attribute
+|= width  | optional, image width, goes into @width attribute
+|= href   | optional, href, to convert the image into a hyper-link
+"""
+
 class Image( Macro ) :
-    """
-    h3. Image
-
-    : Description ::
-        Embed Images in the doc. Try to use ''Link markup'' to embed images, if
-        advanced styling is required, this macro can come in handy.
-        Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ Image( '/photo.jpg' ) }} >]
-
-    Positional arguments,
-    |= src    | source-url for image, goes into @src attribute
-    |= alt    | alternate text, goes into @alt attribute
-
-    keyword argument,
-    |= height | optional, image height, goes into @height attribute
-    |= width  | optional, image width, goes into @width attribute
-    |= href   | optional, href, to convert the image into a hyper-link
-    """
+    """Macro plugin to generate an image element <img>, optionally as a
+    hyperlink."""
+    _doc = doc
     pluginname = 'Image'
-
     tmpl = '<img class="etm-image" %s %s src="%s" alt="%s" style="%s"/>'
     a_tmpl = '<a href="%s"> %s </a>'
 
@@ -50,7 +56,7 @@ class Image( Macro ) :
         self.href = kwargs.pop( 'href', '' )
         self.style = constructstyle( kwargs )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Image( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :

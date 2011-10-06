@@ -16,23 +16,31 @@ from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
+doc = """
+h3. Images
+
+: Description ::
+    Embed Image galleries in the doc. 
+    Accepts CSS styles for keyword arguments.
+: Selector ::
+    The generated table of images can be selected (in CSS and JS) using class
+    attribute, //etm-images//
+
+Positional arguments,
+|= *args  | variable number of image sources (@src), one for each for image
+
+keyword argument,
+|= alt    | alternate text (@alt), that goes into each image
+|= height | optional, image height, applicable to all image's @height attr.
+|= width  | optional, image width, applicable to all image's @width attr.
+|= cols   | optional, number of image columns in the gallery, default is 3.
+"""
+
 class Images( Macro ) :
+    """Macro plugin to generate a gallary (using <tables>) of images embedded
+    inside the wiki document.
     """
-    h3. Images
-
-    : Description ::
-        Embed Image galleries in the doc. 
-        Accepts CSS styles for keyword arguments.
-
-    Positional arguments,
-    |= *args  | variable number of image sources (@src), one for each for image
-
-    keyword argument,
-    |= alt    | alternate text (@alt), that goes into each image
-    |= height | optional, image height, applicable to all image's @height attr.
-    |= width  | optional, image width, applicable to all image's @width attr.
-    |= cols   | optional, number of image columns in the gallery, default is 3.
-    """
+    _doc = doc
     pluginname = 'Images'
     tmpl      = '<table class="etm-images"> %s </table>'
     row_tmpl  = '<tr> %s </tr>'
@@ -47,7 +55,7 @@ class Images( Macro ) :
         self.cols   = int( kwargs.pop( 'cols', '3' ))
         self.style  = constructstyle( kwargs )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Images( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :

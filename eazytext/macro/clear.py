@@ -16,25 +16,33 @@ from   eazytext.lib         import constructstyle
 
 gsm = getGlobalSiteManager()
 
+doc = """
+h3. Clear
+
+: Description :: 
+    Styling macro to clear the DOM elements on both sides, warding off from
+    floating effects. Accepts CSS styles for keyword arguments.
+: Example ::
+    [<PRE {{ Clear() }} >]
+: Selector ::
+    The generated div element can be selected (in CSS and JS) using class
+    attribute, //etm-clear//
+
+Positional arguments, //None//
+"""
+
 class Clear( Macro ) :
-    """
-    h3. Clear
-
-    : Description :: 
-        Styling macro to clear the DOM elements on both sides, warding off from
-        floating effects. Accepts CSS styles for keyword arguments.
-    : Example ::
-        [<PRE {{ Clear() }} >]
-
-    Positional arguments, //None//
+    """Styling macro to clear the DOM elements on both sides, warding off from
+    floating effects.
     """
     tmpl = '<div class="etm-clear" style="%s"></div>'
     pluginname = 'Clear'
+    _doc = doc
 
     def __init__( self, *args, **kwargs ):
         self.style = constructstyle( kwargs )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Clear( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ):

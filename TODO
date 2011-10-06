@@ -12,3 +12,5 @@ Track the project at,
     embed,  header, footer, meter,  del,    ins,    strike, time,
     nav,    progress,   section,    source,     audio/video,
     figure, figcaption, mark,   meter
+
+* Should <article> tag be wrapped around nested etx-text ?

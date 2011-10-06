@@ -21,22 +21,30 @@ from   eazytext.ast         import Heading, BASICTEXT
 
 gsm = getGlobalSiteManager()
 
+doc = """
+h3. Toc
+
+: Description ::
+    Macro to generate Table of contents.  Accepts CSS styles for keyword
+    arguments.
+: Example ::
+    [<PRE {{ Toc() }} >]
+: Selector ::
+    The generated table-of-contents containing element can be selected
+    (in CSS and JS) using class attribute, //etm-toc//
+
+Positional arguments, //None//
+
+keyword argument,
+|= summary    | optional, summary for table of contents
+|= maxheadlen | optional, number of characters to display for each title.
+"""
+
 class Toc( Macro ):
+    """Macro plugin to generate table-of-contents for the embedding wiki
+    document based on head elements, h1, h2, h3, h4, h5.
     """
-    h3. Toc
-
-    : Description ::
-        Macro to generate Table of contents.  Accepts CSS styles for keyword
-        arguments.
-    : Example ::
-        [<PRE {{ Toc() }} >]
-
-    Positional arguments, //None//
-
-    keyword argument,
-    |= summary    | optional, summary for table of contents
-    |= maxheadlen | optional, number of characters to display for each title.
-    """
+    _doc = doc
     pluginname    = 'Toc'
     tmpl          = '<details class="etm-toc" style="%s"> %s </details>'
     summary_tmpl  = '<summary> %s </summary>'
@@ -54,7 +62,7 @@ class Toc( Macro ):
         self.summary = kwargs.pop( 'summary', self.SUMMARY )
         self.style  = constructstyle( kwargs )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Toc( %s )' % argtext )
 
     def headpass1( self, node, igen ) :

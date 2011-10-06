@@ -15,26 +15,32 @@ from   eazytext.interfaces  import IEazyTextMacro
 
 gsm = getGlobalSiteManager()
 
+doc = """
+h3. Html
+
+: Description ::
+    Embed HTML text within wiki doc. Firstly, try to use ''\[< ... \>]'' markup
+    to get the desired result, if advanced styling is required then use this
+    macro.
+: Example ::
+    [<PRE {{ Html( '<b>hello world</b>' ) }} >]
+
+Positional arguments,
+|= html | HTML text
+"""
+
 class Html( Macro ) :
-    """
-    h3. Html
-
-    : Description ::
-        Embed HTML text within wiki doc. Try to use ''\[< ... \>]'' markup
-        first, if advanced styling is required for the embedded HTML text,
-        then this macro can come in handy.
-    : Example ::
-        [<PRE {{ Html( '<b>hello world</b>' ) }} >]
-
-    Positional arguments,
-    |= html | HTML text
+    """Embed HTML text within wiki doc. Firstly, try to use ''\[< ... \>]'' markup
+    to get the desired result, if advanced styling is required then use this
+    macro.
     """
     pluginname = 'Html'
+    _doc = doc
 
     def __init__( self, html='' ) :
         self.htmltext  = html
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Html( %s )' % argtext )
 
     def html( self, node, igen, *args, **kwargs ) :

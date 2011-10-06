@@ -25,6 +25,9 @@ doc = """
 """
 
 class Nested( Extension ) :
+    """Extension plugin for nesting //etx-markup// text, providing an
+    opportunity for styling the entire block."""
+
     tmpl = '<div class="etext-nested" style="%s"> %s </div>'
     pluginname = 'Nested'
     
@@ -34,7 +37,7 @@ class Nested( Extension ) :
             'include_skin' : False,
         }
 
-    def __call__( self, argtext ):  # Does not take any argument.
+    def __call__( self, argtext='' ):  # Does not take any argument.
         return eval( 'Nested()' )
 
     def html( self, node, igen, *args, **kwargs ):

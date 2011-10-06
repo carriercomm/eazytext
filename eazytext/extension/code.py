@@ -61,6 +61,11 @@ is to list the line numbers.
 
 
 class Code( Extension ) :
+    """Extension plugin for syntax highlighting code-blocks. For highlighting, the
+    plugin uses pygments library, hence a large collection of text-types can
+    be highlighted, http://pygments.org/languages/
+    """
+
     tmpl       = '<div class="etext-code" style="%s"> %s </div>'
     style_tmpl = '<style type="text/css"> %s </style>'
     code_tmpl  = '<div class="codecont"> %s </div>'
@@ -71,7 +76,7 @@ class Code( Extension ) :
         self.linenos = 'noln' not in args
         self.formatter = HtmlFormatter( linenos=self.linenos )
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         parts   = argtext.split(',')
         lexname = parts.pop(0) if parts else 'text'
         linenos = parts.pop(0) if parts else ''

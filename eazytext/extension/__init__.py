@@ -46,7 +46,7 @@ class Extension( object ):
     def __init__( self, *args, **kwargs ):
         pass
 
-    def __call__( self, argtext ):
+    def __call__( self, argtext='' ):
         return eval( 'Extension( %s )' % argtext )
 
     def onparse( self, node ):

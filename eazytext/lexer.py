@@ -155,7 +155,7 @@ class ETLexer( object ) :
     heading     = r'^%s((={1,6})|([hH][123456]\.))(%s)?' % (spac, style)
     btopen, btclose, btrow, btcell, bthead = '{', '}', '-', ' ' , '='
     btable      = r'^%s\|\|[ {}=-](%s)?' % (spac, style)
-    nowikiopen  = r'^\{\{\{.*?$'
+    nowikiopen  = r'^%s\{\{\{.*?$' % spac
     nowikinl    = r'(\n|\r\n)+'
     nowikitext  = r'^.+$'
     nowikiclose = r'^%s}}}%s$' % (spac, spac)
