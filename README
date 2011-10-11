@@ -98,7 +98,7 @@ which,
 To start using the eazytext package, enter the virtual environment by doing,
 ``{c} source ./eazytext-env/bin/activate ``
 
-''To create an egg packages'',
+''To create egg packages'',
 
 {{{ Code bash
 

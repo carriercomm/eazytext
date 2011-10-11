@@ -49,7 +49,7 @@ extension-text
 An extension block begins with [<PRE {{{ >] and ends with [<PRE }}} >].
 Note that the opening and closing markup must begin in a new line, flush with
 white-space.  //extension-name// is the name of the plugin implementing
-//IEazyTextExtensionFactory// and arg1, arg2, ... are arguments to its
+//IEazyTextExtension// and arg1, arg2, ... are arguments to its
 constructor. Upon encountering the extension block an instance of the extension
 plugin is created, which is subsequently used by the multi-pass compiler to 
 generate the html.

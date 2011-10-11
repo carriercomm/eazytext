@@ -28,7 +28,7 @@ class IEazyText( Interface ):
 
 class IEazyTextMacro( IEazyText ) :
     """Interface specification for eazytext's macro-plugin. All methods defined
-    by this specification will accept a parameter //node// which contains
+    by this specification will accept a parameter //node// which contain
     following attributes,
       *  ''node.parser''            PLY Yacc parser
       *  ''node.macrotext''         Raw macro text between \{{ ... \}}
@@ -94,7 +94,7 @@ class IEazyTextMacro( IEazyText ) :
 class IEazyTextExtension( IEazyText ) :
     """Interface specification for eazytext's extension-plugin.
     All methods defined by this specification will accept a parameter //node//
-    which contains following attributes,
+    which contain following attributes,
       *  ''node.parser''          PLY Yacc parser
       *  ''node.text''            Raw extension text between {{{ ... }}}
       *  ''node.parser.etparser'' ETParser() object
@@ -158,7 +158,7 @@ class IEazyTextExtension( IEazyText ) :
 class IEazyTextTemplateTags( IEazyText ) :
     """Interface speficiation for eazytext's templated-tags plugin. All methods
     defined by this specification will accept a parameter //node// which
-    contains the following attributes,
+    contain the following attributes,
       *  ''node.parser''          PLY Yacc parser
       *  ''node.htmltext''        Raw text between \[< ... \>]
       *  ''node.parser.etparser'' ETParser() object
