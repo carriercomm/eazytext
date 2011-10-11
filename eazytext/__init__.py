@@ -4,7 +4,7 @@
 
 # -*- coding: utf-8 -*-
 
-__version__ = '0.92dev'
+__version__ = '0.93dev'
 
 import codecs
 from   os.path                  import dirname, basename, join

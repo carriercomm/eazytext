@@ -1,8 +1,19 @@
 {{ Toc( float='right' ) }}
 
-h3. 0.92dev ``{i} on Fri 2011-03-15``
+h3. 0.93dev ``{i} on Fri 2011-10-11``
 
-( On going edition )
+* Wiki engine re-written using stack-machine architecture.
+* Fine tuned html generation and CSS styling for TOC macro.
+* Context object for the AST tree is now available via ETParser object (not 
+  via igen)
+* Code extension added.
+* Added pygmentation (syntax highlighting) for .ttl (tayra templates) text
+  inside Code extension blocks.
+* templated-tag names are case-insensitive
+* Merged IEazyTextMacroFactory into IEazyTextMacro
+* Merged IEazyTextExtensionFactory into IEazyTextExtension
+
+h3. 0.92dev ``{i} on Fri 2011-03-15``
 
 * EazyText features and enhancements
     ** Macro and Extension plugins are now based on zope.interface and
