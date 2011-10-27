@@ -50,7 +50,6 @@ class ETParser( object ):
                 ):
         self.debug = lex_debug or yacc_debug or debug
         self._etxconfig = etxconfig
-
         # Build Lexer
         self.etlex = ETLexer( error_func=self._lex_error_func )
         kwargs = {'optimize' : lex_optimize} if lex_optimize != None else {}
@@ -73,7 +72,6 @@ class ETParser( object ):
         self.etxfile = etxfile
         self.etxconfig = deepcopy( self._etxconfig )
         self.etxconfig.update( etxconfig )
-        self.etlex.reset_lineno()
         self.ctx = Context()
 
     def _fetchskin( self, skinfile ):
@@ -123,8 +121,11 @@ class ETParser( object ):
         # parse and get the Translation Unit
         debuglevel = self.debug or debuglevel
         self.pptext += '\n' + self.ENDMARKER
-        self.tu = self.parser.parse(self.pptext, lexer=self.etlex, debug=debuglevel)
-        return self.tu
+        tu = self.parser.parse(self.pptext, lexer=self.etlex, debug=debuglevel)
+        # Restart the parser and lexer
+        self.etlex.reset_lineno()
+        self.parser.restart()
+        return tu
 
     # ------------------------- Private functions -----------------------------
 
