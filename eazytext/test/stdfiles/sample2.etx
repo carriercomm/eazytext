@@ -1,6 +1,4 @@
-@ { 'font-family' : 'arial,sans-serif' }
-
-{{ Toc( float='right', position='relative', maxheadlen=30 ) }}
+{{ Toc( float='right' ) }}
 
 = Top-level heading 
     This sample markup is taken from creole and modified to eazytext markup.
