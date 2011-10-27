@@ -7,6 +7,7 @@ test :
 	cd eazytext/test; teststd.py;
 	cd eazytext/test; testmixchar.py;
 	cd eazytext/test; testmixline.py;
+	cd eazytext/test; testcmd.py;
 
 bdist_egg :
 	cp CHANGELOG docs/CHANGELOG

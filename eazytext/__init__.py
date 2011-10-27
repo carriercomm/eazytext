@@ -6,7 +6,7 @@
 
 __version__ = '0.93dev'
 
-import codecs
+import codecs, sys
 from   os.path                  import dirname, basename, join
 from   copy                     import deepcopy
 from   datetime                 import datetime as dt
@@ -219,10 +219,13 @@ def etx_cmdline( etxloc, **kwargs ):
         tu = compiler.toast()
         tu.show()
     elif dump :
+        from  eazytext.ast import Context
         tu = compiler.toast()
-        rctext =  tu.dump()
-        if rctext != codecs.open( compiler.etxfile, encoding=encoding ).read() :
+        rctext =  tu.dump( Context() )
+        text = codecs.open( compiler.etxfile, encoding=encoding ).read()
+        if rctext[:-1] != text :
             print "Mismatch ..."
+            sys.exit(1)
         else : print "Success ..."
     else :
         print "Generating py / html file ... "
@@ -232,9 +235,9 @@ def etx_cmdline( etxloc, **kwargs ):
 
         etxconfig.setdefault( 'memcache', True )
         t = Translate( etxloc=etxloc, etxconfig=etxconfig )
-        html = t( context=context )
+        html = t( context=deepcopy(context) )
         codecs.open( htmlfile, mode='w', encoding=encoding).write( html )
 
         # This is for measuring performance
         st = dt.now()
-        [ t( context=context ) for i in range(2) ]
+        [Translate(etxloc=etxloc)(context=deepcopy(context)) for i in range(2)]

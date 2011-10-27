@@ -14,3 +14,15 @@ Track the project at,
     figure, figcaption, mark,   meter
 
 * Should <article> tag be wrapped around nested etx-text ?
+
+* Config parameters must follow ConfigDict similar to bootstrap-configuration
+  definition, must completely adhere to mod:eazytext of bootstrap config.
+
+* Move PLY parameters like (lex|yacc)_optimize and (lex|yacc)tab to
+  mod:eazytext configurations.
+
+* parser.restart() and lex.restart() doesnot seem to be sufficient, for now
+  avoiding reuse of parser and lexer objects. Find a long term solution.
+
+* parse() appends a newline at the end of the wiki text, prune them while
+  dump()
