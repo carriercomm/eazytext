@@ -60,7 +60,7 @@ in your python path, use the command-line tool, like,
 
 }}}
    
-h3. Using it as library, for python
+h3. Using it as python library
 
 {{{ Code python
     from   eazytext  import Translate

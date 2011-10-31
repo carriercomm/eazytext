@@ -21,9 +21,9 @@ implement macros and extensions are available under //eazytext/interfaces.py//
 
 h3. Design 
 
-Macro-plugin classes must implement the interface-spec ``{b}IEazyTextMacro``
+Macro-plugin classes must implement the interface-spec ``{c}IEazyTextMacro``
 defined in //eazytext/interfaces.py//, similarly extension-plugins must
-implement the interface-spec ``{b}IEazyTextExtension``. Additionally a callable
+implement the interface-spec ``{c}IEazyTextExtension``. Additionally a callable
 factory class must be defined for each plugin.
 
 ''eazytext markup syntax to invoke a macro-plugin'',

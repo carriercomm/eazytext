@@ -13,8 +13,7 @@ needed (by web-applications). And to avoid parsing the wiki-text every-time, an
 intermediate //.py// file is generated. Inspite of having this complexity the
 real-world performance for generating the html from static wiki text is ''O(n)''
 where ''n'' is the size of the text. On a desktop machine, it took about 
-//{b} 742 micro-seconds to generate the html for a wiki text of about 650
-lines//.
+//{y} 742 micro-seconds to generate html for a wiki text of about 650 lines//.
 
 Unlike many popular wiki-processors, eazytext is implemented using parser
 grammar. The advantage of using parser grammar is that the implementation
@@ -23,7 +22,7 @@ The draw-back of using a parser grammar is that it throws up in-comprehensible
 syntax error when un-expected sequence of text is encountered. eazytext's
 grammar is implemented in such a flexible way that, what-ever the text may be
 (as long as it is in the supported encoding), it never fails, it even tries to
-gracefully recover from the failure and translates as much text as possible.
+gracefully recover from failure and translates as much text as possible.
 
 ''Some interesting points about eazytext''
 * Paragraph oriented, pure text documents.
@@ -68,7 +67,7 @@ ecclesiastical history.
 which gets translated into,
 
 {{{ Nested
-# { 'background-color' : '#EEE' }
+# { 'background-color' : '#AAA', 'color' : 'black' }
 
 In // 1862 //, ''Charles Lutwidge Dodgson'', a shy Oxford mathematician
 with a stammer, created a story about a little girl tubling down a rabbit
