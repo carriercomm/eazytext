@@ -7,8 +7,8 @@
 """
 h3. An introduction to multi-pass compilation implemented on the AST
 
-Once the //abstract-syntax-tree// is constructed, the tree will be walked
-multiple times, by calling the methods headpass1(), headpass2(), generate()
+Once the //abstract-syntax-tree// (AST) is constructed, the tree will be walked
+multiple times by calling the methods headpass1(), headpass2(), generate()
 and tailpass() on each node and all of its child nodes. Interface
 specifications //IEazyTextTemplateTags//, //IEazyTextExtension// and
 //IEazyTextMacro// will provide the entry points for the implementing plugin.
@@ -34,7 +34,7 @@ class IEazyTextMacro( IEazyText ) :
       *  ''node.macrotext''         Raw macro text between \{{ ... \}}
       *  ''node.parser.etparser''   ETParser() object
 
-    where `etparser` has the following useful attributes,
+    where `etparser` has following useful attributes,
       *  ''etparser.ctx''         Context for AST construction.
       *  ''etparser.etxconfig''   Configuration parameters
       *  ''etparser.tu''          Translation Unit for the parsed text
@@ -99,7 +99,7 @@ class IEazyTextExtension( IEazyText ) :
       *  ''node.text''            Raw extension text between {{{ ... }}}
       *  ''node.parser.etparser'' ETParser() object
 
-    where `etparser` has the following useful attributes,
+    where `etparser` has following useful attributes,
       *  ''etparser.etxconfig'' Configuration parameters
       *  ''etparser.tu''        Translation Unit for the parsed text
       *  ''etparser.text''      Raw wiki text.
@@ -158,12 +158,12 @@ class IEazyTextExtension( IEazyText ) :
 class IEazyTextTemplateTags( IEazyText ) :
     """Interface speficiation for eazytext's templated-tags plugin. All methods
     defined by this specification will accept a parameter //node// which
-    contain the following attributes,
+    contain following attributes,
       *  ''node.parser''          PLY Yacc parser
       *  ''node.htmltext''        Raw text between \[< ... \>]
       *  ''node.parser.etparser'' ETParser() object
 
-    where `etparser` has the following useful attributes,
+    where `etparser` has following useful attributes,
       *  ''etparser.etxconfig'' Configuration parameters
       *  ''etparser.tu''        Translation Unit for the parsed text
       *  ''etparser.text''      Raw wiki text.

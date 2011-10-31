@@ -152,7 +152,6 @@ span.etm-span {
 /* macro-toc */
 details.etm-toc {
   background    : #f8f7bc;
-  position      : relative;
   float         : left;
   margin        : 10px;
   padding       : 3px;
@@ -163,9 +162,10 @@ details.etm-toc {
 }
 details.etm-toc summary {
   font-weight : bold;
-  color : blue;
+  color : yellow;
   cursor : pointer;
   text-align : center;
+  margin-left : 5px;
 }
 details.etm-toc ul {
   list-style : none;

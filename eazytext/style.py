@@ -66,8 +66,22 @@ bgcolors = {
     'Z'     : '',
 }
 
+fntsize = {
+    '+'    : 'font-size : larger',
+    '++'   : 'font-size : large',
+    '+++'  : 'font-size : x-large',
+    '++++' : 'font-size : xx-large',
+    '-'    : 'font-size : smaller',
+    '--'   : 'font-size : small',
+    '---'  : 'font-size : x-small',
+    '----' : 'font-size : xx-small',
+}
+
 def style_color( m ) :
-    return 'color: %s' % fgcolors[m]
+    s = 'color: %s' % fgcolors[m[:1]]
+    z = fntsize.get( m[1:], '' )
+    s += ('; %s' % z) if z else ''
+    return s
 
 def style_background( m ) :
     return 'background-color: %s' % bgcolors[m]
@@ -86,21 +100,21 @@ def style_padding( m ) :
 def style_wcard( m ) :
     return m.strip()
 
-space      = r'[ \t]*'
-re_fg      = r'%s[a-z]%s;' % (space, space)
-re_bg      = r'%s[A-Z]%s;' % (space, space)
-re_border  = r'%s/%s[0-9]+%s,%s[a-z]+%s,%s[a-z]+%s;' % tuple( [space] * 7 )
-re_margin  = r'%s[0-9]+%s\|%s;' % (space, space, space)
-re_padding = r'%s\|%s[0-9]+%s;' % (space, space, space)
-re_wcard   = r'[^;]+?;'
+space       = r'[ \t]*'
+re_fg       = r'%s[a-z]%s[+-]{0,4};' % (space, space)
+re_bg       = r'%s[A-Z]%s;' % (space, space)
+re_border   = r'%s/%s[0-9]+%s,%s[a-z]+%s,%s[a-z]+%s;' % tuple( [space] * 7 )
+re_margin   = r'%s[0-9]+%s\|%s;' % (space, space, space)
+re_padding  = r'%s\|%s[0-9]+%s;' % (space, space, space)
+re_wcard    = r'[^;]+?;'
 
 re_list = [
-    (re_fg,      style_color),
-    (re_bg,      style_background),
-    (re_border,  style_border),
-    (re_margin,  style_margin),
-    (re_padding, style_padding),
-    (re_wcard,   style_wcard)
+    (re_fg,        style_color),
+    (re_bg,        style_background),
+    (re_border,    style_border),
+    (re_margin,    style_margin),
+    (re_padding,   style_padding),
+    (re_wcard,     style_wcard),
 ]
 re_master = re.compile(
     '|'.join([ r'(%s)' % r for r in map( lambda x : x[0], re_list ) ])

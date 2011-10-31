@@ -59,7 +59,7 @@ class ETLexer( object ) :
         return tok
     
     def _onescaped( self, token ):
-        if len(token.value) == 1 :
+        if token.value[-1] in '\r\n' :
             # If escaping the newline then increment the lexposition, but count
             # the lin-number
             self._incrlineno( token )
@@ -145,9 +145,9 @@ class ETLexer( object ) :
     ws          = r'[ \t\r\n]*'
     wspace      = r'[ \t\r\n]+'
     style       = r'\{[^{}\r\n]*?\}'
+    nl          = r'\n|\r\n'
 
-    escseq      = r'(%s.?)|(%s$)' % (escchar,escchar)
-    newline     = r'\n|\r\n'
+    escseq      = r'%s(.|%s)?' % (escchar,nl)
     text        = r'[^\r\n%s]+' % (txtmarkup+spchars)
     specialchars= r'[%s]' % (txtmarkup+spchars)
     # Block text
@@ -316,7 +316,7 @@ class ETLexer( object ) :
         self._incrlineno(t)
         return t
 
-    @TOKEN( newline )
+    @TOKEN( nl )
     def t_NEWLINE( self, t ):
         self._incrlineno(t)
         return t
@@ -356,7 +356,7 @@ class ETLexer( object ) :
     def t_table_TABLE_CELLSTART( self, t ):
         return t
 
-    @TOKEN( newline )
+    @TOKEN( nl )
     def t_table_NEWLINE( self, t ):
         t.lexer.pop_state()
         self._incrlineno(t)

@@ -8,7 +8,7 @@ from pygments.lexer import RegexLexer
 from pygments.token import *
 
 try :
-    from tayra.ttl.lexer  import TTLLexer
+    from tayra.lexer  import TTLLexer
 except :
     TTLLexer = None
 

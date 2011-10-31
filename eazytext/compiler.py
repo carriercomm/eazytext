@@ -145,14 +145,15 @@ class WikiLookup( object ) :
     def _setpytext( self, pytext ):
         if self.pyfile :
             d = dirname(self.pyfile)
-            os.makedirs(d) if not isdir(d) else None
+            os.makedirs(d) if d and not isdir(d) else None
             codecs.open( self.pyfile, mode='w', encoding=self.encoding ).write(pytext)
             return len(pytext)
         return None
 
     def _getetxhash( self ):
         if self._etxhash == None and self._etxtext :
-            self._etxhash = sha1( self._etxtext ).hexdigest()
+            enc = self.etxconfig['input_encoding']
+            self._etxhash = sha1( self._etxtext.encode(enc) ).hexdigest()
         return self._etxhash
 
     def _gethashkey( self ):

@@ -7,7 +7,6 @@
 from   os.path      import join, splitext, isfile, abspath, basename
 from   StringIO     import StringIO
 from   copy         import deepcopy
-from   hashlib      import sha1
 
 prolog = """
 from   StringIO             import StringIO

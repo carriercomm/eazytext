@@ -88,10 +88,10 @@ class ETParser( object ):
         side effects in the parser.
         Return the preprossed text"""
         # Replace `a string ESCAPE characters`
-        text = re.compile( r'\\+', re.MULTILINE | re.UNICODE ).sub(r'\\', text)
+        #text = re.compile( r'\\+', re.MULTILINE | re.UNICODE ).sub(r'\\', text)
         text = text.rstrip( r'\\' )   # Remove trailing ESCAPE char
         # Replace `\ Escaped new lines`
-        text = text.replace( '\\\n', '' )
+        #text = text.replace( '\\\n', '' )
         return text
 
     def parse( self, text, etxfile=None, etxconfig={}, debuglevel=0 ):
@@ -110,7 +110,8 @@ class ETParser( object ):
         self._initialize( etxfile=etxfile, etxconfig=etxconfig )
         self.text = text
         self.etlex.filename = etxfile
-        self.hashtext = sha1( text ).hexdigest()
+        enc = self.etxconfig['input_encoding']
+        self.hashtext = sha1( text.encode(enc) ).hexdigest()
 
         self.skincss = self._fetchskin( self.etxconfig['skinfile'] 
                        ) if self.etxconfig['include_skin'] else ''
