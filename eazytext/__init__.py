@@ -15,6 +15,8 @@ from   paste.util.converters    import asbool
 from   zope.component           import getGlobalSiteManager
 import pkg_resources            as pkg
 
+from   eazytext.utils           import ConfigDict
+
 # Import macro-plugins so that they can register themselves.
 import eazytext.macro
 import eazytext.macro.anchor
@@ -38,40 +40,103 @@ from   eazytext.parser          import ETParser
 
 DEFAULT_ENCODING = 'utf-8'
 
-defaultconfig = {
-    # Development mode settings
-    'devmod': True,
-    # Deal with un-defined context variable
-    'strict_undefined': False,
-    # List of directories to look for the .etx file
-    'directories' : '.',
-    # path to store the compiled .py file (intermediate file)
-    'module_directory' : None,
-    # CSV of escape filter names to be applied for expression substitution
-    'escape_filters' : '',
-    # Default input endcoding for .etx file.
-    'input_encoding': DEFAULT_ENCODING,
-    # CSV list of plugin packages that needs to be imported, before compilation.
-    'plugin_packages'   : '',
-    # Default skin file to include translated html file, use this option along
-    # with `include_skin`.
-    'skinfile' : 'default.css',
-    'include_skin' : False,
-    # If set to true, the email-id generated using [[ mailto:... ]] markup will
-    # be obfuscated.
-    'obfuscatemail' : False,
-    # Denotes that the parser is invoked by a parent parser, may be because of
-    # a plugin
-    'nested' : False,
-    # Do not allow any <script> tag in the finally generated HTML text.
-    'stripscript' : True,
-    # If set to false generate the html text enclosed within <article> tag, else
-    # wrap them withing <html><body> tag
-    'ashtml' : False,
-    # In memory cache for compiled etxfile
-    'memcache'          : True,
-    'text_as_hashkey'   : False,
+defaultconfig = ConfigDict()
+defaultconfig.__doc__ = """Configuration setting for eazytext wiki engine."""
+
+defaultconfig['strict_undefined']    = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "Boolean to raise exception for un-defined context variables. "
+                "If set to false, undefined variables will be silently "
+                "digested as 'None' string."
 }
+
+defaultconfig['directories']                   = {
+    'default' : '.',
+    'types'   : ('csv', list),
+    'help'    : "List of directories to look for the .etx file"
+}
+
+defaultconfig['module_directory']              = {
+    'default' : None,
+    'types'   : (str,),
+    'help'    : "path to store the compiled .py file (intermediate file)"
+}
+
+defaultconfig['escape_filters']                = {
+    'default' : '',
+    'types'   : ('csv', list),
+    'help'    : "Comman seperated list of default escape filters to be "
+                "applied during expression substitution."
+}
+
+defaultconfig['input_encoding']                = {
+    'default' : 'utf8',
+    'types'   : (str,),
+    'help'    : "Default input endcoding for .etx file."
+}
+
+defaultconfig['plugin_packages']               = {
+    'default' : '',
+    'types'   : ('csv',list),
+    'help'    : "Comma seperated list of plugin packages that needs to be "
+                "imported, before compiling .etx files."
+}
+
+defaultconfig['skinfile']                      = {
+    'default' : 'default.css',
+    'types'   : (str,),
+    'help'    : "Default skin file to include translated html file, use this "
+                "option along with `include_skin`."
+}
+
+defaultconfig['include_skin']                  = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "CSS file (skin) can be either included in the generated html "
+                "or can be linked seperately (using <link> tag)."
+}
+
+defaultconfig['obfuscatemail']                 = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "If set to true, the email-id generated using [[ mailto:... ]] "
+                "markup will be obfuscated."
+}
+
+defaultconfig['nested']                        = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "Denotes that the parser is invoked by a parent parser, may "
+                "be because of a plugin"
+}
+
+defaultconfig['stripscript']                   = {
+    'default' : True,
+    'types'   : (bool,),
+    'help'    : "Do not allow any <script> tag in the finally generated HTML "
+                "text."
+}
+
+defaultconfig['ashtml']                        = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "If set to false generate the html text enclosed within "
+                "<article> tag, else wrap them withing <html><body> tag"
+}
+
+defaultconfig['memcache']                      = {
+    'default' : True,
+    'types'   : (bool,),
+    'help'    : "In memory cache for compiled intermediate file (.py file)"
+}
+
+defaultconfig['text_as_hashkey']               = {
+    'default' : False,
+    'types'   : (bool,),
+    'help'    : "Use input text to generate the tag-key for memcache."
+}
+
 
 def normalizeconfig( config ):
     """Convert the string representation of config parameters into
@@ -162,10 +227,9 @@ class Translate( object ):
         by wiki processor.
             TODO : somehow find a way to pass the arguments to `body` function
         """
-        etxconfig_ = deepcopy( defaultconfig )
-        etxconfig_.update( etxconfig )
+        etxconfig = etxconfig or deepcopy( dict(defaultconfig.items()) )
         # Initialize plugins
-        self.etxconfig = initplugins( etxconfig_, force=etxconfig_['devmod'] )
+        self.etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
         self.etxloc, self.etxtext = etxloc, etxtext
         self.etparser = ETParser( etxconfig=self.etxconfig )
 

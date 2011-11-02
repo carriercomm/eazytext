@@ -25,33 +25,33 @@ capital-cased character denotes background color.
 {{{ Nested
 # { 'margin-left' : '50px' }
 
-    |= alphabet |= colorname
-    |{a}  //a// |{a} //aquamarine//
-    |{b}  //b// |{b} //blue//
-    |{c}  //c// |{c} //crimson//
-    |{d}  //d// |{d} -not-defined-
-    |{e}  //e// |{e} -not-defined-
-    |{f}  //f// |{f} //fuchsia//
-    |{g}  //g// |{g} //green//
-    |{h}  //h// |{h} -not-defined-
-    |{i}  //i// |{i} //indigo//
-    |{j}  //j// |{j} -not-defined-
-    |{k}  //k// |{k} //khaki//
-    |{l}  //l// |{l} //lavender//
-    |{m}  //m// |{m} //maroon//
-    |{n}  //n// |{n} //navy//
-    |{o}  //o// |{o} //orange//
-    |{p}  //p// |{p} //pink//
-    |{q}  //q// |{q} -not-defined-
-    |{r}  //r// |{r} //red//
-    |{s}  //s// |{s} //skyBlue//
-    |{t}  //t// |{t} //teal//
-    |{u}  //u// |{u} -not-defined-
-    |{v}  //v// |{v} //violet//
-    |{w}  //w// |{w} //white//
-    |{x}  //x// |{x} -not-defined-
-    |{y}  //y// |{y} //yellow//
-    |{z}  //z// |{z} -not-defined-
+|= alphabet |= colorname
+|{a}  //a// |{a} //aquamarine//
+|{b}  //b// |{b} //blue//
+|{c}  //c// |{c} //crimson//
+|{d}  //d// |{d} -not-defined-
+|{e}  //e// |{e} -not-defined-
+|{f}  //f// |{f} //fuchsia//
+|{g}  //g// |{g} //green//
+|{h}  //h// |{h} -not-defined-
+|{i}  //i// |{i} //indigo//
+|{j}  //j// |{j} -not-defined-
+|{k}  //k// |{k} //khaki//
+|{l}  //l// |{l} //lavender//
+|{m}  //m// |{m} //maroon//
+|{n}  //n// |{n} //navy//
+|{o}  //o// |{o} //orange//
+|{p}  //p// |{p} //pink//
+|{q}  //q// |{q} -not-defined-
+|{r}  //r// |{r} //red//
+|{s}  //s// |{s} //skyBlue//
+|{t}  //t// |{t} //teal//
+|{u}  //u// |{u} -not-defined-
+|{v}  //v// |{v} //violet//
+|{w}  //w// |{w} //white//
+|{x}  //x// |{x} -not-defined-
+|{y}  //y// |{y} //yellow//
+|{z}  //z// |{z} -not-defined-
 }}}
 
 -----

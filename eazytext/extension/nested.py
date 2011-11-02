@@ -30,25 +30,29 @@ class Nested( Extension ) :
 
     tmpl = '<div class="etext-nested" style="%s"> %s </div>'
     pluginname = 'Nested'
-    
+    config = {
+        'nested' : True,
+        'include_skin' : False,
+    }
+
     def __init__( self, *args ):
-        self.config = {
-            'nested' : True,
-            'include_skin' : False,
-        }
+        pass
 
     def __call__( self, argtext='' ):  # Does not take any argument.
         return eval( 'Nested()' )
 
     def html( self, node, igen, *args, **kwargs ):
-        from   eazytext        import Translate
+        from   eazytext import Translate
         style, text = nowiki2prop( node.text )
+        config = dict( node.parser.etparser.etxconfig.items() )
+        config.update( self.config )
         html = ''
         if text :
             try :
-                t    = Translate( etxtext=text, etxconfig=self.config )
+                t = Translate( etxtext=text, etxconfig=config )
                 html = self.tmpl % ( style, t( context={} ) )
             except :
+                raise
                 if node.parser.etparser.debug : raise
                 html = self.tmpl % ('', '')
         return html
