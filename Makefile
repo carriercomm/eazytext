@@ -41,10 +41,15 @@ clean :
 	rm -rf distribute-0.6.10.tar.gz
 	rm -rf build;
 	rm -rf dist;
+	rm -rf docs/CHANGELOG
+	rm -rf docs/LICENSE
+	rm -rf docs/README
+	rm -rf docs/ROADMAP
 	rm -rf zwiki.egg-info;
 	rm -rf zwiki_zeta.egg-info/;
 	rm -rf eazytext.egg-info;
 	rm -rf eazytext.egg-info/;
+	rm -rf `find ./ -name parseetxtab.py`;
 	rm -rf `find ./ -name "*.pyc"`;
 	rm -rf `find ./ -name "yacctab.py"`;
 	rm -rf `find ./ -name "lextab.py"`;
