@@ -4,6 +4,13 @@ h3. 0.93b ``{k-} on Sat 2011-10-29``
 
 * Added test cases for eztext.py command line tool.
 
+* EazyText bug fixes,
+  * Work-around to handle lexer/parser object reuse.
+  * Creating python intermediate file in a fail-safe method.
+  * Generate hash digest for encoded string.
+  * Escaping newlines and special characters.
+  * default.css skin updated for toc macro.
+
 h3. 0.93dev ``{k-} on Tue 2011-10-11``
 
 * Wiki engine re-written using stack-machine architecture.

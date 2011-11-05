@@ -1,9 +1,6 @@
 Rlease check-list 
 -----------------
 
-* `defaultconfig` under eazytext/__init__.py must be consistent with
-  docs/config.etx document. Must also be consistent with pluggdapps-bootstrap
-  definition of eazytext config parameters.
 * Change the release version in 
     ./CHANGELOG,
     ./eazytext/__init__.py
