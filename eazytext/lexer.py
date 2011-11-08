@@ -124,7 +124,7 @@ class ETLexer( object ) :
         # Inline Text blocks
         'LINK', 'MACRO', 'HTML', #'NESTEDLINK', 
         # Text blocks
-        'HORIZONTALRULE', 'HEADING',
+        'HORIZONTALRULE', 'HEADING', 'SECTION',
         'ORDLIST_START', 'UNORDLIST_START', 'DEFINITION_START', 'BQUOTE_START',
         'BTABLE_START', 'TABLE_CELLSTART',
         # Nowiki blocks
@@ -153,6 +153,7 @@ class ETLexer( object ) :
     # Block text
     hrule       = r'^-{4,}%s' % spac
     heading     = r'^%s((={1,6})|([hH][123456]\.))(%s)?' % (spac, style)
+    section     = r'^%s([sS][123456]\.)(%s)?' % (spac, style)
     btopen, btclose, btrow, btcell, bthead = '{', '}', '-', ' ' , '='
     btable      = r'^%s\|\|[ {}=-](%s)?' % (spac, style)
     nowikiopen  = r'^%s\{\{\{.*?$' % spac
@@ -180,7 +181,7 @@ class ETLexer( object ) :
     # Inline text block
     link        = r'\[\[(%s)+?(?=\]\])\]\]' % anything
     nestedlink  = r'\[\[(%s)+?(?=\]\])\]\]' % link
-    macro       = r'\{\{(%s)+?(?=\}\})\}\}' % anything
+    macro       = r'\{\{(!=\{)(%s)+?(?=\}\})\}\}' % anything
     html        = r'\[<(%s)+?(?=>\])>\]' % anything
     # Tokenize Complex regex
     http_schema    = r'http://'
@@ -228,6 +229,10 @@ class ETLexer( object ) :
 
     @TOKEN( heading )
     def t_HEADING( self, t ):
+        return t
+
+    @TOKEN( section )
+    def t_SECTION( self, t ):
         return t
 
     @TOKEN( ordmark )

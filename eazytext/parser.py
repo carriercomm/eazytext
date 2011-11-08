@@ -206,6 +206,7 @@ class ETParser( object ):
     def p_specialpara( self, p ):
         """specialpara      : nowikiblock
                             | heading
+                            | section
                             | horizontalrule
                             | btable
                             | table
@@ -256,6 +257,13 @@ class ETParser( object ):
         terms = [ (HEADING,1), p[2], (NEWLINE,3) 
                 ] if len(p) == 4 else [ (HEADING,1), None, (NEWLINE,2) ]
         p[0] = Heading( p.parser, *self._buildterms( p, terms ))
+
+    def p_section( self, p ):
+        """section      : SECTION text_contents NEWLINE
+                        | SECTION NEWLINE"""
+        terms = [ (SECTION,1), p[2], (NEWLINE,3) 
+                ] if len(p) == 4 else [ (SECTION,1), None, (NEWLINE,2) ]
+        p[0] = Section( p.parser, *self._buildterms( p, terms ))
 
     def p_horizontalrule( self, p ):
         """horizontalrule : HORIZONTALRULE"""

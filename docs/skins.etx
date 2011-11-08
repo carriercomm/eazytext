@@ -34,7 +34,7 @@ h4. Elements generated for text-markups
 |  bold + emphasize + underline | strong.etmark > em > u
 
 
-h4. Elements generated for heading (sections)
+h4. Elements generated for heading
 
 |= markup type                  |= CSS selector
 |   first level section         | h1.etsec
@@ -42,9 +42,20 @@ h4. Elements generated for heading (sections)
 |   third level sub-section     | h3.etsec
 |   fourth level sub-section    | h4.etsec
 |   fifth level sub-section     | h5.etsec
+|   sixth level sub-section     | h6.etsec
 |   anchor link                 | h1 a.etseclink, h2 a.etseclink, \
                                   h3 a.etseclink, h4 a.etseclink, \
-                                  h5 a.etseclink 
+                                  h5 a.etseclink, h6 a.etseclink 
+
+h4. Elements generated for sections
+
+|= markup type                  |= CSS selector
+|   first level section         | section.etsec-1
+|   second level sub-section    | section.etsec-2
+|   third level sub-section     | section.etsec-3
+|   fourth level sub-section    | section.etsec-4
+|   fifth level sub-section     | section.etsec-5
+|   sixth level sub-section     | section.etsec-6
 
 h4. Table elements
 

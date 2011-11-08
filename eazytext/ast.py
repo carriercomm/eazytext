@@ -283,6 +283,7 @@ class WikiPage( NonTerminal ):
     def generate( self, igen, *args, **kwargs ):
         self.etxhash = kwargs.pop( 'etxhash', '' )
         self.etxfile = self.parser.etparser.etxfile
+        self.ctx.secstack = []
         # Generate paragraphs
         self.paragraphs.generate( igen, *args, **kwargs )
 
@@ -337,7 +338,7 @@ class Paragraphs( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        [ x.generate( igen ) for x in self.flatten() ]
+        [ para.generate( igen ) for para in self.flatten() ]
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]
@@ -484,10 +485,10 @@ class NowikiLines( NonTerminal ):
 
 class Heading( NonTerminal ) :
     """class to handle `heading` grammar."""
-    tmpl_o  = '<h%s class="etsec" style="%s">'
+    tmpl_o  = '<h%s class="ethd" style="%s">'
     tmpl_c  = '</h%s>\n'
     tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="etseclink" href="#%s" title="Link to this section">&#9875;</a>'
+    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section">&#9875;</a>'
 
     def __init__( self, parser, heading, text_contents, newline ):
         NonTerminal.__init__( self, parser, heading, text_contents, newline )
@@ -524,6 +525,64 @@ class Heading( NonTerminal ) :
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level = property( lambda self : self.HEADING.level )
+
+
+#---- Section
+
+class Section( NonTerminal ) :
+    """class to handle `section` grammar."""
+    tmpl_o    = '<section class="etsec-%s" style="%s">'
+    tmpl_c    = '</section>'
+    tmpl_hdo  = '<h%s class="ethd" style="%s">'
+    tmpl_hdc  = '</h%s>\n'
+    tmpl_a  = '<a id="%s"></a>'
+    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section">&#9875;</a>'
+
+    def __init__( self, parser, section, text_contents, newline ):
+        NonTerminal.__init__( self, parser, section, text_contents, newline )
+        self._terms = self.SECTION, self.NEWLINE = section, newline
+        self._nonterms = (self.text_contents,) = (text_contents,)
+        self._nonterms = filter( None, self._nonterms )
+        self.headtext = self.text_contents and self.text_contents.dump(None) or ''
+        # Set parent attribute for children, should be last statement !!
+        self.setparent( self, self.children() )
+
+    def _unwind_secstack( self, level, igen ):
+        if self.ctx.secstack :
+            cl, ct = self.ctx.secstack[-1]
+            igen.puttext(ct) if cl <= level else None
+            self._unwind_secstack( self, level, igen )
+
+    def children( self ) :
+        return filter( None, (self.SECTION, self.text_contents, self.NEWLINE) )
+
+    def headpass1( self, igen ):
+        self.ctx.markupstack = []
+        NonTerminal.headpass1( self, igen )
+
+    def generate( self, igen, *args, **kwargs ):
+        level, style = self.SECTION.level, stylemarkup( self.SECTION.style )
+        self._unwind_secstack( level, igen )
+        igen.puttext( self.tmpl_o % (level, style) )
+        self.ctx.secstack.append( (level, self.tmpl_c) )
+        if self.text_contents :
+            igen.puttext( self.tmpl_hdo % (level, style) )
+            self.text_contents.generate( igen, *args, **kwargs )
+            igen.puttext( self.tmpl_a % self.headtext )
+            igen.puttext( self.tmpl_ah % self.headtext )
+            igen.puttext( self.tmpl_c % level )
+        self.NEWLINE.generate( igen, *args, **kwargs )
+
+    def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
+        lead = ' ' * offset
+        buf.write( lead + 'section: ' )
+        if showcoord :
+            buf.write( ' (at %s)' % self.coord )
+        buf.write('\n')
+        [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
+
+    level = property( lambda self : self.SECTION.level )
+
 
 
 #---- Horizontal rule
@@ -1722,6 +1781,20 @@ class HEADING( Terminal ):
         x = self.hpatt1.findall( self.terminal.strip() )
         y = x or self.hpatt2.findall( self.terminal.strip() )
         try    : level = len(x[0]) if x else int(y[0][1])
+        except : level = 6
+        return level
+    def _style( self ):
+        rc = self.spatt.findall( self.terminal.strip() )
+        return rc[0][1:-1] if rc else ''
+    level  = property( lambda self : self._level() )
+    style  = property( lambda self : self._style() )
+
+class SECTION( Terminal ):
+    secpatt1 = re.compile( r'[sS][123456]' )
+    spatt  = re.compile( ETLexer.style )
+    def _level( self ):
+        x = self.secpatt1.findall( self.terminal.strip() )
+        try    : level = int(x[0][1])
         except : level = 6
         return level
     def _style( self ):

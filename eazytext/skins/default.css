@@ -28,21 +28,37 @@ strong.etmark > em > u {
 p.ettext {
 }
 
-/* Sections */
-h1.etsec {
+/* headings */
+h1.ethd {
 }
-h2.etsec {
+h2.ethd {
 }
-h3.etsec {
+h3.ethd {
 }
-h4.etsec {
+h4.ethd {
 }
-h5.etsec {
+h5.ethd {
 }
-h1 a.etseclink, h2 a.etseclink, h3 a.etseclink, h4 a.etseclink, h5 a.etseclink {
+h6.ethd {
+}
+h1 a.ethdlink, h2 a.ethdlink, h3 a.ethdlink, h4 a.ethdlink, h5 a.ethdlink, h6 a.ethdlink {
   color: #CCCCCC;
   font-size: medium;
   text-decoration: none
+}
+
+/* sections */
+section.etsec-1 {
+}
+section.etsec-2 {
+}
+section.etsec-3 {
+}
+section.etsec-4 {
+}
+section.etsec-5 {
+}
+section.etsec-6 {
 }
 
 /* Small table */
