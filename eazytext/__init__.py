@@ -227,7 +227,7 @@ class Translate( object ):
         by wiki processor.
             TODO : somehow find a way to pass the arguments to `body` function
         """
-        etxconfig = etxconfig or deepcopy( dict(defaultconfig.items()) )
+        etxconfig = etxconfig or dict(defaultconfig.items())
         # Initialize plugins
         self.etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
         self.etxloc, self.etxtext = etxloc, etxtext
@@ -250,12 +250,13 @@ def etx_cmdline( etxloc, **kwargs ):
     from eazytext.compiler import Compiler
 
     htmlfile  = kwargs.get( 'ofile', '' )
-    etxconfig = deepcopy( defaultconfig )
+    etxconfig = dict(defaultconfig.items())
     # directories, module_directory, devmod
     etxconfig.update( kwargs )
     etxconfig['module_directory'] = '.'
     etxconfig['include_skin'] = True
     etxconfig['ashtml'] = True
+    etxconfig['devmod'] = True
 
     # Parse command line arguments and configuration
     context = eval( etxconfig.pop( 'context', '{}' ))
@@ -304,4 +305,5 @@ def etx_cmdline( etxloc, **kwargs ):
 
         # This is for measuring performance
         st = dt.now()
-        [Translate(etxloc=etxloc)(context=deepcopy(context)) for i in range(2)]
+        [ Translate( etxloc=etxloc, etxconfig=etxconfig )( context=deepcopy(context) )
+          for i in range(2)]
