@@ -286,6 +286,7 @@ class WikiPage( NonTerminal ):
         self.ctx.secstack = []
         # Generate paragraphs
         self.paragraphs.generate( igen, *args, **kwargs )
+        [ igen.puttext(ct) for cl, ct in self.ctx.secstack ]
 
     def tailpass( self, igen ):
         etparser     = self.parser.etparser
@@ -550,8 +551,10 @@ class Section( NonTerminal ) :
     def _unwind_secstack( self, level, igen ):
         if self.ctx.secstack :
             cl, ct = self.ctx.secstack[-1]
-            igen.puttext(ct) if cl <= level else None
-            self._unwind_secstack( self, level, igen )
+            if level <= cl :
+                igen.puttext(ct)
+                self.ctx.secstack.pop(-1)
+                self._unwind_secstack(level, igen)
 
     def children( self ) :
         return filter( None, (self.SECTION, self.text_contents, self.NEWLINE) )
@@ -570,7 +573,6 @@ class Section( NonTerminal ) :
             self.text_contents.generate( igen, *args, **kwargs )
             igen.puttext( self.tmpl_a % self.headtext )
             igen.puttext( self.tmpl_ah % self.headtext )
-            igen.puttext( self.tmpl_c % level )
         self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):

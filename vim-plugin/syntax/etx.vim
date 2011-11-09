@@ -48,7 +48,10 @@ syn match etmacro            contained "{{\_.\{-}}}"
 syn match headings           contained "^[ \t]*=\{1,5\}.*" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2
 
 " Heading_alt
-syn match headings_alt       contained "^[ \t]*h[12345]\..*" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2
+syn match headings_alt       contained "^[ \t]*[hH][123456]\..*" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2
+
+" Docsection
+syn match docsection         contained "^[ \t]*[sS][123456]\..*" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2
 
 " Horizontal Rule
 syn match hrule              contained "-\{5,}"
@@ -75,7 +78,7 @@ syn match definition         contained "[ \t]*:[^:]*::"
 " Extensions
 syn match etext              contained "{{{\_.\{-}}}}"
 
-syn match paragraph          "^.*$" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2,headings,headings_alt,hrule,list,blockquote,tablemrkup,btablemrkup,definition,html,etmacro,etext
+syn match paragraph          "^.*$" contains=escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2,headings,headings_alt,docsection,hrule,list,blockquote,tablemrkup,btablemrkup,definition,html,etmacro,etext
 
 " cterm=bold ctermfg=LightGray  gui=bold guifg=#0000ff guibg=#0000ff
 hi def tm_style         cterm=bold ctermfg=DarkGreen gui=bold guifg=DarkGreen
@@ -85,6 +88,7 @@ hi def plainweburl1     ctermfg=Magenta guifg=Magenta
 hi def plainweburl2     ctermfg=Magenta guifg=Magenta
 hi def headings         cterm=bold ctermfg=Yellow gui=bold guifg=Yellow
 hi def headings_alt     cterm=bold ctermfg=Yellow gui=bold guifg=Yellow
+hi def docsection       ctermfg=Cyan guifg=Cyan
 hi def linebreak        cterm=bold ctermfg=Red gui=bold guifg=Red
 hi def escapechar       cterm=bold ctermfg=Red gui=bold guifg=Red
 hi def escapenewline    cterm=bold ctermfg=Red gui=bold guifg=Red
