@@ -24,7 +24,7 @@ generated using ''PRE'' template, like,
 from   zope.component       import getGlobalSiteManager
 from   zope.interface       import implements
 
-from   eazytext.lib         import escape_htmlchars
+from   eazytext.utils       import escape_htmlchars
 from   eazytext.interfaces  import IEazyTextTemplateTags
 
 gsm = getGlobalSiteManager()

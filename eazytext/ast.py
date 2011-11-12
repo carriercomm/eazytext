@@ -30,7 +30,7 @@ import sys, re, copy
 from   os.path          import basename, abspath, dirname, join, isdir, isfile
 
 from   eazytext.style   import stylemarkup
-from   eazytext.lib     import escape_htmlchars, obfuscatemail
+from   eazytext.utils   import escape_htmlchars, obfuscatemail
 from   eazytext.lexer   import ETLexer
 
 templtdir = join( dirname(__file__), 'templates' )
@@ -489,7 +489,7 @@ class Heading( NonTerminal ) :
     tmpl_o  = '<h%s class="ethd" style="%s">'
     tmpl_c  = '</h%s>\n'
     tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section">&#9875;</a>'
+    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
 
     def __init__( self, parser, heading, text_contents, newline ):
         NonTerminal.__init__( self, parser, heading, text_contents, newline )
@@ -537,7 +537,7 @@ class Section( NonTerminal ) :
     tmpl_hdo  = '<h%s class="ethd" style="%s">'
     tmpl_hdc  = '</h%s>\n'
     tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section">&#9875;</a>'
+    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
 
     def __init__( self, parser, section, text_contents, newline ):
         NonTerminal.__init__( self, parser, section, text_contents, newline )
@@ -573,6 +573,7 @@ class Section( NonTerminal ) :
             self.text_contents.generate( igen, *args, **kwargs )
             igen.puttext( self.tmpl_a % self.headtext )
             igen.puttext( self.tmpl_ah % self.headtext )
+            igen.puttext( self.tmpl_hdc % level )
         self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):

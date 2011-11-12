@@ -16,7 +16,7 @@ from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
 from   eazytext.interfaces  import IEazyTextMacro
-from   eazytext.lib         import constructstyle, escape_htmlchars
+from   eazytext.utils       import constructstyle, escape_htmlchars
 from   eazytext.ast         import Heading, BASICTEXT
 
 gsm = getGlobalSiteManager()

@@ -41,10 +41,16 @@ h5.ethd {
 }
 h6.ethd {
 }
-h1 a.ethdlink, h2 a.ethdlink, h3 a.ethdlink, h4 a.ethdlink, h5 a.ethdlink, h6 a.ethdlink {
+h1 a.ethdlink, h2 a.ethdlink, h3 a.ethdlink,
+h4 a.ethdlink, h5 a.ethdlink, h6 a.ethdlink {
   color: #CCCCCC;
   font-size: medium;
   text-decoration: none
+}
+h1 a.ethdlink:after, h2 a.ethdlink:after, h3 a.ethdlink:after,
+h4 a.ethdlink:after, h5 a.ethdlink:after, h6 a.ethdlink:after {
+  content: '¶';
+  color: #BBB;
 }
 
 /* sections */

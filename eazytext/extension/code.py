@@ -16,7 +16,7 @@ from   zope.component                  import getGlobalSiteManager
 
 from   eazytext.extension              import Extension, nowiki2prop
 from   eazytext.interfaces             import IEazyTextExtension
-from   eazytext.lib                    import constructstyle
+from   eazytext.utils                  import constructstyle
 import eazytext.extension.ttlpygment
 
 gsm = getGlobalSiteManager()

@@ -14,7 +14,7 @@ from   zope.component       import getGlobalSiteManager
 
 from   eazytext.macro       import Macro
 from   eazytext.interfaces  import IEazyTextMacro
-from   eazytext.lib         import constructstyle
+from   eazytext.utils       import constructstyle
 
 gsm = getGlobalSiteManager()
 

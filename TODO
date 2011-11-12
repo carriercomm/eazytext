@@ -3,6 +3,9 @@ Track the project at,
 
 * Document style-shortcut for font-size.
 
+* Generate anchor for heading using CSS. Once this is done, make sure that it
+  is consistent with eazyslides TOC and TOC macro.
+
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.
 
