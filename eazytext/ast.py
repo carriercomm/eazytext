@@ -251,9 +251,9 @@ class WikiPage( NonTerminal ):
         return self._nonterms
 
     def headpass1( self, igen ):
-        etparser       = self.parser.etparser
-        etxconfig      = etparser.etxconfig
-        ashtml, nested = etxconfig['ashtml'], etxconfig['nested']
+        etparser = self.parser.etparser
+        config = etparser.etxconfig
+        nested = config['nested']
 
         igen.initialize()
         # Generate the body function only.
@@ -265,18 +265,19 @@ class WikiPage( NonTerminal ):
         igen.pushbuf()
 
         # Wrapper Template
-        (not nested and ashtml) and igen.puttext( self.tmpl_html_o )
-        igen.puttext( self.tmpl_article_o % ['etpage', 'etblk'][nested] )
+        (not nested) and config['ashtml'] and igen.puttext( self.tmpl_html_o )
+        config['nested.article'] and \
+                igen.puttext(self.tmpl_article_o % ['etpage', 'etblk'][nested])
 
         NonTerminal.headpass1( self, igen )
 
     def headpass2( self, igen ):
-        etparser  = self.parser.etparser
-        etxconfig = etparser.etxconfig
-        nested    = etxconfig['nested']
+        etparser = self.parser.etparser
+        config = etparser.etxconfig
+        nested = config['nested']
 
         # Use css skin
-        if not nested and etxconfig['include_skin'] :
+        if not nested and config['include_skin'] :
             igen.puttext( self.tmpl_inclskin % etparser.skincss )
         NonTerminal.headpass2( self, igen )
 
@@ -289,16 +290,17 @@ class WikiPage( NonTerminal ):
         [ igen.puttext(ct) for cl, ct in self.ctx.secstack ]
 
     def tailpass( self, igen ):
-        etparser     = self.parser.etparser
-        etxconfig    = etparser.etxconfig
-        ashtml, nested = etxconfig['ashtml'], etxconfig['nested']
+        etparser = self.parser.etparser
+        config = etparser.etxconfig
+        ashtml, nested = config['ashtml'], config['nested']
 
         igen.cr()
         NonTerminal.tailpass( self, igen )
 
         # Wrapper close
-        igen.puttext( self.tmpl_article_c )
+        config['nested.article'] and igen.puttext( self.tmpl_article_c )
         (not nested and ashtml) and igen.puttext( self.tmpl_html_c )
+
         # finish body function
         igen.flushtext()
         igen.popreturn( astext=True )
@@ -639,9 +641,10 @@ class TextLines( NonTerminal ) :
         [ x.headpass2( igen ) for x in self.flatten() ]
 
     def generate( self, igen, *args, **kwargs ):
-        igen.puttext( self.tmpl_o )
+        nestedpara = self.parser.etparser.etxconfig['nested.paragraph']
+        nestedpara and igen.puttext( self.tmpl_o )
         [ x.generate( igen, *args, **kwargs ) for x in self.flatten() ]
-        igen.puttext( self.tmpl_c )
+        nestedpara and igen.puttext( self.tmpl_c )
 
     def tailpass( self, igen ):
         [ x.tailpass( igen ) for x in self.flatten() ]

@@ -3,6 +3,13 @@ Track the project at,
 
 * Document style-shortcut for font-size.
 
+* Instrument runtime.py to capture text that is processed as `str` instead of
+  unicode. Document the rational behind every string->unicode conversion.
+
+* ``nested`` etxconfig should mean that no article tag or paragraph tag to be
+  generated. Instead define a different config parameter to generate
+  article.etblk
+
 * Generate anchor for heading using CSS. Once this is done, make sure that it
   is consistent with eazyslides TOC and TOC macro.
 
@@ -22,6 +29,7 @@ Track the project at,
 
 * parser.restart() and lex.restart() doesnot seem to be sufficient, for now
   avoiding reuse of parser and lexer objects. Find a long term solution.
+  Nested and Frontpage extensions can benefit from parser/lexer re-use.
 
 * parse() appends a newline at the end of the wiki text, prune them while
   dump()

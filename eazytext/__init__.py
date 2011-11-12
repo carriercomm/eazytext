@@ -32,6 +32,7 @@ import eazytext.macro.yearsbefore
 import eazytext.extension
 import eazytext.extension.code
 import eazytext.extension.nested
+import eazytext.extension.frontpage
 
 from   eazytext.interfaces      import IEazyTextMacro, \
                                        IEazyTextTemplateTags, \
@@ -111,6 +112,20 @@ defaultconfig['nested']                        = {
                 "be because of a plugin"
 }
 
+defaultconfig['nested.paragraph']                        = {
+    'default' : True,
+    'types'   : (bool,),
+    'help'    : "Boolean, if True generate <p> wrapping for text paragraphs. "
+                "Otherwise skip <p> wrapping for text paragraphs."
+}
+
+defaultconfig['nested.article']                        = {
+    'default' : True,
+    'types'   : (bool,),
+    'help'    : "Boolean, if True generate <article> wrapping for html text. "
+                "Otherwise skip <article> wrapping for block text."
+}
+
 defaultconfig['stripscript']                   = {
     'default' : True,
     'types'   : (bool,),
@@ -164,13 +179,13 @@ def normalizeconfig( config ):
         ]
     except :
         pass
-    config['include_skin'] = asbool( config['include_skin'] )
-    config['obfuscatemail'] = asbool( config['obfuscatemail'] )
-    config['nested'] = asbool( config['nested'] )
-    config['stripscript'] = asbool( config['stripscript'] )
-    config['ashtml'] = asbool( config['ashtml'] )
-    config['memcache'] = asbool( config['memcache'] )
-    config['text_as_hashkey'] = asbool( config['text_as_hashkey'] )
+
+    booleans = [
+        'include_skin', 'obfuscatemail', 'nested', 'nested.paragraph',
+        'stripscript',  'ashtml', 'memcache', 'text_as_hashkey'
+    ]
+    for x in booleans : config[x] = asbool( config[x] )
+
     return config
 
 

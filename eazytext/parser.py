@@ -11,7 +11,7 @@
 #   1. Endmarker is appender to the wiki text to facilitate the wiki parsing.
 # Todo   : None
 
-import logging, re, sys, copy
+import logging, re, sys, copy, codecs
 from   os.path  import splitext, dirname
 from   hashlib  import sha1
 from   copy     import deepcopy
@@ -78,7 +78,8 @@ class ETParser( object ):
         if skinfile == None :
             skincss = ''
         elif skinfile.endswith( '.css' ) :
-            skincss = open( join(rootdir, 'skins', skinfile) ).read()
+            skincss = codecs.open(
+                join(rootdir, 'skins', skinfile), encoding='utf-8' ).read()
         else :
             skincss = skincss
         return skincss

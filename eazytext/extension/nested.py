@@ -30,7 +30,7 @@ class Nested( Extension ) :
 
     tmpl = '<div class="etext-nested" style="%s"> %s </div>'
     pluginname = 'Nested'
-    config = {
+    etxconfig = {
         'nested' : True,
         'include_skin' : False,
     }
@@ -44,12 +44,12 @@ class Nested( Extension ) :
     def html( self, node, igen, *args, **kwargs ):
         from   eazytext import Translate
         style, text = nowiki2prop( node.text )
-        config = dict( node.parser.etparser.etxconfig.items() )
-        config.update( self.config )
+        etxconfig = dict( node.parser.etparser.etxconfig.items() )
+        etxconfig.update( self.etxconfig )
         html = ''
         if text :
             try :
-                t = Translate( etxtext=text, etxconfig=config )
+                t = Translate( etxtext=text, etxconfig=etxconfig )
                 html = self.tmpl % ( style, t( context={} ) )
             except :
                 raise
