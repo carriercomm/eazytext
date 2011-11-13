@@ -33,3 +33,13 @@ Track the project at,
 
 * parse() appends a newline at the end of the wiki text, prune them while
   dump()
+
+* Empty tag elements must be self closing. Make sure that all generated html
+  with empty tags are self closing.
+
+* Nested tags of the form
+    ``{----} xx-small size ``{+} larger size`` ``
+  must be supported. While detecting the closing markup check for the presence 
+  if style shortcut. If it is present then consider it as opening markup.
+
+* Add syntax highlighting for <br>

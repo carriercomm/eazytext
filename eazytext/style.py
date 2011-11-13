@@ -78,10 +78,10 @@ fntsize = {
 }
 
 def style_color( m ) :
-    s = 'color: %s' % fgcolors[m[:1]]
-    z = fntsize.get( m[1:], '' )
-    s += ('; %s' % z) if z else ''
-    return s
+    return 'color: %s' % fgcolors[m[:1]]
+
+def style_fontsize( m ) :
+    return fntsize[m]
 
 def style_background( m ) :
     return 'background-color: %s' % bgcolors[m]
@@ -101,8 +101,10 @@ def style_wcard( m ) :
     return m.strip()
 
 space       = r'[ \t]*'
-re_fg       = r'%s[a-z]%s[+-]{0,4};' % (space, space)
+re_fg       = r'%s[a-z]%s;' % (space, space)
 re_bg       = r'%s[A-Z]%s;' % (space, space)
+re_incsize  = r'%s\+{1,4}%s;' % (space, space)
+re_decsize  = r'%s\-{1,4}%s;' % (space, space)
 re_border   = r'%s/%s[0-9]+%s,%s[a-z]+%s,%s[a-z]+%s;' % tuple( [space] * 7 )
 re_margin   = r'%s[0-9]+%s\|%s;' % (space, space, space)
 re_padding  = r'%s\|%s[0-9]+%s;' % (space, space, space)
@@ -111,6 +113,8 @@ re_wcard    = r'[^;]+?;'
 re_list = [
     (re_fg,        style_color),
     (re_bg,        style_background),
+    (re_incsize,   style_fontsize),
+    (re_decsize,   style_fontsize),
     (re_border,    style_border),
     (re_margin,    style_margin),
     (re_padding,   style_padding),

@@ -491,7 +491,7 @@ class Heading( NonTerminal ) :
     tmpl_o  = '<h%s class="ethd" style="%s">'
     tmpl_c  = '</h%s>\n'
     tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
+    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"/>'
 
     def __init__( self, parser, heading, text_contents, newline ):
         NonTerminal.__init__( self, parser, heading, text_contents, newline )

@@ -6,4 +6,18 @@
 
 Style shortcuts are enclosed in '' { ... } '', and immediately follows
 wiki-markup that it augments. Within the curly braces, each style shortcut is
-seperated by a **semicolon (;)**,
+seperated by a **semicolon (;)**
+
+h1. Font size
+
+``Normal size`` <br>
+``{+} larger size`` <br>
+``{++} large size`` <br>
+``{+++} x-large size`` <br>
+``{++++} xx-large size ''{-} smaller size'' ``
+
+``Normal size`` <br>
+``{-} smaller size`` <br>
+``{--} small size`` <br>
+``{---} x-small size`` <br>
+``{----} xx-small size ''{+} larger size'' ``
