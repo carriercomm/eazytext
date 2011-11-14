@@ -117,15 +117,16 @@ class WikiLookup( object ) :
         [ setattr( self, k, etxconfig[k] ) for k in self.ETXCONFIG ]
         self.etxconfig = etxconfig
         self.encoding = etxconfig['input_encoding']
-        self.etxloc, self._etxtext = etxloc, etxtext
         self._etxhash, self._pytext = None, None
-        if self.etxloc :
-            self.etxfile = self._locateetx( self.etxloc, self.directories )
+        if etxloc :
+            self.etxfile = self._locateetx( etxloc, self.directories )
             self.pyfile = self.computepyfile( etxloc, etxconfig )
-            self.noetxfile = False
-        elif self._etxtext :
+            self.etxloc, self.noetxfile, self._etxtext = etxloc, False, None
+        elif etxtext :
+            self._etxtext = \
+                etxtext.decode('utf-8') if isinstance(etxtext, str) else etxtext
             self.etxfile = self.NOETXFILE
-            self.noetxfile = True
+            self._etxtext, self.noetxfile, self.etxloc = etxtext, True, None
             self.pyfile = None
         else :
             raise Exception( 'Invalid eazytext source !!' )

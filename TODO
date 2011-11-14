@@ -1,8 +1,6 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
-* Document style-shortcut for font-size.
-
 * Instrument runtime.py to capture text that is processed as `str` instead of
   unicode. Document the rational behind every string->unicode conversion.
 

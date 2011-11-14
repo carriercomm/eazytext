@@ -42,7 +42,7 @@ from   eazytext.parser          import ETParser
 DEFAULT_ENCODING = 'utf-8'
 
 defaultconfig = ConfigDict()
-defaultconfig.__doc__ = """Configuration setting for eazytext wiki engine."""
+defaultconfig.__doc__ = u"""Configuration setting for eazytext wiki engine."""
 
 defaultconfig['strict_undefined']    = {
     'default' : False,
@@ -227,8 +227,8 @@ def initplugins( etxconfig, force=False ):
             if not hasattr( x.component, 'pluginname' ) :
                 raise Exception( 'Plugins should have the attribute `pluginname`' )
             etxconfig['macroplugins'] = macroplugins
-            etxconfig['extplugins']   = extplugins
-            etxconfig['ttplugins']    = ttplugins
+            etxconfig['extplugins'] = extplugins
+            etxconfig['ttplugins'] = ttplugins
 
         init_status = 'done'
     return etxconfig
@@ -268,7 +268,7 @@ def etx_cmdline( etxloc, **kwargs ):
     etxconfig = dict(defaultconfig.items())
     # directories, module_directory, devmod
     etxconfig.update( kwargs )
-    etxconfig['module_directory'] = '.'
+    etxconfig['module_directory'] = u'.'
     etxconfig['include_skin'] = True
     etxconfig['ashtml'] = True
     etxconfig['devmod'] = True

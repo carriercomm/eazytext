@@ -9,93 +9,93 @@
 import re
 
 fgcolors = {
-    'a'     : 'aquamarine',
-    'b'     : 'blue',
-    'c'     : 'crimson',
-    'd'     : '',
-    'e'     : '',
-    'f'     : 'fuchsia',
-    'g'     : 'green',
-    'h'     : '',
-    'i'     : 'indigo',
-    'j'     : '',
-    'k'     : 'khaki',
-    'l'     : 'lavender',
-    'm'     : 'maroon',
-    'n'     : 'navy',
-    'o'     : 'orange',
-    'p'     : 'pink',
-    'q'     : '',
-    'r'     : 'red',
-    's'     : 'skyBlue',
-    't'     : 'teal',
-    'u'     : '',
-    'v'     : 'violet',
-    'w'     : 'white',
-    'x'     : '',
-    'y'     : 'yellow',
-    'z'     : '',
+    'a'     : u'aquamarine',
+    'b'     : u'blue',
+    'c'     : u'crimson',
+    'd'     : u'',
+    'e'     : u'',
+    'f'     : u'fuchsia',
+    'g'     : u'green',
+    'h'     : u'',
+    'i'     : u'indigo',
+    'j'     : u'',
+    'k'     : u'khaki',
+    'l'     : u'lavender',
+    'm'     : u'maroon',
+    'n'     : u'navy',
+    'o'     : u'orange',
+    'p'     : u'pink',
+    'q'     : u'',
+    'r'     : u'red',
+    's'     : u'skyBlue',
+    't'     : u'teal',
+    'u'     : u'',
+    'v'     : u'violet',
+    'w'     : u'white',
+    'x'     : u'',
+    'y'     : u'yellow',
+    'z'     : u'',
 }
 
 bgcolors = {
-    'A'     : 'aquamarine',
-    'B'     : 'blue',
-    'C'     : '',
-    'D'     : '',
-    'E'     : '',
-    'F'     : 'fuchsia',
-    'G'     : 'green',
-    'H'     : '',
-    'I'     : 'indigo',
-    'J'     : '',
-    'K'     : 'khaki',
-    'L'     : 'lavender',
-    'M'     : 'maroon',
-    'N'     : 'navy',
-    'O'     : 'orange',
-    'P'     : 'pink',
-    'Q'     : '',
-    'R'     : 'red',
-    'S'     : 'skyBlue',
-    'T'     : 'teal',
-    'U'     : '',
-    'V'     : 'violet',
-    'W'     : 'white',
-    'X'     : '',
-    'Y'     : 'yellow',
-    'Z'     : '',
+    'A'     : u'aquamarine',
+    'B'     : u'blue',
+    'C'     : u'',
+    'D'     : u'',
+    'E'     : u'',
+    'F'     : u'fuchsia',
+    'G'     : u'green',
+    'H'     : u'',
+    'I'     : u'indigo',
+    'J'     : u'',
+    'K'     : u'khaki',
+    'L'     : u'lavender',
+    'M'     : u'maroon',
+    'N'     : u'navy',
+    'O'     : u'orange',
+    'P'     : u'pink',
+    'Q'     : u'',
+    'R'     : u'red',
+    'S'     : u'skyBlue',
+    'T'     : u'teal',
+    'U'     : u'',
+    'V'     : u'violet',
+    'W'     : u'white',
+    'X'     : u'',
+    'Y'     : u'yellow',
+    'Z'     : u'',
 }
 
 fntsize = {
-    '+'    : 'font-size : larger',
-    '++'   : 'font-size : large',
-    '+++'  : 'font-size : x-large',
-    '++++' : 'font-size : xx-large',
-    '-'    : 'font-size : smaller',
-    '--'   : 'font-size : small',
-    '---'  : 'font-size : x-small',
-    '----' : 'font-size : xx-small',
+    '+'    : u'font-size : larger',
+    '++'   : u'font-size : large',
+    '+++'  : u'font-size : x-large',
+    '++++' : u'font-size : xx-large',
+    '-'    : u'font-size : smaller',
+    '--'   : u'font-size : small',
+    '---'  : u'font-size : x-small',
+    '----' : u'font-size : xx-small',
 }
 
 def style_color( m ) :
-    return 'color: %s' % fgcolors[m[:1]]
+    return u'color: %s' % fgcolors[m[:1]]
 
 def style_fontsize( m ) :
     return fntsize[m]
 
 def style_background( m ) :
-    return 'background-color: %s' % bgcolors[m]
+    return u'background-color: %s' % bgcolors[m]
 
 def style_border( m ) :
     w, style, color = [ x.strip() for x in m[1:].split( ',' ) ]
     color = fgcolors[color] if len(color) == 1 else color
-    return 'border : %spx %s %s' % ( w, style, color )
+    return u'border : %spx %s %s' % ( w, style, color )
 
 def style_margin( m ) :
-    return 'margin : %spx' % m[:-1].strip()
+    return u'margin : %spx' % m[:-1].strip()
 
 def style_padding( m ) :
-    return 'padding : %spx' % m[1:].strip()
+    return u'padding : %spx' % m[1:].strip()
 
 def style_wcard( m ) :
     return m.strip()
@@ -126,7 +126,7 @@ re_master = re.compile(
 
 def stylemarkup( text ) :
     if text :
-        text += ';' if text[-1] != ';' else ''
+        text += u';' if text[-1] != ';' else u''
         fns = map( lambda x : x[1], re_list )
         styles = []
         for x in re_master.findall(text) :
@@ -135,7 +135,7 @@ def stylemarkup( text ) :
                 if not text : continue
                 try    : styles.append( func( text ) )
                 except : pass
-        style = '; '.join(filter(None, styles))
+        style = u'; '.join(filter(None, styles))
     else :
-        style = ''
+        style = u''
     return style

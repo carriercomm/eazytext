@@ -34,7 +34,7 @@ class ParseError( Exception ):
 
 # Default Wiki page properties
 class ETParser( object ):
-    ENDMARKER = '<{<{}>}>'
+    ENDMARKER = u'<{<{}>}>'
     def __init__(   self,
                     etxconfig={},
                     outputdir=None,
@@ -122,7 +122,7 @@ class ETParser( object ):
 
         # parse and get the Translation Unit
         debuglevel = self.debug or debuglevel
-        self.pptext += '\n' + self.ENDMARKER
+        self.pptext += u'\n' + self.ENDMARKER
         tu = self.parser.parse(self.pptext, lexer=self.etlex, debug=debuglevel)
         # Restart the parser and lexer
         self.etlex.reset_lineno()
@@ -536,10 +536,6 @@ class ETParser( object ):
     def p_paragraph_seperator_2( self, p ) :
         """paragraph_separator  : paragraph_separator NEWLINE"""
         p[0] = ParagraphSeparator( p.parser, p[1], NEWLINE(p.parser, p[2]) )
-
-    #def p_paragraph_seperator_3( self, p ) :
-    #    """paragraph_separator  : """
-    #    p[0] = ParagraphSeparator( p.parser, None, None )
 
     def p_error( self, p ):
         if p:

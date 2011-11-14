@@ -30,10 +30,6 @@ class StackMachine( object ) :
 
     #---- Stack machine instructions
 
-    def setencoding( self, encoding ):
-        #self.encoding = encoding
-        pass
-
     def append( self, value ) :
         self.bufstack[-1].append( value )
         return value

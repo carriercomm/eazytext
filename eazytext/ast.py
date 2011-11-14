@@ -39,7 +39,7 @@ class ASTError( Exception ):
     pass
 
 class Context( object ):
-    def __init__( self, htmlindent='' ):
+    def __init__( self, htmlindent=u'' ):
         self.htmlindent = htmlindent
 
 # ------------------- AST Nodes (Terminal and Non-Terminal) -------------------
@@ -81,7 +81,7 @@ class Node( object ):
     def dump( self, c ):
         """Simply dump the contents of this node and its children node and
         return the same."""
-        return ''.join([ x.dump(c) for x in self.children() ])
+        return u''.join([ x.dump(c) for x in self.children() ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
@@ -197,9 +197,9 @@ class Terminal( Node ) :
         showcoord:
             Do you want the coordinates of each Node to be displayed.
         """
-        lead = ' ' * offset
-        buf.write(lead + '<%s>: %r' % (self.__class__.__name__, self.terminal))
-        buf.write('\n')
+        lead = u' ' * offset
+        buf.write(lead + u'<%s>: %r' % (self.__class__.__name__, self.terminal))
+        buf.write(u'\n')
 
 
 class NonTerminal( Node ):      # Non-terminal
@@ -234,11 +234,11 @@ class NonTerminal( Node ):      # Non-terminal
 
 class WikiPage( NonTerminal ):
     """class to handle `wikipage` grammar."""
-    tmpl_inclskin  = '<style type="text/css"> %s </style>'
-    tmpl_article_o = '<article class="%s">'
-    tmpl_article_c = '</article>'
-    tmpl_html_o    = '<html><body>'
-    tmpl_html_c    = '</body></html>'
+    tmpl_inclskin  = u'<style type="text/css"> %s </style>'
+    tmpl_article_o = u'<article class="%s">'
+    tmpl_article_c = u'</article>'
+    tmpl_html_o    = u'<html><body>'
+    tmpl_html_c    = u'</body></html>'
     def __init__( self, parser, paragraphs ) :
         # Initialize the context
         NonTerminal.__init__( self, parser, paragraphs )
@@ -259,7 +259,7 @@ class WikiPage( NonTerminal ):
         # Generate the body function only.
         igen.cr()
         # Body function signature
-        line = "def body( *args, **kwargs ) :"
+        line = u"def body( *args, **kwargs ) :"
         igen.putstatement( line )
         igen.codeindent( up='  ' )
         igen.pushbuf()
@@ -267,7 +267,7 @@ class WikiPage( NonTerminal ):
         # Wrapper Template
         (not nested) and config['ashtml'] and igen.puttext( self.tmpl_html_o )
         config['nested.article'] and \
-                igen.puttext(self.tmpl_article_o % ['etpage', 'etblk'][nested])
+                igen.puttext(self.tmpl_article_o % [u'etpage', u'etblk'][nested])
 
         NonTerminal.headpass1( self, igen )
 
@@ -282,7 +282,7 @@ class WikiPage( NonTerminal ):
         NonTerminal.headpass2( self, igen )
 
     def generate( self, igen, *args, **kwargs ):
-        self.etxhash = kwargs.pop( 'etxhash', '' )
+        self.etxhash = kwargs.pop( 'etxhash', u'' )
         self.etxfile = self.parser.etparser.etxfile
         self.ctx.secstack = []
         # Generate paragraphs
@@ -304,19 +304,19 @@ class WikiPage( NonTerminal ):
         # finish body function
         igen.flushtext()
         igen.popreturn( astext=True )
-        igen.codeindent( down='  ' )
+        igen.codeindent( down=u'  ' )
         # Footer
-        igen.comment( "---- Footer" )
+        igen.comment( u"---- Footer" )
         igen.footer( self.etxhash, self.etxfile )
         igen.finish()
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ):
-        lead = ' ' * offset
-        buf.write( lead + '-->wikipage: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'-->wikipage: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+5, attrnames, showcoord) for x in self.children() ]
 
 
@@ -347,12 +347,12 @@ class Paragraphs( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
+            buf.write( u' (at %s)' % self.coord )
         [ x.show(buf, offset, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -376,11 +376,11 @@ class Paragraph( NonTerminal ) :
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
-        buf.write(lead + 'paragraph: ')
+        lead = u' ' * offset
+        buf.write(lead + u'paragraph: ')
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -402,7 +402,7 @@ class NoWiki( NonTerminal ) :
         try :
             headline = self.NOWIKI_OPEN.dump(None).strip()[3:].strip()
             try    : self.nowikiname, xparams = headline.split(' ', 1)
-            except : self.nowikiname, xparams = headline, ''
+            except : self.nowikiname, xparams = headline, u''
             nowikiname = self.nowikiname.strip()
             extplugins = parser.etparser.etxconfig.get( 'extplugins', {} )
             factory = extplugins.get( nowikiname, None )
@@ -435,11 +435,11 @@ class NoWiki( NonTerminal ) :
         self.extplugin and self.extplugin.tailpass( self, igen )
     
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'ext: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'ext: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -470,14 +470,14 @@ class NowikiLines( NonTerminal ):
         raise Exception( 'Execution does not come to nowikilines' )
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write(lead + 'nowikilines: ')
+        lead = u' ' * offset
+        buf.write(lead + u'nowikilines: ')
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -488,17 +488,17 @@ class NowikiLines( NonTerminal ):
 
 class Heading( NonTerminal ) :
     """class to handle `heading` grammar."""
-    tmpl_o  = '<h%s class="ethd" style="%s">'
-    tmpl_c  = '</h%s>\n'
-    tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"/>'
+    tmpl_o  = u'<h%s class="ethd" style="%s">'
+    tmpl_c  = u'</h%s>\n'
+    tmpl_a  = u'<a id="%s"></a>'
+    tmpl_ah = u'<a class="ethdlink" href="#%s" title="Link to this section"/>'
 
     def __init__( self, parser, heading, text_contents, newline ):
         NonTerminal.__init__( self, parser, heading, text_contents, newline )
         self._terms = self.HEADING, self.NEWLINE = heading, newline
         self._nonterms = (self.text_contents,) = (text_contents,)
         self._nonterms = filter( None, self._nonterms )
-        self.headtext = self.text_contents and self.text_contents.dump(None) or ''
+        self.headtext = self.text_contents and self.text_contents.dump(None) or u''
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -520,11 +520,11 @@ class Heading( NonTerminal ) :
         igen.puttext( self.tmpl_c % level )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'heading: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'heading: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level = property( lambda self : self.HEADING.level )
@@ -534,19 +534,19 @@ class Heading( NonTerminal ) :
 
 class Section( NonTerminal ) :
     """class to handle `section` grammar."""
-    tmpl_o    = '<section class="etsec-%s" style="%s">'
-    tmpl_c    = '</section>'
-    tmpl_hdo  = '<h%s class="ethd" style="%s">'
-    tmpl_hdc  = '</h%s>\n'
-    tmpl_a  = '<a id="%s"></a>'
-    tmpl_ah = '<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
+    tmpl_o    = u'<section class="etsec-%s" style="%s">'
+    tmpl_c    = u'</section>'
+    tmpl_hdo  = u'<h%s class="ethd" style="%s">'
+    tmpl_hdc  = u'</h%s>\n'
+    tmpl_a    = u'<a id="%s"></a>'
+    tmpl_ah   = u'<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
 
     def __init__( self, parser, section, text_contents, newline ):
         NonTerminal.__init__( self, parser, section, text_contents, newline )
         self._terms = self.SECTION, self.NEWLINE = section, newline
         self._nonterms = (self.text_contents,) = (text_contents,)
         self._nonterms = filter( None, self._nonterms )
-        self.headtext = self.text_contents and self.text_contents.dump(None) or ''
+        self.headtext = self.text_contents and self.text_contents.dump(None) or u''
         # Set parent attribute for children, should be last statement !!
         self.setparent( self, self.children() )
 
@@ -579,11 +579,11 @@ class Section( NonTerminal ) :
         self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'section: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'section: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level = property( lambda self : self.SECTION.level )
@@ -594,7 +594,7 @@ class Section( NonTerminal ) :
 
 class HorizontalRule( NonTerminal ) :
     """class to handle `horizontalrule` grammar."""
-    tmpl = '<hr class="ethorz"/>\n'
+    tmpl = u'<hr class="ethorz"/>\n'
     def __init__( self, parser, term ) :
         NonTerminal.__init__( self, parser )
         self._terms = (self.TERMINAL,) = (term,)
@@ -608,11 +608,11 @@ class HorizontalRule( NonTerminal ) :
         igen.puttext( self.tmpl )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'horizontalrule:' )
+        lead = u' ' * offset
+        buf.write( lead + u'horizontalrule:' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -620,8 +620,8 @@ class HorizontalRule( NonTerminal ) :
 
 class TextLines( NonTerminal ) :
     """class to handle `textlines` grammar."""
-    tmpl_o = '<p class="ettext">\n'
-    tmpl_c = '</p>\n'
+    tmpl_o = u'<p class="ettext">\n'
+    tmpl_c = u'</p>\n'
 
     def __init__( self, parser, textlines, textline ):
         NonTerminal.__init__( self, parser, textlines, textline )
@@ -650,14 +650,14 @@ class TextLines( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'textlines: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'textlines: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -677,11 +677,11 @@ class TextLine( NonTerminal ) :
         return (self.text_contents, self.NEWLINE)
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'textline: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'textline: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -699,11 +699,11 @@ class BTable( NonTerminal ) :
         return self._nonterms
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'btable: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'btable: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
@@ -711,11 +711,11 @@ class BTable( NonTerminal ) :
 class BigtableBlocks( NonTerminal ) :
     """class to handle `btableblocks` grammar."""
     tmpl = {
-      ETLexer.btopen  : ('<table class="etbtbl" style="%s">\n', None),
-      ETLexer.btclose : ('</table>\n', None),
-      ETLexer.btrow   : ('<tr class="etbtbl" style="%s">\n', '</tr>\n'),
-      ETLexer.bthead  : ('<th class="etbtbl" style="%s">', '</th>\n'),
-      ETLexer.btcell  : ('<td class="etbtbl" style="%s">', '</td>\n'),
+      ETLexer.btopen  : (u'<table class="etbtbl" style="%s">\n', None),
+      ETLexer.btclose : (u'</table>\n', None),
+      ETLexer.btrow   : (u'<tr class="etbtbl" style="%s">\n', u'</tr>\n'),
+      ETLexer.bthead  : (u'<th class="etbtbl" style="%s">', u'</th>\n'),
+      ETLexer.btcell  : (u'<td class="etbtbl" style="%s">', u'</td>\n'),
     }
     def __init__( self, parser, btableblocks, btableblock ):
         NonTerminal.__init__( self, parser, btableblocks, btableblock )
@@ -747,14 +747,14 @@ class BigtableBlocks( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'btableblocks: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'btableblocks: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
@@ -793,14 +793,14 @@ class BigtableBlock( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'bigtableblock: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'bigtableblock: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
@@ -817,8 +817,8 @@ class BigtableBlock( NonTerminal ) :
 
 class Table( NonTerminal ) :
     """class to handle `table_rows` grammar."""
-    tmpl_o = '<table class="ettbl">\n'
-    tmpl_c = '</table>\n'
+    tmpl_o = u'<table class="ettbl">\n'
+    tmpl_c = u'</table>\n'
     def __init__( self, parser, table_rows ):
         NonTerminal.__init__( self, parser, table_rows )
         self._nonterms = (self.table_rows,) = (table_rows,)
@@ -834,11 +834,11 @@ class Table( NonTerminal ) :
         igen.puttext( self.tmpl_c )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'table: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'table: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
@@ -870,14 +870,14 @@ class TableRows( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'table_rows: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'table_rows: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
@@ -887,9 +887,9 @@ class TableRows( NonTerminal ) :
 
 class TableRow( NonTerminal ) :
     """class to handle `table_row` grammar."""
-    tmpl_o = '<tr class="ettbl">\n'
-    tmpl_c = '</tr>\n'
-    tmpl_emptyrow = '<td colspan="%s"></td>\n'
+    tmpl_o = u'<tr class="ettbl">\n'
+    tmpl_c = u'</tr>\n'
+    tmpl_emptyrow = u'<td colspan="%s"></td>\n'
     def __init__( self, parser, table_cells, newline ):
         NonTerminal.__init__( self, parser, table_cells, newline )
         self._nonterms = (self.table_cells,) = (table_cells,)
@@ -929,11 +929,11 @@ class TableRow( NonTerminal ) :
         igen.puttext( self.tmpl_c )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'table_row: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'table_row: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         # Show children
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
@@ -963,14 +963,14 @@ class TableCells( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'table_cells: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'table_cells: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -979,10 +979,10 @@ class TableCells( NonTerminal ) :
 
 class TableCell( NonTerminal ) :
     """class to handle `table_cell` grammar."""
-    RIGHTALIGN = '$'
-    tmpl_o = { 'h' : '<th class="ettbl" colspan="%s" style="%s">',
-               'd' : '<td class="ettbl" colspan="%s" style="%s">' }
-    tmpl_c = { 'h' : '</th>\n', 'd' : '</td>\n' }
+    RIGHTALIGN = u'$'
+    tmpl_o = { 'h' : u'<th class="ettbl" colspan="%s" style="%s">',
+               'd' : u'<td class="ettbl" colspan="%s" style="%s">' }
+    tmpl_c = { 'h' : u'</th>\n', 'd' : u'</td>\n' }
 
     def __init__( self, parser, cellstart, text_contents ) :
         NonTerminal.__init__( self, parser, cellstart, text_contents )
@@ -1006,10 +1006,10 @@ class TableCell( NonTerminal ) :
             cont  = self.text_contents.dump(None)
             style = stylemarkup( self.TABLE_CELLSTART.style )
             if cont[-1] == self.RIGHTALIGN :
-                style += '; text-align : right'
+                style += u'; text-align : right'
                 flatnodes = self.flatterminals()
                 if flatnodes[-1].dump(None) == self.RIGHTALIGN :
-                    flatnodes[-1].terminal = ''
+                    flatnodes[-1].terminal = u''
                 else :
                     raise Exception( 'Unexpected !!' )
             igen.puttext( self.tmpl_o[typ] % (self.colspan, style) )
@@ -1019,11 +1019,11 @@ class TableCell( NonTerminal ) :
             raise Exception( 'Table cell is not empty !' )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'table_cell: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'table_cell: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1060,14 +1060,14 @@ class MixedLists( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'mixedlists: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'mixedlists: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -1076,8 +1076,8 @@ class MixedLists( NonTerminal ) :
 
 class Lists( NonTerminal ) :
     """class to handle `unorderedlists` or `unorderedlists` grammar."""
-    tmpl_o = { 'ul' : '<ul class="et">', 'ol' : '<ol class="et">' }
-    tmpl_c = { 'ul' : '</ul>', 'ol' : '</ol>' }
+    tmpl_o = { 'ul' : u'<ul class="et">', 'ol' : u'<ol class="et">' }
+    tmpl_c = { 'ul' : u'</ul>',           'ol' : u'</ol>' }
     def __init__( self, parser, type_, lists, list_ ) :
         NonTerminal.__init__( self, parser, lists, list_ )
         self.type = type_
@@ -1112,14 +1112,14 @@ class Lists( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'lists: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'lists: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -1128,8 +1128,8 @@ class Lists( NonTerminal ) :
 
 class List( NonTerminal ) :
     """class to handle `orderedlist` or `unorderedlist` grammar."""
-    tmpl_o = '<li class="et" style="%s">'
-    tmpl_c = '</li>'
+    tmpl_o = u'<li class="et" style="%s">'
+    tmpl_c = u'</li>'
     def __init__( self, parser, type_, lbegin, list_, text_contents, newline ):
         NonTerminal.__init__( self, parser, lbegin, list_, text_contents, newline )
         self._nonterms = \
@@ -1155,11 +1155,11 @@ class List( NonTerminal ) :
         igen.puttext( self.tmpl_c ) if isinstance(self.parent, Lists) else None
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'list: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'list: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level = property( lambda self : (self.listbegin or self.list).level )
@@ -1190,11 +1190,11 @@ class ListBegin( NonTerminal ) :
         self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'listbegin: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'listbegin: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level = property(
@@ -1206,8 +1206,8 @@ class ListBegin( NonTerminal ) :
 
 class Definitions( NonTerminal ) :
     """class to handle `definitionlists` grammar."""
-    tmpl_o = '<dl class="et">\n'
-    tmpl_c = '</dl>\n'
+    tmpl_o = u'<dl class="et">\n'
+    tmpl_c = u'</dl>\n'
     def __init__( self, parser, defns=None, defn=None ) :
         NonTerminal.__init__( self, parser, defns, defn )
         self._nonterms = self.definitions, self.definition = defns, defn
@@ -1233,14 +1233,14 @@ class Definitions( NonTerminal ) :
         [ x.tailpass( igen ) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'definitions: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'definitions: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -1249,9 +1249,9 @@ class Definitions( NonTerminal ) :
 
 class Definition( NonTerminal ) :
     """class to handle `definitionlist` grammar."""
-    tmpl_dt = '<dt class="et"><b>%s</b></dt>\n'
-    tmpl_dd_o = '<dd class="et">\n'
-    tmpl_dd_c = '</dd>\n'
+    tmpl_dt   = u'<dt class="et"><b>%s</b></dt>\n'
+    tmpl_dd_o = u'<dd class="et">\n'
+    tmpl_dd_c = u'</dd>\n'
     def __init__( self, parser, defbegin, definition, text_contents, newline ):
         NonTerminal.__init__(
                 self, parser, defbegin, definition, text_contents, newline )
@@ -1276,11 +1276,11 @@ class Definition( NonTerminal ) :
         igen.puttext( self.tmpl_dd_c ) if isinstance(self.parent, Definitions) else None
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'definition: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'definition: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1306,11 +1306,11 @@ class DefinitionBegin( NonTerminal ) :
         self.NEWLINE.generate( igen, *args, **kwargs )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'definitionbegin: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'definitionbegin: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1318,8 +1318,8 @@ class DefinitionBegin( NonTerminal ) :
 
 class BlockQuotes( NonTerminal ) :
     """class to handle `blockquotes` grammar."""
-    tmpl_o = '<blockquote class="et %s">\n'
-    tmpl_c = '</blockquote>\n'
+    tmpl_o = u'<blockquote class="et %s">\n'
+    tmpl_c = u'</blockquote>\n'
     def __init__( self, parser, bquotes=None, bquote=None ) :
         NonTerminal.__init__( self, parser, bquotes, bquote )
         self._nonterms = self.blockquotes, self.blockquote = bquotes, bquote
@@ -1349,14 +1349,14 @@ class BlockQuotes( NonTerminal ) :
         [ x.tailpass(igen) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'bquotes: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'bquotes: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -1380,28 +1380,28 @@ class BlockQuote( NonTerminal ) :
     def generate( self, igen, *args, **kwargs ):
         bqmark = self.BQUOTE_START.bqmark
         if bqmark > self.ctx.bqmarks[-1] :
-            cls = 'firstlevel' if self.ctx.bqmarks[-1] == '' else 'innerlevel'
-            for x in bqmark.replace( self.ctx.bqmarks[-1], '', 1 ) :
+            cls = 'firstlevel' if self.ctx.bqmarks[-1] == u'' else 'innerlevel'
+            for x in bqmark.replace( self.ctx.bqmarks[-1], u'', 1 ) :
                 igen.puttext( self.parent.tmpl_o % cls )
                 cls = 'innerlevel'
             self.ctx.bqmarks.append( bqmark )
         elif bqmark < self.ctx.bqmarks[-1] :
-            for x in self.ctx.bqmarks[-1].replace( bqmark, '', 1 ) :
+            for x in self.ctx.bqmarks[-1].replace( bqmark, u'', 1 ) :
                 igen.puttext( self.parent.tmpl_c )
             self.ctx.bqmarks.pop( -1 )
             self.ctx.bqmarks.append( bqmark )
         if self.text_contents :
             self.text_contents.generate( igen, *args, **kwargs )
         self.NEWLINE.generate( igen, *args, **kwargs )
-        igen.puttext( '<br/>' )
+        igen.puttext( u'<br/>' )
 
     def show( self, buf=sys.stdout, offset=0, attrnames=False,
               showcoord=False ) :
-        lead = ' ' * offset
-        buf.write( lead + 'bquote: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'bquote: ' )
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
     level  = property( lambda self : self.BQUOTE_START.level )
@@ -1435,11 +1435,11 @@ class TextContents( NonTerminal ) :
         [ x.tailpass(igen) for x in self.flatten() ]
 
     def dump( self, c ):
-        return ''.join([ x.dump(c) for x in self.flatten() ])
+        return u''.join([ x.dump(c) for x in self.flatten() ])
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
         if showcoord:
-            buf.write( ' (at %s)' % self.coord )
+            buf.write( u' (at %s)' % self.coord )
         [ x.show(buf, offset, attrnames, showcoord) for x in self.flatten() ]
 
     def flatten( self ):
@@ -1453,10 +1453,10 @@ class Link( NonTerminal ) :
         # - Create an anchor
         + - Image
     """
-    prefixes     = '*#+><'
-    l_template   = '<a class="etlink" target="%s" href="%s">%s</a>'
-    a_template   = '<a id="%s" class="etlink anchor" name="%s">%s</a>'
-    img_template = '<img class="et" src="%s" alt="%s" style="%s"/>'
+    prefixes     = u'*#+><'
+    l_template   = u'<a class="etlink" target="%s" href="%s">%s</a>'
+    a_template   = u'<a id="%s" class="etlink anchor" name="%s">%s</a>'
+    img_template = u'<img class="et" src="%s" alt="%s" style="%s"/>'
 
     def __init__( self, parser, link ) :
         NonTerminal.__init__( self, parser, link )
@@ -1477,23 +1477,23 @@ class Link( NonTerminal ) :
         text = escape_htmlchars( text.strip(' \t') )
 
         if prefix1 == '*' :                         # Link - Open in new window
-            html = self.l_template % ( '_blank', href, text )
+            html = self.l_template % ( u'_blank', href, text )
         elif prefix1 == '#' :                       # Link - Anchor 
             html = self.a_template % ( href, href, text )
         elif prefix1 == '+' and prefix2 == '>' :    # Link - Image (right)
-            html = self.img_template % ( href, text, 'float: right;' )
+            html = self.img_template % ( href, text, u'float: right;' )
         elif prefix1 == '+' and prefix2 == '<' :    # Link - Image (left)
-            html = self.img_template % ( href, text, 'float: left;' )
+            html = self.img_template % ( href, text, u'float: left;' )
         elif prefix1 == '+' :                       # Link - Image
-            html = self.img_template % ( href, text, '' )
+            html = self.img_template % ( href, text, u'' )
         elif href[:6] == "mailto:" and self.obfuscatemail : # Link - E-mail
             if href == text :
                 href = text = "mailto:" + obfuscatemail(href[7:])
             else :
                 href = "mailto:" + obfuscatemail(href[7:])
-            html = self.l_template % ( '', href, text )
+            html = self.l_template % ( u'', href, text )
         else :
-            html = self.l_template % ( '', href, text )
+            html = self.l_template % ( u'', href, text )
 
         return html
 
@@ -1504,11 +1504,11 @@ class Link( NonTerminal ) :
         igen.puttext( self.html )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'link: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'link: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1522,7 +1522,7 @@ class Macro( NonTerminal ) :
         try :
             _macro = self.macrotext[2:-2].lstrip()
             try    : macroname, argstr = _macro.split('(', 1)
-            except : macroname, argstr = _macro, ''
+            except : macroname, argstr = _macro, u''
             macroname = macroname.strip()
             argstr = argstr.rstrip(' \r)')
             macroplugins = parser.etparser.etxconfig.get( 'macroplugins', {} )
@@ -1554,11 +1554,11 @@ class Macro( NonTerminal ) :
         self.macroplugin and self.macroplugin.tailpass( self, igen )
     
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'macro: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'macro: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1572,8 +1572,8 @@ class Html( NonTerminal ) :
         try :
             lines = self.htmltext[2:-2].lstrip().splitlines()
             parts, lines = lines[0].split(' ', 1), lines[1:]
-            self.tagname = parts.pop(0).strip() if parts else ''
-            self.text = '\n'.join( parts + lines )
+            self.tagname = parts.pop(0).strip() if parts else u''
+            self.text = u'\n'.join( parts + lines )
             ttplugins = parser.etparser.etxconfig.get( 'ttplugins', {} )
             ttplugin = ttplugins.get( self.tagname.lower(), None )
             self.ttplugin = ttplugin() if callable(ttplugin) else ttplugin
@@ -1598,7 +1598,7 @@ class Html( NonTerminal ) :
             self.ttplugin.generate( self, igen, *args, **kwargs )
         else :
             if self.parser.etparser.etxconfig['stripscript'] :
-                text = re.sub( '<[ \t]*script[^>]*?>', '', self.htmltext[2:-2] )
+                text = re.sub( '<[ \t]*script[^>]*?>', u'', self.htmltext[2:-2] )
             else :
                 text = self.htmltext[2:-2]
             igen.puttext( text )
@@ -1607,11 +1607,11 @@ class Html( NonTerminal ) :
         self.ttplugin and self.ttplugin.tailpass( self, igen )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write( lead + 'html: ' )
+        lead = u' ' * offset
+        buf.write( lead + u'html: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1627,11 +1627,11 @@ class BasicText( NonTerminal ) :
         return self._terms
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write(lead + 'basictext: ' )
+        lead = u' ' * offset
+        buf.write(lead + u'basictext: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1657,11 +1657,11 @@ class MarkupText( NonTerminal ) :
             self.ctx.markupstack.append( self )
 
     def show(self, buf=sys.stdout, offset=0, attrnames=False, showcoord=False):
-        lead = ' ' * offset
-        buf.write(lead + 'markuptext: ' )
+        lead = u' ' * offset
+        buf.write(lead + u'markuptext: ' )
         if showcoord :
-            buf.write( ' (at %s)' % self.coord )
-        buf.write('\n')
+            buf.write( u' (at %s)' % self.coord )
+        buf.write(u'\n')
         [ x.show(buf, offset+2, attrnames, showcoord) for x in self.children() ]
 
 
@@ -1691,18 +1691,18 @@ class BASICTEXT( object ):
         igen.puttext( self.html )
 
 class MARKUPTEXT( object ):
-    html, spatt = '', re.compile( ETLexer.style )
+    html, spatt = u'', re.compile( ETLexer.style )
     def generate( self, igen, *args, **kwargs ):
         igen.puttext( self.html or self.terminal )
     def _style( self ):
         rc = self.spatt.findall( self.terminal )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     style  = property( lambda self : self._style() )
 
 #---- Text
 class NEWLINE( Terminal ): pass
 class LINEBREAK( Terminal ):
-    tmpl   = '<br/>'
+    tmpl   = u'<br/>'
     html   = property( lambda self : self.tmpl )
 class ESCAPED_TEXT( Terminal ):
     html   = property( lambda self : escape_htmlchars( self.terminal ))
@@ -1711,65 +1711,65 @@ class TEXT( BASICTEXT, Terminal ):
 class SPECIALCHARS( BASICTEXT, Terminal ):
     html   = property( lambda self : escape_htmlchars( self.terminal ))
 class HTTP_URI( BASICTEXT, Terminal ):
-    tmpl   = '<a class="ethttpuri" href="%s">%s</a>'
+    tmpl   = u'<a class="ethttpuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
 class HTTPS_URI( BASICTEXT, Terminal ):
-    tmpl   = '<a class="ethttpsuri" href="%s">%s</a>'
+    tmpl   = u'<a class="ethttpsuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
 class WWW_URI( BASICTEXT, Terminal ):
-    tmpl   = '<a class="etwwwuri" href="%s">%s</a>'
+    tmpl   = u'<a class="etwwwuri" href="%s">%s</a>'
     html   = property( lambda self : self.tmpl % (self.terminal, self.terminal) )
 
 #---- Text markup
 class M_SPAN( MARKUPTEXT, Terminal ):
-    markup = 'span'
-    tmpl_o = '<span class="etmark" style="%s">'
-    tmpl_c = '</span>'
+    markup = u'span'
+    tmpl_o = u'<span class="etmark" style="%s">'
+    tmpl_c = u'</span>'
 
 class M_BOLD( MARKUPTEXT, Terminal ):
-    markup = 'bold'
-    tmpl_o = '<strong class="etmark" style="%s">'
-    tmpl_c = '</strong>'
+    markup = u'bold'
+    tmpl_o = u'<strong class="etmark" style="%s">'
+    tmpl_c = u'</strong>'
 
 class M_ITALIC( MARKUPTEXT, Terminal ):
-    markup = 'italic'
-    tmpl_o = '<em class="etmark" style="%s">'
-    tmpl_c = '</em>'
+    markup = u'italic'
+    tmpl_o = u'<em class="etmark" style="%s">'
+    tmpl_c = u'</em>'
 
 class M_UNDERLINE( MARKUPTEXT, Terminal ):
-    markup = 'underline'
-    tmpl_o = '<u class="etmark" style="%s">'
-    tmpl_c = '</u>'
+    markup = u'underline'
+    tmpl_o = u'<u class="etmark" style="%s">'
+    tmpl_c = u'</u>'
 
 class M_SUPERSCRIPT( MARKUPTEXT, Terminal ):
-    markup = 'superscript'
-    tmpl_o = '<sup class="etmark" style="%s">'
-    tmpl_c = '</sup>'
+    markup = u'superscript'
+    tmpl_o = u'<sup class="etmark" style="%s">'
+    tmpl_c = u'</sup>'
 
 class M_SUBSCRIPT( MARKUPTEXT, Terminal ):
-    markup = 'subscript'
-    tmpl_o = '<sub class="etmark" style="%s">'
-    tmpl_c = '</sub>'
+    markup = u'subscript'
+    tmpl_o = u'<sub class="etmark" style="%s">'
+    tmpl_c = u'</sub>'
 
 class M_BOLDITALIC( MARKUPTEXT, Terminal ):
-    markup = 'bolditalic'
-    tmpl_o = '<strong class="etmark"><em style="%s">'
-    tmpl_c = '</em></strong>'
+    markup = u'bolditalic'
+    tmpl_o = u'<strong class="etmark"><em style="%s">'
+    tmpl_c = u'</em></strong>'
 
 class M_BOLDUNDERLINE( MARKUPTEXT, Terminal ):
-    markup = 'boldunderline'
-    tmpl_o = '<strong class="etmark"><u style="%s">'
-    tmpl_c = '</u></strong>'
+    markup = u'boldunderline'
+    tmpl_o = u'<strong class="etmark"><u style="%s">'
+    tmpl_c = u'</u></strong>'
 
 class M_ITALICUNDERLINE( MARKUPTEXT, Terminal ):
-    markup = 'italicunderline'
-    tmpl_o = '<em class="etmark"><u style="%s">'
-    tmpl_c = '</u></em>'
+    markup = u'italicunderline'
+    tmpl_o = u'<em class="etmark"><u style="%s">'
+    tmpl_c = u'</u></em>'
 
 class M_BOLDITALICUNDERLINE( MARKUPTEXT, Terminal ):
-    markup = 'bolditalicunderline'
-    tmpl_o = '<strong class="etmark"><em><u style="%s">'
-    tmpl_c = '</u></em></strong>'
+    markup = u'bolditalicunderline'
+    tmpl_o = u'<strong class="etmark"><em><u style="%s">'
+    tmpl_c = u'</u></em></strong>'
 
 #---- Inline text blocks
 class LINK( Terminal ): pass
@@ -1791,7 +1791,7 @@ class HEADING( Terminal ):
         return level
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     level  = property( lambda self : self._level() )
     style  = property( lambda self : self._style() )
 
@@ -1805,7 +1805,7 @@ class SECTION( Terminal ):
         return level
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     level  = property( lambda self : self._level() )
     style  = property( lambda self : self._style() )
 
@@ -1813,7 +1813,7 @@ class ORDLIST_START( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     lmark = property( lambda self : self.spatt.sub( '', self.terminal.strip() ).strip() )
     level = property( lambda self : len(self.lmark) )
     style = property( lambda self : self._style() )
@@ -1822,7 +1822,7 @@ class UNORDLIST_START( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     lmark = property( lambda self : self.spatt.sub('', self.terminal.strip()).strip() )
     level = property( lambda self : len(self.lmark) )
     style = property( lambda self : self._style() )
@@ -1838,7 +1838,7 @@ class BTABLE_START( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     btmark = property( lambda self : self.terminal.lstrip()[:3] )
     style  = property( lambda self : self._style() )
 
@@ -1846,7 +1846,7 @@ class TABLE_CELLSTART( Terminal ):
     spatt = re.compile( ETLexer.style )
     def _style( self ):
         rc = self.spatt.findall( self.terminal.strip() )
-        return rc[0][1:-1] if rc else ''
+        return rc[0][1:-1] if rc else u''
     ishead = property( lambda self : '=' in self.terminal.strip()[:2] )
     style  = property( lambda self : self._style() )
 

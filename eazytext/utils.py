@@ -6,8 +6,8 @@
 
 import re, sys
 
-HTML_CHARS = [ '"', "'", '&', '<', '>' ]
-ENDMARKER  = '<{<{}>}>'
+HTML_CHARS = [ u'"', u"'", u'&', u'<', u'>' ]
+ENDMARKER  = u'<{<{}>}>'
 
 class ConfigItem( dict ):
     """Convenience class encapsulating config value description, which is a
@@ -65,10 +65,10 @@ class ConfigDict( dict ):
 
 def escape_htmlchars( text ) :
     """If the text is not supposed to have html characters, escape them"""
-    text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( '&amp;', text )
-    text = re.compile( r'"', re.MULTILINE | re.UNICODE ).sub( '&quot;', text )
-    text = re.compile( r'<', re.MULTILINE | re.UNICODE ).sub( '&lt;', text )
-    text = re.compile( r'>', re.MULTILINE | re.UNICODE ).sub( '&gt;', text )
+    text = re.compile( r'&', re.MULTILINE | re.UNICODE ).sub( u'&amp;', text )
+    text = re.compile( r'"', re.MULTILINE | re.UNICODE ).sub( u'&quot;', text )
+    text = re.compile( r'<', re.MULTILINE | re.UNICODE ).sub( u'&lt;', text )
+    text = re.compile( r'>', re.MULTILINE | re.UNICODE ).sub( u'&gt;', text )
     return text
 
 
@@ -100,13 +100,13 @@ def constructstyle( kwargs, defcss={}, styles='' ) :
     css.update( d_style )
     css.update( kwargs )
 
-    style = '; '.join([ "%s: %s" % (k,v) for k,v in css.items() ])
-    style = '; '.join(filter(None, [style, s_style, styles ]))
+    style = u'; '.join([ "%s: %s" % (k,v) for k,v in css.items() ])
+    style = u'; '.join( filter(None, [style, s_style, styles ]) )
     return style
 
 def obfuscatemail( text ) :
     """Obfuscate email id"""
-    return '@'.join([ n[:-3] + '...' for n in text.split( '@', 1 ) ])
+    return u'@'.join([ n[:-3] + '...' for n in text.split( '@', 1 ) ])
 
 def is_matchinghtml( text ) :
     """Check whether html special characters are present in the document."""
@@ -128,7 +128,7 @@ def wiki_properties( text ) :
             props.append( l[1:] )
             continue
         break;
-    text = '\n'.join( textlines[i:] )
+    text = u'\n'.join( textlines[i:] )
     try :
         props = eval( ''.join( props ) ) if props else {}
     except :

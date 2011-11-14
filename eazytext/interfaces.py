@@ -4,8 +4,7 @@
 
 # -*- coding: utf-8 -*-
 
-"""
-h3. An introduction to multi-pass compilation implemented on the AST
+"""h3. An introduction to multi-pass compilation implemented on the AST
 
 Once the //abstract-syntax-tree// (AST) is constructed, the tree will be walked
 multiple times by calling the methods headpass1(), headpass2(), generate()

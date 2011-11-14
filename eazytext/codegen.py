@@ -8,24 +8,24 @@ from   os.path      import join, splitext, isfile, abspath, basename
 from   StringIO     import StringIO
 from   copy         import deepcopy
 
-prolog = """
+prolog = u"""
 from   StringIO             import StringIO
 """
 
-footer = """
+footer = u"""
 _etxhash = %r
 _etxfile = %r
 """
 
 class InstrGen( object ) :
-    machname = '_m'
+    machname = u'_m'
 
     def __init__( self, compiler, etxconfig={} ):
         self.compiler = compiler
         self.devmod = etxconfig['devmod']
         self.etxconfig = etxconfig
         self.outfd = StringIO()
-        self.pyindent = ''
+        self.pyindent = u''
         self.optimaltext = []
         self.pytext = None
         # prolog for python translated template
@@ -36,7 +36,7 @@ class InstrGen( object ) :
         return clone
 
     def cr( self, count=1 ) :
-        self.outfd.write( '\n'*count )
+        self.outfd.write( u'\n'*count )
         self.outfd.write( self.pyindent )
 
     def codeindent( self, up=None, down=None, indent=True ):
@@ -61,23 +61,22 @@ class InstrGen( object ) :
         if self.devmod :
             self.flushtext()
             self.cr()
-            self.outfd.write( '# ' + ' '.join(comment.rstrip('\r\n').splitlines()) )
+            self.outfd.write( u'# ' + u' '.join(comment.rstrip('\r\n').splitlines()) )
 
     def flushtext( self ) :
         if self.optimaltext :
             self.cr()
-            self.outfd.write( '_m.extend( %s )' % self.optimaltext )
+            self.outfd.write( u'_m.extend( %s )' % self.optimaltext )
             self.optimaltext = []
 
     def puttext( self, text, force=False ):
         self.optimaltext.append( text )
-        if force :
-            self.flushtext()
+        force and self.flushtext()
 
     def pushbuf( self ):
         self.flushtext()
         self.cr()
-        self.outfd.write( '_m.pushbuf()' )
+        self.outfd.write( u'_m.pushbuf()' )
 
     def putstatement( self, stmt ):
         self.flushtext()
@@ -87,38 +86,36 @@ class InstrGen( object ) :
     def popreturn( self, astext=True ):
         self.flushtext()
         self.cr()
-        if astext == True :
-            self.outfd.write( 'return _m.popbuftext()' )
-        else :
-            self.outfd.write( 'return _m.popbuf()' )
+        self.outfd.write(
+          u'return _m.popbuftext()' if astext == True else u'return _m.popbuf()'
+        )
 
     def evalexprs( self, code, filters ) :
         self.flushtext()
         self.cr()
-        self.outfd.write('_m.append( _m.evalexprs(%s, %r) )' % (code, filters))
+        self.outfd.write(u'_m.append( _m.evalexprs(%s, %r) )' % (code, filters))
 
     def handlett( self, ttname, argstr ):
         self.flushtext()
         self.cr()
-        self.outfd.write('_m.handlett( %r, %r )' % (ttname, argstr) )
+        self.outfd.write(u'_m.handlett( %r, %r )' % (ttname, argstr) )
 
     def handlemacro( self, macroname, argstr ):
         self.flushtext()
         self.cr()
-        self.outfd.write('_m.handlemacro( %r, %r )' % (macroname, argstr) )
+        self.outfd.write(u'_m.handlemacro( %r, %r )' % (macroname, argstr) )
 
     def handleext( self, extname, argstr ):
         self.flushtext()
         self.cr()
-        self.outfd.write('_m.extname( %r, %r )' % (extname, argstr) )
+        self.outfd.write(u'_m.extname( %r, %r )' % (extname, argstr) )
 
     def popcompute( self, astext=True ):
         self.flushtext()
         self.cr()
-        if astext == True :
-            self.outfd.write( '_m.append( _m.popbuftext() )' )
-        else :
-            self.outfd.write( '_m.append( _m.popbuf() )' )
+        self.outfd.write(
+          u'_m.append( _m.popbuftext() )' if astext == True else u'_m.append( _m.popbuf() )'
+        )
 
     def footer( self, etxhash, etxfile ):
         self.cr()
