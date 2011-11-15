@@ -181,7 +181,7 @@ class ETLexer( object ) :
     # Inline text block
     link        = r'\[\[(%s)+?(?=\]\])\]\]' % anything
     nestedlink  = r'\[\[(%s)+?(?=\]\])\]\]' % link
-    macro       = r'\{\{(!=\{)(%s)+?(?=\}\})\}\}' % anything
+    macro       = r'\{\{(?!\{)(%s)+?(?=\}\})\}\}' % anything
     html        = r'\[<(%s)+?(?=>\])>\]' % anything
     # Tokenize Complex regex
     http_schema    = r'http://'

@@ -1,13 +1,6 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
-* Instrument runtime.py to capture text that is processed as `str` instead of
-  unicode. Document the rational behind every string->unicode conversion.
-
-* ``nested`` etxconfig should mean that no article tag or paragraph tag to be
-  generated. Instead define a different config parameter to generate
-  article.etblk
-
 * Generate anchor for heading using CSS. Once this is done, make sure that it
   is consistent with eazyslides TOC and TOC macro.
 
@@ -41,3 +34,5 @@ Track the project at,
   if style shortcut. If it is present then consider it as opening markup.
 
 * Add syntax highlighting for <br>
+
+* Self-closing tags for <a> element inside h[1-6] heading causes problem.

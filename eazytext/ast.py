@@ -78,6 +78,22 @@ class Node( object ):
         """Post-processing phase 1, useful to implement multi-pass compilers"""
         [ x.tailpass( igen ) for x in self.children() ]
 
+    def lstrip( self, chars ):
+        """Strip the leftmost chars from the Terminal nodes. Each terminal node
+        must return the remaining the characters.
+        In case of the Non-terminal node, call all the children node's
+        lstrip() method, until the caller recieves a non-empty return value.
+        """
+        pass
+
+    def rstrip( self, chars ):
+        """Strip the rightmost chars from the Terminal nodes. Each terminal node
+        must return the remaining the characters.
+        In case of the Non-terminal node, call all the children node's
+        rstrip() method, until the caller recieves a non-empty return value.
+        """
+        pass
+
     def dump( self, c ):
         """Simply dump the contents of this node and its children node and
         return the same."""
@@ -174,6 +190,20 @@ class Terminal( Node ) :
         """Dump the content."""
         igen.puttext( self.dump(None) )
 
+    def lstrip( self, chars ):
+        """Strip off the leftmost characters from the terminal string. Return
+        the remaining characters.
+        """
+        self.terminal = self.terminal.lstrip( chars )
+        return self.terminal
+
+    def rstrip( self, chars ):
+        """Strip off the rightmost characters from the terminal string. Return
+        the remaining characters.
+        """
+        self.terminal = self.terminal.rstrip( chars )
+        return self.terminal
+
     def dump( self, c ):
         """Simply dump the contents of this node and its children node and
         return the same."""
@@ -209,6 +239,26 @@ class NonTerminal( Node ):      # Non-terminal
         parser = args[0]
         Node.__init__( self, parser )
         self._terms, self._nonterms = tuple(), tuple()
+
+    def lstrip( self, chars ):
+        """Strip off the leftmost characters from children nodes. Stop
+        stripping on recieving non null string."""
+        value = u''
+        for c in self.children() :
+            value = c.lstrip( chars )
+            if value : break
+        return value
+
+    def rstrip( self, chars ):
+        """Strip off the rightmost characters from children nodes. Stop
+        stripping on recieving non null string."""
+        value = u''
+        children = list(self.children())
+        children.reverse()
+        for c in children :
+            value = c.rstrip( chars )
+            if value : break
+        return value
 
     def flatten( self, attrnode, attrs ):
         """Instead of recursing through left-recursive grammar, flatten them
@@ -491,7 +541,7 @@ class Heading( NonTerminal ) :
     tmpl_o  = u'<h%s class="ethd" style="%s">'
     tmpl_c  = u'</h%s>\n'
     tmpl_a  = u'<a id="%s"></a>'
-    tmpl_ah = u'<a class="ethdlink" href="#%s" title="Link to this section"/>'
+    tmpl_ah = u'<a class="ethdlink" href="#%s" title="Link to this section"> </a>'
 
     def __init__( self, parser, heading, text_contents, newline ):
         NonTerminal.__init__( self, parser, heading, text_contents, newline )
@@ -513,9 +563,13 @@ class Heading( NonTerminal ) :
         level, style = self.HEADING.level, stylemarkup( self.HEADING.style )
         igen.puttext( self.tmpl_o % (level, style) )
         if self.text_contents :
+            # flush leading whitespace.
+            headtext = self.headtext.lstrip(' \t')
+            self.text_contents.lstrip(' \t')
+
             self.text_contents.generate( igen, *args, **kwargs )
-            igen.puttext( self.tmpl_a % self.headtext )
-            igen.puttext( self.tmpl_ah % self.headtext )
+            igen.puttext( self.tmpl_a % headtext )
+            igen.puttext( self.tmpl_ah % headtext )
         self.NEWLINE.generate( igen, *args, **kwargs )
         igen.puttext( self.tmpl_c % level )
 
@@ -571,10 +625,14 @@ class Section( NonTerminal ) :
         igen.puttext( self.tmpl_o % (level, style) )
         self.ctx.secstack.append( (level, self.tmpl_c) )
         if self.text_contents :
+            # flush leading whitespace.
+            headtext = self.headtext.lstrip(' \t')
+            self.text_contents.lstrip(' \t')
+
             igen.puttext( self.tmpl_hdo % (level, style) )
             self.text_contents.generate( igen, *args, **kwargs )
-            igen.puttext( self.tmpl_a % self.headtext )
-            igen.puttext( self.tmpl_ah % self.headtext )
+            igen.puttext( self.tmpl_a % headtext )
+            igen.puttext( self.tmpl_ah % headtext )
             igen.puttext( self.tmpl_hdc % level )
         self.NEWLINE.generate( igen, *args, **kwargs )
 
@@ -1456,7 +1514,7 @@ class Link( NonTerminal ) :
     prefixes     = u'*#+><'
     l_template   = u'<a class="etlink" target="%s" href="%s">%s</a>'
     a_template   = u'<a id="%s" class="etlink anchor" name="%s">%s</a>'
-    img_template = u'<img class="et" src="%s" alt="%s" style="%s"/>'
+    img_template = u'<img class="et" src="%s" alt="%s" style="%s"></img>'
 
     def __init__( self, parser, link ) :
         NonTerminal.__init__( self, parser, link )

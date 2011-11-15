@@ -112,18 +112,21 @@ defaultconfig['nested']                        = {
                 "be because of a plugin"
 }
 
-defaultconfig['nested.paragraph']                        = {
+defaultconfig['nested.paragraph']              = {
     'default' : True,
     'types'   : (bool,),
     'help'    : "Boolean, if True generate <p> wrapping for text paragraphs. "
                 "Otherwise skip <p> wrapping for text paragraphs."
 }
 
-defaultconfig['nested.article']                        = {
+defaultconfig['nested.article']                = {
     'default' : True,
     'types'   : (bool,),
     'help'    : "Boolean, if True generate <article> wrapping for html text. "
-                "Otherwise skip <article> wrapping for block text."
+                "Otherwise skip <article> wrapping for block text. The "
+                "generated article element will have class attribute `etblk` "
+                "if config param `nested` is True. Otherwise, they will have "
+                "class attribute `etpage`."
 }
 
 defaultconfig['stripscript']                   = {

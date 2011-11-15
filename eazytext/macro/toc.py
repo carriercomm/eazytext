@@ -49,7 +49,7 @@ class Toc( Macro ):
     tmpl          = '<details class="etm-toc" style="%s"> %s </details>'
     summary_tmpl  = '<summary> %s </summary>'
     headlist_tmpl = '<ul> %s </ul>'
-    toca_tmpl     = '<li><a class="level-%s" href="%s"> %s </a></li>'
+    toca_tmpl     = '<li><a class="level-%s" href="%s">%s</a></li>'
 
     htags = [ '', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
 
@@ -76,7 +76,7 @@ class Toc( Macro ):
                   for n in h.filter( lambda n : isinstance(n, BASICTEXT) )
                 ])
                 text = escape_htmlchars(
-                            text[:self.maxheadlen] + \
+                            text[:self.maxheadlen].lstrip(' \t') + \
                             ('...' if len(text) > self.maxheadlen else '')
                        )
                 headlist.append( self.toca_tmpl % (h.level, '#'+text, text) )
