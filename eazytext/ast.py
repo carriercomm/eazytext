@@ -1507,12 +1507,14 @@ class TextContents( NonTerminal ) :
 class Link( NonTerminal ) :
     """class to handle `link` grammer.
     There are special links, 
-        * - Open in new window,
-        # - Create an anchor
-        + - Image
+        *  - Open in new window,
+        #  - Create an anchor
+        +  - Image
+        -- - Encapsulate text inside del tag.
     """
-    prefixes     = u'*#+><'
+    prefixes     = u'*#+><-'
     l_template   = u'<a class="etlink" target="%s" href="%s">%s</a>'
+    d_template   = u'<del>%s</del>'
     a_template   = u'<a id="%s" class="etlink anchor" name="%s">%s</a>'
     img_template = u'<img class="et" src="%s" alt="%s" style="%s"></img>'
 
@@ -1538,6 +1540,8 @@ class Link( NonTerminal ) :
             html = self.l_template % ( u'_blank', href, text )
         elif prefix1 == '#' :                       # Link - Anchor 
             html = self.a_template % ( href, href, text )
+        elif prefix1 == '-' and prefix2 == '-' :    # Link - Delete
+            html = self.l_template % ( u'', href, self.d_template % text)
         elif prefix1 == '+' and prefix2 == '>' :    # Link - Image (right)
             html = self.img_template % ( href, text, u'float: right;' )
         elif prefix1 == '+' and prefix2 == '<' :    # Link - Image (left)
