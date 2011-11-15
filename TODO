@@ -1,6 +1,9 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
+* TTags for generating <q> does not display quotes when integrated with
+  pluggdapps.com. Standalone tests seem to work proper.
+
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.
 

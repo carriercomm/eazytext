@@ -99,7 +99,7 @@ h4. Templated tags
 |  PRE            | span.etttag.pre
 |  ABBR           | abbr.etttag
 |  FIXME          | span.etttag.fixme
-|  Q              | div.etttag.qbq
+|  Q              | q.etttag
 |  SMILEYSMILE    | span.etttag.smile
 |  SMILEYSAD      | span.etttag.sad
 |  ADDR           | address.etttag

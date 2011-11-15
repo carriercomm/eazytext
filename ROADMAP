@@ -4,7 +4,6 @@ h4. Syntax for HTML (and html5) elements
     ``{----} xx-small size ``{+} larger size`` ``
   must be supported. While detecting the closing markup check for the presence 
   of style shortcut. If it is present then consider it as opening markup.
-* Syntax to generate <small> element.
 * Syntax to generate the <wbr> element.
 * Explore the possible addition of `indentation` feature, like,<br>
   [<PRE
@@ -25,6 +24,8 @@ h4. Syntax for HTML (and html5) elements
 * Support nested link markup for <nav> element, like,
     \[[ \[[ /pref.html | pref ]] \[[ /pref.html | pref ]] ]]
 * Enclose TOC generated output links within <nav> element.
+
+* Syntax to generate <small> element for small-print text and legal text
 * nested blockquotes must be identified using class attributes.
   like `level-1`, `level-2` etc ...
 * Markup syntax for <q> tag. There is a templated-tag presently available for

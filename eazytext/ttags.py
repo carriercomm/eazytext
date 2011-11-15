@@ -96,11 +96,10 @@ class TTPre( TT ):
 
 class TTQ( TT ) :
     """Inline quotes using html's <q> tag. For blockquotes use the wiki markup
-    //(>)// instead.
-    html element generated is a div element with class attribute ''//qbq//''
+    //(>)// from the beginning of the line flush with whitespace.
     """
     pluginname = 'Q'
-    template = u'<div class="etttag qbq">%s</div>'
+    template = u'<q class="etttag">%s</q>'
     def generate( self, node, igen, *args, **kwargs ):
         igen.puttext( self.template % escape_htmlchars( node.text ))
 TTQ.example = u"""[<Q
