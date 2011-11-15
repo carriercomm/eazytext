@@ -1,22 +1,14 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
-* Generate anchor for heading using CSS. Once this is done, make sure that it
-  is consistent with eazyslides TOC and TOC macro.
-
 * Launchpad-eazytext project details have several links to external sites
   related to eazytext, fill them up.
-
-* Send out a mail specifying that the <br> is new and wiki-properties are
-  removed.
 
 * HTML 5 tags that are relevant to eazytext.
     article,    aside,  audio,  button, caption,    details/summary
     embed,  header, footer, meter,  del,    ins,    strike, time,
     nav,    progress,   section,    source,     audio/video,
     figure, figcaption, mark,   meter
-
-* Should <article> tag be wrapped around nested etx-text ?
 
 * parser.restart() and lex.restart() doesnot seem to be sufficient, for now
   avoiding reuse of parser and lexer objects. Find a long term solution.
@@ -26,13 +18,5 @@ Track the project at,
   dump()
 
 * Empty tag elements must be self closing. Make sure that all generated html
-  with empty tags are self closing.
-
-* Nested tags of the form
-    ``{----} xx-small size ``{+} larger size`` ``
-  must be supported. While detecting the closing markup check for the presence 
-  if style shortcut. If it is present then consider it as opening markup.
-
-* Add syntax highlighting for <br>
-
-* Self-closing tags for <a> element inside h[1-6] heading causes problem.
+  with empty tags are self closing. This seem to have some problems. What is the
+  right way of doing ?

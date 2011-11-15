@@ -57,7 +57,7 @@ syn match docsection         contained "^[ \t]*[sS][123456]\..*" contains=escape
 syn match hrule              contained "-\{5,}"
 
 " Ordered and Un-ordered List
-syn match listmarkup         contained "^[ \t]*\*\{1,5}\|^[ \t]*#\{1,5}"
+syn match listmarkup         contained "^[ \t]*\*\{1,5}\|^[ \t]*#\{1,5}\({[^}]*}\)\?" contains=st_style
 syn match list               contained "^[ \t]*\*\{1,5}\|^[ \t]*#\{1,5}.*" contains=listmarkup,escapechar,escapenewline,linebreak,plainweburl1,plainweburl2,wlink,textmarkup_1,textmarkup_2,html,etmacro
 
 " Block Quoted text

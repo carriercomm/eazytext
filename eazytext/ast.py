@@ -285,7 +285,7 @@ class NonTerminal( Node ):      # Non-terminal
 class WikiPage( NonTerminal ):
     """class to handle `wikipage` grammar."""
     tmpl_inclskin  = u'<style type="text/css"> %s </style>'
-    tmpl_article_o = u'<article class="%s">'
+    tmpl_article_o = u'<article class="%s" spellcheck="true">'
     tmpl_article_c = u'</article>'
     tmpl_html_o    = u'<html><body>'
     tmpl_html_c    = u'</body></html>'
