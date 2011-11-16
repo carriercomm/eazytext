@@ -25,7 +25,7 @@ h3. Frontpage
     information like title, author, links and description about rest of the wiki
     document into separate <section>. Text is expected in a semi-structured
     format, which is a collection of key,value pairs separated by a '':''. A
-    fresh key,value pair must begine with a new line flush with whitespace. If a
+    fresh key,value pair must begin with a new line flush with whitespace. If a
     new line begins with whitespace will either be ignored or interpreted as
     part of the previous key,value definition.
 

@@ -47,7 +47,7 @@ defaultconfig.__doc__ = u"""Configuration setting for eazytext wiki engine."""
 defaultconfig['strict_undefined']    = {
     'default' : False,
     'types'   : (bool,),
-    'help'    : "Boolean to raise exception for un-defined context variables. "
+    'help'    : "Boolean to raise exception for undefined context variables. "
                 "If set to false, undefined variables will be silently "
                 "digested as 'None' string."
 }
@@ -67,20 +67,20 @@ defaultconfig['module_directory']              = {
 defaultconfig['escape_filters']                = {
     'default' : '',
     'types'   : ('csv', list),
-    'help'    : "Comman seperated list of default escape filters to be "
+    'help'    : "Comma separated list of default escape filters to be "
                 "applied during expression substitution."
 }
 
 defaultconfig['input_encoding']                = {
     'default' : 'utf8',
     'types'   : (str,),
-    'help'    : "Default input endcoding for .etx file."
+    'help'    : "Default input encoding for .etx file."
 }
 
 defaultconfig['plugin_packages']               = {
     'default' : '',
     'types'   : ('csv',list),
-    'help'    : "Comma seperated list of plugin packages that needs to be "
+    'help'    : "Comma separated list of plugin packages that needs to be "
                 "imported, before compiling .etx files."
 }
 
@@ -95,7 +95,7 @@ defaultconfig['include_skin']                  = {
     'default' : False,
     'types'   : (bool,),
     'help'    : "CSS file (skin) can be either included in the generated html "
-                "or can be linked seperately (using <link> tag)."
+                "or can be linked separately (using <link> tag)."
 }
 
 defaultconfig['obfuscatemail']                 = {
@@ -125,7 +125,7 @@ defaultconfig['nested.article']                = {
     'help'    : "Boolean, if True generate <article> wrapping for html text. "
                 "Otherwise skip <article> wrapping for block text. The "
                 "generated article element will have class attribute `etblk` "
-                "if config param `nested` is True. Otherwise, they will have "
+                "if config parameter `nested` is True. Otherwise, they will have "
                 "class attribute `etpage`."
 }
 

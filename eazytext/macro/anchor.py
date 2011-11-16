@@ -20,7 +20,7 @@ doc = """
 h3. Anchor
 
 : Description ::
-    Create an anchor in the document which can be referenced else-wehere as page
+    Create an anchor in the document which can be referenced elsewhere as page
     fragment. Accepts CSS styles for keyword arguments.
 : Example ::
     [<PRE {{ Anchor( 'anchorname', 'display-text' ) }} >]

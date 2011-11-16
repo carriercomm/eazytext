@@ -45,7 +45,7 @@ h3. 0.91b ``{k-} on Tue 2011-03-15``
     ** `stripscript` key-word argument added to optionally strip `<script>` tag
         from generated HTML. To avoid CSRF attack.
     ** Macro and Extension plugin load algorithm is made generic. Now a list of
-       directories can be passed while instanstiating ETParser, to look for
+       directories can be passed while instantiating ETParser, to look for
        user plugins.
     ** Improvised plugin framework.
     ** Added Makefile.
@@ -63,17 +63,17 @@ h3. 0.91b ``{k-} on Tue 2011-03-15``
     ** Border radius styling should be attributed to elements using classes,
        br* (like br2, br5, etc ...)
     ** Sortable tables.
-    ** Nested ETParser() instansiations should have `nested` attribute set
+    ** Nested ETParser() instance should have `nested` attribute set
        to True.
     ** Automatic hyper link generation for text words starting with `https`.
     ** Documentation fixes to Code, Footnote and ETExtension modules.
     ** Random styling for ordered lists.
     ** Improvised column span for tables.
     ** Template tag added to generate a span element with font styling.
-    ** HTML page generation and its styling is seperated. Styling can now be
+    ** HTML page generation and its styling is separated. Styling can now be
        applied using skins. A `default.css` skin is provided.
     ** Cleaned up and refactored eztext.py
-    ** Added dependancies for lxml and nose.
+    ** Added dependencies for lxml and nose.
     ** Create virtualenv using Makefile for development.
     ** Refactored is is_matchinghtml() and wiki_properties into 
        eazytext.__init__.py
@@ -82,8 +82,8 @@ h3. 0.91b ``{k-} on Tue 2011-03-15``
     ** Vim plugin for file detection and syntax highlighting.
 
 * EazyText bug fixes
-    ** Fixed Foot note text formating in Footnote extension
-    ** New lines in multiline definition-list, Big-table cell and
+    ** Fixed Foot note text formatting in Footnote extension
+    ** New lines in multi-line definition-list, Big-table cell and
        list-items are preserved and converted to html.
     ** Generated html, <br></br> is replaced with <br/>
     ** Templated tag markups are made case insensitive,
@@ -145,7 +145,7 @@ h3. 0.81dev  ``{k} on Sun 2010-01-03``
 h3. 0.8dev ``{k}  on Mon 2009-11-30``
 
 * ZWiki features and enhancements
-   ** Stype-shortcut support for Text-markups, Big-table markups, Table-markup.
+   ** Style-shortcut support for Text-markups, Big-table markups, Table-markup.
    ** Nested, Zwiki extension added.
 
 * ZWiki bug fixes.
@@ -174,7 +174,7 @@ h3. 0.6dev  ``{k} on Mon 2009-09-28``
 * ZWiki features and enhancements
    ** Restricting the width of TOC block to 20em
    ** Added YearsBefore macro.
-   ** Changed the parser grammer to support free mix of ordered and un-ordered
+   ** Changed the parser grammar to support free mix of ordered and un-ordered
       markups across different levels.
    ** Better styling for small-table, big-table, subscript, superscript, wiki
       page etc.
@@ -183,8 +183,8 @@ h3. 0.6dev  ``{k} on Mon 2009-09-28``
    ** All et.fromstring() calls are fixed under a try...except clause when
       doubtful about html formation.
    ** 'htags' dictionary in TOC macro was globally updated, which will
-      get preserved across ZWParser() instanses.
-   ** Refactored the try...except clasue into try...except...else clause in
+      get preserved across ZWParser() instances.
+   ** Refactored the try...except clause into try...except...else clause in
       TOC macro
    ** Refined EGG packaging.
 
@@ -201,7 +201,7 @@ h3. 0.4dev  ``{k} on Thu 2009-06-11``
    ** Markups for list formatting.
    ** Markups for blockquoting and definition lists.
    ** Markups for Tables, Big tables.
-   ** Interspercing HTML within wiki text.
+   ** Interspersing HTML within wiki text.
    ** Macros feature. Currently available macros,
         *** Table of contents
         *** Span

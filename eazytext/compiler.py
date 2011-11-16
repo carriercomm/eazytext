@@ -126,7 +126,7 @@ class WikiLookup( object ) :
             self._etxtext = \
                 etxtext.decode('utf-8') if isinstance(etxtext, str) else etxtext
             self.etxfile = self.NOETXFILE
-            self._etxtext, self.noetxfile, self.etxloc = etxtext, True, None
+            self.noetxfile, self.etxloc = True, None
             self.pyfile = None
         else :
             raise Exception( 'Invalid eazytext source !!' )

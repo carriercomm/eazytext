@@ -56,9 +56,9 @@ h3. Using it as library, in python
 
     # To translate a wiki-file, 
     t = Translate( etxloc=wikifile, etxconfig=etxconfig )
-    # To translate a wiki-text (incase it is not present in a file),
+    # To translate a wiki-text (in case it is not present in a file),
     t = Translate( etxtext=wikitext, etxconfig=etxconfig )
-    # In both the cases the configuration paramters can passed via `etxconfig`
+    # In both the cases the configuration parameters can passed via `etxconfig`
     # as a dictionary
 
     # Get the translated html,
@@ -76,8 +76,8 @@ editor and we will compose our first wiki document (if you are a vim user a
 available for syntax highlighting)
 
 > [<PRE In // 1862 //, ''Charles Lutwidge Dodgson'', a shy Oxford mathematician
- with a stammer, created a story about a little girl tubling down a rabbit
- hole. Thus geban the immortal adventures of Alice, perhaps the most popular
+ with a stammer, created a story about a little girl tumbling down a rabbit
+ hole. Thus began the immortal adventures of Alice, perhaps the most popular
  heroine in English literature. Countless scholars have tried to define the
  charm of the Alice  books-with those wonderfully eccentric characters the
  '' Queen of Hearts, //Tweedledum// and //Tweedledee//, the //Cheshire Cat//,
@@ -93,8 +93,8 @@ Translate the file using the command line option explained above, and we
 get a html file that renders as below,
 
 > In // 1862 //, ''Charles Lutwidge Dodgson'', a shy Oxford mathematician
-> with a stammer, created a story about a little girl tubling down a rabbit
-> hole. Thus geban the immortal adventures of Alice, perhaps the most popular
+> with a stammer, created a story about a little girl tumbling down a rabbit
+> hole. Thus began the immortal adventures of Alice, perhaps the most popular
 > heroine in English literature. Countless scholars have tried to define the
 > charm of the Alice  books-with those wonderfully eccentric characters the
 > '' Queen of Hearts, //Tweedledum// and //Tweedledee//, the //Cheshire Cat//,

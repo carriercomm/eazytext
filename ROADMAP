@@ -37,7 +37,7 @@ h4. Proposed functions and features
 * Printable pages.
 * From html text to eazytext markup.
 * Implement `stripscript` 
-* Find a way to pass the body arguments programatically via Translator()
+* Find a way to pass the body arguments programmatically via Translator()
 * Once the core parser grammar become stable, move the entire lexer and parser
   to C, with plugin-framework available for multiple languages (python, ruby
   ...).

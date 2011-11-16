@@ -13,7 +13,7 @@ an extension.
 
 h3. Extension Framework
 
-Extented wiki text can be added into the main document by enclosing them within
+Extended wiki text can be added into the main document by enclosing them within
 triple curly braces '' \{\{{ ... }}} ''. Everything between the curly braces
 are passed directly to the extension module, which, in most of the cases will
 return a translated HTML text. The general format while using a wiki extension
@@ -27,7 +27,7 @@ is,
 > }}}
 
 * ''extension-name'', should be one of the valid extensions.
-* ''parameter-strings'', a sequence of arugments to coded in python's function calling
+* ''parameter-strings'', a sequence of arguments to coded in python's function calling
   convention.
 * ''property-name'', property name can be a property accepted by the extension
   module or can be CSS property. Note that, the entire property block should

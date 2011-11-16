@@ -2,7 +2,7 @@ h2. Style shortcuts
 
 Style shortcuts are enclosed within '' { ... } '', and immediately follows the
 wiki-markup that it augments. Within the curly braces, each style shortcut
-entity is seperated by a ''semicolon (;)'',
+entity is separated by a ''semicolon (;)'',
 
 : Foreground color ::
     A single //small case alphabet//, ranging from a-z
@@ -13,7 +13,7 @@ entity is seperated by a ''semicolon (;)'',
 : Padding ::
     A //numerical value// immediately following a //pipe (|)//, like //|5//
 : Border ::
-    Comma seperated width, style, color (color being a small letter alphabet),
+    Comma separated width, style, color (color being a small letter alphabet),
     immediately following a //backslash (\)//. Bordered text elements are
     automatically padded with 2 pixels.
 

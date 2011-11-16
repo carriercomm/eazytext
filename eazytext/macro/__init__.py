@@ -25,8 +25,8 @@ Definition of YearsBefore macro,
 * Arguments to python functions are of two types, positional and keyword. Other
   types of argument passing are not of concern here.
 * Position arguments are specified first in a function call, where the first
-  passed parameter is recieved as the first argument, second passed parameter
-  is recieved as the second argument and so on. All positional parameters
+  passed parameter is received as the first argument, second passed parameter
+  is received as the second argument and so on. All positional parameters
   are mandatory.
 * Keyword arguments are received next. Keyword arguments also carry a
   default value, if in case it is not passed.
@@ -65,10 +65,10 @@ attributes as keyword arguments, like,
 Note that, the attribute name is represented as local variable name inside the
 macro function. If you are expert CSS author, you will know that there are
 CSS-style attribute-names like ''font-size'', ''font-weight'' which are not
-valid variables, so, style attribute-names which contain a ''hypen''
+valid variables, so, style attribute-names which contain a ''hyphen''
 cannot be passed as a keyword argument. As an alternative, there is a special
 keyword argument (to all macro functions) by name ''style'', which directly
-accepts ''semicolon (;)'' seperated style attributes, like,
+accepts ''semicolon (;)'' separated style attributes, like,
 
 > [<PRE started this activity and running this for 
    {{ YearsBefore('past %s', '2008', color="red", style="font-weight: bold; font-size: 200%" ) }} >]

@@ -37,7 +37,7 @@ keyword argument,
 """
 
 class Images( Macro ) :
-    """Macro plugin to generate a gallary (using <tables>) of images embedded
+    """Macro plugin to generate a gallery (using <tables>) of images embedded
     inside the wiki document.
     """
     _doc = doc
