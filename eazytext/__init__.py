@@ -72,7 +72,7 @@ defaultconfig['escape_filters']                = {
 }
 
 defaultconfig['input_encoding']                = {
-    'default' : 'utf8',
+    'default' : 'utf-8',
     'types'   : (str,),
     'help'    : "Default input encoding for .etx file."
 }

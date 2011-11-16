@@ -24,6 +24,8 @@ def mixedlines( size=100 ):
 def test_mixlines( count=100 ) :
     while count :
         wikitext = mixedlines()
+        try : wikitext.decode('utf-8')
+        except : continue
         open( FILENAME, 'w' ).write( wikitext )
         etx_cmdline( FILENAME )
         count -= 1

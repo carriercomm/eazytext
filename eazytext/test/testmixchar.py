@@ -25,6 +25,8 @@ def mixedchars( size=1000 ):
 def test_mixchars( count=100 ) :
     while count :
         wikitext = mixedchars()
+        try : wikitext.decode('utf-8')
+        except : continue
         open( FILENAME, 'w' ).write( wikitext )
         etx_cmdline( FILENAME )
         count -= 1
