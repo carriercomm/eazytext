@@ -18,7 +18,7 @@ from   zope.interface   import Interface
 
 class IEazyText( Interface ):
     """Base class for all //eazytext module's// interface specifications. Right
-    now following interface specs. derive from this base class,
+    now following interface specifications derive from this base class,
       > IEazyTextMacro
       > IEazyTextExtension
       > IEazyTextTemplateTags

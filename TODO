@@ -1,6 +1,8 @@
 Track the project at,
     http://eazytext.pluggdapps.com
 
+* Convert Style shortcuts into plugins.
+
 * TTags for generating <q> does not display quotes when integrated with
   pluggdapps.com. Standalone tests seem to work proper.
 

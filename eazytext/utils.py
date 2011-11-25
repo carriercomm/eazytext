@@ -26,7 +26,7 @@ class ConfigItem( dict ):
     """
     typestr = {
         str   : 'str', unicode : 'unicode', list : 'list', tuple : 'tuple',
-        'csv' : 'csv', dict    : 'dict',    bool : 'bool',
+        'csv' : 'csv', dict    : 'dict',    bool : 'bool', int   : 'int',
     }
     def _options( self ):
         opts = self.get( 'options', '' )
