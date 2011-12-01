@@ -40,6 +40,7 @@ from   eazytext.interfaces      import IEazyTextMacro, \
 from   eazytext.parser          import ETParser
 
 DEFAULT_ENCODING = 'utf-8'
+DEVMOD = False
 
 defaultconfig = ConfigDict()
 defaultconfig.__doc__ = u"""Configuration setting for eazytext wiki engine."""
@@ -139,8 +140,8 @@ defaultconfig['stripscript']                   = {
 defaultconfig['ashtml']                        = {
     'default' : False,
     'types'   : (bool,),
-    'help'    : "If set to false generate the html text enclosed within "
-                "<article> tag, else wrap them withing <html><body> tag"
+    'help'    : "If set to true generate html text enclosed within "
+                "<html><body> tags, else wrap them with just <article> tag."
 }
 
 defaultconfig['memcache']                      = {
@@ -161,7 +162,10 @@ def normalizeconfig( config ):
     programmable types. It is assumed that all config parameters are atleast
     initialized with default value.
     """
-    config['devmod'] = asbool( config['devmod'] )
+    config_ = dict( defaultconfig.items() )
+    config_.update( config )
+    config = config_
+    config['devmod'] = asbool( config.get('devmod', DEVMOD) )
     config['strict_undefined'] = asbool( config['strict_undefined'] )
     try :
         config['directories'] = [
@@ -212,7 +216,7 @@ def initplugins( etxconfig, force=False ):
         gsm = getGlobalSiteManager()
 
         # Load plugin packages
-        packages = etxconfig['plugin_packages']
+        packages = etxconfig.get( 'plugin_packages', [] )
         if isinstance( packages, basestring ):
             packages = [ x.strip(' \t') for x in packages.split(',') ]
         [ __import__(pkg) for pkg in filter(None, packages) ]
@@ -245,9 +249,12 @@ class Translate( object ):
         by wiki processor.
             TODO : somehow find a way to pass the arguments to `body` function
         """
-        etxconfig = etxconfig or dict(defaultconfig.items())
+        self.etxconfig = dict( defaultconfig.items() )
+        self.etxconfig.update( etxconfig )
+        self.etxconfig.setdefault( 'devmod', DEVMOD )
         # Initialize plugins
-        self.etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
+        self.etxconfig = initplugins(
+                self.etxconfig, force=self.etxconfig['devmod'] )
         self.etxloc, self.etxtext = etxloc, etxtext
         self.etparser = ETParser( etxconfig=self.etxconfig )
 
@@ -274,7 +281,6 @@ def etx_cmdline( etxloc, **kwargs ):
     etxconfig['module_directory'] = u'.'
     etxconfig['include_skin'] = True
     etxconfig['ashtml'] = True
-    etxconfig['devmod'] = True
 
     # Parse command line arguments and configuration
     context = eval( etxconfig.pop( 'context', '{}' ))
@@ -283,7 +289,8 @@ def etx_cmdline( etxloc, **kwargs ):
     dump = etxconfig.pop( 'dump', False )
     encoding = etxconfig['input_encoding']
 
-    # Initialize plugins
+    # Initialize plugins)
+    etxconfig.setdefault( 'devmod', DEVMOD )
     etxconfig = initplugins( etxconfig, force=etxconfig['devmod'] )
 
     # Setup parser
@@ -316,7 +323,6 @@ def etx_cmdline( etxloc, **kwargs ):
         # Intermediate file should always be encoded in 'utf-8'
         codecs.open(pyfile, mode='w', encoding=DEFAULT_ENCODING).write(pytext)
 
-        etxconfig.setdefault( 'memcache', True )
         t = Translate( etxloc=etxloc, etxconfig=etxconfig )
         html = t( context=deepcopy(context) )
         codecs.open( htmlfile, mode='w', encoding=encoding).write( html )

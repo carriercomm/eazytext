@@ -111,10 +111,11 @@ class Compiler( object ):
 
 
 class WikiLookup( object ) :
-    ETXCONFIG = [ 'directories', 'module_directory', 'devmod' ]
+    ETXCONFIG = [ 'directories', 'devmod' ]
     NOETXFILE = '<Source provided as raw text>'
     def __init__( self, etxloc=None, etxtext=None, etxconfig={} ):
-        [ setattr( self, k, etxconfig[k] ) for k in self.ETXCONFIG ]
+        self.directories = etxconfig.get('directories', [])
+        self.devmod = etxconfig['devmod']
         self.etxconfig = etxconfig
         self.encoding = etxconfig['input_encoding']
         self._etxhash, self._pytext = None, None
