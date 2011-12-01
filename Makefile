@@ -7,7 +7,7 @@ test :
 	cd eazytext/test; teststd.py;
 	cd eazytext/test; testmixchar.py;
 	cd eazytext/test; testmixline.py;
-	cd eazytext/test; testcmd.py;
+	cd eazytext/test; bash testcmd.sh;
 
 bdist_egg : copy
 	python ./setup.py bdist_egg
@@ -35,10 +35,7 @@ clean :
 	rm -rf distribute-0.6.10.tar.gz
 	rm -rf build;
 	rm -rf dist;
-	rm -rf docs/CHANGELOG
-	rm -rf docs/LICENSE
-	rm -rf docs/README
-	rm -rf docs/ROADMAP
+	rm -rf docs/CHANGELOG docs/LICENSE docs/README docs/ROADMAP
 	rm -rf zwiki.egg-info;
 	rm -rf zwiki_zeta.egg-info/;
 	rm -rf eazytext.egg-info;
@@ -51,3 +48,4 @@ clean :
 	rm -rf eazytext/test/stdfiles/*.html;
 	rm -rf eazytext/test/mixchar.*;
 	rm -rf eazytext/test/mixline.*;
+	rm -rf eazytext/test/out.html;
