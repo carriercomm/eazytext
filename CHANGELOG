@@ -1,5 +1,15 @@
 {{ Toc( float='right' ) }}
 
+h3. 0.94 ``{k-} on Sat 2011-12-01``
+
+* Markup definition organise wiki text under HTML5 <section> element.
+* Merged eazytext/lib.py with eazytext/util.py
+* Added configuration settings //nested.paragraph// and //nested.article//, for
+  granular control on html generation.
+* Fontpage extension plugin.
+* Added lstrip() and rstrip() methods to Node classes in AST.
+* Link markup augmented with syntax for higlighting link as deleted <del>
+
 h3. 0.93b ``{k-} on Sat 2011-10-29``
 
 * Added test cases for eztext.py command line tool.

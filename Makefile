@@ -9,27 +9,21 @@ test :
 	cd eazytext/test; testmixline.py;
 	cd eazytext/test; testcmd.py;
 
-bdist_egg :
-	cp CHANGELOG docs/CHANGELOG
-	cp LICENSE docs/LICENSE
-	cp README docs/README
-	cp ROADMAP docs/ROADMAP
+bdist_egg : copy
 	python ./setup.py bdist_egg
 
-sdist :
-	cp CHANGELOG docs/CHANGELOG
-	cp LICENSE docs/LICENSE
-	cp README docs/README
-	cp ROADMAP docs/ROADMAP
+sdist : copy
 	python ./setup.py sdist
 
-upload : 
+upload : copy
+	python ./setup.py sdist register -r http://www.python.org/pypi upload -r http://www.python.org/pypi --show-response 
+	
+copy :
 	cp CHANGELOG docs/CHANGELOG
 	cp LICENSE docs/LICENSE
 	cp README docs/README
 	cp ROADMAP docs/ROADMAP
-	python ./setup.py sdist register -r http://www.python.org/pypi upload -r http://www.python.org/pypi --show-response 
-	
+
 vimplugin :
 	rm -rf ./vim-plugin/vim-eazytext.tar.gz
 	cd ./vim-plugin; tar cvfz ./vim-eazytext.tar.gz *
