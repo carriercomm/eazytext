@@ -25,3 +25,10 @@ Track the project at,
 * Empty tag elements must be self closing. Make sure that all generated html
   with empty tags are self closing. This seem to have some problems. What is the
   right way of doing ?
+
+* Test cases / profiling / code-coverage.
+
+* Documentation for features and functions added from 0.92dev to recent ones.
+  Send email to pluggdapps mailing list regarding the same.
+
+* Define link anchors are $ and fragments as #.

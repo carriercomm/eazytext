@@ -96,9 +96,8 @@ class Code( Extension ) :
         try :
             lexer = get_lexer_by_name( self.lexname )
             code  = highlight( text.strip('\r\n'), lexer, self.formatter )
-            html  = self.tmpl % ( '', (self.code_tmpl % code) )
+            html  = self.tmpl % ( style, (self.code_tmpl % code) )
         except:
-            raise
             if node.parser.etparser.debug : raise
             html = text
         return html

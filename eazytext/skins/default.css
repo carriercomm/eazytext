@@ -254,6 +254,7 @@ div.etext-box span.boxshow {
 
 /* extension-code */
 div.etext-code {
+  background : #FAFAFA;
   margin-left  : 5%;
   margin-right : 5%;
 }
@@ -269,10 +270,9 @@ div.etext-code .highlighttable td.code {
   padding : 3px
 }
 div.etext-code .highlight {
-  background-color : #FAFAFA;
+  background-color : transparent;
 }
 div.etext-code .codecont {
-  background : #FAFAFA;
   border : 1px dashed gray;
 }
 
